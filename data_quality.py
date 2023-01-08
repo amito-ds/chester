@@ -7,12 +7,31 @@ from pandas.io.json import json_normalize
 import matplotlib.pyplot as plt
 
 
+# def calculate_text_metrics(text):
+#     metrics = {'text_length': len(text), 'num_words': len(text.split()), 'num_sentences': len(nltk.sent_tokenize(text)),
+#                'num_characters': len([c for c in text if c.isalpha()]), 'num_missing': int(text == "")}
+#     words = pd.Series(text.split()).unique()
+#     metrics['num_unique_words'] = len(words)
+#     metrics['ttr'] = metrics['num_unique_words'] / metrics['num_words']
+#     return metrics
+
+
 def calculate_text_metrics(text):
-    metrics = {'text_length': len(text), 'num_words': len(text.split()), 'num_sentences': len(nltk.sent_tokenize(text)),
-               'num_characters': len([c for c in text if c.isalpha()]), 'num_missing': int(text == "")}
-    words = pd.Series(text.split()).unique()
-    metrics['num_unique_words'] = len(words)
-    metrics['ttr'] = metrics['num_unique_words'] / metrics['num_words']
+    metrics = {'text_length': len(text), 'num_sentences': len(nltk.sent_tokenize(text))}
+    if any(c.isalpha() for c in text):
+        metrics['num_characters'] = len([c for c in text if c.isalpha()])
+    else:
+        metrics['num_characters'] = 0
+    words = pd.Series(text.split())
+    if len(words) > 0:
+        metrics['num_words'] = len(words)
+        metrics['num_unique_words'] = len(words.unique())
+        metrics['ttr'] = metrics['num_unique_words'] / metrics['num_words']
+    else:
+        metrics['num_words'] = 0
+        metrics['num_unique_words'] = 0
+        metrics['ttr'] = 0
+    metrics['num_missing'] = int(text == "")
     return metrics
 
 
