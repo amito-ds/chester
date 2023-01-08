@@ -47,3 +47,46 @@ def remove_special_characters(text: str) -> str:
 def remove_html_tags(text: str) -> str:
     """Remove HTML tags from the given text."""
     return re.sub(r'<[^<]+?>', '', text)
+
+
+def clean_text(text: str,
+               remove_punctuation_flag: bool = True,
+               remove_numbers_flag: bool = True,
+               remove_whitespace_flag: bool = True,
+               lowercase_flag: bool = True,
+               remove_stopwords_flag: bool = False,
+               stopwords: List[str] = None,
+               remove_accented_characters_flag: bool = True,
+               remove_special_characters_flag: bool = True,
+               remove_html_tags_flag: bool = True) -> str:
+    """Apply a series of cleaning functions to the given text.
+
+    text: the text to clean.
+    remove_punctuation_flag: a flag indicating whether to remove punctuation from the text.
+    remove_numbers_flag: a flag indicating whether to remove numbers from the text.
+    remove_whitespace_flag: a flag indicating whether to remove excess whitespace from the text.
+    lowercase_flag: a flag indicating whether to convert the text to lowercase.
+    remove_stopwords_flag: a flag indicating whether to remove common words that do not contribute to the meaning of the text.
+    stopwords: a list of words to remove from the text. Required if remove_stopwords_flag is True.
+    remove_accented_characters_flag: a flag indicating whether to remove accented characters from the text.
+    remove_special_characters_flag: a flag indicating whether to remove special characters from the text.
+    remove_html_tags_flag: a flag indicating whether to remove HTML tags from the text.
+    """
+    if remove_punctuation_flag:
+        text = remove_punctuation(text)
+    if remove_numbers_flag:
+        text = remove_numbers(text)
+    if remove_whitespace_flag:
+        text = remove_whitespace(text)
+    if lowercase_flag:
+        text = lowercase(text)
+    if remove_stopwords_flag:
+        text = remove_stopwords(text, stopwords)
+    if remove_accented_characters_flag:
+        text = remove_accented_characters(text)
+    if remove_special_characters_flag:
+        text = remove_special_characters(text)
+    if remove_html_tags_flag:
+        text = remove_html_tags(text)
+    return text
+

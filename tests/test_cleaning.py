@@ -52,5 +52,5 @@ def test_remove_html_tags():
     assert remove_html_tags(text) == expected_output
 
 
-if __name__ == '__main__':
-    unittest.main()
+
+
