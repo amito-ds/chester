@@ -54,7 +54,7 @@ def stem(words, stemmer=PorterStemmer()):
     return stemmed_words
 
 
-def preprocess_text(text, stemmer=None, lemmatizer=None, stem_flag=False, lemmatize_flag=True, tokenize_flag=True,
+def preprocess_text(text, stemmer=None, lemmatizer=None, stem_flag=False, lemmatize_flag=False, tokenize_flag=True,
                     pos_tag_flag=False):
     if stem_flag and lemmatize_flag:
         raise ValueError("Both stemmer and lemmatizer cannot be applied. Please choose one.")
@@ -79,4 +79,4 @@ def preprocess_text(text, stemmer=None, lemmatizer=None, stem_flag=False, lemmat
     else:
         lemmatized_words = stemmed_words
 
-    return lemmatized_words
+    return ' '.join(lemmatized_words)
