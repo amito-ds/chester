@@ -21,10 +21,8 @@ if __name__ == '__main__':
 
     # corex topic modeling
     # Example usage
-    topics = get_top_words(df, top_words=5, n_topics=10)
-    for topic in topics:
-        topic_words, weights, _ = zip(*topic)
-        # plot_wordcloud(topic_words, weights)
+    # topics = get_top_words(df, top_words=5, n_topics=10)
+    plot_wordcloud(df)
 
     # summarize_topics(topics)
     #
