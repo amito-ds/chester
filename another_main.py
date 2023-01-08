@@ -1,18 +1,16 @@
 import numpy as np
 import pandas as pd
+from nltk.corpus import brown
 
-from data_quality import calculate_text_column_metrics, create_report
+from data_quality import calculate_text_column_metrics, create_report, plot_text_length_and_num_words, analyze_text_data
 
 if __name__ == '__main__':
     # Generate some data
     np.random.seed(0)
-    data = {'text': ['Text ' + str(i) for i in range(10)]}
-    df = pd.DataFrame(data)
+    brown_sent = brown.sents(categories='news')[:100]
+    brown_sent = [' '.join(x) for x in brown_sent]
+    df = pd.DataFrame({'text': brown_sent})
 
     # Calculate text column metrics
-    df, num_unique_words = calculate_text_column_metrics(df)
+    df = analyze_text_data(df)
 
-    # Create report
-    report = create_report(df, num_unique_words)
-    print(report)
-    print(df.text_metrics.iloc[0])
