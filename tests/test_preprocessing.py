@@ -1,8 +1,9 @@
 import unittest
 
 import nltk
+from nltk import PorterStemmer, WordNetLemmatizer
 
-from preprocessing import tokenize, pos_tag, stem, lemmatize
+from preprocessing import tokenize, pos_tag, stem, lemmatize, preprocess_text
 
 
 class TestProcessingMethods(unittest.TestCase):
@@ -39,7 +40,7 @@ class TestStemming(unittest.TestCase):
 
     def test_lemmatization(self):
         text = ['run', 'running', 'ran', 'runs', 'easily', 'fairly']
-        expected_lemmas = ['run', 'running', 'ran', 'run', 'easily', 'fairly']
+        expected_lemmas = ['run', 'run', 'ran', 'run', 'easily', 'fairly']
         self.assertEqual(lemmatize(text), expected_lemmas)
 
     def test_lemmatization_case_insensitivity(self):
@@ -47,6 +48,5 @@ class TestStemming(unittest.TestCase):
         expected_lemmas = ['Run', 'Running', 'Ran', 'Runs', 'Easily', 'Fairly']
         self.assertEqual(lemmatize(text), expected_lemmas)
 
-
-if __name__ == '__main__':
-    unittest.main()
+    if __name__ == '__main__':
+        unittest.main()

@@ -52,3 +52,31 @@ def pos_tag(text):
 def stem(words, stemmer=PorterStemmer()):
     stemmed_words = [stemmer.stem(word) for word in words]
     return stemmed_words
+
+
+def preprocess_text(text, stemmer=None, lemmatizer=None, stem_flag=False, lemmatize_flag=True, tokenize_flag=True,
+                    pos_tag_flag=False):
+    if stem_flag and lemmatize_flag:
+        raise ValueError("Both stemmer and lemmatizer cannot be applied. Please choose one.")
+
+    if tokenize_flag:
+        tokens = tokenize(text)
+    else:
+        tokens = text
+
+    if pos_tag_flag:
+        pos_tags = pos_tag(tokens)
+    else:
+        pos_tags = tokens
+
+    if stem_flag:
+        stemmed_words = stem(pos_tags, stemmer=stemmer)
+    else:
+        stemmed_words = pos_tags
+
+    if lemmatize_flag:
+        lemmatized_words = lemmatize(stemmed_words, lemmatizer=lemmatizer)
+    else:
+        lemmatized_words = stemmed_words
+
+    return lemmatized_words

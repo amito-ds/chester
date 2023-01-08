@@ -1,3 +1,5 @@
+from nltk import WordNetLemmatizer
+
 from cleaning import *
 import nltk
 
@@ -5,7 +7,7 @@ import nltk
 
 import nltk
 
-from preprocessing import lemmatize, get_stemmer
+from preprocessing import lemmatize, get_stemmer, preprocess_text
 
 
 def extract_nouns(text):
@@ -15,6 +17,7 @@ def extract_nouns(text):
 
 
 if __name__ == '__main__':
-    stemmer = get_stemmer("porter")
+    text = "ef remove_whitespace(text: str) -> str:"
+    cleaned_text = preprocess_text(text, lemmatize_flag=False, stem_flag=True, stemmer=get_stemmer("snowball"))
+    print(cleaned_text)
 
-    print(stemmer)  # ['run', 'running', 'ran', 'run', 'easily', 'fairly']
