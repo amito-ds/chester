@@ -1,28 +1,68 @@
-import unittest
+from cleaning import *
 
 
-class TestCleanText(unittest.TestCase):
-    def test_clean_text(self):
-        # Create a sample DataFrame
-        df = pd.DataFrame(
-            {'text': ['Hello, world!', '<p>This is some html</p>', '1.23', 'An apple a day keeps the doctor away!',
-                      'I am a very complex sentence with lots of words and special characters!',
-                      'I am another complex sentence with lots of words and numbers 1234567890!',
-                      'I am a complex sentence with lots of html tags <br>, <p>, and <h1>!']})
-
-        # Clean the text column
-        df['text'] = df['text'].apply(clean_text, lowercase=True, remove_punctuation=True, remove_digits=True,
-                                      remove_html=True, remove_stopwords=True, stem_words=True, lemmatize_words=True)
-
-        # Assert that the text was cleaned correctly
-        self.assertEqual(df.iloc[0]['text'], 'hello world')
-        self.assertEqual(df.iloc[1]['text'], 'p some html')
-        self.assertEqual(df.iloc[2]['text'], '')
-        self.assertEqual(df.iloc[3]['text'], 'appl day keep doctor')
-        self.assertEqual(df.iloc[4]['text'], 'complex sentenc lot word special character')
-        self.assertEqual(df.iloc[5]['text'], 'another complex sentenc lot word number')
-        self.assertEqual(df.iloc[6]['text'], 'complex sentenc lot html tag br p h1')
+def test_remove_punctuation():
+    text = "This is a test! Can you remove the punctuation?"
+    expected_output = "This is a test Can you remove the punctuation"
+    assert remove_punctuation(text) == expected_output
 
 
-# Run the test
-unittest.main(argv=[''], exit=False)
+def test_remove_numbers():
+    text = "This is a test! Can you remove the 123 numbers?"
+    expected_output = "This is a test! Can you remove the  numbers?"
+    assert remove_numbers(text) == expected_output
+
+
+def test_remove_whitespace():
+    text = "This is a test!    Can you remove the extra whitespace?"
+    expected_output = "This is a test! Can you remove the extra whitespace?"
+    assert remove_whitespace(text) == expected_output
+
+
+def test_lowercase():
+    text = "This Is A Test! Can You Convert It To Lowercase?"
+    expected_output = "this is a test! can you convert it to lowercase?"
+    assert lowercase(text) == expected_output
+
+
+def test_general_clean():
+    text = "This Is A Test! Can You Clean It Up? 123"
+    expected_output = "this is a test! can you clean it up?"
+    assert general_clean(text) == expected_output
+
+
+def test_remove_stopwords():
+    text = "This is a test! Can you remove the stopwords?"
+    stopwords = ['remove', 'the']
+    expected_output = "This is a test! Can you stopwords?"
+    assert remove_stopwords(text, stopwords) == expected_output
+
+
+def test_lemmatize():
+    text = "This is a test! Can you lemmatize the words?"
+    expected_output = "This be a test! Can you lemmatize the word?"
+    assert lemmatize(text, language='english') == expected_output
+
+
+def test_stem():
+    text = "This is a test! Can you stem the words?"
+    expected_output = "This is a test! Can you stem the word?"
+    assert stem(text, language='english') == expected_output
+
+
+def test_remove_accented_characters():
+    text = "This is a test! Can you remove the accented characters?"
+    expected_output = "This is a test! Can you remove the accented characters?"
+    assert remove_accented_characters(text) == expected_output
+
+
+def test_remove_special_characters():
+    text = "This is a test! Can you remove the special characters?"
+    expected_output = "This is a test Can you remove the special characters"
+    assert remove_special_characters(text) == expected_output
+
+
+def test_remove_html_tags():
+    text = "This is a test! Can you <b>remove</b> the HTML tags?"
+    expected_output = "This is a test! Can you remove the HTML tags?"
+    assert remove_html_tags(text) == expected_output
