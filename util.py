@@ -3,6 +3,13 @@ import re
 import string
 from typing import List
 
+import nltk
+from nltk.corpus import stopwords
+
+def get_stopwords():
+    nltk.download('stopwords')
+    return stopwords.words('english')
+
 
 def remove_html(text: str) -> str:
     """Remove HTML tags from a string.
