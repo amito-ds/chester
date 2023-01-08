@@ -3,11 +3,13 @@ from nltk.corpus import brown
 
 from cleaning import clean_text
 from preprocessing import preprocess_text
-from text_analyzer.corex_topics import get_top_words, plot_wordcloud
+from text_analyzer.corex_topics import get_top_words, plot_corex_wordcloud
 from util import get_stopwords
+import gensim
+from gensim import corpora
 
 if __name__ == '__main__':
-    brown_sent = brown.sents(categories='news')[:100]
+    brown_sent = brown.sents(categories='reviews')[:100]
     brown_sent = [' '.join(x) for x in brown_sent]
     df = pd.DataFrame({'text': brown_sent})
 
@@ -22,7 +24,10 @@ if __name__ == '__main__':
     # corex topic modeling
     # Example usage
     # topics = get_top_words(df, top_words=5, n_topics=10)
-    plot_wordcloud(df)
+    top_words_list = get_top_words(df, 10, 5)
+    print(top_words_list)
+
+    # plot_corex_wordcloud(df)
 
     # summarize_topics(topics)
     #
@@ -37,3 +42,4 @@ if __name__ == '__main__':
     # create_word_cloud(df)
 
     # print(extractive_summarization(df))
+

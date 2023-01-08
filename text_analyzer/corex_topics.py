@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 
 
-def plot_wordcloud(df, top_words=10, n_topics=5):
+def plot_corex_wordcloud(df, top_words=10, n_topics=5):
     # Get top words and weights
     top_words_list = get_top_words(df, top_words, n_topics)
 
@@ -27,7 +27,6 @@ def plot_wordcloud(df, top_words=10, n_topics=5):
     plt.imshow(wordcloud, interpolation="bilinear")
     plt.axis("off")
     plt.show()
-
 
 
 def get_top_words(df, top_words, n_topics):
@@ -51,6 +50,7 @@ def get_top_words(df, top_words, n_topics):
         topic_words, weights, _ = zip(*topic)
         num_words = min(top_words, len(topic_words))  # Use smaller of n and num words in topic
         top_words_list += [(topic_words[j], weights[j]) for j in range(num_words)]
+        # needs to add [[w1,w2,..], [p1, p2, ...], [w1, ...] ]
         print('{}: '.format(i) + ', '.join(topic_words))
 
     return top_words_list
