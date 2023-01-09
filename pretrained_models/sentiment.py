@@ -49,20 +49,3 @@ def plot_sentiment_scores(sentiment_df):
     ax.set(xlabel='Sentiment Score', ylabel='Count', title='Sentiment Scores')
     plt.show()
 
-
-if __name__ == '__main__':
-    brown_sent = brown.sents(categories='news')[:100]
-    brown_sent = [' '.join(x) for x in brown_sent]
-    df = pd.DataFrame({'text': brown_sent})
-
-    # Clean the text column
-    df['text'] = df['text'].apply(lambda x: clean_text(x,
-                                                       remove_stopwords_flag=True,
-                                                       stopwords=get_stopwords()))
-
-    # preprocess the text column
-    df['clean_text'] = df['text'].apply(lambda x: preprocess_text(x, stem_flag=False))
-
-    sentiment_df = analyze_sentiment(df)
-    print(report_sentiment_stats(sentiment_df))
-    plot_sentiment_scores(sentiment_df)
