@@ -3,7 +3,9 @@ from nltk.corpus import brown
 
 from cleaning import clean_text
 from preprocessing import preprocess_text
+from text_analyzer import common_words
 from text_analyzer.corex_topics import get_top_words, plot_corex_wordcloud
+from text_analyzer.word_cloud import create_word_cloud
 from util import get_stopwords
 import gensim
 from gensim import corpora
@@ -23,9 +25,7 @@ if __name__ == '__main__':
 
     # corex topic modeling
     # Example usage
-    # topics = get_top_words(df, top_words=5, n_topics=10)
-    top_words_list = get_top_words(df, 10, 5)
-    print(top_words_list)
+    # top_words_list = get_top_words(df, 5, 4, ngram_range=range(1, 3))
 
     # plot_corex_wordcloud(df)
 
@@ -35,11 +35,10 @@ if __name__ == '__main__':
     # analyze_text_data(df)
     #
     # # use the get_most_common_words function to get the list of most common words
-    # most_common_words = common_words.most_common_words(df, n=10)
-    # print(most_common_words)
+    most_common_words = common_words.most_common_words(df, n=10)
+    print(most_common_words)
     #
     # # word cloud
-    # create_word_cloud(df)
+    create_word_cloud(df)
 
     # print(extractive_summarization(df))
-

@@ -29,9 +29,9 @@ def plot_corex_wordcloud(df, top_words=10, n_topics=5):
     plt.show()
 
 
-def get_top_words(df, top_words, n_topics):
+def get_top_words(df, top_words, n_topics, ngram_range=range(1, 1)):
     # Preprocess data
-    vectorizer = CountVectorizer(stop_words='english', max_features=20000, binary=True)
+    vectorizer = CountVectorizer(stop_words='english', max_features=20000, binary=True, ngram_range=ngram_range)
     doc_word = vectorizer.fit_transform(df['text'])
     doc_word = ss.csr_matrix(doc_word)
     words = list(np.asarray(vectorizer.get_feature_names()))
