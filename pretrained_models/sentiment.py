@@ -1,16 +1,17 @@
 from typing import Dict, Union
 
+import matplotlib.pyplot as plt
 import pandas as pd
 from nltk.corpus import brown
+from scipy import stats
 from textblob import TextBlob
 
 from cleaning import clean_text
 from preprocessing import preprocess_text
 from util import get_stopwords
-
-import pandas as pd
-from textblob import TextBlob
-import altair as alt
+import seaborn as sns
+import plotly.express as px
+import plotly.graph_objects as go
 
 
 def report_sentiment_stats(sentiment_df: pd.DataFrame) -> Dict[str, Union[int, float]]:
@@ -42,29 +43,15 @@ def analyze_sentiment(df):
     return df
 
 
-import matplotlib.pyplot as plt
-
-
 def plot_sentiment_scores(sentiment_df):
-    # Get the count of each sentiment score
-    counts = sentiment_df['sentiment'].value_counts()
-
-    # Set the x and y values for the bar chart
-    x = counts.index
-    y = counts.values
-
-    # Create the bar chart
-    plt.bar(x, y)
-    plt.xlabel('Sentiment Score')
-    plt.ylabel('Count')
-    plt.title('Sentiment Scores')
-
-    # Show the plot
+    # Create a histogram of the sentiment scores using Seaborn
+    ax = sns.histplot(data=sentiment_df, x='sentiment', kde=False)
+    ax.set(xlabel='Sentiment Score', ylabel='Count', title='Sentiment Scores')
     plt.show()
 
 
 if __name__ == '__main__':
-    brown_sent = brown.sents(categories='reviews')[:100]
+    brown_sent = brown.sents(categories='news')[:100]
     brown_sent = [' '.join(x) for x in brown_sent]
     df = pd.DataFrame({'text': brown_sent})
 
