@@ -5,6 +5,7 @@ from nltk.corpus import brown
 from cleaning.cleaning import *
 from data_loader.webtext_data import get_chat_logs
 from preprocessing.preprocessing import preprocess_text
+from pretrained_models.sentiment import *
 from text_analyzer import common_words
 from text_analyzer.corex_topics import get_top_words, plot_corex_wordcloud
 from text_analyzer.data_quality import analyze_text_data
@@ -30,7 +31,14 @@ if __name__ == '__main__':
     # preprocess the text column
     df['clean_text'] = df['text'].apply(lambda x: preprocess_text(x, stem_flag=False))
 
+
+    # basic stats
     analyze_text_data(df)
+
+    # sentiment
+    df = analyze_sentiment(df)
+    print(report_sentiment_stats(df))
+    plot_sentiment_scores(df)
 
     most_common_words = common_words.most_common_words(df, n=10)
     print(most_common_words)
@@ -43,10 +51,6 @@ if __name__ == '__main__':
     top_words_list = get_top_words(df, 5, 4, ngram_range=(1, 3))
     plot_corex_wordcloud(df)
 
-    # summarize_topics(topics)
-    #
-    # # basic stats
-    # analyze_text_data(df)
 
 
 
