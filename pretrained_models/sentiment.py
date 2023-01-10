@@ -2,16 +2,8 @@ from typing import Dict, Union
 
 import matplotlib.pyplot as plt
 import pandas as pd
-from nltk.corpus import brown
-from scipy import stats
-from textblob import TextBlob
-
-from cleaning import clean_text
-from preprocessing import preprocess_text
-from util import get_stopwords
 import seaborn as sns
-import plotly.express as px
-import plotly.graph_objects as go
+from textblob import TextBlob
 
 
 def report_sentiment_stats(sentiment_df: pd.DataFrame) -> Dict[str, Union[int, float]]:
@@ -48,4 +40,3 @@ def plot_sentiment_scores(sentiment_df):
     ax = sns.histplot(data=sentiment_df, x='sentiment', kde=False)
     ax.set(xlabel='Sentiment Score', ylabel='Count', title='Sentiment Scores')
     plt.show()
-

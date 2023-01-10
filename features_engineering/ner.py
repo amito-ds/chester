@@ -5,12 +5,10 @@ from nltk.corpus import brown
 from cleaning import clean_text
 from preprocessing import preprocess_text
 from util import get_stopwords
-import matplotlib.pyplot as plt
 import numpy as np
-from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
+from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.preprocessing import normalize
-from sklearn.preprocessing import Normalizer
-from local_models import ner_model_path
+from pretrained_models.local_models import ner_model_path
 
 
 # def load_ner_model(model_name):

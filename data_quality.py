@@ -2,18 +2,9 @@ import nltk
 import pandas as pd
 import seaborn as sns
 
-nltk.download('punkt')
+# nltk.download('punkt')
 from pandas.io.json import json_normalize
 import matplotlib.pyplot as plt
-
-
-# def calculate_text_metrics(text):
-#     metrics = {'text_length': len(text), 'num_words': len(text.split()), 'num_sentences': len(nltk.sent_tokenize(text)),
-#                'num_characters': len([c for c in text if c.isalpha()]), 'num_missing': int(text == "")}
-#     words = pd.Series(text.split()).unique()
-#     metrics['num_unique_words'] = len(words)
-#     metrics['ttr'] = metrics['num_unique_words'] / metrics['num_words']
-#     return metrics
 
 
 def calculate_text_metrics(text):
@@ -57,18 +48,6 @@ def create_report(df, num_unique_words):
     report += f"Average length of text: {df['text_length'].mean():.2f}\n"
     report += f"Median length of text: {df['text_length'].median():.2f}\n"
     return report
-
-
-# def plot_text_length_and_num_words(df):
-#     fig, ax = plt.subplots(1, 2)
-#     df['text_length'].plot.hist(ax=ax[0])
-#     ax[0].set_xlabel('Text Length')
-#     ax[0].set_ylabel('Frequency')
-#     df['num_words'].plot.hist(ax=ax[1])
-#     ax[1].set_xlabel('Number of Words')
-#     ax[1].set_ylabel('Frequency')
-#     fig.suptitle('Text Statistics')
-#     plt.show()
 
 
 def plot_text_length_and_num_words(df):

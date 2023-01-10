@@ -1,8 +1,7 @@
 import matplotlib.pyplot as plt
 from collections import Counter
-
-
 import seaborn as sns
+
 
 def most_common_words(data, n=10):
     # create a Counter object to store the word counts
@@ -28,4 +27,3 @@ def most_common_words(data, n=10):
 
     # return the sorted list of tuples (word, count)
     return sorted_word_counts[:n]
-

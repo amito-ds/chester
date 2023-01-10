@@ -1,13 +1,13 @@
 import pandas as pd
 import spacy
 
-from feautre_extraction_helper.corex import get_corex_embedding
+from features_engineering.corex import get_corex_embedding
 
-from feautre_extraction_helper.tfidf import get_tfidf_embedding
+from features_engineering.tfidf import get_tfidf_embedding
 
-from feautre_extraction_helper.bag_of_words import get_bow_embedding
+from features_engineering.bag_of_words import get_bow_embedding
 
-from feautre_extraction_helper.ner import get_ner_bow_embedding, classify_text
+from features_engineering.ner import get_ner_bow_embedding, classify_text
 from nltk.corpus import brown
 
 from cleaning import clean_text
