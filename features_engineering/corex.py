@@ -1,15 +1,12 @@
 import pandas as pd
-import spacy
 from nltk.corpus import brown
 
-from cleaning import clean_text
-from preprocessing import preprocess_text
+from cleaning.cleaning import clean_text
+from preprocessing.preprocessing import preprocess_text
 from util import get_stopwords
-import matplotlib.pyplot as plt
 import numpy as np
 import scipy.sparse as ss
-from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
-from sklearn.preprocessing import normalize
+from sklearn.feature_extraction.text import CountVectorizer
 
 from corextopic import corextopic as ct
 

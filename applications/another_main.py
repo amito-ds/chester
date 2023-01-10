@@ -1,14 +1,11 @@
 import pandas as pd
 from nltk.corpus import brown
 
-from cleaning import clean_text
-from preprocessing import preprocess_text
+from cleaning.cleaning import clean_text
+from preprocessing.preprocessing import preprocess_text
 from text_analyzer import common_words
-from text_analyzer.corex_topics import get_top_words, plot_corex_wordcloud
 from text_analyzer.word_cloud import create_word_cloud
 from util import get_stopwords
-import gensim
-from gensim import corpora
 
 if __name__ == '__main__':
     brown_sent = brown.sents(categories='reviews')[:100]
@@ -41,4 +38,3 @@ if __name__ == '__main__':
     # # word cloud
     create_word_cloud(df)
 
-    # print(extractive_summarization(df))

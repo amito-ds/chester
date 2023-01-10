@@ -1,12 +1,9 @@
 import pandas as pd
 from nltk.corpus import brown
 
-from cleaning import *
-from data_quality import analyze_text_data
-from preprocessing import preprocess_text
-from text_analyzer import common_words
-from text_analyzer.corex_topics import plot_corex_wordcloud, get_top_words
-from text_analyzer.word_cloud import create_word_cloud
+from cleaning.cleaning import *
+from preprocessing.preprocessing import preprocess_text
+from text_analyzer.corex_topics import get_top_words
 from util import get_stopwords
 
 if __name__ == '__main__':

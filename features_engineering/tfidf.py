@@ -1,18 +1,12 @@
 from typing import Tuple
 
-import pandas as pd
 from nltk.corpus import brown
-from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-
-import nltk
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 import pandas as pd
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.preprocessing import normalize
 
-from cleaning import clean_text
-from preprocessing import preprocess_text, get_stemmer
+from cleaning.cleaning import clean_text
+from preprocessing.preprocessing import preprocess_text, get_stemmer
 from util import get_stopwords
 
 

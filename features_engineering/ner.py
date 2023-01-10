@@ -2,8 +2,8 @@ import pandas as pd
 import spacy
 from nltk.corpus import brown
 
-from cleaning import clean_text
-from preprocessing import preprocess_text
+from cleaning.cleaning import clean_text
+from preprocessing.preprocessing import preprocess_text
 from util import get_stopwords
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer

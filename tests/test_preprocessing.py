@@ -1,9 +1,6 @@
 import unittest
 
-import nltk
-from nltk import PorterStemmer, WordNetLemmatizer
-
-from preprocessing import tokenize, pos_tag, stem, lemmatize, preprocess_text
+from preprocessing.preprocessing import tokenize, pos_tag, stem, lemmatize
 
 
 class TestProcessingMethods(unittest.TestCase):

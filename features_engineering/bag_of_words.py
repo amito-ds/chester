@@ -58,8 +58,8 @@ def get_bow_embedding(training_data: pd.DataFrame, text_column: str = 'clean_tex
 
 from nltk.corpus import brown
 
-from cleaning import clean_text
-from preprocessing import preprocess_text
+from cleaning.cleaning import clean_text
+from preprocessing.preprocessing import preprocess_text
 from util import get_stopwords
 
 if __name__ == '__main__':
