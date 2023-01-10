@@ -35,9 +35,9 @@ if __name__ == '__main__':
     analyze_text_data(df)
 
     # sentiment
-    df = analyze_sentiment(df)
-    print(report_sentiment_stats(df))
-    plot_sentiment_scores(df)
+    # df = analyze_sentiment(df)
+    # print(report_sentiment_stats(df))
+    # plot_sentiment_scores(df)
 
     most_common_words = common_words.most_common_words(df, n=10)
     print(most_common_words)

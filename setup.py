@@ -11,5 +11,5 @@ setup(
     author='Amit Osi',
     author_email='amitosi6666@gmail.com',
     install_requires=install_requires,
-    long_description=open('README.md').read(),
+    long_description=open('README.md').read()
 )
