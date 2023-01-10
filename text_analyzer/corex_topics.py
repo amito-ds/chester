@@ -1,12 +1,8 @@
+import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
-from sklearn.feature_extraction.text import CountVectorizer
 import scipy.sparse as ss
 from corextopic import corextopic as ct
-
 from sklearn.feature_extraction.text import CountVectorizer
-from wordcloud import WordCloud
-import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 
 

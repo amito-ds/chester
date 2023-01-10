@@ -2,12 +2,6 @@ from typing import Tuple
 
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
-
-import nltk
-from sklearn.feature_extraction.text import CountVectorizer
-
-import pandas as pd
-from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.preprocessing import normalize
 
 
@@ -42,7 +36,7 @@ def get_bow_embedding(train_df: pd.DataFrame, column: str, test_df: pd.DataFrame
     X_train = normalize(X_train)
 
     # Extract feature names
-    feature_names = vectorizer.get_feature_names()
+    feature_names = list(vectorizer.vocabulary_.keys())
 
     # Create a DataFrame for the training data
     train_embedding_df = pd.DataFrame(X_train.todense(), columns=[f"bow_{word}" for word in feature_names])
