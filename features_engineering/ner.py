@@ -8,7 +8,7 @@ from util import get_stopwords
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.preprocessing import normalize
-from pretrained_models.local_models import ner_model_path
+from model_loader.local_models import ner_model_path
 
 
 # def load_ner_model(model_name):

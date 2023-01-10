@@ -3,9 +3,9 @@ import pandas as pd
 from nltk.corpus import brown
 
 from cleaning.cleaning import *
-from data_loader.webtext_data import get_chat_logs
+from data_loader.webtext_data import *
 from preprocessing.preprocessing import preprocess_text
-from pretrained_models.sentiment import *
+from text_analyzer.sentiment import *
 from text_analyzer import common_words
 from text_analyzer.corex_topics import get_top_words, plot_corex_wordcloud
 from text_analyzer.data_quality import analyze_text_data
@@ -20,8 +20,8 @@ from nltk.corpus import webtext
 # print(fileids)
 if __name__ == '__main__':
     # access the data
-    df = get_chat_logs()
-
+    # df = load_data_brown('news')
+    df = load_king_arthur()
 
     # Clean the text column
     df['text'] = df['text'].apply(lambda x: clean_text(x,
@@ -30,7 +30,6 @@ if __name__ == '__main__':
 
     # preprocess the text column
     df['clean_text'] = df['text'].apply(lambda x: preprocess_text(x, stem_flag=False))
-
 
     # basic stats
     analyze_text_data(df)
@@ -50,10 +49,6 @@ if __name__ == '__main__':
     # Example usage
     top_words_list = get_top_words(df, 5, 4, ngram_range=(1, 3))
     plot_corex_wordcloud(df)
-
-
-
-
 
     # brown_sent = brown.sents(categories=['reviews'])[:100]
     # brown_sent = [' '.join(x) for x in brown_sent]
