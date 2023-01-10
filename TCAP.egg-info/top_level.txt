@@ -1,0 +1,8 @@
+applications
+cleaning
+data_loader
+features_engineering
+model_loader
+preprocessing
+tests
+text_analyzer
