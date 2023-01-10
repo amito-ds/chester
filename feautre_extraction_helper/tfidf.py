@@ -16,8 +16,8 @@ from preprocessing import preprocess_text, get_stemmer
 from util import get_stopwords
 
 
-def get_tfidf_embedding(train_df: pd.DataFrame, text_column: str, test_df: pd.DataFrame = None,
-                        ngram_range: Tuple[int, int] = (1, 1)):
+def get_tfidf_embedding(train_df: pd.DataFrame, text_column: str = 'clean_text', test_df: pd.DataFrame = None,
+                        ngram_range: Tuple[int, int] = (1, 1), embedding_size=10000):
     """
     Creates a TF-IDF embedding for the text data in the given DataFrames.
     Parameters:
@@ -34,13 +34,13 @@ def get_tfidf_embedding(train_df: pd.DataFrame, text_column: str, test_df: pd.Da
     """
 
     # Create the TfidfVectorizer object
-    vectorizer = TfidfVectorizer(stop_words='english', ngram_range=ngram_range)
+    vectorizer = TfidfVectorizer(ngram_range=ngram_range, max_features=embedding_size)
 
     # Fit the vectorizer on the training data
     X_train = vectorizer.fit_transform(train_df[text_column])
 
     # Get the feature names
-    feature_names = vectorizer.get_feature_names()
+    feature_names = list(vectorizer.vocabulary_.keys())
 
     # Create the embedding DataFrame for the training data
     embedding_train_df = pd.DataFrame(X_train.toarray(), columns=[f"tfidf_{word}" for word in feature_names])

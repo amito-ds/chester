@@ -9,16 +9,21 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.preprocessing import normalize
+from sklearn.preprocessing import Normalizer
+from local_models import ner_model_path
 
 
-def load_ner_model(model_name):
-    # Load the specified NER model
-    nlp = spacy.load(model_name)
+# def load_ner_model(model_name):
+#     # Load the specified NER model
+#     nlp = spacy.load(model_name)
+#
+#     return nlp
 
-    return nlp
+def load_ner_model(path: str = ner_model_path):
+    return spacy.load(path)
 
 
-def classify_text(text):
+def classify_text(text, nlp=load_ner_model()):
     # Use the NER model to identify named entities in the text
     doc = nlp(text)
     named_entities = [ent.text for ent in doc.ents]
@@ -26,11 +31,9 @@ def classify_text(text):
     return named_entities
 
 
-import pandas as pd
-from sklearn.preprocessing import Normalizer
-
-
-def create_norm_bow(training_data, class_col, bow_col_prefix="ner_bow", embedding_size=30, test=None):
+def get_ner_bow_embedding(training_data: pd.DataFrame, class_col="class", embedding_size=100,
+                          test: pd.DataFrame = None):
+    bow_col_prefix = "ner_bow"
     # Join the named entities in each element of the class_col column into a single string
     named_entities_str = training_data[class_col].apply(lambda x: " ".join(x))
 
@@ -62,8 +65,6 @@ def create_norm_bow(training_data, class_col, bow_col_prefix="ner_bow", embeddin
 
 
 if __name__ == '__main__':
-    path = '/Users/amitosi/opt/anaconda3/envs/py39/lib/python3.9/site-packages/en_core_web_md/en_core_web_md-3.3.0'
-    nlp = spacy.load(path)
 
     brown_sent = brown.sents(categories='reviews')[:100]
     brown_sent = [' '.join(x) for x in brown_sent]
@@ -84,7 +85,7 @@ if __name__ == '__main__':
 
     # Calculate the normalized BOW representation for the "texas" class
 
-    bow_nor = create_norm_bow(df, "class", "ner_bow")
+    bow_nor = get_ner_bow_embedding(df, "class", embedding_size=3)
     print(np.sum(bow_nor ** 2, axis=1))
     print(bow_nor[0:10])
 
