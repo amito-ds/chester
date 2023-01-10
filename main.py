@@ -5,44 +5,36 @@ from cleaning import *
 from data_quality import analyze_text_data
 from preprocessing import preprocess_text
 from text_analyzer import common_words
+from text_analyzer.corex_topics import plot_corex_wordcloud, get_top_words
 from text_analyzer.word_cloud import create_word_cloud
 from util import get_stopwords
 
 if __name__ == '__main__':
-    import subprocess
+    brown_sent = brown.sents(categories=['reviews'])[:100]
+    brown_sent = [' '.join(x) for x in brown_sent]
+    df = pd.DataFrame({'text': brown_sent})
 
-    # Read the contents of the requirements.txt file
-    with open('requirements.txt', 'r') as f:
-        requirements = f.read()
+    # Clean the text column
+    df['text'] = df['text'].apply(lambda x: clean_text(x,
+                                                       remove_stopwords_flag=True,
+                                                       stopwords=get_stopwords()))
 
-    # Split the requirements string into a list of package names
-    package_names = requirements.split('\n')
+    # preprocess the text column
+    df['clean_text'] = df['text'].apply(lambda x: preprocess_text(x, stem_flag=False))
 
-    # Upgrade each package to the latest version
-    for package_name in package_names:
-        subprocess.run(['pip', 'install', '--upgrade', package_name])
-    #
-    # brown_sent = brown.sents(categories='news')[:100]
-    # brown_sent = [' '.join(x) for x in brown_sent]
-    # df = pd.DataFrame({'text': brown_sent})
-    #
-    # # Clean the text column
-    # df['text'] = df['text'].apply(lambda x: clean_text(x,
-    #                                                    remove_stopwords_flag=True,
-    #                                                    stopwords=get_stopwords()))
-    #
-    # # preprocess the text column
-    # df['text'] = df['text'].apply(lambda x: preprocess_text(x, stem_flag=False))
-    #
-    # print(df['text'])
-    #
-    # # basic stats
+
+    # basic stats
     # analyze_text_data(df)
-    #
-    # # use the get_most_common_words function to get the list of most common words
+
+    # use the get_most_common_words function to get the list of most common words
     # most_common_words = common_words.most_common_words(df, n=10)
-    #
-    # # word cloud
+
+    # word cloud
     # create_word_cloud(df)
+
+    # corex
+    # plot_corex_wordcloud(df)
+
+    get_top_words(df, 10, 10)
 
     # print(extractive_summarization(df))

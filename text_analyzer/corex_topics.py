@@ -25,12 +25,13 @@ def plot_corex_wordcloud(df, top_words=10, n_topics=5):
     plt.show()
 
 
-def get_top_words(df, top_words, n_topics, ngram_range=range(1, 1)):
+def get_top_words(df, top_words, n_topics, max_features=1000, ngram_range=(1, 2)):
     # Preprocess data
-    vectorizer = CountVectorizer(stop_words='english', max_features=20000, binary=True, ngram_range=ngram_range)
-    doc_word = vectorizer.fit_transform(df['text'])
+    vectorizer = CountVectorizer(stop_words='english', max_features=max_features, binary=True, ngram_range=ngram_range)
+    doc_word = vectorizer.fit_transform(df['clean_text'])
     doc_word = ss.csr_matrix(doc_word)
-    words = list(np.asarray(vectorizer.get_feature_names()))
+    feature_names = list(vectorizer.vocabulary_.keys())
+    words = list(np.asarray(feature_names))
 
     # Train model
     topic_model = ct.Corex(n_hidden=n_topics, words=words, max_iter=200, verbose=False, seed=1)
@@ -46,7 +47,6 @@ def get_top_words(df, top_words, n_topics, ngram_range=range(1, 1)):
         topic_words, weights, _ = zip(*topic)
         num_words = min(top_words, len(topic_words))  # Use smaller of n and num words in topic
         top_words_list += [(topic_words[j], weights[j]) for j in range(num_words)]
-        # needs to add [[w1,w2,..], [p1, p2, ...], [w1, ...] ]
         print('{}: '.format(i) + ', '.join(topic_words))
 
     return top_words_list
