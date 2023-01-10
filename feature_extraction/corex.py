@@ -14,8 +14,8 @@ from sklearn.preprocessing import normalize
 from corextopic import corextopic as ct
 
 
-def train_corex_model(training_data, test_data=None, text_column='clean_text', ngram_range=(1, 1), n_topics=10,
-                      max_features=10000):
+def get_corex_embedding(training_data, test_data=None, text_column='clean_text', ngram_range=(1, 1), n_topics=10,
+                        max_features=10000):
     # Preprocess data
     vectorizer = CountVectorizer(stop_words='english', max_features=max_features, binary=True, ngram_range=ngram_range)
     doc_word = vectorizer.fit_transform(training_data[text_column])
@@ -64,5 +64,5 @@ if __name__ == '__main__':
     df['clean_text'] = df['text'].apply(lambda x: preprocess_text(x, stem_flag=False))
 
     # corex
-    corex_embedding = train_corex_model(df)
+    corex_embedding = get_corex_embedding(df)
     print(np.sum(corex_embedding , axis=1))
