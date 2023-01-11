@@ -3,7 +3,7 @@ from nltk import PorterStemmer, WordNetLemmatizer
 from cleaning.cleaning import *
 from data_loader.webtext_data import *
 from features_engineering.fe_main import get_embeddings
-from preprocessing.preprocessing import preprocess_df_text
+# from preprocessing.preprocessing import preprocess_df_text
 from text_analyzer.smart_text_analyzer import analyze_text
 from util import get_stopwords
 
