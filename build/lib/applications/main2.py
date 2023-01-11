@@ -9,7 +9,7 @@ from text_analyzer.sentiment import *
 from text_analyzer import common_words
 from text_analyzer.corex_topics import get_top_words, plot_corex_wordcloud
 from text_analyzer.data_quality import analyze_text_stats
-from text_analyzer.text_analyzer import analyze_text
+from text_analyzer.smart_text_analyzer import analyze_text
 from text_analyzer.word_cloud import create_word_cloud
 from util import get_stopwords
 import nltk
