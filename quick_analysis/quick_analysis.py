@@ -77,7 +77,7 @@ def process_text(df: pd.DataFrame,
     df['clean_text'] = clean_df_text(df[text_column], cleaning_options)
 
     # preprocess the text column
-    df['clean_text'] = preprocess_df_text(df['clean_text'], preprocessing_options)
+    # df['clean_text'] = preprocess_df_text(df['clean_text'], preprocessing_options)
     # basic stats
     analyze_text(df, **analysis_options)
 
