@@ -60,6 +60,24 @@ def stem(words, stemmer=port_stemmer):
     return stemmed_words
 
 
+def preprocess_df_text(text_column, preprocessing_options: dict):
+    print_preprocessing_options(**preprocessing_options)
+    return text_column.apply(lambda x: preprocess_text(x, **preprocessing_options))
+
+
+def print_preprocessing_options(stemmer=None, lemmatizer=None, stem_flag=False, lemmatize_flag=False,
+                                tokenize_flag=True, pos_tag_flag=False):
+    print("Preprocessing step:")
+    if stem_flag:
+        print("Stemming text using {} stemmer".format(stemmer.__class__.__name__))
+    if lemmatize_flag:
+        print("Lemmatizing text using {} lemmatizer".format(lemmatizer.__class__.__name__))
+    if tokenize_flag:
+        print("Tokenizing text")
+    if pos_tag_flag:
+        print("Tagging parts of speech")
+
+
 def preprocess_text(text, stemmer=None, lemmatizer=None, stem_flag=False, lemmatize_flag=False, tokenize_flag=True,
                     pos_tag_flag=False):
     if stem_flag and lemmatize_flag:

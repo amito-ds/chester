@@ -35,13 +35,50 @@ key_sentences_message = "Extracting key sentences from a piece of text is a tech
                         " sentences for each topic of the text data."
 
 
+def print_analyze_message(create_wordcloud: bool = True,
+                          corex_topics: bool = True,
+                          key_sentences: bool = True,
+                          common_words: bool = False,
+                          sentiment: bool = False,
+                          data_quality: bool = False,
+                          corex_topics_num: int = 10,
+                          top_words: int = 10,
+                          n_sentences: int = 5):
+    order_of_operations = ["First", "Next", "Then", "Additionally", "Furthermore", "Finally"]
+    operations_counter = 0
+    print("Starting text analysis")
+    if data_quality:
+        print(
+            f"{order_of_operations[operations_counter]} we will analyze text statistics such as the number of words, unique words and type-token ratio.")
+        operations_counter += 1
+    if create_wordcloud:
+        print(
+            f"{order_of_operations[operations_counter]} we will create a wordcloud to visualize the most common words in the text.")
+        operations_counter += 1
+    if corex_topics:
+        print(
+            f"{order_of_operations[operations_counter]} we will extract {corex_topics_num} key topics using Corex and present them with their top words.")
+        operations_counter += 1
+    if key_sentences:
+        print(f"{order_of_operations[operations_counter]} we will identify key sentences in the text.")
+        operations_counter += 1
+    if common_words:
+        print(
+            f"{order_of_operations[operations_counter]} we will extract the {top_words} most common words from the text.")
+        operations_counter += 1
+    if sentiment:
+        print(f"{order_of_operations[operations_counter]} we will analyze the sentiment of the text.")
+        operations_counter += 1
+    print("Finally, Text analysis completed")
+
+
 def analyze_text(df: pd.DataFrame,
                  create_wordcloud: bool = True,
                  corex_topics: bool = True,
                  key_sentences: bool = True,
-                 common_words: bool = False,
-                 sentiment: bool = False,
-                 data_quality: bool = False,
+                 common_words: bool = True,
+                 sentiment: bool = True,
+                 data_quality: bool = True,
                  corex_topics_num: int = 10,
                  top_words: int = 10,
                  n_sentences: int = 5):
@@ -58,12 +95,14 @@ def analyze_text(df: pd.DataFrame,
     :param top_words: top words
     :param n_sentences: number of sentences to return
     """
+
+    print_analyze_message()
     if data_quality:
         print(data_quality_message)
         analyze_text_stats(df)
     if common_words:
         print(common_words_message)
-        most_common_words(df, common_words=top_words)
+        print(most_common_words(df, common_words=top_words))
     if create_wordcloud:
         print(word_cloud_message)
         create_word_cloud(df)
@@ -78,4 +117,4 @@ def analyze_text(df: pd.DataFrame,
         plot_corex_wordcloud(df, n_topics=corex_topics_num, top_words=top_words)
     if key_sentences:
         print(key_sentences_message)
-        extract_key_sentences(df, n_sentences=n_sentences, top_words=top_words)
+        print(extract_key_sentences(df, n_sentences=n_sentences, top_words=top_words))

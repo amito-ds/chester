@@ -49,6 +49,40 @@ def remove_html_tags(text: str) -> str:
     return re.sub(r'<[^<]+?>', '', text)
 
 
+def clean_df_text(text_column, cleaning_options: dict):
+    print_cleaning_options(**cleaning_options)
+    return text_column.apply(lambda x: clean_text(x, **cleaning_options))
+
+
+def print_cleaning_options(
+        stopwords: str,
+        remove_punctuation_flag: bool = True,
+        remove_numbers_flag: bool = True,
+        remove_whitespace_flag: bool = True,
+        lowercase_flag: bool = True,
+        remove_stopwords_flag: bool = False,
+        remove_accented_characters_flag: bool = True,
+        remove_special_characters_flag: bool = True,
+        remove_html_tags_flag: bool = True):
+    print("Cleaning step:")
+    if remove_punctuation_flag:
+        print("Removing punctuation")
+    if remove_numbers_flag:
+        print("Removing numbers")
+    if remove_whitespace_flag:
+        print("Removing whitespaces")
+    if lowercase_flag:
+        print("Lowercasing text")
+    if remove_stopwords_flag:
+        print("Removing stop words")
+    if remove_accented_characters_flag:
+        print("Removing accented characters")
+    if remove_special_characters_flag:
+        print("Removing special characters")
+    if remove_html_tags_flag:
+        print("Removing html tags")
+
+
 def clean_text(text: str,
                remove_punctuation_flag: bool = True,
                remove_numbers_flag: bool = True,
@@ -72,6 +106,7 @@ def clean_text(text: str,
     remove_special_characters_flag: a flag indicating whether to remove special characters from the text.
     remove_html_tags_flag: a flag indicating whether to remove HTML tags from the text.
     """
+
     if remove_punctuation_flag:
         text = remove_punctuation(text)
     if remove_numbers_flag:
@@ -89,4 +124,3 @@ def clean_text(text: str,
     if remove_html_tags_flag:
         text = remove_html_tags(text)
     return text
-
