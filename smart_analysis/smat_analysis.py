@@ -4,7 +4,7 @@ from cleaning.cleaning import *
 from data_loader.webtext_data import *
 from features_engineering.fe_main import get_embeddings
 from preprocessing.preprocessing import preprocess_text
-from text_analyzer.text_analyzer import analyze_text
+from smart_analysis.similar import get_most_similar_texts
 from util import get_stopwords
 
 if __name__ == '__main__':
@@ -22,6 +22,9 @@ if __name__ == '__main__':
     # analyze_text(df, common_words=True, sentiment=True, data_quality=True)
 
     # get embedding
-    embedding = get_embeddings(df, tfidf=False, bow=False, corex_dim=2)
+    embedding = get_embeddings(df, corex_dim=2)
     # print(embedding.columns)
-    print(np.sum(embedding ** 2, axis=1))
+
+    df_embedding = pd.concat([df['clean_text'], embedding], axis=1)
+
+    print(get_most_similar_texts(df_embedding, index=10, top_n=10))
