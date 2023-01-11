@@ -81,3 +81,6 @@ Werkzeug==2.2.2
 wordcloud==1.8.2.2
 wrapt==1.14.1
 zipp==3.11.0
+
+setuptools~=65.5.1
+gensim~=4.3.0

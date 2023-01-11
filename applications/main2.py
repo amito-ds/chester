@@ -5,6 +5,8 @@ from nltk.corpus import brown
 from cleaning.cleaning import *
 from data_loader.webtext_data import *
 from preprocessing.preprocessing import preprocess_text
+from text_analyzer.key_sentences import key_sentences, extract_key_sentences_lsa, extract_key_sentences_summarization, \
+    extract_key_sentences
 from text_analyzer.sentiment import *
 from text_analyzer import common_words
 from text_analyzer.corex_topics import get_top_words, plot_corex_wordcloud
@@ -21,7 +23,7 @@ from nltk.corpus import webtext
 if __name__ == '__main__':
     # access the data
     # df = load_data_brown('news')
-    df = load_king_arthur()
+    df = get_chat_logs()
 
     # Clean the text column
     df['text'] = df['text'].apply(lambda x: clean_text(x,
@@ -29,26 +31,30 @@ if __name__ == '__main__':
                                                        stopwords=get_stopwords()))
 
     # preprocess the text column
-    df['clean_text'] = df['text'].apply(lambda x: preprocess_text(x, stem_flag=False))
+    df['clean_text'] = df['text'].apply(lambda x: preprocess_text(x, stem_flag=False, lemmatize_flag=False))
+
+    # print(key_sentences(df, common_sentences=10))
+    # print(extract_key_sentences_lsa('. '.join(df['clean_text'])))
+    print(extract_key_sentences(df, algorithm="LSA"))
 
     # basic stats
-    analyze_text_data(df)
+    # analyze_text_data(df)
 
     # sentiment
     # df = analyze_sentiment(df)
     # print(report_sentiment_stats(df))
     # plot_sentiment_scores(df)
-
-    most_common_words = common_words.most_common_words(df, n=10)
-    print(most_common_words)
     #
-    # # word cloud
-    create_word_cloud(df)
-
-    # corex topic modeling
-    # Example usage
-    top_words_list = get_top_words(df, 5, 4, ngram_range=(1, 3))
-    plot_corex_wordcloud(df)
+    # most_common_words = common_words.most_common_words(df, n=10)
+    # print(most_common_words)
+    # #
+    # # # word cloud
+    # create_word_cloud(df)
+    #
+    # # corex topic modeling
+    # # Example usage
+    # top_words_list = get_top_words(df, 5, 4, ngram_range=(1, 3))
+    # plot_corex_wordcloud(df)
 
     # brown_sent = brown.sents(categories=['reviews'])[:100]
     # brown_sent = [' '.join(x) for x in brown_sent]
