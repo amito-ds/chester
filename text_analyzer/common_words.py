@@ -3,7 +3,7 @@ from collections import Counter
 import seaborn as sns
 
 
-def most_common_words(data, n=10):
+def most_common_words(data, common_words=10):
     # create a Counter object to store the word counts
     word_counts = Counter()
 
@@ -19,11 +19,11 @@ def most_common_words(data, n=10):
     sorted_word_counts = sorted(word_counts.items(), key=lambda x: x[1], reverse=True)
 
     # create a barplot using seaborn
-    sns.barplot(x=[t[0] for t in sorted_word_counts[:n]], y=[t[1] for t in sorted_word_counts[:n]])
+    sns.barplot(x=[t[0] for t in sorted_word_counts[:common_words]], y=[t[1] for t in sorted_word_counts[:common_words]])
     plt.xlabel('Word')
     plt.ylabel('Count')
     plt.title('Most Common Words')
     plt.show()
 
     # return the sorted list of tuples (word, count)
-    return sorted_word_counts[:n]
+    return sorted_word_counts[:common_words]

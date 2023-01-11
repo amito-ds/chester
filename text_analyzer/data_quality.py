@@ -59,7 +59,7 @@ def plot_text_length_and_num_words(df):
     plt.show()
 
 
-def analyze_text_data(df):
+def analyze_text_stats(df):
     df, num_unique_words = calculate_text_column_metrics(df)
     report = create_report(df, num_unique_words)
     print(report)

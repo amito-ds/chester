@@ -54,28 +54,3 @@ def get_bow_embedding(training_data: pd.DataFrame, text_column: str = 'clean_tex
         return train_embedding_df, test_embedding_df, vectorizer
 
     return train_embedding_df, None, vectorizer
-
-
-from nltk.corpus import brown
-
-from cleaning.cleaning import clean_text
-from preprocessing.preprocessing import preprocess_text
-from util import get_stopwords
-
-if __name__ == '__main__':
-    brown_sent = brown.sents(categories='news')[:100]
-    brown_sent = [' '.join(x) for x in brown_sent]
-    df = pd.DataFrame({'text': brown_sent})
-
-    # Clean the text column
-    df['text'] = df['text'].apply(lambda x: clean_text(x,
-                                                       remove_stopwords_flag=True,
-                                                       stopwords=get_stopwords()))
-
-    # preprocess the text column
-    df['clean_text'] = df['text'].apply(lambda x: preprocess_text(x, stem_flag=False))
-
-    # Extract the bag of words embedding
-    bow_embedding, _, _ = get_bow_embedding(training_data=df, text_column='clean_text', ngram_range=(1, 2))
-
-    print(bow_embedding[0:10])

@@ -17,16 +17,16 @@ def webtext_to_df(full_text: str) -> pd.DataFrame:
     return df
 
 
-def load_pirates():
+def load_data_pirates():
     poc = webtext.raw('pirates.txt')
     return webtext_to_df(poc)
 
 
-def load_king_arthur():
+def load_data_king_arthur():
     king_arthur = webtext.raw('grail.txt')
     return webtext_to_df(king_arthur)
 
 
-def get_chat_logs():
+def load_data_chat_logs():
     chat_logs = webtext.raw('singles.txt')
     return webtext_to_df(chat_logs)

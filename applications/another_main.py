@@ -32,7 +32,7 @@ if __name__ == '__main__':
     # analyze_text_data(df)
     #
     # # use the get_most_common_words function to get the list of most common words
-    most_common_words = common_words.most_common_words(df, n=10)
+    most_common_words = common_words.most_common_words(df, common_words=10)
     print(most_common_words)
     #
     # # word cloud

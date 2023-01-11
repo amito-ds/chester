@@ -1,14 +1,8 @@
-import pandas as pd
-from nltk.corpus import brown
-
-from cleaning.cleaning import clean_text
-from preprocessing.preprocessing import preprocess_text
-from util import get_stopwords
 import numpy as np
+import pandas as pd
 import scipy.sparse as ss
-from sklearn.feature_extraction.text import CountVectorizer
-
 from corextopic import corextopic as ct
+from sklearn.feature_extraction.text import CountVectorizer
 
 
 def get_corex_embedding(training_data, test_data=None, text_column='clean_text', ngram_range=(1, 1), n_topics=10,
@@ -27,7 +21,7 @@ def get_corex_embedding(training_data, test_data=None, text_column='clean_text',
     # Get the topic probabilities for the training data
     topic_probs = topic_model.transform(doc_word, details=True)[0]
     # Normalize the topic probabilities
-    topic_probs /= topic_probs.sum(axis=1)[:, np.newaxis]
+    topic_probs /= np.linalg.norm(topic_probs, axis=1, keepdims=True)
     # Create a DataFrame of topic probability features
     topic_prob_df = pd.DataFrame(topic_probs, columns=[f"corex_topic_{i + 1}" for i in range(n_topics)])
 
@@ -38,28 +32,10 @@ def get_corex_embedding(training_data, test_data=None, text_column='clean_text',
         # Get the topic probabilities for the test data
         test_topic_probs = topic_model.transform(test_doc_word, details=True)[0]
         # Normalize the topic probabilities
-        test_topic_probs /= test_topic_probs.sum(axis=1)[:, np.newaxis]
+        topic_probs /= np.sqrt(np.sum(topic_probs**2, axis=1))
         # Create a DataFrame of topic probability features for the test data
         test_topic_prob_df = pd.DataFrame(test_topic_probs, columns=[f"corex_topic_{i + 1}" for i in range(n_topics)])
 
         return topic_prob_df, test_topic_prob_df
     else:
         return topic_prob_df
-
-
-if __name__ == '__main__':
-    brown_sent = brown.sents(categories=['reviews', 'news'])[:1000]
-    brown_sent = [' '.join(x) for x in brown_sent]
-    df = pd.DataFrame({'text': brown_sent})
-
-    # Clean the text column
-    df['text'] = df['text'].apply(lambda x: clean_text(x,
-                                                       remove_stopwords_flag=True,
-                                                       stopwords=get_stopwords()))
-
-    # preprocess the text column
-    df['clean_text'] = df['text'].apply(lambda x: preprocess_text(x, stem_flag=False))
-
-    # corex
-    corex_embedding = get_corex_embedding(df)
-    print(np.sum(corex_embedding , axis=1))
