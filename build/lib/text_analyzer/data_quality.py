@@ -13,7 +13,7 @@ def calculate_text_metrics(text):
         metrics['num_characters'] = len([c for c in text if c.isalpha()])
     else:
         metrics['num_characters'] = 0
-    words = pd.Series(text.split())
+    words: pd.Series = pd.Series(text.split())
     if len(words) > 0:
         metrics['num_words'] = len(words)
         metrics['num_unique_words'] = len(words.unique())

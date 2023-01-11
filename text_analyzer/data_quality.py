@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 
 def calculate_text_metrics(text):
     metrics = {'text_length': len(text), 'num_sentences': len(nltk.sent_tokenize(text))}
+    if not text:
+        return metrics
     if any(c.isalpha() for c in text):
         metrics['num_characters'] = len([c for c in text if c.isalpha()])
     else:
@@ -31,7 +33,7 @@ def calculate_text_column_metrics(df):
     df['text_metrics'] = df['text'].apply(calculate_text_metrics)
     words = df['text'].str.split(expand=True).stack().unique()
     num_unique_words = len(words)
-    df = json_normalize(df['text_metrics'])
+    df = pd.json_normalize(df['text_metrics'])
     return df, num_unique_words
 
 

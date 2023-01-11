@@ -8,6 +8,32 @@ from .key_sentences import extract_key_sentences
 from .sentiment import analyze_sentiment, report_sentiment_stats, plot_sentiment_scores
 from .word_cloud import create_word_cloud
 
+data_quality_message = "Before we start analyzing the text, it's important to make sure that the data we are working " \
+                       "with is clean and of good quality. The following report provides some key statistics about the " \
+                       "data, such as the number of rows with missing data, " \
+                       "number of unique words, average and median type-token ratio, average and median number " \
+                       "of words and sentences per text, as well as average and median length of text."
+
+common_words_message = "One of the most basic text analysis techniques is counting the frequency of words in the text. " \
+                       "The following report shows the most common words in the text data, which can give us an idea of" \
+                       " the overall topic and content of the text."
+
+word_cloud_message = "A word cloud is a visual representation of the most common words in a piece of text, where the " \
+                     "size of each word corresponds to its frequency. The word cloud can help us quickly identify " \
+                     "the main themes and topics in the text data."
+
+sentiment_analysis_message = "Sentiment analysis is a technique used to determine the emotional tone of a piece of " \
+                             "text. The following report shows the sentiment of the text data and provides " \
+                             "a breakdown of positive, negative, and neutral sentiments."
+
+corex_topic_message = "Corex is a topic modeling technique that helps identify latent topics in the text data. " \
+                      "The following report shows the top topics extracted from the text data and provides a " \
+                      "word cloud for each topic."
+
+key_sentences_message = "Extracting key sentences from a piece of text is a technique used to identify the most " \
+                        "important or representative sentences in the text. The following report shows the top" \
+                        " sentences for each topic of the text data."
+
 
 def analyze_text(df: pd.DataFrame,
                  create_wordcloud: bool = True,
@@ -33,17 +59,23 @@ def analyze_text(df: pd.DataFrame,
     :param n_sentences: number of sentences to return
     """
     if data_quality:
+        print(data_quality_message)
         analyze_text_stats(df)
     if common_words:
+        print(common_words_message)
         most_common_words(df, common_words=top_words)
     if create_wordcloud:
+        print(word_cloud_message)
         create_word_cloud(df)
     if sentiment:
+        print(sentiment_analysis_message)
         df = df.copy()
         df = analyze_sentiment(df)
         print(report_sentiment_stats(df))
         plot_sentiment_scores(df)
     if corex_topics:
+        print(corex_topic_message)
         plot_corex_wordcloud(df, n_topics=corex_topics_num, top_words=top_words)
     if key_sentences:
+        print(key_sentences_message)
         extract_key_sentences(df, n_sentences=n_sentences, top_words=top_words)

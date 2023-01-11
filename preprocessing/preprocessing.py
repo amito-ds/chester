@@ -49,7 +49,13 @@ def pos_tag(text):
     return pos_tags
 
 
-def stem(words, stemmer=PorterStemmer()):
+# get port stemmer
+port_stemmer = PorterStemmer()
+# get word net lemmatizer
+world_ner_lemmatizer = WordNetLemmatizer()
+
+
+def stem(words, stemmer=port_stemmer):
     stemmed_words = [stemmer.stem(word) for word in words]
     return stemmed_words
 
@@ -68,14 +74,15 @@ def preprocess_text(text, stemmer=None, lemmatizer=None, stem_flag=False, lemmat
         pos_tags = pos_tag(tokens)
     else:
         pos_tags = tokens
-
     if stem_flag:
+        stemmer = stemmer if stemmer is not None else PorterStemmer
         stemmed_words = stem(pos_tags, stemmer=stemmer)
     else:
         stemmed_words = pos_tags
 
     if lemmatize_flag:
-        lemmatized_words = lemmatize(stemmed_words, lemmatizer=lemmatizer)
+        lemmatized_words = lemmatize(stemmed_words,
+                                     lemmatizer=lemmatizer if lemmatizer is not None else world_ner_lemmatizer)
     else:
         lemmatized_words = stemmed_words
 
