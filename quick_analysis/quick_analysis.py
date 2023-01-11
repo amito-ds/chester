@@ -1,6 +1,6 @@
 from nltk import PorterStemmer, WordNetLemmatizer
 
-from cleaning.cleaning import *
+from cleaning.cleaning import clean_df_text
 from data_loader.webtext_data import *
 from features_engineering.fe_main import get_embeddings
 # from preprocessing.preprocessing import preprocess_df_text
