@@ -40,8 +40,8 @@ def analyze_text(df: pd.DataFrame,
     if sentiment:
         df = df.copy()
         df = analyze_sentiment(df)
+        print(report_sentiment_stats(df))
         plot_sentiment_scores(df)
-    print(report_sentiment_stats(df))
     if corex_topics:
         plot_corex_wordcloud(df, n_topics=corex_topics_num, top_words=top_words)
     if key_sentences:
