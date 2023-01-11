@@ -7,17 +7,22 @@ from text_analyzer.corex_topics import get_top_words
 from util import get_stopwords
 
 if __name__ == '__main__':
-    brown_sent = brown.sents(categories=['reviews'])[:100]
-    brown_sent = [' '.join(x) for x in brown_sent]
-    df = pd.DataFrame({'text': brown_sent})
+    import sys
 
-    # Clean the text column
-    df['text'] = df['text'].apply(lambda x: clean_text(x,
-                                                       remove_stopwords_flag=True,
-                                                       stopwords=get_stopwords()))
+    print(sys.path)
 
-    # preprocess the text column
-    df['clean_text'] = df['text'].apply(lambda x: preprocess_text(x, stem_flag=False))
+    #
+    # brown_sent = brown.sents(categories=['reviews'])[:100]
+    # brown_sent = [' '.join(x) for x in brown_sent]
+    # df = pd.DataFrame({'text': brown_sent})
+    #
+    # # Clean the text column
+    # df['text'] = df['text'].apply(lambda x: clean_text(x,
+    #                                                    remove_stopwords_flag=True,
+    #                                                    stopwords=get_stopwords()))
+    #
+    # # preprocess the text column
+    # df['clean_text'] = df['text'].apply(lambda x: preprocess_text(x, stem_flag=False))
 
 
     # basic stats
@@ -32,6 +37,6 @@ if __name__ == '__main__':
     # corex
     # plot_corex_wordcloud(df)
 
-    get_top_words(df, 10, 10)
+    # get_top_words(df, 10, 10)
 
     # print(extractive_summarization(df))

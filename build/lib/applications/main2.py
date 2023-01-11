@@ -20,17 +20,25 @@ from nltk.corpus import webtext
 # fileids = webtext.fileids()
 # print(fileids)
 if __name__ == '__main__':
-    # access the data
-    # df = load_data_brown('news')
-    df = load_data_chat_logs()
+    import os
+    import sys
 
-    # Clean the text column
-    df['text'] = df['text'].apply(lambda x: clean_text(x,
-                                                       remove_stopwords_flag=True,
-                                                       stopwords=get_stopwords()))
-
-    # preprocess the text column
-    df['clean_text'] = df['text'].apply(lambda x: preprocess_text(x, stem_flag=False))
-
-    # basic stats
-    analyze_text(df, common_words=True, sentiment=True, data_quality=True)
+    module_path = os.path.abspath(os.path.join('..'))
+    if module_path not in sys.path:
+        sys.path.append(module_path)
+    #
+    #
+    # # access the data
+    # # df = load_data_brown('news')
+    # df = load_data_chat_logs()
+    #
+    # # Clean the text column
+    # df['text'] = df['text'].apply(lambda x: clean_text(x,
+    #                                                    remove_stopwords_flag=True,
+    #                                                    stopwords=get_stopwords()))
+    #
+    # # preprocess the text column
+    # df['clean_text'] = df['text'].apply(lambda x: preprocess_text(x, stem_flag=False))
+    #
+    # # basic stats
+    # analyze_text(df, common_words=False, sentiment=False, data_quality=True)

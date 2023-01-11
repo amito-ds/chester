@@ -1,11 +1,12 @@
 import pandas as pd
 
-from text_analyzer.common_words import most_common_words
-from text_analyzer.corex_topics import *
-from text_analyzer.data_quality import analyze_text_stats
-from text_analyzer.key_sentences import extract_key_sentences
-from text_analyzer.sentiment import analyze_sentiment, report_sentiment_stats, plot_sentiment_scores
-from text_analyzer.word_cloud import create_word_cloud
+from .common_words import most_common_words
+
+from .corex_topics import plot_corex_wordcloud
+from .data_quality import analyze_text_stats
+from .key_sentences import extract_key_sentences
+from .sentiment import analyze_sentiment, report_sentiment_stats, plot_sentiment_scores
+from .word_cloud import create_word_cloud
 
 
 def analyze_text(df: pd.DataFrame,
