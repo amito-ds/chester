@@ -6,7 +6,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from summa import summarizer
 
 from cleaning.cleaning import clean_text
-from data_loader.webtext_data import load_data_king_arthur
+from data_loader.webtext_data import load_data_king_arthur, load_data_chat_logs
 from preprocessing.preprocessing import preprocess_text
 from util import get_stopwords
 
@@ -67,17 +67,18 @@ def key_sentences(df, text_column='clean_text', common_sentences=10):
 if __name__ == 'main':
     # access the data
     # df = load_data_brown('news')
-    df = load_data_king_arthur()
-
-    # Clean the text column
-    df['text'] = df['text'].apply(lambda x: clean_text(x,
-                                                       remove_stopwords_flag=True,
-                                                       stopwords=get_stopwords()))
-
-    # preprocess the text column
-    df['clean_text'] = df['text'].apply(lambda x: preprocess_text(x, stem_flag=False))
-    print(df['clean_text'])
-    # print(key_sentences(df))
+    df = load_data_chat_logs()
+    print(df)
+    #
+    # # Clean the text column
+    # df['text'] = df['text'].apply(lambda x: clean_text(x,
+    #                                                    remove_stopwords_flag=True,
+    #                                                    stopwords=get_stopwords()))
+    #
+    # # preprocess the text column
+    # df['clean_text'] = df['text'].apply(lambda x: preprocess_text(x, stem_flag=False))
+    # print(df['clean_text'])
+    # # print(key_sentences(df))
 
 from collections import Counter
 

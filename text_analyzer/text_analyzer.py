@@ -31,18 +31,18 @@ def analyze_text(df: pd.DataFrame,
     :param top_words: top words
     :param n_sentences: number of sentences to return
     """
-    if create_wordcloud:
-        create_word_cloud(df)
-    if corex_topics:
-        plot_corex_wordcloud(df, n_topics=corex_topics_num, top_words=top_words)
-    if key_sentences:
-        extract_key_sentences(df, n_sentences=n_sentences, top_words=top_words)
+    plot_sentiment_scores(df)
+    if data_quality:
+        analyze_text_stats(df)
     if common_words:
         most_common_words(df, common_words=top_words)
+    if create_wordcloud:
+        create_word_cloud(df)
     if sentiment:
         df = df.copy()
     df = analyze_sentiment(df)
     print(report_sentiment_stats(df))
-    plot_sentiment_scores(df)
-    if data_quality:
-        analyze_text_stats(df)
+    if corex_topics:
+        plot_corex_wordcloud(df, n_topics=corex_topics_num, top_words=top_words)
+    if key_sentences:
+        extract_key_sentences(df, n_sentences=n_sentences, top_words=top_words)

@@ -3,17 +3,10 @@ from nltk.corpus import webtext
 
 
 def webtext_to_df(full_text: str) -> pd.DataFrame:
-    # List the file ids in the webtext corpus
-
     # Separate the chat logs into individual messages
     text_rows = full_text.split("\n")
-    # Create an empty dataframe with a column named 'text'
-    df = pd.DataFrame(columns=['text'])
-
-    # Iterate over the logs and add each log as a new row
-    for text_row in text_rows:
-        df = df.append({'text': text_row}, ignore_index=True)
-
+    # Create a dataframe with text rows
+    df = pd.DataFrame({'text': text_rows})
     return df
 
 
