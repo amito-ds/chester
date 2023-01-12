@@ -1,6 +1,10 @@
-from nltk import PorterStemmer, WordNetLemmatizer
 import os
 import sys
+
+from nltk import PorterStemmer, WordNetLemmatizer
+
+from text_analyzer import smart_text_analyzer
+
 path = os.path.abspath("TCAP")
 sys.path.append(path)
 from cleaning import cleaning
@@ -90,12 +94,12 @@ def process_text(train_data: pd.DataFrame,
         test_data = None
     else:
         # Clean the data
-        test_data['clean_text'] = clean_df_text(test_data[text_column], cleaning_options)
+        test_data['clean_text'] = cleaning.clean_df_text(test_data[text_column], cleaning_options)
         # preprocess the test data
         test_data['clean_text'] = preprocess_df_text(test_data['clean_text'], preprocessing_options)
 
     # basic stats
-    # analyze_text(train_data, **analysis_options)
+    smart_text_analyzer.analyze_text(train_data, **analysis_options)
 
     # create bow, itf idf and corex embedding
     train_embedding = get_embeddings(training_data=train_data, **embeddings_options)
@@ -108,7 +112,6 @@ def process_text(train_data: pd.DataFrame,
 
 if __name__ == '__main__':
     import os
-
 
     # os.environ["PYTHONPATH"] = path
     # import os
