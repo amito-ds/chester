@@ -3,7 +3,7 @@ import os
 import sys
 path = os.path.abspath("TCAP")
 sys.path.append(path)
-from cleaning.cleaning import clean_df_text
+from cleaning import cleaning
 from data_loader.webtext_data import *
 from features_engineering.fe_main import get_embeddings
 from preprocessing.preprocessing import preprocess_df_text
@@ -79,7 +79,7 @@ def process_text(train_data: pd.DataFrame,
     embeddings_options = embeddings_options or default_embeddings_options
 
     # Clean the data
-    train_data['clean_text'] = clean_df_text(train_data[text_column], cleaning_options)
+    train_data['clean_text'] = cleaning.clean_df_text(train_data[text_column], cleaning_options)
 
     # preprocess the text column
     train_data['clean_text'] = preprocess_df_text(train_data['clean_text'], preprocessing_options)
