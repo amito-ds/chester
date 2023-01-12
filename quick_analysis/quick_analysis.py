@@ -1,6 +1,8 @@
 from nltk import PorterStemmer, WordNetLemmatizer
-
-
+import os
+import sys
+path = os.path.abspath("TCAP")
+sys.path.append(path)
 from cleaning.cleaning import clean_df_text
 from data_loader.webtext_data import *
 from features_engineering.fe_main import get_embeddings
@@ -105,9 +107,10 @@ def process_text(train_data: pd.DataFrame,
 
 
 if __name__ == '__main__':
+    import os
 
 
-    #
+    # os.environ["PYTHONPATH"] = path
     # import os
     #     # print(os.path.dirname(os.path.abspath(__file__)))
     #     # sys.path.append(os.path.dirname(os.path.abspath(__file__)))
