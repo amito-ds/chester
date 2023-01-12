@@ -3,8 +3,7 @@ from nltk import PorterStemmer, WordNetLemmatizer
 from cleaning.cleaning import clean_df_text
 from data_loader.webtext_data import *
 from features_engineering.fe_main import get_embeddings
-# from preprocessing.preprocessing import preprocess_df_text
-from text_analyzer.smart_text_analyzer import analyze_text
+from preprocessing.preprocessing import preprocess_df_text
 from util import get_stopwords
 
 # get stop words
@@ -63,7 +62,9 @@ default_embeddings_options = {
 }
 
 
-def process_text(df: pd.DataFrame,
+def process_text(train_data: pd.DataFrame,
+                 test_data: pd.DataFrame = None,
+                 test_prop=0.2,
                  text_column: str = 'text',
                  cleaning_options=None,
                  preprocessing_options: dict = None,
@@ -74,21 +75,35 @@ def process_text(df: pd.DataFrame,
     analysis_options = analysis_options or default_analysis_options
     embeddings_options = embeddings_options or default_embeddings_options
 
-    df['clean_text'] = clean_df_text(df[text_column], cleaning_options)
+    # Clean the data
+    train_data['clean_text'] = clean_df_text(train_data[text_column], cleaning_options)
 
     # preprocess the text column
-    # df['clean_text'] = preprocess_df_text(df['clean_text'], preprocessing_options)
+    train_data['clean_text'] = preprocess_df_text(train_data['clean_text'], preprocessing_options)
+
+    if test_data is None and test_prop > 0:
+        test_data = train_data.sample(frac=test_prop, random_state=42)
+    elif test_data is not None and test_prop <= 0:
+        test_data = None
+    else:
+        # Clean the data
+        test_data['clean_text'] = clean_df_text(test_data[text_column], cleaning_options)
+        # preprocess the test data
+        test_data['clean_text'] = preprocess_df_text(test_data['clean_text'], preprocessing_options)
+
     # basic stats
-    analyze_text(df, **analysis_options)
+    # analyze_text(train_data, **analysis_options)
 
     # create bow, itf idf and corex embedding
-    embedding = get_embeddings(df, **embeddings_options)
-    df_embedding = pd.concat([df['clean_text'], embedding], axis=1)
-
-    return df_embedding
+    train_embedding = get_embeddings(training_data=train_data, **embeddings_options)
+    if test_data is not None:
+        test_embedding = get_embeddings(training_data=test_data, **embeddings_options)
+    else:
+        test_embedding = None
+    return train_embedding, test_embedding
 
 
 if __name__ == '__main__':
     df = load_data_chat_logs()
-    df_embedding = process_text(df)
+    df_embedding, _ = process_text(train_data=df, test_data=None)
     print(df_embedding.shape)

@@ -38,4 +38,4 @@ def get_corex_embedding(training_data, test_data=None, text_column='clean_text',
 
         return topic_prob_df, test_topic_prob_df
     else:
-        return topic_prob_df
+        return topic_prob_df, None
