@@ -64,7 +64,6 @@ def print_cleaning_options(
         remove_accented_characters_flag: bool = True,
         remove_special_characters_flag: bool = True,
         remove_html_tags_flag: bool = True):
-    print("Cleaning step:")
     if remove_punctuation_flag:
         print("Removing punctuation")
     if remove_numbers_flag:

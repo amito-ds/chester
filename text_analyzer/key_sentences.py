@@ -1,14 +1,11 @@
+from collections import Counter
+
 import numpy as np
 import pandas as pd
 from nltk.tokenize import sent_tokenize
 from sklearn.decomposition import TruncatedSVD
 from sklearn.feature_extraction.text import TfidfVectorizer
 from summa import summarizer
-
-from cleaning.cleaning import clean_text
-from data_loader.webtext_data import load_data_king_arthur, load_data_chat_logs
-from preprocessing.preprocessing import preprocess_text
-from util import get_stopwords
 
 
 def extract_key_sentences_summarization(text, ratio=0.2):
@@ -62,25 +59,6 @@ def key_sentences(df, text_column='clean_text', common_sentences=10):
 
     # return the most common sentences
     return cnt.most_common(common_sentences)
-
-
-if __name__ == 'main':
-    # access the data
-    # df = load_data_brown('news')
-    df = load_data_chat_logs()
-    print(df)
-    #
-    # # Clean the text column
-    # df['text'] = df['text'].apply(lambda x: clean_text(x,
-    #                                                    remove_stopwords_flag=True,
-    #                                                    stopwords=get_stopwords()))
-    #
-    # # preprocess the text column
-    # df['clean_text'] = df['text'].apply(lambda x: preprocess_text(x, stem_flag=False))
-    # print(df['clean_text'])
-    # # print(key_sentences(df))
-
-from collections import Counter
 
 
 def extract_key_sentences(df: pd.DataFrame, text_column='clean_text', algorithm='summarization', n_sentences=10,

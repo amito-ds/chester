@@ -1,11 +1,6 @@
 import os
 import sys
 
-from nltk import PorterStemmer, WordNetLemmatizer
-
-from quick_analysis.utils import print_step_message
-from text_analyzer import smart_text_analyzer
-
 path = os.path.abspath("TCAP")
 sys.path.append(path)
 from cleaning import cleaning
@@ -13,6 +8,20 @@ from data_loader.webtext_data import *
 from features_engineering.fe_main import get_embeddings
 from preprocessing.preprocessing import preprocess_df_text
 from util import get_stopwords
+from nltk import PorterStemmer, WordNetLemmatizer
+
+from text_analyzer import smart_text_analyzer
+from termcolor import colored
+
+from termcolor import colored
+
+
+def print_step_message(step_name: str, color: str = "blue"):
+    message = "#### Starting {} step ####".format(step_name)
+    print(colored("\n" + "#" * len(message) + "\n", color), end="")
+    print(colored(message, color))
+    print(colored("\n" + "#" * len(message), color), end="\n")
+
 
 # get stop words
 stop_words = get_stopwords()
@@ -84,7 +93,7 @@ def process_text(train_data: pd.DataFrame,
     embeddings_options = embeddings_options or default_embeddings_options
 
     # Clean the data
-    print_step_message("Start cleaning")
+    print_step_message("cleaning")
     train_data['clean_text'] = cleaning.clean_df_text(train_data[text_column], cleaning_options)
 
     # preprocess the text column
@@ -113,13 +122,6 @@ def process_text(train_data: pd.DataFrame,
 
 
 if __name__ == '__main__':
-    import os
-
-    # os.environ["PYTHONPATH"] = path
-    # import os
-    #     # print(os.path.dirname(os.path.abspath(__file__)))
-    #     # sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-    # print(os.path.dirname(os.path.abspath(__file__)))
-    # df = load_data_chat_logs()
-    # df_embedding, _ = process_text(train_data=df, test_data=None)
+    df = load_data_chat_logs()
+    df_embedding, _ = process_text(train_data=df, test_data=None)
     # print(df_embedding.shape)
