@@ -3,6 +3,7 @@ import sys
 
 from nltk import PorterStemmer, WordNetLemmatizer
 
+from quick_analysis.utils import print_step_message
 from text_analyzer import smart_text_analyzer
 
 path = os.path.abspath("TCAP")
@@ -83,6 +84,7 @@ def process_text(train_data: pd.DataFrame,
     embeddings_options = embeddings_options or default_embeddings_options
 
     # Clean the data
+    print_step_message("Start cleaning")
     train_data['clean_text'] = cleaning.clean_df_text(train_data[text_column], cleaning_options)
 
     # preprocess the text column
