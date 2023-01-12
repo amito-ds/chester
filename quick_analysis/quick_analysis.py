@@ -1,5 +1,6 @@
 from nltk import PorterStemmer, WordNetLemmatizer
 
+
 from cleaning.cleaning import clean_df_text
 from data_loader.webtext_data import *
 from features_engineering.fe_main import get_embeddings
@@ -104,6 +105,13 @@ def process_text(train_data: pd.DataFrame,
 
 
 if __name__ == '__main__':
-    df = load_data_chat_logs()
-    df_embedding, _ = process_text(train_data=df, test_data=None)
-    print(df_embedding.shape)
+
+
+    #
+    # import os
+    #     # print(os.path.dirname(os.path.abspath(__file__)))
+    #     # sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+    # print(os.path.dirname(os.path.abspath(__file__)))
+    # df = load_data_chat_logs()
+    # df_embedding, _ = process_text(train_data=df, test_data=None)
+    # print(df_embedding.shape)
