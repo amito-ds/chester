@@ -19,6 +19,13 @@ def remove_whitespace(text: str) -> str:
     return ' '.join(text.split())
 
 
+def remove_empty_lines(text: str):
+    """Remove excess empty lines from the given text."""
+    lines = text.splitlines()
+    cleaned_text = '\n'.join([line for line in lines if line.strip()])
+    return cleaned_text
+
+
 def lowercase(text: str) -> str:
     """Convert the given text to lowercase."""
     return text.lower()
@@ -86,6 +93,7 @@ def clean_text(text: str,
                remove_punctuation_flag: bool = True,
                remove_numbers_flag: bool = True,
                remove_whitespace_flag: bool = True,
+               remove_empty_line_flag: bool = True,
                lowercase_flag: bool = True,
                remove_stopwords_flag: bool = False,
                stopwords: List[str] = None,
@@ -98,6 +106,7 @@ def clean_text(text: str,
     remove_punctuation_flag: a flag indicating whether to remove punctuation from the text.
     remove_numbers_flag: a flag indicating whether to remove numbers from the text.
     remove_whitespace_flag: a flag indicating whether to remove excess whitespace from the text.
+    remove_empty_line_flag: a flag indicating whether to remove excess empty lines from the text.
     lowercase_flag: a flag indicating whether to convert the text to lowercase.
     remove_stopwords_flag: a flag indicating whether to remove common words that do not contribute to the meaning of the text.
     stopwords: a list of words to remove from the text. Required if remove_stopwords_flag is True.
@@ -112,6 +121,8 @@ def clean_text(text: str,
         text = remove_numbers(text)
     if remove_whitespace_flag:
         text = remove_whitespace(text)
+    if remove_empty_line_flag:
+        remove_empty_lines(text)
     if lowercase_flag:
         text = lowercase(text)
     if remove_stopwords_flag:

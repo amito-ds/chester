@@ -106,16 +106,21 @@ def process_text(train_data: pd.DataFrame,
         test_data = None
     else:
         # Clean the data
+        print_step_message("cleaning test set")
         test_data['clean_text'] = cleaning.clean_df_text(test_data[text_column], cleaning_options)
         # preprocess the test data
+        print_step_message("preprocessing test set")
         test_data['clean_text'] = preprocess_df_text(test_data['clean_text'], preprocessing_options)
 
     # basic stats
+    print_step_message("analyzer")
     smart_text_analyzer.analyze_text(train_data, **analysis_options)
 
     # create bow, itf idf and corex embedding
+    print_step_message("embedding")
     train_embedding = get_embeddings(training_data=train_data, **embeddings_options)
     if test_data is not None:
+        print_step_message("embedding for test set")
         test_embedding = get_embeddings(training_data=test_data, **embeddings_options)
     else:
         test_embedding = None

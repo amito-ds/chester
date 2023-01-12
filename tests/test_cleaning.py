@@ -45,6 +45,13 @@ class TestCleaningMethods(unittest.TestCase):
         expected_output = "This is a test! Can you remove the HTML tags?"
         assert remove_html_tags(text) == expected_output
 
+    def test_remove_empty_lines(self):
+        text = "line 1\nline 2\n\nline 3\n   "
+        expected_output = "line 1\nline 2\nline 3"
+        cleaned_text = remove_empty_lines(text)
+        assert cleaned_text == expected_output, f'Test failed: expected {expected_output}, but got {cleaned_text}'
+        print('remove_empty_lines function passed the test')
+
 
 if __name__ == '__main__':
     unittest.main()
