@@ -16,11 +16,11 @@ from termcolor import colored
 from termcolor import colored
 
 
-def print_step_message(step_name: str, color: str = "blue"):
+def print_step_message(step_name: str):
     message = "#### Starting {} step ####".format(step_name)
-    print(colored("\n" + "#" * len(message) + "\n", color), end="")
-    print(colored(message, color))
-    print(colored("\n" + "#" * len(message), color), end="\n")
+    print("\n" + "#" * len(message) + "\n", end="")
+    print(message)
+    print("\n" + "#" * len(message) + "\n", end="\n")
 
 
 # get stop words
@@ -97,6 +97,7 @@ def process_text(train_data: pd.DataFrame,
     train_data['clean_text'] = cleaning.clean_df_text(train_data[text_column], cleaning_options)
 
     # preprocess the text column
+    print_step_message("preprocessing")
     train_data['clean_text'] = preprocess_df_text(train_data['clean_text'], preprocessing_options)
 
     if test_data is None and test_prop > 0:
