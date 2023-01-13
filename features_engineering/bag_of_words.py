@@ -50,7 +50,6 @@ def get_bow_embedding(training_data: pd.DataFrame, text_column: str = 'clean_tex
 
         # Create a DataFrame for the test data
         test_embedding_df = pd.DataFrame(X_test.todense(), columns=[f"bow_{word}" for word in feature_names])
-
         return train_embedding_df, test_embedding_df, vectorizer
 
     return train_embedding_df, None, vectorizer

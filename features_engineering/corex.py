@@ -21,7 +21,7 @@ def get_corex_embedding(training_data, test_data=None, text_column='clean_text',
     # Get the topic probabilities for the training data
     topic_probs = topic_model.transform(doc_word, details=True)[0]
     # Normalize the topic probabilities
-    topic_probs /= np.linalg.norm(topic_probs, axis=1, keepdims=True)
+    topic_probs = topic_probs / np.sum(topic_probs, axis=1, keepdims=True)
     # Create a DataFrame of topic probability features
     topic_prob_df = pd.DataFrame(topic_probs, columns=[f"corex_topic_{i + 1}" for i in range(n_topics)])
 
@@ -32,10 +32,10 @@ def get_corex_embedding(training_data, test_data=None, text_column='clean_text',
         # Get the topic probabilities for the test data
         test_topic_probs = topic_model.transform(test_doc_word, details=True)[0]
         # Normalize the topic probabilities
-        topic_probs /= np.sqrt(np.sum(topic_probs**2, axis=1))
+        test_topic_probs = test_topic_probs / np.sum(test_topic_probs, axis=1, keepdims=True)
         # Create a DataFrame of topic probability features for the test data
         test_topic_prob_df = pd.DataFrame(test_topic_probs, columns=[f"corex_topic_{i + 1}" for i in range(n_topics)])
 
         return topic_prob_df, test_topic_prob_df
     else:
-        return topic_prob_df, None
+        return topic_prob_df

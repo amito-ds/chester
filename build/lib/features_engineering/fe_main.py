@@ -14,34 +14,34 @@ from cleaning.cleaning import clean_text
 from preprocessing.preprocessing import preprocess_text
 from util import get_stopwords
 
-
-def get_embeddings(text_data, text_column="clean_text", corex=False, corex_dim=10, tfidf=False, tfidf_dim=10000,
-                   bow=False, bow_dim=10000,
-                   ngram_range=(1, 1)):
-    # Define empty DataFrames for the embeddings
-    corex_embedding = pd.DataFrame()
-    tfidf_embedding = pd.DataFrame()
-    bow_embedding = pd.DataFrame()
-    ner_bow_embedding = pd.DataFrame()
-
-    # Extract Corex topic model embeddings if requested
-    if corex:
-        corex_embedding = get_corex_embedding(text_data, ngram_range=ngram_range, n_topics=corex_dim)
-
-    # Extract TF-IDF embeddings if requested
-    if tfidf:
-        tfidf_embedding, _, _ = get_tfidf_embedding(text_data, ngram_range=ngram_range, embedding_size=tfidf_dim)
-
-    # Extract bag-of-words embeddings if requested
-    if bow:
-        bow_embedding, _, _ = get_bow_embedding(text_data, ngram_range=ngram_range, embedding_size=bow_dim)
-        # NER
-        df["class"] = df[text_column].apply(classify_text)
-        ner_bow_embedding = get_ner_bow_embedding(df)
-
-    # Concatenate the embeddings and return them
-    embeddings = pd.concat([corex_embedding, tfidf_embedding, ner_bow_embedding, bow_embedding], axis=1)
-    return embeddings
+#
+# def get_embeddings(text_data, text_column="clean_text", corex=False, corex_dim=10, tfidf=False, tfidf_dim=10000,
+#                    bow=False, bow_dim=10000,
+#                    ngram_range=(1, 1)):
+#     # Define empty DataFrames for the embeddings
+#     corex_embedding = pd.DataFrame()
+#     tfidf_embedding = pd.DataFrame()
+#     bow_embedding = pd.DataFrame()
+#     ner_bow_embedding = pd.DataFrame()
+#
+#     # Extract Corex topic model embeddings if requested
+#     if corex:
+#         corex_embedding = get_corex_embedding(text_data, ngram_range=ngram_range, n_topics=corex_dim)
+#
+#     # Extract TF-IDF embeddings if requested
+#     if tfidf:
+#         tfidf_embedding, _, _ = get_tfidf_embedding(text_data, ngram_range=ngram_range, embedding_size=tfidf_dim)
+#
+#     # Extract bag-of-words embeddings if requested
+#     if bow:
+#         bow_embedding, _, _ = get_bow_embedding(text_data, ngram_range=ngram_range, embedding_size=bow_dim)
+#         # NER
+#         df["class"] = df[text_column].apply(classify_text)
+#         ner_bow_embedding = get_ner_bow_embedding(df)
+#
+#     # Concatenate the embeddings and return them
+#     embeddings = pd.concat([corex_embedding, tfidf_embedding, ner_bow_embedding, bow_embedding], axis=1)
+#     return embeddings
 
 
 if __name__ == '__main__':

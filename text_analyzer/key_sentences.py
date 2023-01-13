@@ -5,17 +5,19 @@ import pandas as pd
 from nltk.tokenize import sent_tokenize
 from sklearn.decomposition import TruncatedSVD
 from sklearn.feature_extraction.text import TfidfVectorizer
-from summa import summarizer
 
 
-def extract_key_sentences_summarization(text, ratio=0.2):
-    """
-    Extract summary from text using the Summa library's summarize function.
-    :param text: the text to extract the summary from
-    :param ratio: the ratio of the summary to the text  (default: 0.2)
-    :return: the summary
-    """
-    return summarizer.summarize(text, ratio=ratio)
+# from summa import summarizer
+
+
+# def extract_key_sentences_summarization(text, ratio=0.2):
+#     """
+#     Extract summary from text using the Summa library's summarize function.
+#     :param text: the text to extract the summary from
+#     :param ratio: the ratio of the summary to the text  (default: 0.2)
+#     :return: the summary
+#     """
+#     return summarizer.summarize(text, ratio=ratio)
 
 
 def extract_key_sentences_lsa(text, k=10):
@@ -61,7 +63,7 @@ def key_sentences(df, text_column='clean_text', common_sentences=10):
     return cnt.most_common(common_sentences)
 
 
-def extract_key_sentences(df: pd.DataFrame, text_column='clean_text', algorithm='summarization', n_sentences=10,
+def extract_key_sentences(df: pd.DataFrame, text_column='clean_text', algorithm='LSA', n_sentences=10,
                           top_words=20):
     """
     Extract k most important sentences from a pandas dataframe containing text data.
@@ -73,10 +75,11 @@ def extract_key_sentences(df: pd.DataFrame, text_column='clean_text', algorithm=
     :return: list of k most important sentences
     """
     full_text = '. '.join(df[text_column])
-    if algorithm == 'summarization':
-        sentences = extract_first_k_words(extract_key_sentences_summarization(full_text, ratio=0.1), top_words)
-    elif algorithm == 'LSA':
+
+    if algorithm == 'LSA':
         sentences = extract_key_sentences_lsa(full_text, n_sentences)
+    # elif algorithm == 'summarization':
+    #     sentences = extract_first_k_words(extract_key_sentences_summarization(full_text, ratio=0.1), top_words)
     elif algorithm == 'common_sentences':
         tokenized_sentences = [sentence.split() for sentence in sent_tokenize(full_text)]
         sentence_counter = Counter([tuple(sentence) for sentence in tokenized_sentences])

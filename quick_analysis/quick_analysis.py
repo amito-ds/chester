@@ -83,6 +83,7 @@ def process_text(train_data: pd.DataFrame,
                  test_data: pd.DataFrame = None,
                  test_prop=0.2,
                  text_column: str = 'text',
+                 label_column: str = None,
                  cleaning_options=None,
                  preprocessing_options: dict = None,
                  analysis_options: dict = None,
@@ -124,6 +125,7 @@ def process_text(train_data: pd.DataFrame,
         test_embedding = get_embeddings(training_data=test_data, **embeddings_options)
     else:
         test_embedding = None
+
     return train_embedding, test_embedding
 
 

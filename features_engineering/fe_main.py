@@ -41,7 +41,7 @@ def get_embeddings(training_data: pd.DataFrame, test_data: pd.DataFrame = None, 
     # Extract bag-of-words embeddings if requested
     if bow:
         print(f"{order_list[i]}, Extracting bag-of-words embeddings with dimension {bow_dim}")
-        bow_embedding, test_bow_embedding, _ = get_bow_embedding(training_data, test_data=test_data,
+        bow_embedding, bow_test_embedding, _ = get_bow_embedding(training_data, test_data=test_data,
                                                                  ngram_range=ngram_range,
                                                                  embedding_size=bow_dim,
                                                                  text_column=text_column)
@@ -52,7 +52,7 @@ def get_embeddings(training_data: pd.DataFrame, test_data: pd.DataFrame = None, 
     test_embeddings = pd.concat(
         [corex_test_embedding, tfidf_test_embedding, ner_bow_test_embedding, bow_test_embedding], axis=1)
     print(f"Lastly, All embeddings have been concatenated")
-    return embeddings
+    return embeddings, test_embeddings
 
 # def get_embeddings(df, text_column="clean_text", corex=True, corex_dim=10, tfidf=True, tfidf_dim=10000,
 #                    bow=True, bow_dim=10000,
