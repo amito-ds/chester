@@ -3,7 +3,7 @@ import pandas as pd
 import seaborn as sns
 from matplotlib import pyplot as plt
 
-from mdoel_training.data_preparation import CVData
+from mdoel_training.data_preparation import CVData, Parameter
 from model_analyzer.model_analysis import ModelAnalyzer
 
 
@@ -11,7 +11,7 @@ def organize_results(results):
     return pd.DataFrame(results)
 
 
-def analyze_results(results, parameters):
+def analyze_results(results: pd.DataFrame, parameters: list[Parameter]):
     # remove parameters columns from the results dataframe
     results_copy = results.drop([p.name for p in parameters], axis=1)
     # check if there are any lists in the dataframe

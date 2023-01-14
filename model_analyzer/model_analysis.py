@@ -17,11 +17,14 @@ class ModelAnalyzer:
     def __init__(self, model):
         self.model = model
 
-    def shap_values(self, X_test: pd.DataFrame) -> None:
-        explainer = shap.Explainer(self.model, X_test)
-        shap_values = explainer(X_test)
-        plt.title("SHAP values for train set")
-        shap.summary_plot(shap_values, X_test)
+    def shap_values(self, X_train: pd.DataFrame):
+        try:
+            explainer = shap.Explainer(self.model, X_train, check_additivity=False)
+            shap_values = explainer(X_train, check_additivity=False)
+            plt.title("SHAP values for train set")
+            shap.summary_plot(shap_values, X_train)
+        except:
+            pass
 
     def coefficients(self) -> None:
         coef = self.model.coef_[0]
@@ -60,7 +63,7 @@ class ModelAnalyzer:
         print(train_metrics)
         print("Test set performance:")
         print(test_metrics)
-        population_pyramid_plot(train_metrics, test_metrics)
+        # population_pyramid_plot(train_metrics, test_metrics)
 
     def confusion_matrix(self, X_test: pd.DataFrame, y_test: pd.Series) -> None:
         from sklearn.metrics import confusion_matrix
@@ -75,50 +78,87 @@ class ModelAnalyzer:
 
     def roc_curve(self, X_test: pd.DataFrame, y_test: pd.Series) -> None:
         from sklearn.metrics import roc_curve, auc
-        y_pred = self.model.predict_proba(X_test)
-        y_test_binary = (y_test == 'pirates').astype(int)
-        fpr, tpr, thresholds = roc_curve(y_test_binary, y_pred[:, 1])
-        roc_auc = auc(fpr, tpr)
-        plt.figure()
-        plt.plot(fpr, tpr, color='darkorange', lw=1, label='ROC curve (area = %0.2f)' % roc_auc)
-        plt.plot([0, 1], [0, 1], color='navy', lw=1, linestyle='--')
-        plt.xlim([0.0, 1.0])
-        plt.ylim([0.0, 1.05])
-        plt.xlabel('False Positive Rate')
-        plt.ylabel('True Positive Rate')
-        plt.title('Receiver operating characteristic')
-        plt.legend(loc="lower right")
-        plt.show()
+        try:
+            y_pred = self.model.predict_proba(X_test)
+            y_test_binary = (y_test == 'pirates').astype(int)
+            fpr, tpr, thresholds = roc_curve(y_test_binary, y_pred[:, 1])
+            roc_auc = auc(fpr, tpr)
+            plt.figure()
+            plt.plot(fpr, tpr, color='darkorange', lw=1, label='ROC curve (area = %0.2f)' % roc_auc)
+            plt.plot([0, 1], [0, 1], color='navy', lw=1, linestyle='--')
+            plt.xlim([0.0, 1.0])
+            plt.ylim([0.0, 1.05])
+            plt.xlabel('False Positive Rate')
+            plt.ylabel('True Positive Rate')
+            plt.title('Receiver operating characteristic')
+            plt.legend(loc="lower right")
+            plt.show()
+        except:
+            pass
 
     def learning_curve(self, X: pd.DataFrame, y: pd.Series) -> None:
-        from sklearn.model_selection import learning_curve
-        train_sizes, train_scores, test_scores = learning_curve(self.model, X, y, cv=5, scoring='accuracy')
-        train_scores_mean = np.mean(train_scores, axis=1)
-        train_scores_std = np.std(train_scores, axis=1)
-        test_scores_mean = np.mean(test_scores, axis=1)
-        test_scores_std = np.std(test_scores, axis=1)
-        plt.plot(train_sizes, train_scores_mean, 'o-', color="r", label="Training score")
-        plt.plot(train_sizes, test_scores_mean, 'o-', color="g", label="Cross-validation score")
-        plt.fill_between(train_sizes, train_scores_mean - train_scores_std,
-                         train_scores_mean + train_scores_std, alpha=0.1, color="r")
-        plt.fill_between(train_sizes, test_scores_mean - test_scores_std,
-                         test_scores_mean + test_scores_std, alpha=0.1, color="g")
-        plt.grid()
-        plt.xlabel("Training examples")
-        plt.ylabel("Accuracy Score")
-        plt.title("Learning Curve")
-        plt.legend(loc="best")
-        plt.show()
+        try:
+            from sklearn.model_selection import learning_curve
+            train_sizes, train_scores, test_scores = learning_curve(self.model, X, y, cv=5, scoring='accuracy')
+            train_scores_mean = np.mean(train_scores, axis=1)
+            train_scores_std = np.std(train_scores, axis=1)
+            test_scores_mean = np.mean(test_scores, axis=1)
+            test_scores_std = np.std(test_scores, axis=1)
+            plt.plot(train_sizes, train_scores_mean, 'o-', color="r", label="Training score")
+            plt.plot(train_sizes, test_scores_mean, 'o-', color="g", label="Cross-validation score")
+            plt.fill_between(train_sizes, train_scores_mean - train_scores_std,
+                             train_scores_mean + train_scores_std, alpha=0.1, color="r")
+            plt.fill_between(train_sizes, test_scores_mean - test_scores_std,
+                             test_scores_mean + test_scores_std, alpha=0.1, color="g")
+            plt.grid()
+            plt.xlabel("Training examples")
+            plt.ylabel("Accuracy Score")
+            plt.title("Learning Curve")
+            plt.legend(loc="best")
+            plt.show()
+        except:
+            pass
+
+    import matplotlib.pyplot as plt
+
+    def plot_feature_importance(self, model, X_train):
+        if type(model).__name__ == 'LGBMClassifier':
+            feature_importance = model.feature_importances_
+            feature_importance = 100.0 * (feature_importance / feature_importance.max())
+            feature_names = X_train.columns
+            important_idx = np.where(feature_importance)[0]
+            important_features = feature_names[important_idx]
+            plt.barh(range(important_idx.shape[0]), feature_importance[important_idx], align='center')
+            plt.yticks(range(important_idx.shape[0]), important_features)
+            plt.xlabel("Feature importance")
+            plt.ylabel("Feature")
+            plt.show()
+        elif type(model).__name__ == 'RandomForestClassifier':
+            feature_importance = model.feature_importances_
+            feature_names = X_train.columns
+            important_idx = np.where(feature_importance)[0]
+            important_features = feature_names[important_idx]
+            plt.barh(range(important_idx.shape[0]), feature_importance[important_idx], align='center')
+            plt.yticks(range(important_idx.shape[0]), important_features)
+            plt.xlabel("Feature importance")
+            plt.ylabel("Feature")
+            plt.show()
+        else:
+            print(f'Feature importance not available for {type(model).__name__} model')
 
     def analyze(self, X_train: pd.DataFrame, y_train: pd.Series, X_test: pd.DataFrame, y_test: pd.Series,
-                metric_functions: List, shap_values: bool = True, coefficients: bool = True,
+                metric_functions: List, model, shap_values: bool = True, coefficients: bool = False,
                 performance_metrics: bool = True, confusion_matrix: bool = True,
-                roc_curve: bool = True, learning_curve: bool = True) -> None:
+                roc_curve: bool = True, learning_curve: bool = True, feature_importance: bool = True) -> None:
 
         messages = AnalyzeMessages()
+        if feature_importance:
+            # print(messages.feature_importance_message())
+            self.plot_feature_importance(model, X_train)
         if shap_values:
             print(messages.shap_values_message())
-            self.shap_values(X_test)
+            print(X_train.shape)
+            self.shap_values(X_train)
         if coefficients:
             print(messages.coefficients_message())
             self.coefficients()
@@ -180,7 +220,7 @@ def analyze_model(model, cv_data: CVData, target_label='target'):
             cv_data.test_data[target_label]
     metric_functions = get_default_metrics(y_train)
     analyzer = ModelAnalyzer(model)
-    analyzer.analyze(X_train, y_train, X_test, y_test, metric_functions)
+    analyzer.analyze(X_train, y_train, X_test, y_test, metric_functions, model)
 
 
 def get_default_metrics(y):
@@ -261,5 +301,3 @@ def population_pyramid_plot(train_metrics, test_metrics=None):
     plt.xlabel("Metric Name")
     plt.ylabel("Value")
     plt.show()
-
-
