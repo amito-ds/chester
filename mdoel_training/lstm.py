@@ -5,6 +5,7 @@ from keras.layers import LSTM, Dense
 
 from typing import List
 
+from keras.utils import to_categorical
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support, recall_score, f1_score
 from sklearn.preprocessing import LabelBinarizer
 
@@ -14,7 +15,7 @@ from mdoel_training.data_preparation import CVData, Parameter
 def get_default_parameters(X_train: pd.DataFrame):
     default_parameters = {
         'input_shape': (X_train.shape[1], 1),
-        'output_dim': 100,
+        'output_dim': 10,
         'recurrent_dropout': 0.1,
         'dropout': 0.1,
         'optimizer': 'adam',
@@ -26,6 +27,9 @@ def get_default_parameters(X_train: pd.DataFrame):
     ]
 
     return lstm_default_parameters
+
+
+from sklearn.preprocessing import LabelEncoder
 
 
 def train_lstm(X_train, y_train, parameters: list[Parameter]):
@@ -47,8 +51,12 @@ def train_lstm(X_train, y_train, parameters: list[Parameter]):
              dropout=params['dropout']))
     model.add(Dense(1, activation='sigmoid'))
     model.compile(loss='binary_crossentropy', optimizer=params['optimizer'], metrics=['accuracy'])
-    model.fit(X_train, y_train, verbose=-1)
-    return model
+
+    # convert y_train to numerical values
+    label_encoder = LabelEncoder()
+    y_train = label_encoder.fit_transform(y_train)
+    model.fit(X_train, y_train)
+    return model, label_encoder
 
 
 def predict_lstm(model, X):
@@ -77,7 +85,7 @@ def score_lstm(y, prediction, metric_funcs: List[callable]):
 
 
 def lstm_with_outputs(cv_data: CVData, parameters: list[Parameter], target_col: str,
-                      metric_funcs: List[callable] = None):
+                      metric_funcs: List[callable] = None, label_encoder=None):
     results = []
     if not metric_funcs:
         metric_funcs = [accuracy_score, precision_recall_fscore_support, recall_score, f1_score]
@@ -93,7 +101,7 @@ def lstm_with_outputs(cv_data: CVData, parameters: list[Parameter], target_col: 
         X_train = X_train.reshape(X_train.shape[0], X_train.shape[1], 1)
         X_test = X_test.to_numpy()
         X_test = X_test.reshape(X_test.shape[0], X_test.shape[1], 1)
-        model = train_lstm(X_train, y_train, parameters)
+        model, label_encoder = train_lstm(X_train, y_train, parameters)
         train_pred = predict_lstm(model, X_train)
         test_pred = predict_lstm(model, X_test)
         train_pred = np.round(train_pred)
@@ -103,4 +111,6 @@ def lstm_with_outputs(cv_data: CVData, parameters: list[Parameter], target_col: 
         results.append(
             {'type': 'train', 'fold': i, **{param.name: param.value for param in parameters}, **train_scores})
         results.append({'type': 'test', 'fold': i, **{param.name: param.value for param in parameters}, **test_scores})
-    return results
+    model, label_encoder = train_lstm(cv_data.train_data.drop(columns=[target_col]), cv_data.train_data[target_col],
+                                      parameters)
+    return results, model, parameters

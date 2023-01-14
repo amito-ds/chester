@@ -25,6 +25,7 @@
 # import matplotlib.pyplot as plt
 import pandas as pd
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
 
 from cleaning.cleaning import clean_text
 from data_loader.webtext_data import load_data_pirates, load_data_king_arthur
@@ -56,7 +57,8 @@ df['clean_text'] = df['text'].apply(lambda x:
 train_df, test_df = train_test_split(df, test_size=0.3, random_state=42)
 #
 train_embedding_no_target, test_embedding_no_target = get_embeddings(training_data=train_df, test_data=test_df,
-                                                                     corex=True, tfidf=True, bow=True)
+                                                                     corex=True, tfidf=True, bow=True, tfidf_dim=10,
+                                                                     bow_dim=10)
 #
 # # adding the label to train and test embedding
 train_df.reset_index(drop=True, inplace=True)
@@ -77,12 +79,19 @@ test_embedding = pd.concat([test_embedding_no_target, test_df[['target']]], axis
 # # #
 # # # # Create CV data
 cv_data = CVData(train_data=train_embedding, test_data=test_embedding, folds=2)
+label_encoder = LabelEncoder()
+label_encoder = label_encoder.fit(cv_data.train_data['target'])
+label_transformed = label_encoder.transform(cv_data.train_data['target'])
+original_labels = label_encoder.inverse_transform(label_transformed)
+print(original_labels)
+
 # # #
 # # # # Run logistic regression with outputs
 # results, model = baseline_with_outputs(cv_data=cv_data, target_col='target', metric_funcs=None)
 # results, model, parameters = lgbm_with_outputs(cv_data, [], target_col='target', metric_funcs=None)
 # # results, model = logistic_regression_with_outputs(cv_data, parameters, target_col='target', metric_funcs=None)
-results, model = lstm_with_outputs(cv_data, [], target_col='target', metric_funcs=None)
+results, model, parameters = lstm_with_outputs(cv_data, [], target_col='target', metric_funcs=None,
+                                               label_encoder=label_encoder)
 # # # #
 # # # # # Organize results
 organized_results = organize_results(results)
