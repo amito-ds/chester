@@ -91,6 +91,9 @@ def lstm_with_outputs(cv_data: CVData, parameters: list[Parameter], target_col: 
         metric_funcs = [accuracy_score, precision_recall_fscore_support, recall_score, f1_score]
     if not parameters:
         parameters = get_default_parameters(cv_data.train_data.drop(columns=[target_col]))
+    for p in parameters:
+        print(p.name, p.value)
+    pass
     for i, (train_index, test_index) in enumerate(cv_data.splits):
         X_train, X_test = cv_data.train_data.iloc[train_index], cv_data.train_data.iloc[test_index]
         y_train, y_test = X_train[target_col], X_test[target_col]
@@ -113,4 +116,4 @@ def lstm_with_outputs(cv_data: CVData, parameters: list[Parameter], target_col: 
         results.append({'type': 'test', 'fold': i, **{param.name: param.value for param in parameters}, **test_scores})
     model, label_encoder = train_lstm(cv_data.train_data.drop(columns=[target_col]), cv_data.train_data[target_col],
                                       parameters)
-    return results, model, parameters
+    return results, model, parameters, model.predict(cv_data.train_data.drop(columns=[target_col]))
