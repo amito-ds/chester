@@ -11,7 +11,7 @@ from sklearn.model_selection import KFold
 
 
 class CVData:
-    def __init__(self, train_data, test_data, folds):
+    def __init__(self, train_data, test_data, folds=5):
         self.train_data = train_data
         self.test_data = test_data
         self.splits = self.cv_preparation(train_data=train_data, test_data=test_data, k_fold=folds)

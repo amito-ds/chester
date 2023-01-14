@@ -1,14 +1,22 @@
 import pandas as pd
+from sklearn.model_selection import train_test_split
 
 from features_engineering.bag_of_words import get_bow_embedding
 from features_engineering.corex import get_corex_embedding
 from features_engineering.tfidf import get_tfidf_embedding
 
 
-def get_embeddings(training_data: pd.DataFrame, test_data: pd.DataFrame = None, text_column="clean_text", corex=True,
-                   corex_dim=10, tfidf=True, tfidf_dim=10000,
-                   bow=True, bow_dim=10000,
+def get_embeddings(training_data: pd.DataFrame,
+                   test_data: pd.DataFrame = None,
+                   split_data: bool = True, split_prop: float = 0.3, split_random_state=42,
+                   text_column="clean_text", target_col='target',
+                   corex=True, corex_dim=10, tfidf=True, tfidf_dim=10000, bow=True, bow_dim=10000,
                    ngram_range=(1, 1)):
+    if split_data:
+        if not test_data:
+            training_data, test_data = train_test_split(training_data, test_size=split_prop,
+                                                        random_state=split_random_state)
+
     order_list = ["First", "Next", "Then", "Additionally", "Furthermore", "Then", "Additionally", "Furthermore", "Then",
                   "Additionally"]
     # Define empty DataFrames for the embeddings
@@ -51,6 +59,15 @@ def get_embeddings(training_data: pd.DataFrame, test_data: pd.DataFrame = None, 
     embeddings = pd.concat([corex_embedding, tfidf_embedding, ner_bow_embedding, bow_embedding], axis=1)
     test_embeddings = pd.concat(
         [corex_test_embedding, tfidf_test_embedding, ner_bow_test_embedding, bow_test_embedding], axis=1)
+
+    # # adding the label to train and test embedding
+    training_data.reset_index(drop=True, inplace=True)
+    embeddings.reset_index(drop=True, inplace=True)
+    embeddings = pd.concat([embeddings, training_data[target_col]], axis=1)
+
+    test_data.reset_index(drop=True, inplace=True)
+    test_embeddings.reset_index(drop=True, inplace=True)
+    test_embeddings = pd.concat([test_embeddings, test_data[target_col]], axis=1)
     print(f"Lastly, All embeddings have been concatenated")
     return embeddings, test_embeddings
 

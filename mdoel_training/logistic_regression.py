@@ -2,17 +2,31 @@ import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, precision_recall_fscore_support
 
-from mdoel_training.data_preparation import CVData
+from mdoel_training.data_preparation import CVData, Parameter
 from typing import List
 from sklearn.preprocessing import LabelBinarizer
 
 import pandas as pd
+default_parameters = {
+    'penalty': 'l2',
+    'C': 1.0,
+    'solver': 'lbfgs',
+    'max_iter': 100
+}
+
+logistic_regression_default_parameters = [
+    Parameter('penalty', default_parameters['penalty']),
+    Parameter('C', default_parameters['C']),
+    Parameter('solver', default_parameters['solver']),
+    Parameter('max_iter', default_parameters['max_iter'])
+]
 
 
-def logistic_regression_with_outputs(cv_data: CVData, parameters: list, target_col: str,
+def logistic_regression_with_outputs(cv_data: CVData, target_col: str, parameters: list[Parameter] = None,
                                      metric_funcs: List[callable] = None):
     results = []
-
+    if not parameters:
+        parameters = logistic_regression_default_parameters
     if not metric_funcs:
         metric_funcs = [accuracy_score, precision_recall_fscore_support, recall_score, f1_score]
     for i, (train_index, test_index) in enumerate(cv_data.splits):
@@ -39,4 +53,4 @@ def logistic_regression_with_outputs(cv_data: CVData, parameters: list, target_c
             {'type': 'train', 'fold': i, **{param.name: param.value for param in parameters}, **train_scores})
         results.append({'type': 'test', 'fold': i, **{param.name: param.value for param in parameters}, **test_scores})
     model.fit(cv_data.train_data.drop(columns=[target_col]), cv_data.train_data[target_col])
-    return results, model
+    return results, model, parameters

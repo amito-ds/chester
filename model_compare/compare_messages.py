@@ -2,6 +2,8 @@ import lightgbm as lgb
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression, LinearRegression
 
+from mdoel_training.model_results import ModelResults
+
 class_name_dict = {
     'LinearRegression': 'Linear Model',
     'LGBMRegressor': 'Light GBM',
@@ -30,21 +32,20 @@ def get_model_name(model):
     return model_name
 
 
-def compare_models_by_type_and_parameters(models_list):
+def compare_models_by_type_and_parameters(models_list: list[ModelResults]):
     if len(models_list) <= 1:
         return None
     else:
         # Get a list of lists, where each inner list contains the model tuples of models that are of the same type
         same_type_models = group_models_by_type(models_list)
-
         # Initialize an empty list to store comparison messages
         comparison_messages = []
         for group in same_type_models:
             # Get the comparison message for each group of models with the same type
             if len(group) == 1:
-                comparison_message = type(group[0][2]).__name__
+                comparison_message = type(group[0].model).__name__
             else:
-                comparison_message = f"{type(group[0][2]).__name__} " \
+                comparison_message = f"{type(group[0].model).__name__} " \
                                      f"models with parameters: {create_comparison_message(group)}"
             comparison_messages.append(comparison_message)
         print("Choosing the best out of the models:")
@@ -52,17 +53,16 @@ def compare_models_by_type_and_parameters(models_list):
             print(message)
 
 
-def group_models_by_type(models_list):
+def group_models_by_type(models_list: list[ModelResults]):
     # break to same types
     model_types = []
-    for model_name, results, model, parameters in models_list:
-        model_types.append(type(model))
-        unique_types = set(model_types)
-        same_type_models = []
-        for model_type in unique_types:
-            same_type_models.append(
-                [(model_name, results, model, parameters) for model_name, results, model, parameters in models_list if
-                 type(model) == model_type])
+    for model_result in models_list:
+        model_types.append(type(model_result.model))
+    unique_types = set(model_types)
+    same_type_models = []
+    for model_type in unique_types:
+        same_type_models.append(
+            [model_result for model_result in models_list if type(model_result.model) == model_type])
     return same_type_models
 
 
