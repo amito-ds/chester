@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, precision_recall_fscore_support
 
-from mdoel_training.data_preparation import CVData, Parameter
+from mdoel_training.data_preparation import CVData, Parameter, ComplexParameter
 from typing import List
 from sklearn.preprocessing import LabelBinarizer
 
@@ -20,6 +20,24 @@ logistic_regression_default_parameters = [
     Parameter('solver', default_parameters['solver']),
     Parameter('max_iter', default_parameters['max_iter'])
 ]
+
+
+import random
+
+# Define the parameters and their options
+iterations = ComplexParameter("iterations", (20, 50))
+learning_rate = ComplexParameter("learning_rate", (0.01, 0.1))
+penalty = ComplexParameter("penalty", ["l1", "l2"])
+C = ComplexParameter("C", (0.01, 1))
+
+Create a ComplexParameterSet instance
+parameter_set = ComplexParameterSet([iterations, learning_rate, penalty, C])
+
+Sample the parameter set
+parameters = parameter_set.sample()
+
+Print the report
+print_report(parameters)
 
 
 def logistic_regression_with_outputs(cv_data: CVData, target_col: str, parameters: list[Parameter] = None,

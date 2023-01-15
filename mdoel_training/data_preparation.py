@@ -2,10 +2,11 @@
 import os
 import random
 import sys
+from typing import List
+
 
 path = os.path.abspath("TCAP")
 sys.path.append(path)
-from data_loader.webtext_data import load_data_chat_logs
 
 from sklearn.model_selection import KFold
 
@@ -32,10 +33,6 @@ class Parameter:
     def __init__(self, name, value):
         self.name = name
         self.value = value
-
-
-import re
-from typing import List
 
 
 class ComplexParameter:
