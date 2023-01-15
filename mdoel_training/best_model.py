@@ -31,38 +31,44 @@ class ModelCycle:
         pass
 
     def get_best_model(self):
+        # getting results from model training
         models_results_regression, models_results_classification = self.running_all_models()
-        print("models_results_regression", models_results_regression)
-        print("models_results_classification", models_results_classification)
         compare_models_by_type_and_parameters(models_results_classification)  # get init message
-        # if len(models_results_regression) > 1:
-        #     print("regression results")
-        #     self.compare_results(models_results_regression)
-        # if len(models_results_classification) > 1:
-        #     print("classification results")
-        #     self.compare_results(models_results_classification)
+        if len(models_results_classification) > 1:
+            print("classification results")
+            return self.compare_results(models_results_classification)
+        if len(models_results_regression) > 1:
+            print("regression results")
+            return self.compare_results(models_results_regression)
         pass
 
-    def compare_results(self, model_results: list[ModelResults]):
+    def compare_results(self, model_results: list[ModelResults], decimal_points=3):
         test_results = \
             [model_result.aggregate_results()[model_result.aggregate_results()['type'] == "test"] for model_result in
              model_results]
-        metric_names = test_results[0].columns
-        for metric_name in metric_names:
+        metric_names = test_results[0].columns.tolist()
+        metric_names.pop(0)
+        metric_names.pop(0)
+        for i, metric_name in enumerate(metric_names):
             is_higher_better = is_metric_higher_better(metric_name)
             if is_higher_better:
-                metric_values = [result[metric_name] for result in test_results]
+                metric_values = [round(result[metric_name].values[0], decimal_points) for result in test_results]
                 sorted_models = [model for _, model in sorted(zip(metric_values, model_results), reverse=True)]
+                if i == 0:
+                    best_model = sorted_models[0]
             else:
-                metric_values = [result[metric_name] for result in test_results]
+                metric_values = [round(result[metric_name].values[0], decimal_points) for result in test_results]
                 sorted_models = [model for _, model in sorted(zip(metric_values, model_results))]
+                if i == 0:
+                    best_model = sorted_models[0]
             print(f"The best models for {metric_name} metric are: ")
-            for model in sorted_models:
-                print(model.model_name)
+            for i, model in enumerate(sorted_models):
+                print(f"{i + 1}. {model.model_name} with value: {metric_values[i]}")
+        return best_model
 
-    def running_all_models(self):
-        models_results_classification = None
-        models_results_regression = None
+    def running_all_models(self) -> (list[ModelResults], list[ModelResults]):
+        models_results_classification: list[ModelResults] = []
+        models_results_regression: list[ModelResults] = []
         is_regression, is_classification = self.determine_problem_type()
         if is_regression:
             print("Considering the inputs, running regression model")
@@ -81,11 +87,11 @@ class ModelCycle:
             # results4, model4, parameters, predictions = lstm_with_outputs(
             #     self.cv_data, parameters=self.parameters, target_col=self.target_col,
             #     metric_funcs=self.metric_funcs, label_encoder=label_encoder)
-            model_res1: ModelResults = ModelResults("baseline", pd.DataFrame(results1), model1, [],
+            model_res1: ModelResults = ModelResults("baseline", model1, pd.DataFrame(results1), [],
                                                     predictions=pd.Series())
-            model_res2: ModelResults = ModelResults("lgbm", pd.DataFrame(results2), model2, lgbm_parameters,
+            model_res2: ModelResults = ModelResults("lgbm", model2, pd.DataFrame(results2), lgbm_parameters,
                                                     predictions=pd.Series())
-            model_res3: ModelResults = ModelResults("logistic regression", pd.DataFrame(results3), model3,
+            model_res3: ModelResults = ModelResults("logistic regression", model3, pd.DataFrame(results3),
                                                     logistic_regression_parameters, predictions=pd.Series())
             models_results_classification = [model_res1, model_res2, model_res3]
         return models_results_regression, models_results_classification
@@ -103,5 +109,4 @@ def is_metric_higher_better(metric_name: str) -> bool:
     else:
         raise ValueError(f"Metric {metric_name} not recognized.")
 
-
-print(is_metric_higher_better("ROC"))
+# print(is_metric_higher_better("ROC"))

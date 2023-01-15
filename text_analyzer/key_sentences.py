@@ -77,7 +77,7 @@ def extract_key_sentences(df: pd.DataFrame, text_column='clean_text', algorithm=
     full_text = '. '.join(df[text_column])
 
     if algorithm == 'LSA':
-        sentences = extract_key_sentences_lsa(full_text, n_sentences)
+        sentences = list(set(extract_key_sentences_lsa(full_text, n_sentences)))[0:n_sentences]
     # elif algorithm == 'summarization':
     #     sentences = extract_first_k_words(extract_key_sentences_summarization(full_text, ratio=0.1), top_words)
     elif algorithm == 'common_sentences':

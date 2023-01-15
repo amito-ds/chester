@@ -1,6 +1,8 @@
 import lightgbm as lgb
+import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression, LinearRegression
+from sklearn.svm import SVC
 
 from mdoel_training.model_results import ModelResults
 
@@ -38,6 +40,7 @@ def compare_models_by_type_and_parameters(models_list: list[ModelResults]):
     else:
         # Get a list of lists, where each inner list contains the model tuples of models that are of the same type
         same_type_models = group_models_by_type(models_list)
+        print(same_type_models)
         # Initialize an empty list to store comparison messages
         comparison_messages = []
         for group in same_type_models:
@@ -64,6 +67,16 @@ def group_models_by_type(models_list: list[ModelResults]):
         same_type_models.append(
             [model_result for model_result in models_list if type(model_result.model) == model_type])
     return same_type_models
+
+
+# models_list = [ModelResults("Logistic Regression", LogisticRegression(), pd.DataFrame(), [], pd.Series()),
+#                ModelResults("Random Forest", RandomForestClassifier(), pd.DataFrame(), [], pd.Series()),
+#                ModelResults("SVM", SVC(), pd.DataFrame(), [], pd.Series())]
+#
+# assert group_models_by_type(models_list) == [
+#     [(ModelResults("Logistic Regression", LogisticRegression(), pd.DataFrame(), [], pd.Series()))],
+#     [(ModelResults("Random Forest", RandomForestClassifier(), pd.DataFrame(), [], pd.Series()))],
+#     [(ModelResults("SVM", SVC(), pd.DataFrame(), [], pd.Series()))]]
 
 
 def create_comparison_message(models_list):

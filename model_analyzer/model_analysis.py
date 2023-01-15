@@ -18,15 +18,21 @@ class ModelAnalyzer:
         self.model = model
 
     def shap_values(self, X_train: pd.DataFrame):
-        try:
-            explainer = shap.Explainer(self.model, X_train, check_additivity=False)
-            shap_values = explainer(X_train, check_additivity=False)
-            plt.title("SHAP values for train set")
-            shap.summary_plot(shap_values, X_train)
-        except:
-            pass
+        ## TO DO handle model types, get it as an argument
+        explainer = shap.Explainer(self.model, X_train)
+        shap_values = explainer(X_train)
+        plt.title("SHAP values for train set")
+        shap.summary_plot(shap_values, X_train)
+        # try:
+        #     explainer = shap.Explainer(self.model, X_train, check_additivity=False)
+        #     shap_values = explainer(X_train, check_additivity=False)
+        #     plt.title("SHAP values for train set")
+        #     shap.summary_plot(shap_values, X_train)
+        # except:
+        #     pass
 
     def coefficients(self) -> None:
+        print("print coef")
         coef = self.model.coef_[0]
         if len(coef) < 50:
             plt.bar(np.arange(len(coef)), coef)
@@ -157,7 +163,7 @@ class ModelAnalyzer:
             self.plot_feature_importance(model, X_train)
         if shap_values:
             print(messages.shap_values_message())
-            print(X_train.shape)
+            print(" shap X_train shape", X_train.shape)
             self.shap_values(X_train)
         if coefficients:
             print(messages.coefficients_message())

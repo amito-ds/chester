@@ -18,10 +18,11 @@ class ModelResults:
 
     def aggregate_results(self):
         # Remove columns that appear in parameters
-        param_cols = [param.name for param in self.parameters]
-        self.results_df.drop(columns=param_cols, inplace=True)
+        # param_cols = [param.name for param in self.parameters]
+        # self.results.drop(columns=param_cols, inplace=True)
 
         # Aggregate over folds
-        aggregate_df = self.results_df.groupby(['type']).mean()
+        aggregate_df = self.results.groupby(['type']).mean()
+        aggregate_df.reset_index(inplace=True)
 
         return aggregate_df
