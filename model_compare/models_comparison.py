@@ -3,7 +3,7 @@ from typing import List
 import pandas as pd
 
 from mdoel_training.data_preparation import Parameter
-from mdoel_training.model_results import ModelResults
+from mdoel_training.model_input_and_output_classes import ModelResults
 from model_compare.compare_messages import compare_models_by_type_and_parameters
 import lightgbm as lgb
 from sklearn.ensemble import RandomForestClassifier

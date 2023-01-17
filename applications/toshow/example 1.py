@@ -5,7 +5,7 @@ from data_loader.webtext_data import load_data_pirates, load_data_king_arthur
 from features_engineering.fe_main import get_embeddings
 from mdoel_training.best_model import ModelCycle
 from mdoel_training.data_preparation import CVData
-from mdoel_training.model_results import ModelResults
+from mdoel_training.model_input_and_output_classes import ModelResults
 from preprocessing.preprocessing import preprocess_text, get_stemmer
 from text_analyzer import smart_text_analyzer
 from util import get_stopwords

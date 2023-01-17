@@ -4,7 +4,7 @@ import pandas as pd
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support, recall_score, f1_score
 
 from mdoel_training.data_preparation import CVData
-from mdoel_training.lgbm_class import score_lgbm
+from mdoel_training.models.lgbm_class import score_lgbm
 
 
 class BaselineModel:

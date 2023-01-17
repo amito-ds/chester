@@ -11,8 +11,12 @@ from sklearn.preprocessing import LabelEncoder
 
 from mdoel_training.data_preparation import CVData
 import Levenshtein
-
-
+#
+# You need to pass the trained model to the shap.Explainer() function, not just the name of the model.
+#
+# The shap.summary_plot() function can take the shap values and the data as input, but it's also possible to pass a specific feature to the shap.summary_plot() function, for example shap.summary_plot(shap_values, X_train, feature_names='feature_name')
+#
+# The shap.summary_plot() function can also take other parameters such as plot_type which can be set to "bar" to show shap values as a bar chart, class_names to show the names of the classes in a classification problem and color to set the color of the shap values.
 class ModelAnalyzer:
     def __init__(self, model):
         self.model = model

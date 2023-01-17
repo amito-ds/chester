@@ -12,11 +12,27 @@ class ProblemType:
 
     def determine_problem_type(self, unique_value_classification_treshold=3):
         # Check the type of target column
-        if isinstance(self.y.iloc[0][0], str):
-            self.is_classification = True
-        elif isinstance(self.y.iloc[0][0], (int64, int, float64, float)):
-            # Check the number of unique values in the target column
-            unique_values = len(set(np.unique(self.y)))
+        try:
+            if isinstance(self.y.iloc[0][0], str):
+                self.is_classification = True
+        except:
+            pass
+        try:
+            if isinstance(self.y.iloc[0][0], (int64, int, float64, float)):
+                # Check the number of unique values in the target column
+                unique_values = len(set(np.unique(self.y)))
+                if unique_values == 1:
+                    self.is_regression = False
+                    self.is_classification = False
+                if unique_values > unique_value_classification_treshold:
+                    self.is_regression = True
+                else:
+                    self.is_regression = True
+                    self.is_classification = True
+        except:
+            pass
+        unique_values = len(set(np.unique(self.y)))
+        if unique_values < 3:
             if unique_values == 1:
                 self.is_regression = False
                 self.is_classification = False

@@ -4,7 +4,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression, LinearRegression
 from sklearn.svm import SVC
 
-from mdoel_training.model_results import ModelResults
+from mdoel_training.model_input_and_output_classes import ModelResults
 
 class_name_dict = {
     'LinearRegression': 'Linear Model',

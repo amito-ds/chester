@@ -1,5 +1,10 @@
 import logging
 
+import numpy as np
+
+from mdoel_training.model_input_and_output_classes import ModelInput
+from mdoel_training.model_utils import organize_results
+
 logging.getLogger("lightgbm").setLevel(logging.ERROR)
 import lightgbm as lgb
 
@@ -8,7 +13,10 @@ from typing import List
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support, recall_score, f1_score
 from sklearn.preprocessing import LabelBinarizer
 
-from mdoel_training.data_preparation import CVData, Parameter
+from mdoel_training.data_preparation import CVData, Parameter, ComplexParameter
+from typing import List, Dict
+from itertools import product
+from sklearn.model_selection import GridSearchCV
 
 default_parameters = {
     'objective': 'binary',
@@ -41,11 +49,22 @@ def train_lgbm(X_train, y_train, parameters: list[Parameter]):
     :param X_train: The training data features
     :param y_train: The training data labels
     :param parameters: A list of dictionaries, each representing a set of hyperparameters
-    :return: A list of trained lightgbm models
+    :return: A trained lightgbm models
     """
     params = {}
     for param in parameters:
         params[param.name] = param.value
+    y_train = np.asarray(y_train)
+
+    n_classes = len(np.unique(y_train))
+    if n_classes == 2:
+        params['objective'] = 'binary'
+        params['metric'] = 'binary_logloss'
+    else:
+        params['num_class'] = n_classes
+    print(params)
+    print(len(np.unique(y_train)))
+    print(type(y_train))
     model = lgb.LGBMClassifier(**params)
     model.fit(X_train, y_train, verbose=-1)
     return model
@@ -112,3 +131,33 @@ def lgbm_with_outputs(cv_data: CVData, parameters: list[Parameter], target_col: 
     results.append({'type': 'train', 'fold': i, **{param.name: param.value for param in parameters}, **train_scores})
     results.append({'type': 'test', 'fold': i, **{param.name: param.value for param in parameters}, **test_scores})
     return results, model, parameters
+
+
+def lgbm_grid_search(cv_data: CVData, parameters: List[ComplexParameter], target_col: str,
+                     metric_funcs: List[callable] = None):
+    if not metric_funcs:
+        metric_func = 'accuracy'
+    else:
+        metric_func = metric_funcs[0]
+    if not parameters:
+        parameters = lgbm_class_default_parameters
+    params = {}
+    for param in parameters:
+        params[param.name] = param.value
+    model = lgb.LGBMClassifier()
+    y_train = cv_data.train_data[target_col]
+    params['num_class'] = [len(np.unique(y_train))]
+    gs = GridSearchCV(model, params, cv=cv_data.splits, scoring=metric_func, return_train_score=True)
+    print(np.unique(cv_data.train_data[target_col]))
+    gs.fit(cv_data.train_data.drop(target_col, axis=1), y_train)
+    return gs.cv_results_
+
+
+def lgbm_class_hp(inputs: ModelInput):
+    results, _, _ = lgbm_with_outputs(inputs.cv_data, inputs.parameters, inputs.target_col)
+    results = organize_results(results)
+    results.drop([p.name for p in inputs.parameters], axis=1, inplace=True)
+    results = results.loc[results['type'] == 'test']
+    print(results)
+    avg_3rd_col = results.iloc[:, 2].mean()
+    return avg_3rd_col

@@ -1,14 +1,12 @@
 from typing import List
 
 import pandas as pd
-from sklearn.preprocessing import LabelEncoder
 
 from mdoel_training.baseline_model import baseline_with_outputs
 from mdoel_training.data_preparation import CVData, Parameter
-from mdoel_training.lgbm_class import lgbm_with_outputs
-from mdoel_training.logistic_regression import logistic_regression_with_outputs
-from mdoel_training.lstm import lstm_with_outputs
-from mdoel_training.model_results import ModelResults
+from mdoel_training.models.lgbm_class import lgbm_with_outputs
+from mdoel_training.models.logistic_regression import logistic_regression_with_outputs
+from mdoel_training.model_input_and_output_classes import ModelResults
 from mdoel_training.model_type_detector import ProblemType
 from model_compare.compare_messages import compare_models_by_type_and_parameters
 
@@ -74,8 +72,8 @@ class ModelCycle:
             print("Considering the inputs, running regression model")
             pass
         if is_classification:
-            label_encoder = LabelEncoder()
-            label_encoder = label_encoder.fit(self.cv_data.train_data[self.target_col])
+            # label_encoder = LabelEncoder()
+            # label_encoder = label_encoder.fit(self.cv_data.train_data[self.target_col])
             print("Considering the inputs, running classification model")
             results1, model1 = baseline_with_outputs(
                 cv_data=self.cv_data, target_col=self.target_col, metric_funcs=self.metric_funcs)
@@ -84,16 +82,14 @@ class ModelCycle:
                 metric_funcs=self.metric_funcs)
             results3, model3, logistic_regression_parameters = logistic_regression_with_outputs(
                 cv_data=self.cv_data, parameters=self.parameters, target_col=self.target_col, metric_funcs=None)
-            # results4, model4, parameters, predictions = lstm_with_outputs(
-            #     self.cv_data, parameters=self.parameters, target_col=self.target_col,
-            #     metric_funcs=self.metric_funcs, label_encoder=label_encoder)
             model_res1: ModelResults = ModelResults("baseline", model1, pd.DataFrame(results1), [],
                                                     predictions=pd.Series())
             model_res2: ModelResults = ModelResults("lgbm", model2, pd.DataFrame(results2), lgbm_parameters,
                                                     predictions=pd.Series())
             model_res3: ModelResults = ModelResults("logistic regression", model3, pd.DataFrame(results3),
                                                     logistic_regression_parameters, predictions=pd.Series())
-            models_results_classification = [model_res1, model_res2, model_res3]
+            # models_results_classification = [model_res1, model_res2, model_res3]
+            models_results_classification = [model_res2]
         return models_results_regression, models_results_classification
 
 

@@ -1,7 +1,7 @@
 import pandas as pd
 from typing import List
 
-from mdoel_training.data_preparation import Parameter
+from mdoel_training.data_preparation import Parameter, CVData
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression, LinearRegression
 
@@ -26,3 +26,10 @@ class ModelResults:
         aggregate_df.reset_index(inplace=True)
 
         return aggregate_df
+
+
+class ModelInput:
+    def __init__(self, cv_data: CVData, parameters: List[Parameter], target_col: str):
+        self.cv_data = cv_data
+        self.parameters = parameters
+        self.target_col = target_col
