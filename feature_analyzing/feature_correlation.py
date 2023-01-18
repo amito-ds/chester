@@ -51,7 +51,7 @@ the correlation matrix.
 
 
 class PreModelAnalysis:
-    def __init__(self, df: pd.DataFrame, target_column: str = 200, top_n_features: int = 200):
+    def __init__(self, df: pd.DataFrame, target_column: str = 'target', top_n_features: int = 200):
         self.df = df
         self.target_column = target_column
         self.is_model = not (not target_column)

@@ -26,19 +26,9 @@ df['text'] = df['text'].apply(lambda x: clean_text(x,
 # # # preprocess the text column
 df['clean_text'] = df['text'].apply(lambda x:
                                     preprocess_text(x, stemmer=get_stemmer('porter'), stem_flag=True))
-# #
-# # #
-train_embedding, test_embedding = get_embeddings(training_data=df, corex=True, tfidf=False, bow=False, corex_dim=10)
-#
-# #
-# # print(train_embedding.shape)
-# # print(test_embedding.shape)
-# #
-# train_embedding.to_csv("train_embedding.csv")
-# test_embedding.to_csv("test_embedding.csv")
 
-# train_embedding = pd.read_csv("train_embedding.csv")
-# test_embedding = pd.read_csv("test_embedding.csv")
+train_embedding, test_embedding = get_embeddings(training_data=df, corex=True, tfidf=False, bow=False, corex_dim=10)
+
 train_embedding = train_embedding.drop(train_embedding.columns[0], axis=1)
 test_embedding = test_embedding.drop(test_embedding.columns[0], axis=1)
 
@@ -58,7 +48,7 @@ analyze_model(best_model.model, cv_data, target_label='target')
 
 # # # # # Organize results
 organized_results = organize_results(best_model.results)
-# print(organized_results.shape)
+
 # # # #
 analyze_results(organized_results, best_model.parameters)
 analyze_model(best_model.model, cv_data, target_label='target')

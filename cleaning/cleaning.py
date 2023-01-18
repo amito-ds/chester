@@ -7,6 +7,8 @@ import string
 
 import pandas as pd
 
+from util import get_stopwords
+
 
 def remove_punctuation(text: str) -> str:
     """Remove all punctuation from the given text."""
@@ -99,7 +101,7 @@ def clean_text(text: str,
                remove_whitespace_flag: bool = True,
                remove_empty_line_flag: bool = True,
                lowercase_flag: bool = True,
-               remove_stopwords_flag: bool = False,
+               remove_stopwords_flag: bool = True,
                stopwords: List[str] = None,
                remove_accented_characters_flag: bool = True,
                remove_special_characters_flag: bool = True,
@@ -130,6 +132,7 @@ def clean_text(text: str,
     if lowercase_flag:
         text = lowercase(text)
     if remove_stopwords_flag:
+        stopwords = get_stopwords()
         text = remove_stopwords(text, stopwords)
     if remove_accented_characters_flag:
         text = remove_accented_characters(text)

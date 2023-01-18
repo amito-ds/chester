@@ -4,7 +4,7 @@ from nltk.stem import PorterStemmer, SnowballStemmer, LancasterStemmer
 from nltk.stem import WordNetLemmatizer
 
 
-def get_stemmer(name):
+def get_stemmer(name=None):
     if name == "porter":
         return PorterStemmer()
     elif name == "snowball":
@@ -12,7 +12,7 @@ def get_stemmer(name):
     elif name == "lancaster":
         return LancasterStemmer()
     else:
-        raise ValueError(f"Invalid stemmer name: {name}")
+        return PorterStemmer()
 
 
 def lemmatize(text, lemmatizer=WordNetLemmatizer()):

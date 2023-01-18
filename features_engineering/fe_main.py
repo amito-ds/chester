@@ -10,7 +10,7 @@ def get_embeddings(training_data: pd.DataFrame,
                    test_data: pd.DataFrame = None,
                    split_data: bool = True, split_prop: float = 0.3, split_random_state=42,
                    text_column="clean_text", target_col='target',
-                   corex=True, corex_dim=10, tfidf=True, tfidf_dim=10000, bow=True, bow_dim=10000,
+                   corex=True, corex_dim=100, tfidf=True, tfidf_dim=10000, bow=True, bow_dim=10000,
                    ngram_range=(1, 1)):
     if split_data:
         if not test_data:
