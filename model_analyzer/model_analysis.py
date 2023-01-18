@@ -11,6 +11,8 @@ from sklearn.preprocessing import LabelEncoder
 
 from mdoel_training.data_preparation import CVData
 import Levenshtein
+
+
 #
 # You need to pass the trained model to the shap.Explainer() function, not just the name of the model.
 #
@@ -23,17 +25,18 @@ class ModelAnalyzer:
 
     def shap_values(self, X_train: pd.DataFrame):
         ## TO DO handle model types, get it as an argument
-        explainer = shap.Explainer(self.model, X_train)
-        shap_values = explainer(X_train)
-        plt.title("SHAP values for train set")
-        shap.summary_plot(shap_values, X_train)
-        # try:
-        #     explainer = shap.Explainer(self.model, X_train, check_additivity=False)
-        #     shap_values = explainer(X_train, check_additivity=False)
-        #     plt.title("SHAP values for train set")
-        #     shap.summary_plot(shap_values, X_train)
-        # except:
-        #     pass
+        # explainer = shap.Explainer(self.model, X_train)
+        # explainer = shap.TreeExplainer(self.model)
+        # shap_values = explainer(X_train)
+        # plt.title("SHAP values for train set")
+        # shap.summary_plot(shap_values, X_train)
+        try:
+            explainer = shap.Explainer(self.model, X_train, check_additivity=False)
+            shap_values = explainer(X_train, check_additivity=False)
+            plt.title("SHAP values for train set")
+            shap.summary_plot(shap_values, X_train)
+        except:
+            pass
 
     def coefficients(self) -> None:
         print("print coef")

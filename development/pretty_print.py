@@ -1,8 +1,10 @@
-from typing import List
-
-from IPython.display import display
 from IPython.core.display import HTML
+import random
+
+import matplotlib.pyplot as plt
 import pandas as pd
+from IPython.core.display import HTML
+from IPython.display import display
 
 
 def print_dataframe(df: pd.DataFrame, n_rows: int = None, trim_text_cols: int = None, decimal_places: int = 2,
@@ -30,8 +32,6 @@ def print_dataframe(df: pd.DataFrame, n_rows: int = None, trim_text_cols: int = 
     display(HTML(df.to_html()))
 
 
-import pandas as pd
-
 data = {
     'name': ['Alice', 'Bob', 'Charlie', 'David'],
     'age': [25, 32, 45, 27],
@@ -40,28 +40,7 @@ data = {
     'score': [8.5, 7.3, 9.0, 6.5]
 }
 
-# df = pd.DataFrame(data)
-#
-# # Print the first 5 rows of the dataframe
-# print_dataframe(df, n_rows=5)
-#
-# # Print the first 5 rows of the dataframe, trimming text columns by 20 characters, rounding numeric columns to 2 decimal places
-# print_dataframe(df, n_rows=5, trim_text_cols=20, decimal_places=2)
-#
-# # Print the first 5 rows of the dataframe, with certain columns highlighted in specific colors
-# color_cols = [('column_name', 'red'), ('another_column', 'blue')]
-# print_dataframe(df, n_rows=5, color_cols=color_cols)
 
-import matplotlib.pyplot as plt
-import pandas as pd
-import random
-
-import matplotlib.pyplot as plt
-import pandas as pd
-import random
-import matplotlib.pyplot as plt
-import pandas as pd
-import random
 
 
 def format_data(df: pd.DataFrame, decimal_points=2, max_chars=20):
@@ -105,12 +84,6 @@ def calculate_font_size(df_formatted: pd.DataFrame):
     return font_size
 
 
-# your code to calculate font size based on data size and other parameters
-
-
-import pandas as pd
-
-
 def print_word_with_color(value, color: str):
     color_codes = {
         "red": "\033[91m",
@@ -128,9 +101,6 @@ def print_word_with_color(value, color: str):
         print(value)
 
 
-from tabulate import tabulate
-
-
 def print_pandas_with_colors(df: pd.DataFrame):
     for i, row in df.iterrows():
         for j, col in enumerate(df.columns):
@@ -142,19 +112,3 @@ def print_pandas_with_colors(df: pd.DataFrame):
                     print_word_with_color(row[col], color)
         print()
 
-
-
-# Create a sample DataFrame
-# Example 1
-import seaborn as sns
-import pandas as pd
-
-# Create a sample dataset
-data = {'A': [1, 2, 3, 4], 'B': [5, 6, 7, 8], 'C': [9, 10, 11, 12]}
-df = pd.DataFrame(data)
-
-# Create the heatmap
-sns.heatmap(df, cmap='coolwarm')
-
-# Show the plot
-plt.show()

@@ -47,6 +47,7 @@ class ModelCycle:
         metric_names = test_results[0].columns.tolist()
         metric_names.pop(0)
         metric_names.pop(0)
+        print("metric_names", metric_names)
         for i, metric_name in enumerate(metric_names):
             is_higher_better = is_metric_higher_better(metric_name)
             if is_higher_better:
@@ -88,8 +89,8 @@ class ModelCycle:
                                                     predictions=pd.Series())
             model_res3: ModelResults = ModelResults("logistic regression", model3, pd.DataFrame(results3),
                                                     logistic_regression_parameters, predictions=pd.Series())
-            # models_results_classification = [model_res1, model_res2, model_res3]
-            models_results_classification = [model_res2]
+            models_results_classification = [model_res1, model_res2, model_res3]
+            # models_results_classification = [model_res2]
         return models_results_regression, models_results_classification
 
 

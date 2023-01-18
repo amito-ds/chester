@@ -3,6 +3,7 @@ from sklearn.preprocessing import LabelEncoder
 
 from mdoel_training.best_model import ModelCycle
 from mdoel_training.data_preparation import CVData
+from model_analyzer.model_analysis import analyze_model
 
 #
 # #
@@ -44,7 +45,11 @@ test_embedding[target_col] = label_encoder.transform(test_embedding[target_col])
 cv_data = CVData(train_data=train_embedding, test_data=test_embedding, folds=2)
 best_model = ModelCycle(cv_data=cv_data, target_col='target').get_best_model()
 
-print(best_model.predict())
+# train the best model
+best_model.model.fit(train_embedding.drop(columns=[target_col]), train_embedding[target_col])
+
+analyze_model(best_model.model, cv_data, target_label='target')
+
 # best_params, best_score = \
 #     Optimizer(logistic_regression_hp,
 #               logistic_regression_best_practice_hp(),

@@ -9,7 +9,7 @@ from nltk.corpus import stopwords
 
 
 def get_stopwords():
-    nltk.download('stopwords')
+    nltk.download('stopwords', quiet=True)
     return stopwords.words('english')
 
 
