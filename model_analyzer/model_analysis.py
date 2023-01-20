@@ -1,28 +1,16 @@
-import difflib
-from typing import List
-import plotly.express as px
-
+import Levenshtein
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import plotly.express as px
 import seaborn as sns
 import shap
-from matplotlib import pyplot as plt
-from pygments.lexers import go
 from sklearn import metrics
-from sklearn.preprocessing import LabelEncoder
 
 from mdoel_training.data_preparation import CVData
-import Levenshtein
-
 from mdoel_training.models.scoring import calculate_score_model
 
 
-#
-# You need to pass the trained model to the shap.Explainer() function, not just the name of the model.
-#
-# The shap.summary_plot() function can take the shap values and the data as input, but it's also possible to pass a specific feature to the shap.summary_plot() function, for example shap.summary_plot(shap_values, X_train, feature_names='feature_name')
-#
-# The shap.summary_plot() function can also take other parameters such as plot_type which can be set to "bar" to show shap values as a bar chart, class_names to show the names of the classes in a classification problem and color to set the color of the shap values.
 class ModelAnalyzer:
     def __init__(self, model):
         self.model = model
@@ -59,7 +47,8 @@ class ModelAnalyzer:
             {'type': 'train', **train_scores})
         results.append({'type': 'test', **test_scores})
 
-    def analyze(self, X_train: pd.DataFrame, y_train: pd.Series, X_test: pd.DataFrame, y_test: pd.Series,
+    def analyze(self, X_train: pd.DataFrame, y_train: pd.Series,
+                X_test: pd.DataFrame, y_test: pd.Series,
                 model, shap_values: bool = True, coefficients: bool = True,
                 performance_metrics: bool = True, confusion_matrix: bool = True,
                 roc_curve: bool = True, learning_curve: bool = True,
@@ -78,7 +67,6 @@ class ModelAnalyzer:
         if shap_values:
             if unique_classes == 2:
                 # print(messages.shap_values_message())
-                # print(" shap X_train shape", X_train.shape)
                 try:
                     self.shap_values(X_train)
                 except:
@@ -235,9 +223,6 @@ def get_default_metrics(y):
         return [metrics.mean_squared_error, metrics.r2_score]
 
 
-import jellyfish
-
-
 def get_traffic_light(metric_name, value):
     thresholds = {"Accuracy": (0.8, 0.9, 0.95),
                   "F1-Score": (0.7, 0.8, 0.9),
@@ -269,11 +254,6 @@ def get_traffic_light(metric_name, value):
         return 'g'
 
 
-import matplotlib.pyplot as plt
-import seaborn as sns
-
-import seaborn as sns
-import matplotlib.pyplot as plt
 
 
 def population_pyramid_plot(train_metrics, test_metrics=None):

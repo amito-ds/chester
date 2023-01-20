@@ -77,7 +77,7 @@ class FeatureExtraction:
                  test_data: pd.DataFrame = None,
                  split_data: bool = True, split_prop: float = 0.3, split_random_state=42,
                  text_column="text", target_column='target',
-                 corex=True, corex_dim=100, tfidf=True, tfidf_dim=10000, bow=True, bow_dim=10000,
+                 corex=True, corex_dim=50, tfidf=True, tfidf_dim=1000, bow=True, bow_dim=1000,
                  ngram_range=(1, 1)):
         self.training_data = training_data
         self.test_data = test_data

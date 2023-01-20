@@ -1,10 +1,8 @@
 import lightgbm as lgb
-import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression, LinearRegression
-from sklearn.svm import SVC
 
-from mdoel_training.model_input_and_output_classes import ModelResults
+from mdoel_training.models.model_input_and_output_classes import ModelResults
 
 class_name_dict = {
     'LinearRegression': 'Linear Model',

@@ -1,13 +1,9 @@
-import numpy as np
+import pandas as pd
 import pandas as pd
 import seaborn as sns
 from matplotlib import pyplot as plt
 
-from mdoel_training.data_preparation import CVData, Parameter
-from model_analyzer.model_analysis import ModelAnalyzer
-
-
-
+from mdoel_training.data_preparation import Parameter
 
 
 def analyze_results(results: pd.DataFrame, parameters: list[Parameter]):

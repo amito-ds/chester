@@ -1,4 +1,3 @@
-# from preprocessing.preprocessing import preprocess_df_text
 import os
 import random
 import sys
@@ -68,27 +67,3 @@ class ComplexParameterSet:
 def print_report(parameters: List[Parameter]):
     for param in parameters:
         print(f"{param.name}: {param.value}")
-
-
-# Usage example
-
-if __name__ == '__main__':
-    options = [1, 2, 3, 4, 5]
-    param1 = ComplexParameter('param1', options)
-    options = (0, 1)
-    param2 = ComplexParameter('param2', options)
-    options = [0, 1, 2, 3, 4, 5]
-    param3 = ComplexParameter('param3', options)
-
-    param_set = ComplexParameterSet([param1, param2, param3])
-
-    print(print_report(param_set.sample()))
-
-    # df = load_data_chat_logs()
-    # cv_data = cv_preparation(train_data=df, test_data=df, k_fold=5)
-
-    # x, y, z = cv_preparation(train_data=df_embedding, test_data=df_test_embedding, k_fold=10)
-    # print(x.shape)
-    # print(y.shape)
-    # for el in z:
-    #     print(el[0].shape, el[1].shape)

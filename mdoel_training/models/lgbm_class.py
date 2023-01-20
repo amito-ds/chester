@@ -3,10 +3,11 @@ import logging
 import numpy as np
 import pandas as pd
 
-from mdoel_training.model_input_and_output_classes import ModelInput
+from mdoel_training.models.model_input_and_output_classes import ModelInput
 from mdoel_training.models.scoring import calculate_score_model
 
-logging.getLogger("lightgbm").setLevel(logging.ERROR)
+logging.getLogger("lightgbm").setLevel(logging.WARN)
+logging.getLogger("lightgbm").setLevel(logging.WARNING)
 import lightgbm as lgb
 
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support, recall_score, f1_score

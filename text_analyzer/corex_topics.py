@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import scipy.sparse as ss
 from corextopic import corextopic as ct
 from sklearn.feature_extraction.text import CountVectorizer
@@ -25,10 +26,15 @@ def plot_corex_wordcloud(df, top_words=10, n_topics=5):
     plt.show()
 
 
-def get_top_words(df, top_words, n_topics, max_features=1000, ngram_range=(1, 2)):
+def get_top_words(df: pd.DataFrame,
+                  top_words,
+                  n_topics,
+                  max_features=1000,
+                  text_col: str = 'text',
+                  ngram_range=(1, 2)):
     # Preprocess data
     vectorizer = CountVectorizer(stop_words='english', max_features=max_features, binary=True, ngram_range=ngram_range)
-    doc_word = vectorizer.fit_transform(df['clean_text'])
+    doc_word = vectorizer.fit_transform(df[text_col])
     doc_word = ss.csr_matrix(doc_word)
     feature_names = list(vectorizer.vocabulary_.keys())
     words = list(np.asarray(feature_names))

@@ -3,6 +3,8 @@ import warnings
 import IPython
 from matplotlib.backends.backend_pdf import PdfPages
 
+from text_analyzer.smart_text_analyzer import analyze_text
+
 
 def warn(*args, **kwargs):
     pass
@@ -54,7 +56,11 @@ def run_full_cycle(text_cleaner: cln.TextCleaner,
     parameter_super_completer(text_preprocesser, [text_cleaner])
     # pp
     df = preprocess_text_df(text_preprocesser)
-    #
+    
+    ## Text stats
+    analyze_text(df)
+
+
     # #### Feature extraction
     if not feature_extraction:
         feature_extraction = FeatureExtraction(training_data=df)

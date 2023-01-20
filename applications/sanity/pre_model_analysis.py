@@ -33,7 +33,7 @@ df['text'] = df['text'].apply(lambda x: clean_text(x,
                                                    stopwords=get_sw))
 #
 # # preprocess the text column
-df['clean_text'] = df['text'].apply(lambda x:
+df['text'] = df['text'].apply(lambda x:
                                     preprocess_text(x, stemmer=get_stemmer('porter'), stem_flag=True))
 #
 # #

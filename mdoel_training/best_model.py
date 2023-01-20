@@ -2,12 +2,11 @@ from typing import List
 
 import pandas as pd
 
-from mdoel_training.baseline_model import baseline_with_outputs
+from mdoel_training.models.baseline_model import baseline_with_outputs
 from mdoel_training.data_preparation import CVData, Parameter
 from mdoel_training.models.lgbm_class import lgbm_with_outputs
 from mdoel_training.models.logistic_regression import logistic_regression_with_outputs
-from mdoel_training.model_input_and_output_classes import ModelResults
-from mdoel_training.model_type_detector import ProblemType
+from mdoel_training.models.model_input_and_output_classes import ModelResults
 from model_compare.compare_messages import compare_models_by_type_and_parameters
 
 

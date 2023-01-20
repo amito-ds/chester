@@ -1,14 +1,12 @@
-import numpy as np
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, precision_recall_fscore_support
+from sklearn.metrics import accuracy_score, recall_score, f1_score, precision_recall_fscore_support
 
-from mdoel_training.data_preparation import CVData, Parameter, ComplexParameter
+from mdoel_training.data_preparation import CVData, Parameter
 from typing import List
-from sklearn.preprocessing import LabelBinarizer
 
 import pandas as pd
 
-from mdoel_training.model_input_and_output_classes import ModelInput
+from mdoel_training.models.model_input_and_output_classes import ModelInput
 from mdoel_training.models.scoring import calculate_score_model
 
 default_parameters = {

@@ -1,10 +1,7 @@
-from typing import Dict, List
+from typing import List
 
-import numpy as np
-from scipy.optimize import minimize
-
-from mdoel_training.data_preparation import ComplexParameter, Parameter
-from mdoel_training.model_input_and_output_classes import ModelInput
+from mdoel_training.data_preparation import ComplexParameter
+from mdoel_training.models.model_input_and_output_classes import ModelInput
 from .hp_space import sample_hp_space
 
 
