@@ -32,7 +32,11 @@ df1 = load_data_chat_logs().assign(target='chat_logs').sample(100, replace=True)
 df2 = load_data_king_arthur().assign(target='wow').sample(100, replace=True)
 df4 = load_data_chat_logs().assign(target='shma').sample(100, replace=True)
 df3 = load_data_pirates().assign(target='pirate').sample(100, replace=True)
-df = pd.concat([df1, df2, df3, df4])
+df = pd.concat([
+    df1,
+    df2,
+    # df3,
+    df4])
 # #
 # # # # Clean the text column
 get_sw = get_stopwords()

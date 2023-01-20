@@ -50,4 +50,4 @@ test_embedding[target_col] = label_encoder.transform(test_embedding[target_col])
 
 
 pma = PreModelAnalysis(train_embedding, target_column=target_col)
-print(pma.run())
+pma.run()
