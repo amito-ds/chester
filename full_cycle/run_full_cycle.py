@@ -107,17 +107,9 @@ from util import get_stopwords
 #
 # #
 # # #
-df1 = load_data_chat_logs().assign(target='chat_logs').sample(500, replace=True)
-df2 = load_data_king_arthur().assign(target='wow').sample(100, replace=True)
-df3 = load_data_pirates().assign(target='pirate').sample(500, replace=True)
-df4 = load_data_chat_logs().assign(target='chat_logs_b').sample(100, replace=True)
-
-df = pd.concat([
-    df1,
-    df2,
-    # df3,
-    # df4
-])
+df1 = load_data_pirates().assign(target='chat_logs')
+df2 = load_data_king_arthur().assign(target='pirates')
+df = pd.concat([df1, df2])
 
 import sys
 
