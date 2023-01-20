@@ -46,13 +46,11 @@ class ModelCycle:
     def running_all_models(self) -> list[ModelResults]:
         print("try running running all models")
         print("Considering the inputs, running classification model")
-        results1, model1 = baseline_with_outputs(
-            cv_data=self.cv_data, target_col=self.target_col, metric_funcs=self.metric_funcs)
+        results1, model1 = baseline_with_outputs(cv_data=self.cv_data, target_col=self.target_col)
         results2, model2, lgbm_parameters = lgbm_with_outputs(
-            cv_data=self.cv_data, parameters=self.parameters, target_col=self.target_col,
-            metric_funcs=self.metric_funcs)
+            cv_data=self.cv_data, parameters=self.parameters, target_col=self.target_col)
         results3, model3, logistic_regression_parameters = logistic_regression_with_outputs(
-            cv_data=self.cv_data, parameters=self.parameters, target_col=self.target_col, metric_funcs=None)
+            cv_data=self.cv_data, parameters=self.parameters, target_col=self.target_col)
         model_res1: ModelResults = ModelResults("baseline", model1, pd.DataFrame(results1), [],
                                                 predictions=pd.Series())
         model_res2: ModelResults = ModelResults("lgbm", model2, pd.DataFrame(results2), lgbm_parameters,
@@ -60,6 +58,8 @@ class ModelCycle:
         model_res3: ModelResults = ModelResults("logistic regression", model3, pd.DataFrame(results3),
                                                 logistic_regression_parameters, predictions=pd.Series())
         models_results_classification = [model_res1, model_res2, model_res3]
+
+
         return models_results_classification
 
 

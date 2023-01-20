@@ -1,16 +1,20 @@
 import difflib
 from typing import List
+import plotly.express as px
 
 import numpy as np
 import pandas as pd
 import seaborn as sns
 import shap
 from matplotlib import pyplot as plt
+from pygments.lexers import go
 from sklearn import metrics
 from sklearn.preprocessing import LabelEncoder
 
 from mdoel_training.data_preparation import CVData
 import Levenshtein
+
+from mdoel_training.models.scoring import calculate_score_model
 
 
 #
@@ -24,22 +28,12 @@ class ModelAnalyzer:
         self.model = model
 
     def shap_values(self, X_train: pd.DataFrame):
-        ## TO DO handle model types, get it as an argument
-        # explainer = shap.Explainer(self.model, X_train)
-        # explainer = shap.TreeExplainer(self.model)
-        # shap_values = explainer(X_train)
-        # plt.title("SHAP values for train set")
-        # shap.summary_plot(shap_values, X_train)
-        try:
-            explainer = shap.Explainer(self.model, X_train, check_additivity=False)
-            shap_values = explainer(X_train, check_additivity=False)
-            plt.title("SHAP values for train set")
-            shap.summary_plot(shap_values, X_train)
-        except:
-            pass
+        explainer = shap.Explainer(self.model, X_train, check_additivity=False)
+        shap_values = explainer(X_train, check_additivity=False)
+        plt.title("SHAP values for train set")
+        shap.summary_plot(shap_values, X_train)
 
     def coefficients(self) -> None:
-        print("print coef")
         coef = self.model.coef_[0]
         if len(coef) < 50:
             plt.bar(np.arange(len(coef)), coef)
@@ -52,31 +46,62 @@ class ModelAnalyzer:
             plt.xlabel("Coefficients")
         plt.show()
 
-    def performance_metrics(self, X_train: pd.DataFrame, y_train: pd.Series, X_test: pd.DataFrame, y_test: pd.Series,
-                            metric_functions: List) -> None:
-        try:
-            train_metrics = {metric.__name__: metric(y_train, self.model.predict(X_train)) for metric in
-                             metric_functions}
-            test_metrics = {metric.__name__: metric(y_test, self.model.predict(X_test)) for metric in metric_functions}
-        except ValueError as e:
-            if len(np.unique(y_train)) == 2:
-                # converting categorical labels to 0,1
-                encoder = LabelEncoder()
-                y_train = encoder.fit_transform(y_train)
-                y_test = encoder.transform(y_test)
-                train_predictions = encoder.transform(self.model.predict(X_train))
-                test_predictions = encoder.transform(self.model.predict(X_test))
-                train_metrics = {metric.__name__: metric(y_train, train_predictions) for metric in metric_functions}
-                test_metrics = {metric.__name__: metric(y_test, test_predictions) for metric in metric_functions}
-            else:
-                print(f"Error: {e}. Skipping performance metrics calculation.")
-        train_metrics = pd.DataFrame(train_metrics.items(), columns=["Metric Name", "Value"])
-        test_metrics = pd.DataFrame(test_metrics.items(), columns=["Metric Name", "Value"])
-        print("Train set performance:")
-        print(train_metrics)
-        print("Test set performance:")
-        print(test_metrics)
-        # population_pyramid_plot(train_metrics, test_metrics)
+    def performance_metrics(self, X_train: pd.DataFrame,
+                            y_train: pd.Series,
+                            X_test: pd.DataFrame,
+                            y_test: pd.Series) -> None:
+        train_pred = self.model.predict(X_train)
+        test_pred = self.model.predict(X_test)
+        train_scores = calculate_score_model(y_train, train_pred)
+        test_scores = calculate_score_model(y_test, test_pred)
+        results = []
+        results.append(
+            {'type': 'train', **train_scores})
+        results.append({'type': 'test', **test_scores})
+
+    def analyze(self, X_train: pd.DataFrame, y_train: pd.Series, X_test: pd.DataFrame, y_test: pd.Series,
+                model, shap_values: bool = True, coefficients: bool = True,
+                performance_metrics: bool = True, confusion_matrix: bool = True,
+                roc_curve: bool = True, learning_curve: bool = True,
+                feature_importance: bool = True) -> None:
+        messages = AnalyzeMessages()
+        unique_classes = len(np.unique(y_train))
+        if feature_importance:
+            # print(messages.feature_importance_message())
+            try:
+                self.plot_feature_importance(X_train)
+            except:
+                try:
+                    self.plot_simple_feature_importance(X_train)
+                except:
+                    pass
+        if shap_values:
+            if unique_classes == 2:
+                # print(messages.shap_values_message())
+                # print(" shap X_train shape", X_train.shape)
+                try:
+                    self.shap_values(X_train)
+                except:
+                    pass
+        if coefficients:
+            # print(messages.coefficients_message()
+            try:
+                self.coefficients()
+            except:
+                pass
+        if performance_metrics:
+            # print(messages.performance_metrics_message())
+            self.performance_metrics(X_train, y_train, X_test, y_test)
+        if confusion_matrix:
+            # print(messages.confusion_matrix_message())
+            self.confusion_matrix(X_test, y_test)
+        if roc_curve:
+            if unique_classes == 2:
+                # print(messages.roc_curve_message())
+                self.roc_curve(X_test, y_test)
+        if learning_curve:
+            # print(messages.learning_curve_message())
+            self.learning_curve(X_train, y_train)
 
     def confusion_matrix(self, X_test: pd.DataFrame, y_test: pd.Series) -> None:
         from sklearn.metrics import confusion_matrix
@@ -93,8 +118,7 @@ class ModelAnalyzer:
         from sklearn.metrics import roc_curve, auc
         try:
             y_pred = self.model.predict_proba(X_test)
-            y_test_binary = (y_test == 'pirates').astype(int)
-            fpr, tpr, thresholds = roc_curve(y_test_binary, y_pred[:, 1])
+            fpr, tpr, thresholds = roc_curve(y_test, y_pred[:, 1])
             roc_auc = auc(fpr, tpr)
             plt.figure()
             plt.plot(fpr, tpr, color='darkorange', lw=1, label='ROC curve (area = %0.2f)' % roc_auc)
@@ -132,61 +156,26 @@ class ModelAnalyzer:
         except:
             pass
 
-    import matplotlib.pyplot as plt
+    def plot_simple_feature_importance(self, X_train: pd.DataFrame):
+        feature_importance = self.model.feature_importances_
+        feature_importance = 100.0 * (feature_importance / feature_importance.max())
+        feature_names = X_train.columns
+        important_idx = np.argsort(feature_importance)
+        data = {'feature_names': feature_names[important_idx], 'feature_importance': feature_importance[important_idx]}
+        df = pd.DataFrame(data)
+        sns.barplot(y='feature_names', x='feature_importance', data=df)
+        plt.xlabel("Feature importance")
+        plt.show()
 
-    def plot_feature_importance(self, model, X_train):
-        if type(model).__name__ == 'LGBMClassifier':
-            feature_importance = model.feature_importances_
-            feature_importance = 100.0 * (feature_importance / feature_importance.max())
-            feature_names = X_train.columns
-            important_idx = np.where(feature_importance)[0]
-            important_features = feature_names[important_idx]
-            plt.barh(range(important_idx.shape[0]), feature_importance[important_idx], align='center')
-            plt.yticks(range(important_idx.shape[0]), important_features)
-            plt.xlabel("Feature importance")
-            plt.ylabel("Feature")
-            plt.show()
-        elif type(model).__name__ == 'RandomForestClassifier':
-            feature_importance = model.feature_importances_
-            feature_names = X_train.columns
-            important_idx = np.where(feature_importance)[0]
-            important_features = feature_names[important_idx]
-            plt.barh(range(important_idx.shape[0]), feature_importance[important_idx], align='center')
-            plt.yticks(range(important_idx.shape[0]), important_features)
-            plt.xlabel("Feature importance")
-            plt.ylabel("Feature")
-            plt.show()
-        else:
-            print(f'Feature importance not available for {type(model).__name__} model')
-
-    def analyze(self, X_train: pd.DataFrame, y_train: pd.Series, X_test: pd.DataFrame, y_test: pd.Series,
-                metric_functions: List, model, shap_values: bool = True, coefficients: bool = False,
-                performance_metrics: bool = True, confusion_matrix: bool = True,
-                roc_curve: bool = True, learning_curve: bool = True, feature_importance: bool = True) -> None:
-
-        messages = AnalyzeMessages()
-        if feature_importance:
-            # print(messages.feature_importance_message())
-            self.plot_feature_importance(model, X_train)
-        if shap_values:
-            print(messages.shap_values_message())
-            print(" shap X_train shape", X_train.shape)
-            self.shap_values(X_train)
-        if coefficients:
-            print(messages.coefficients_message())
-            self.coefficients()
-        if performance_metrics:
-            print(messages.performance_metrics_message())
-            self.performance_metrics(X_train, y_train, X_test, y_test, metric_functions)
-        if confusion_matrix:
-            print(messages.confusion_matrix_message())
-            self.confusion_matrix(X_test, y_test)
-        if roc_curve:
-            print(messages.roc_curve_message())
-            self.roc_curve(X_test, y_test)
-        if learning_curve:
-            print(messages.learning_curve_message())
-            self.learning_curve(X_train, y_train)
+    def plot_feature_importance(self, X_train: pd.DataFrame):
+        feature_importance = self.model.feature_importances_
+        feature_importance = 100.0 * (feature_importance / feature_importance.max())
+        feature_names = X_train.columns
+        important_idx = np.argsort(feature_importance)
+        data = {'feature_names': feature_names[important_idx], 'feature_importance': feature_importance[important_idx]}
+        df = pd.DataFrame(data)
+        fig = px.bar(df, x='feature_importance', y='feature_names', orientation='h', text='feature_importance')
+        fig.show()
 
 
 class AnalyzeMessages:

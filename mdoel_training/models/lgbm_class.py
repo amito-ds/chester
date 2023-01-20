@@ -4,11 +4,12 @@ import numpy as np
 
 from mdoel_training.model_input_and_output_classes import ModelInput
 from mdoel_training.model_utils import organize_results
+from mdoel_training.models.scoring import calculate_score_model
 
 logging.getLogger("lightgbm").setLevel(logging.ERROR)
 import lightgbm as lgb
 
-# from sklearn.metrics import accuracy_score, precision_recall_fscore_support, recall_score, f1_score
+from sklearn.metrics import accuracy_score, precision_recall_fscore_support, recall_score, f1_score
 
 from mdoel_training.data_preparation import CVData, Parameter, ComplexParameter
 from typing import List
@@ -57,6 +58,8 @@ def train_lgbm(X_train, y_train, parameters: list[Parameter]):
         params['objective'] = 'binary'
         params['metric'] = 'binary_logloss'
     else:
+        params['objective'] = 'multiclass'
+        params['metric'] = 'multi_logloss'
         params['num_class'] = n_classes
     print(params)
     print(len(np.unique(y_train)))
@@ -76,35 +79,9 @@ def predict_lgbm(model, X):
     return model.predict(X)
 
 
-def score_model(y, prediction):
-    """
-    Calculates evaluation metrics for the predictions
-    :param y: The true labels
-    :param prediction: predictions
-    :return: A dictionary of metric scores for each model
-    """
-    from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-    unique_values = len(np.unique(y))
-
-    scores = {}
-    if unique_values == 2:
-        scores['accuracy_score'] = accuracy_score(y, prediction)
-        scores['precision_score'] = precision_score(y, prediction)
-        scores['recall_score'] = recall_score(y, prediction)
-        scores['f1_score'] = f1_score(y, prediction)
-    else:
-        scores['accuracy_score'] = accuracy_score(y, prediction)
-        scores['precision_score'] = precision_score(y, prediction, average='micro')
-        scores['recall_score'] = recall_score(y, prediction, average='micro')
-        scores['f1_score'] = f1_score(y, prediction, average='micro')
-    return scores
-
-
-def lgbm_with_outputs(cv_data: CVData, parameters: list[Parameter], target_col: str,
-                      metric_funcs: List[callable] = None):
+def lgbm_with_outputs(cv_data: CVData, parameters: list[Parameter], target_col: str):
     results = []
-    if not metric_funcs:
-        metric_funcs = [accuracy_score, precision_recall_fscore_support, recall_score, f1_score]
+    metric_funcs = [accuracy_score, precision_recall_fscore_support, recall_score, f1_score]
     if not parameters:
         parameters = lgbm_class_default_parameters
     for i, (train_index, test_index) in enumerate(cv_data.splits):
@@ -116,8 +93,8 @@ def lgbm_with_outputs(cv_data: CVData, parameters: list[Parameter], target_col: 
         train_pred = predict_lgbm(model, X_train)
         test_pred = predict_lgbm(model, X_test)
 
-        train_scores = score_model(y_train, train_pred)
-        test_scores = score_model(y_test, test_pred)
+        train_scores = calculate_score_model(y_train, train_pred)
+        test_scores = calculate_score_model(y_test, test_pred)
 
         results.append(
             {'type': 'train', 'fold': i, **{param.name: param.value for param in parameters}, **train_scores})
@@ -131,10 +108,10 @@ def lgbm_with_outputs(cv_data: CVData, parameters: list[Parameter], target_col: 
     X_test = X_test.drop(columns=[target_col])
     train_pred = predict_lgbm(model, X_train)
     test_pred = predict_lgbm(model, X_test)
-    train_scores = score_model(y_train, train_pred)
-    test_scores = score_model(y_test, test_pred)
-    results.append({'type': 'train', 'fold': i, **{param.name: param.value for param in parameters}, **train_scores})
-    results.append({'type': 'test', 'fold': i, **{param.name: param.value for param in parameters}, **test_scores})
+    train_scores = calculate_score_model(y_train, train_pred)
+    test_scores = calculate_score_model(y_test, test_pred)
+    results.append({'type': 'train', 'fold': i+1, **{param.name: param.value for param in parameters}, **train_scores})
+    results.append({'type': 'test', 'fold': i+1, **{param.name: param.value for param in parameters}, **test_scores})
     return results, model, parameters
 
 

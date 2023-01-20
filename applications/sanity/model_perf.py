@@ -48,8 +48,6 @@ train_embedding, test_embedding = get_embeddings(
     tfidf=True, tfidf_dim=90,
     bow=True, bow_dim=100)
 
-train_embedding = train_embedding.drop(train_embedding.columns[0], axis=1)
-test_embedding = test_embedding.drop(test_embedding.columns[0], axis=1)
 
 target_col = 'target'
 label_encoder = LabelEncoder()
