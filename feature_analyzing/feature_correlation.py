@@ -51,14 +51,23 @@ the correlation matrix.
 
 
 class PreModelAnalysis:
-    def __init__(self, df: pd.DataFrame, target_column: str = 'target', top_n_features: int = 200):
+    def __init__(self,
+                 df: pd.DataFrame = None,
+                 target_column: str = 'target',
+                 top_n_features: int = 200,
+                 correlation_matrix=True,
+                 tsne_plot=True,
+                 top_n_pairplot=False,
+                 chi_square_test_all_features=True
+                 ):
         self.df = df
+        self.top_n_features = top_n_features
         self.target_column = target_column
         self.is_model = not (not target_column)
-        if top_n_features:
-            self.df = self.df[self.select_top_variance_features(top_n_features)]
-        if target_column:
-            self.df[target_column] = df[target_column]
+        self.correlation_matrix_bool = correlation_matrix
+        self.tsne_plot_bool = tsne_plot
+        self.top_n_pairplot_bool = top_n_pairplot
+        self.chi_square_test_all_features_bool = chi_square_test_all_features
 
     def get_model_type(self, class_threshold: int = 2):
         is_classification, is_regression = (False, False)
@@ -75,6 +84,7 @@ class PreModelAnalysis:
 
     def correlation_matrix(self):
         print(correlation_matrix_message)
+        print("this is the df!", self.df[0:10])
         corr = self.df.corr()
         plt.figure(figsize=(10, 8))
         plt.title("Feature correlation matrix")
@@ -125,7 +135,6 @@ class PreModelAnalysis:
         pvalues = {}
         for feature in self.df.columns:
             if feature != self.target_column:
-
                 X = self.df[[feature]]
                 kmeans = KMeans(n_clusters=k)
                 kmeans.fit(X)
@@ -149,28 +158,24 @@ class PreModelAnalysis:
         plt.title("Histogram of p-values")
         plt.show()
 
-    def feature_correlation(self):
-        print("performing feature correlation")
-        # get model type (classification, regression, both)
-        # get if its a model
-
-        # if not a model -> feature correlation (all features are numerics)
-        # else:
-        # if regression: plot correlation table, heatmap. last column is the target. choose the right correlation metric for this problem
-        # if calssification:plot correlation table, heatmap. last column is the target. choose the right correlation metric for this problem
-
-    def run(self, correlation_matrix=True, tsne_plot=True, top_n_pairplot=True, chi_square_test_all_features=True):
-        if correlation_matrix:
+    def run(self):
+        if self.top_n_features:
+            print("narrow featrues")
+            print("self.top_n_features", self.top_n_features)
+            print(self.select_top_variance_features(self.top_n_features))
+            self.df = self.df[self.select_top_variance_features(self.top_n_features)]
+        if self.correlation_matrix_bool:
             self.correlation_matrix()
-        if tsne_plot:
+        if self.tsne_plot_bool:
             self.tsne_plot()
-        if top_n_pairplot:
+        if self.top_n_pairplot_bool:
             self.top_n_pairplot()
-        if chi_square_test_all_features:
+        if self.chi_square_test_all_features_bool:
             self.plot_pvalues()
 
     def select_top_variance_features(self, n=200):
+        print("this is self 10 10 ", self.df[0:10])
         variances = self.df.var()
+        print("variances dim", variances[0:10])
         top_features = variances.sort_values(ascending=False).head(n).index
         return top_features
-

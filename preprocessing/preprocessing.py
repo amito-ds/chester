@@ -78,7 +78,12 @@ def print_preprocessing_options(stemmer=None, lemmatizer=None, stem_flag=False, 
         print("Tagging parts of speech")
 
 
-def preprocess_text(text, stemmer=None, lemmatizer=None, stem_flag=False, lemmatize_flag=False, tokenize_flag=True,
+def preprocess_text(text,
+                    stemmer=None,
+                    lemmatizer=None,
+                    stem_flag=False,
+                    lemmatize_flag=False,
+                    tokenize_flag=True,
                     pos_tag_flag=False):
     if stem_flag and lemmatize_flag:
         raise ValueError("Both stemmer and lemmatizer cannot be applied. Please choose one.")
@@ -105,3 +110,42 @@ def preprocess_text(text, stemmer=None, lemmatizer=None, stem_flag=False, lemmat
         lemmatized_words = stemmed_words
 
     return ' '.join(lemmatized_words)
+
+
+import pandas as pd
+
+
+class TextPreprocessor:
+    def __init__(self,
+                 df: pd.DataFrame = None,
+                 text_column: str = 'text',
+                 stemmer=None,
+                 lemmatizer=None,
+                 stem_flag=False,
+                 lemmatize_flag=False,
+                 tokenize_flag=True,
+                 pos_tag_flag=False):
+        self.df = df
+        self.text_column = text_column
+        self.stemmer = stemmer
+        self.lemmatizer = lemmatizer
+        self.stem_flag = stem_flag
+        self.lemmatize_flag = lemmatize_flag
+        self.tokenize_flag = tokenize_flag
+        self.pos_tag_flag = pos_tag_flag
+
+
+def preprocess_text_df(text_preprocessor: TextPreprocessor):
+    df = text_preprocessor.df
+    text_column = text_preprocessor.text_column
+
+    df[text_column] = df[text_column].apply(lambda x: preprocess_text(
+        x,
+        stemmer=text_preprocessor.stemmer,
+        lemmatizer=text_preprocessor.lemmatizer,
+        stem_flag=text_preprocessor.stem_flag,
+        lemmatize_flag=text_preprocessor.lemmatize_flag,
+        tokenize_flag=text_preprocessor.tokenize_flag,
+        pos_tag_flag=text_preprocessor.pos_tag_flag
+    ))
+    return df

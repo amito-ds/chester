@@ -12,7 +12,6 @@ class B:
 
 
 if __name__ == 'main':
-    print("here")
     df = pd.DataFrame()
     A_obj = A(df=df)
     B_obj = B()

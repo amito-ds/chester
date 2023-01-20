@@ -132,7 +132,8 @@ def clean_text(text: str,
     if lowercase_flag:
         text = lowercase(text)
     if remove_stopwords_flag:
-        stopwords = get_stopwords()
+        if not stopwords:
+            stopwords = get_stopwords()
         text = remove_stopwords(text, stopwords)
     if remove_accented_characters_flag:
         text = remove_accented_characters(text)
@@ -141,3 +142,53 @@ def clean_text(text: str,
     if remove_html_tags_flag:
         text = remove_html_tags(text)
     return text
+
+
+from typing import List
+
+
+class TextCleaner:
+    def __init__(self,
+                 df: pd.DataFrame,
+                 text_column: str = 'text',
+                 remove_punctuation_flag: bool = True,
+                 remove_numbers_flag: bool = True,
+                 remove_whitespace_flag: bool = True,
+                 remove_empty_line_flag: bool = True,
+                 lowercase_flag: bool = True,
+                 remove_stopwords_flag: bool = True,
+                 stopwords: List[str] = None,
+                 remove_accented_characters_flag: bool = True,
+                 remove_special_characters_flag: bool = True,
+                 remove_html_tags_flag: bool = True):
+        self.df = df
+        self.text_column = text_column
+        self.remove_punctuation_flag = remove_punctuation_flag
+        self.remove_numbers_flag = remove_numbers_flag
+        self.remove_whitespace_flag = remove_whitespace_flag
+        self.remove_empty_line_flag = remove_empty_line_flag
+        self.lowercase_flag = lowercase_flag
+        self.remove_stopwords_flag = remove_stopwords_flag
+        self.stopwords = stopwords
+        self.remove_accented_characters_flag = remove_accented_characters_flag
+        self.remove_special_characters_flag = remove_special_characters_flag
+        self.remove_html_tags_flag = remove_html_tags_flag
+
+
+def clean_text_df(text_cleaner: TextCleaner) -> pd.DataFrame:
+    df = text_cleaner.df
+    text_col = text_cleaner.text_column
+    df[text_col] = df[text_col].apply(lambda x: clean_text(
+        x,
+        remove_punctuation_flag=text_cleaner.remove_punctuation_flag,
+        remove_numbers_flag=text_cleaner.remove_numbers_flag,
+        remove_whitespace_flag=text_cleaner.remove_whitespace_flag,
+        remove_empty_line_flag=text_cleaner.remove_empty_line_flag,
+        lowercase_flag=text_cleaner.lowercase_flag,
+        remove_stopwords_flag=text_cleaner.remove_stopwords_flag,
+        stopwords=text_cleaner.stopwords,
+        remove_accented_characters_flag=text_cleaner.remove_accented_characters_flag,
+        remove_special_characters_flag=text_cleaner.remove_special_characters_flag,
+        remove_html_tags_flag=text_cleaner.remove_html_tags_flag
+    ))
+    return df

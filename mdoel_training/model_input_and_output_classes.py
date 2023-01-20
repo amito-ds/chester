@@ -5,7 +5,6 @@ from mdoel_training.data_preparation import Parameter, CVData
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression, LinearRegression
 
-from mdoel_training.model_utils import organize_results
 
 
 class ModelResults:

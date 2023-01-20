@@ -7,8 +7,7 @@ from mdoel_training.data_preparation import CVData, Parameter
 from model_analyzer.model_analysis import ModelAnalyzer
 
 
-def organize_results(results):
-    return pd.DataFrame(results)
+
 
 
 def analyze_results(results: pd.DataFrame, parameters: list[Parameter]):

@@ -21,7 +21,7 @@ from data_loader.webtext_data import load_data_pirates, load_data_king_arthur
 from features_engineering.fe_main import get_embeddings
 from mdoel_training.best_model import ModelCycle
 from mdoel_training.data_preparation import CVData
-from mdoel_training.model_utils import organize_results, analyze_results
+from mdoel_training.model_utils import  analyze_results
 from model_analyzer.model_analysis import analyze_model
 from preprocessing.preprocessing import preprocess_text, get_stemmer
 from util import get_stopwords
@@ -64,7 +64,7 @@ best_model.model.fit(train_embedding.drop(columns=[target_col]), train_embedding
 analyze_model(best_model.model, cv_data, target_label='target')
 
 # # # # # Organize results
-organized_results = organize_results(best_model.results)
+organized_results = pd.DataFrame(best_model.results)
 
 # # # #
 analyze_results(organized_results, best_model.parameters)

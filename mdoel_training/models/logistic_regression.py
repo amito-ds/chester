@@ -9,7 +9,6 @@ from sklearn.preprocessing import LabelBinarizer
 import pandas as pd
 
 from mdoel_training.model_input_and_output_classes import ModelInput
-from mdoel_training.model_utils import organize_results
 from mdoel_training.models.scoring import calculate_score_model
 
 default_parameters = {
@@ -70,7 +69,7 @@ def logistic_regression_with_outputs(cv_data: CVData, target_col: str, parameter
 def logistic_regression_hp(inputs: ModelInput):
     results, _, _ = logistic_regression_with_outputs(
         inputs.cv_data, target_col=inputs.target_col, parameters=inputs.parameters)
-    results = organize_results(results)
+    results = pd.DataFrame(results)
     results.drop([p.name for p in inputs.parameters], axis=1, inplace=True)
     results = results.loc[results['type'] == 'test']
     print(inputs.parameters)

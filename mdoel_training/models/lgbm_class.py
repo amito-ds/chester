@@ -1,9 +1,9 @@
 import logging
 
 import numpy as np
+import pandas as pd
 
 from mdoel_training.model_input_and_output_classes import ModelInput
-from mdoel_training.model_utils import organize_results
 from mdoel_training.models.scoring import calculate_score_model
 
 logging.getLogger("lightgbm").setLevel(logging.ERROR)
@@ -100,6 +100,7 @@ def lgbm_with_outputs(cv_data: CVData, parameters: list[Parameter], target_col: 
             {'type': 'train', 'fold': i, **{param.name: param.value for param in parameters}, **train_scores})
         results.append({'type': 'test', 'fold': i, **{param.name: param.value for param in parameters}, **test_scores})
 
+    parameters.append(Parameter("verbose", 1))
     model = train_lgbm(cv_data.train_data.drop(columns=[target_col]), cv_data.train_data[target_col], parameters)
     for i, (train_index, test_index) in enumerate(cv_data.splits):
         X_train, X_test = cv_data.train_data.iloc[train_index], cv_data.train_data.iloc[test_index]
@@ -137,7 +138,7 @@ def lgbm_grid_search(cv_data: CVData, parameters: List[ComplexParameter], target
 
 def lgbm_class_hp(inputs: ModelInput):
     results, _, _ = lgbm_with_outputs(inputs.cv_data, inputs.parameters, inputs.target_col)
-    results = organize_results(results)
+    results = pd.DataFrame(results)
     results.drop([p.name for p in inputs.parameters], axis=1, inplace=True)
     results = results.loc[results['type'] == 'test']
     print(results)
