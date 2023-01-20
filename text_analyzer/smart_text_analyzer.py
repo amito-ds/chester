@@ -118,4 +118,4 @@ def analyze_text(df: pd.DataFrame,
         plot_corex_wordcloud(df, n_topics=corex_topics_num, top_words=top_words)
     if key_sentences:
         print(key_sentences_message)
-        print(extract_key_sentences(df, n_sentences=n_sentences, top_words=top_words))
+        print(extract_key_sentences(df, n_sentences=n_sentences))

@@ -47,7 +47,7 @@ def extract_key_sentences_lsa(text, k=10):
     return [sentences[i] for i in sentence_scores_sorted]
 
 
-def key_sentences(df, text_column='clean_text', common_sentences=10):
+def key_sentences(df, text_column='text', common_sentences=10):
     # Concatenate all text in the specified column into one string
     all_text = ". ".join(df[text_column])
 
