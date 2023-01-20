@@ -8,14 +8,10 @@ from mdoel_training.model_utils import organize_results
 logging.getLogger("lightgbm").setLevel(logging.ERROR)
 import lightgbm as lgb
 
-from typing import List
-
-from sklearn.metrics import accuracy_score, precision_recall_fscore_support, recall_score, f1_score
-from sklearn.preprocessing import LabelBinarizer
+# from sklearn.metrics import accuracy_score, precision_recall_fscore_support, recall_score, f1_score
 
 from mdoel_training.data_preparation import CVData, Parameter, ComplexParameter
-from typing import List, Dict
-from itertools import product
+from typing import List
 from sklearn.model_selection import GridSearchCV
 
 default_parameters = {
@@ -80,19 +76,35 @@ def predict_lgbm(model, X):
     return model.predict(X)
 
 
-def score_lgbm(y, prediction, metric_funcs: List[callable]):
-    """
-    Calculates evaluation metrics for the predictions
-    :param y: The true labels
-    :param prediction: predictions
-    :param metric_funcs: A list of evaluation metric functions
-    :return: A dictionary of metric scores for each model
-    """
-    label_binarizer = LabelBinarizer()
-    y = label_binarizer.fit_transform(y)
-    pred = label_binarizer.transform(prediction)
-    scores = {metric.__name__: metric(y, pred) for metric in metric_funcs}
-    return scores
+def score_model(y, prediction):
+    return []
+
+
+# def score_model(y, prediction):
+#     """
+#     Calculates evaluation metrics for the predictions
+#     :param y: The true labels
+#     :param prediction: predictions
+#     :return: A dictionary of metric scores for each model
+#     """
+#     from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+#     from sklearn.preprocessing import LabelEncoder
+#     # le = LabelEncoder()
+#     # y = le.fit_transform(y)
+#     unique_values = len(np.unique(y))
+#
+#     scores = {}
+#     if unique_values == 2:
+#         scores['accuracy_score'] = accuracy_score(y, prediction)
+#         scores['precision_score'] = precision_score(y, prediction)
+#         scores['recall_score'] = recall_score(y, prediction)
+#         scores['f1_score'] = f1_score(y, prediction)
+#     else:
+#         scores['accuracy_score'] = accuracy_score(y, prediction)
+#         scores['precision_score'] = precision_score(y, prediction, average='micro')
+#         scores['recall_score'] = recall_score(y, prediction, average='micro')
+#         scores['f1_score'] = f1_score(y, prediction, average='micro')
+#     return scores
 
 
 def lgbm_with_outputs(cv_data: CVData, parameters: list[Parameter], target_col: str,
@@ -111,8 +123,8 @@ def lgbm_with_outputs(cv_data: CVData, parameters: list[Parameter], target_col: 
         train_pred = predict_lgbm(model, X_train)
         test_pred = predict_lgbm(model, X_test)
 
-        train_scores = score_lgbm(y_train, train_pred, metric_funcs)
-        test_scores = score_lgbm(y_test, test_pred, metric_funcs)
+        train_scores = score_model(y_train, train_pred)
+        test_scores = score_model(y_test, test_pred)
 
         results.append(
             {'type': 'train', 'fold': i, **{param.name: param.value for param in parameters}, **train_scores})
@@ -126,8 +138,8 @@ def lgbm_with_outputs(cv_data: CVData, parameters: list[Parameter], target_col: 
     X_test = X_test.drop(columns=[target_col])
     train_pred = predict_lgbm(model, X_train)
     test_pred = predict_lgbm(model, X_test)
-    train_scores = score_lgbm(y_train, train_pred, metric_funcs)
-    test_scores = score_lgbm(y_test, test_pred, metric_funcs)
+    train_scores = score_model(y_train, train_pred)
+    test_scores = score_model(y_test, test_pred)
     results.append({'type': 'train', 'fold': i, **{param.name: param.value for param in parameters}, **train_scores})
     results.append({'type': 'test', 'fold': i, **{param.name: param.value for param in parameters}, **test_scores})
     return results, model, parameters

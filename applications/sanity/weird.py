@@ -36,7 +36,7 @@ df['clean_text'] = df['text'].apply(lambda x:
 # smart_text_analyzer.analyze_text(df)
 
 ### create embedding
-train_embedding, test_embedding = get_embeddings(training_data=df, corex=True, tfidf=True, bow=True, corex_dim=5)
+train_embedding, test_embedding = get_embeddings(training_data=df, corex=True, tfidf=True, bow=True, corex_dim=30)
 
 # Create a CVData object
 cv_data = CVData(train_data=train_embedding, test_data=test_embedding)

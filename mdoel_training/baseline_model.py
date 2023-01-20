@@ -4,7 +4,7 @@ import pandas as pd
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support, recall_score, f1_score
 
 from mdoel_training.data_preparation import CVData
-from mdoel_training.models.lgbm_class import score_lgbm
+from mdoel_training.models.lgbm_class import score_model
 
 
 class BaselineModel:
@@ -43,6 +43,7 @@ def train_baseline(X_train, y_train, baseline_value=None, percentile=None):
     """
     model = BaselineModel(baseline_value=baseline_value, percentile=percentile)
     model.fit(y_train)
+    # print("baseline model predict", model.transform(X_train))
     return model
 
 
@@ -67,8 +68,10 @@ def baseline_with_outputs(cv_data: CVData, target_col: str, baseline_num=None, p
         model = train_baseline(X_train, y_train, baseline_num, percentile)
         prediction = predict_baseline(model, X_test)
         prediction_train = predict_baseline(model, X_train)
-        scores = score_lgbm(y_test, prediction, metric_funcs)
+        print("y_test is", y_test)
+        print("prediction is", prediction)
+        scores = [] #score_model(y_test, prediction)
         results.append({'type': 'test', 'fold': i, **scores})
-        scores = score_lgbm(y_train, prediction_train, metric_funcs)
+        scores = [] #score_model(y_train, prediction_train)
         results.append({'type': 'train', 'fold': i, **scores})
     return results, model
