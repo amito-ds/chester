@@ -149,7 +149,7 @@ from typing import List
 
 class TextCleaner:
     def __init__(self,
-                 df: pd.DataFrame,
+                 df: pd.DataFrame = None,
                  text_column: str = 'text',
                  remove_punctuation_flag: bool = True,
                  remove_numbers_flag: bool = True,

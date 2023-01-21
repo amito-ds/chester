@@ -1,3 +1,11 @@
+# pylint: disable=W0123
+import warnings
+
+warnings.filterwarnings("ignore", category=UserWarning, module="LightGBM")
+import logging
+
+logging.basicConfig(level=logging.ERROR)
+
 import logging
 
 import numpy as np
@@ -6,8 +14,8 @@ import pandas as pd
 from mdoel_training.models.model_input_and_output_classes import ModelInput
 from mdoel_training.models.scoring import calculate_score_model
 
-logging.getLogger("lightgbm").setLevel(logging.WARN)
-logging.getLogger("lightgbm").setLevel(logging.WARNING)
+# logging.getLogger("lightgbm").setLevel(logging.WARN)
+# logging.getLogger("lightgbm").setLevel(logging.WARNING)
 import lightgbm as lgb
 
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support, recall_score, f1_score
@@ -65,7 +73,7 @@ def train_lgbm(X_train, y_train, parameters: list[Parameter]):
     print(params)
     print(len(np.unique(y_train)))
     print(type(y_train))
-    model = lgb.LGBMClassifier(**params)
+    model = lgb.LGBMClassifier(**params, log_file='lightgbm.log')
     model.fit(X_train, y_train, verbose=-1)
     return model
 
@@ -112,8 +120,9 @@ def lgbm_with_outputs(cv_data: CVData, parameters: list[Parameter], target_col: 
     test_pred = predict_lgbm(model, X_test)
     train_scores = calculate_score_model(y_train, train_pred)
     test_scores = calculate_score_model(y_test, test_pred)
-    results.append({'type': 'train', 'fold': i+1, **{param.name: param.value for param in parameters}, **train_scores})
-    results.append({'type': 'test', 'fold': i+1, **{param.name: param.value for param in parameters}, **test_scores})
+    results.append(
+        {'type': 'train', 'fold': i + 1, **{param.name: param.value for param in parameters}, **train_scores})
+    results.append({'type': 'test', 'fold': i + 1, **{param.name: param.value for param in parameters}, **test_scores})
     return results, model, parameters
 
 
@@ -128,7 +137,7 @@ def lgbm_grid_search(cv_data: CVData, parameters: List[ComplexParameter], target
     params = {}
     for param in parameters:
         params[param.name] = param.value
-    model = lgb.LGBMClassifier()
+    model = lgb.LGBMClassifier(log_file='lightgbm.log')
     y_train = cv_data.train_data[target_col]
     params['num_class'] = [len(np.unique(y_train))]
     gs = GridSearchCV(model, params, cv=cv_data.splits, scoring=metric_func, return_train_score=True)

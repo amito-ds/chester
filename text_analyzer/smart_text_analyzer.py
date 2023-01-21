@@ -3,7 +3,7 @@ import pandas as pd
 from .common_words import most_common_words
 
 from .corex_topics import plot_corex_wordcloud
-from .data_quality import analyze_text_stats
+from .data_quality import analyze_text_stats, TextAnalyzer
 from .key_sentences import extract_key_sentences
 from .sentiment import analyze_sentiment, report_sentiment_stats, plot_sentiment_scores
 from .word_cloud import create_word_cloud
@@ -119,3 +119,17 @@ def analyze_text(df: pd.DataFrame,
     if key_sentences:
         print(key_sentences_message)
         print(extract_key_sentences(df, n_sentences=n_sentences))
+
+
+def analyze_text_df(text_analyzer: TextAnalyzer):
+    df = text_analyzer.df
+    analyze_text(df,
+                 create_wordcloud=text_analyzer.create_wordcloud,
+                 corex_topics=text_analyzer.corex_topics,
+                 key_sentences=text_analyzer.key_sentences,
+                 common_words=text_analyzer.common_words,
+                 sentiment=text_analyzer.sentiment,
+                 data_quality=text_analyzer.data_quality,
+                 corex_topics_num=text_analyzer.corex_topics_num,
+                 top_words=text_analyzer.top_words,
+                 n_sentences=text_analyzer.n_sentences)

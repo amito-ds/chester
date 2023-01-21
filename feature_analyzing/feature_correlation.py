@@ -84,7 +84,6 @@ class PreModelAnalysis:
 
     def correlation_matrix(self):
         print(correlation_matrix_message)
-        print("this is the df!", self.df[0:10])
         corr = self.df.corr()
         plt.figure(figsize=(10, 8))
         plt.title("Feature correlation matrix")

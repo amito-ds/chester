@@ -28,12 +28,12 @@ def calculate_text_metrics(text):
     return metrics
 
 
-def calculate_text_column_metrics(df):
+def calculate_text_column_metrics(df, text_column='text'):
     df = df.copy()
-    df['text_metrics'] = df['text'].apply(calculate_text_metrics)
-    words = df['text'].str.split(expand=True).stack().unique()
+    df[f'{text_column}_metrics'] = df[text_column].apply(calculate_text_metrics)
+    words = df[text_column].str.split(expand=True).stack().unique()
     num_unique_words = len(words)
-    df = pd.json_normalize(df['text_metrics'])
+    df = pd.json_normalize(df[f'{text_column}_metrics'])
     return df, num_unique_words
 
 
@@ -66,3 +66,21 @@ def analyze_text_stats(df):
     report = create_report(df, num_unique_words)
     print(report)
     plot_text_length_and_num_words(df)
+
+
+class TextAnalyzer:
+    def __init__(self, df: pd.DataFrame = None, create_wordcloud: bool = True,
+                 corex_topics: bool = True, key_sentences: bool = True,
+                 common_words: bool = True, sentiment: bool = True,
+                 data_quality: bool = True, corex_topics_num: int = 10,
+                 top_words: int = 10, n_sentences: int = 5):
+        self.df = df
+        self.create_wordcloud = create_wordcloud
+        self.corex_topics = corex_topics
+        self.key_sentences = key_sentences
+        self.common_words = common_words
+        self.sentiment = sentiment
+        self.data_quality = data_quality
+        self.corex_topics_num = corex_topics_num
+        self.top_words = top_words
+        self.n_sentences = n_sentences
