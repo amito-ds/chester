@@ -168,34 +168,34 @@ def run_tcap(
     return origin_df, df, train_embedding, test_embedding, best_model
 
 
-# # #
+# #
 # df1 = load_data_pirates().assign(target='chat_logs')
 # df2 = load_data_king_arthur().assign(target='pirates')
 # df = pd.concat([df1, df2])
-
-import pandas as pd
-# nltk.download('brown')
-from nltk.corpus import brown
-
-# Create an empty list to store the data
-data = []
-
-# Iterate through the samples and add the text and category to the data list
-# Select the categories to sample from
-categories = ['news', 'romance', 'science_fiction']
-for category in categories:
-    for text in brown.sents(categories=category)[:1000]:
-        data.append({'text': ' '.join(text), 'target': category})
-
-# Create a dataframe from the data list
-df = pd.DataFrame(data)
-
-# Print the first 5 rows of the dataframe
-print(df.head())
-
-out = run_tcap(
-    data_spec=DataSpec(df=df, text_column='text', target_column='target'),
-)
+#
+# import pandas as pd
+# # nltk.download('brown')
+# from nltk.corpus import brown
+#
+# # Create an empty list to store the data
+# data = []
+#
+# # Iterate through the samples and add the text and category to the data list
+# # Select the categories to sample from
+# categories = ['news', 'romance', 'science_fiction']
+# for category in categories:
+#     for text in brown.sents(categories=category)[:1000]:
+#         data.append({'text': ' '.join(text), 'target': category})
+#
+# # Create a dataframe from the data list
+# df = pd.DataFrame(data)
+#
+# # Print the first 5 rows of the dataframe
+# print(df.head())
+#
+# out = run_tcap(
+#     data_spec=DataSpec(df=df, text_column='text', target_column='target'),
+# )
 
 # out = run_tcap(
 #     data_spec=DataSpec(df=df, text_column='text', target_column='target'),
