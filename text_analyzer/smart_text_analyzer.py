@@ -109,7 +109,6 @@ def analyze_text(df: pd.DataFrame,
         print(sentiment_analysis_message)
         df = df.copy()
         df = analyze_sentiment(df)
-        print(df.columns)
         print(report_sentiment_stats(df))
         plot_sentiment_scores(df)
     if corex_topics:

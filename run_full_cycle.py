@@ -1,8 +1,5 @@
 import warnings
 
-import nltk
-
-from features_engineering.feature_main import FeatureExtraction
 from full_cycle.chapter_messages import chapter_message
 from text_analyzer.data_quality import TextAnalyzer
 
@@ -12,7 +9,6 @@ import logging
 logging.basicConfig(level=logging.WARNING)
 
 from text_analyzer.smart_text_analyzer import analyze_text_df
-from data_loader.webtext_data import load_data_pirates, load_data_king_arthur
 from mdoel_training.best_model import ModelCycle
 from mdoel_training.data_preparation import CVData
 from mdoel_training.model_utils import analyze_results
