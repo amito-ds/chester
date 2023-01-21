@@ -2,11 +2,11 @@ import pandas as pd
 
 from .common_words import most_common_words
 
-from .corex_topics import plot_corex_wordcloud
-from .data_quality import analyze_text_stats, TextAnalyzer
-from .key_sentences import extract_key_sentences
-from .sentiment import analyze_sentiment, report_sentiment_stats, plot_sentiment_scores
-from .word_cloud import create_word_cloud
+from text_analyzer import corex_topics as corex
+from text_analyzer.data_quality import analyze_text_stats, TextAnalyzer
+from text_analyzer.key_sentences import extract_key_sentences
+from text_analyzer.sentiment import analyze_sentiment, report_sentiment_stats, plot_sentiment_scores
+from text_analyzer.word_cloud import create_word_cloud
 
 data_quality_message = "Before we start analyzing the text, it's important to make sure that the data we are working " \
                        "with is clean and of good quality. The following report provides some key statistics about the " \
@@ -114,7 +114,7 @@ def analyze_text(df: pd.DataFrame,
         plot_sentiment_scores(df)
     if corex_topics:
         print(corex_topic_message)
-        plot_corex_wordcloud(df, n_topics=corex_topics_num, top_words=top_words)
+        corex.plot_corex_wordcloud(df, n_topics=corex_topics_num, top_words=top_words)
     if key_sentences:
         print(key_sentences_message)
         print(extract_key_sentences(df, n_sentences=n_sentences))
