@@ -198,7 +198,7 @@ def run_tcap(
 # )
 
 # out = run_tcap(
-#     data_spec=DataSpec(df=df, text_column='text', target_column='target'),
+    data_spec=DataSpec(df=df, text_column='text', target_column='target'),
 #     feature_extraction=FeatureExtraction(split_data=False),
 #     is_model_analysis=False, is_train_model=False, is_feature_analysis=False
 # )
