@@ -1,6 +1,6 @@
 import unittest
 
-from preprocessing.preprocessing import tokenize, pos_tag, stem, lemmatize
+from preprocessing.preprocessing_func import tokenize, pos_tag, stem, lemmatize
 
 
 class TestProcessingMethods(unittest.TestCase):

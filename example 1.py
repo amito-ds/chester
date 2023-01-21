@@ -16,15 +16,15 @@
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 
-from cleaning.cleaning import clean_text, clean_text_df, TextCleaner
+from cleaning.cleaning_func import clean_text, clean_text_df, TextCleaner
 from data_loader.webtext_data import load_data_pirates, load_data_king_arthur, load_data_chat_logs
 from feature_analyzing.feature_correlation import PreModelAnalysis
-from features_engineering.fe_main import get_embeddings, extract_features, FeatureExtraction
+from features_engineering.feature_main import get_embeddings, extract_features, FeatureExtraction
 from mdoel_training.best_model import ModelCycle
 from mdoel_training.data_preparation import CVData
 from mdoel_training.model_utils import  analyze_results
 from model_analyzer.model_analysis import analyze_model
-from preprocessing.preprocessing import preprocess_text, get_stemmer, preprocess_text_df, TextPreprocessor
+from preprocessing.preprocessing_func import preprocess_text, get_stemmer, preprocess_text_df, TextPreprocessor
 from util import get_stopwords
 
 #

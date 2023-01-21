@@ -1,6 +1,6 @@
 import pandas as pd
 
-from full_cycle.run_full_cycle import parameter_completer
+from run_full_cycle import parameter_completer
 
 
 class A:

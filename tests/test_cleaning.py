@@ -1,6 +1,6 @@
 import unittest
 
-from cleaning.cleaning import *
+from cleaning.cleaning_func import *
 
 
 class TestCleaningMethods(unittest.TestCase):

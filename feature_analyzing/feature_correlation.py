@@ -6,13 +6,13 @@ from sklearn.preprocessing import LabelEncoder
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 
-from cleaning.cleaning import clean_text
+from cleaning.cleaning_func import clean_text
 from data_loader.webtext_data import load_data_pirates, load_data_king_arthur
-from features_engineering.fe_main import get_embeddings
+from features_engineering.feature_main import get_embeddings
 from mdoel_training.best_model import ModelCycle
 from mdoel_training.data_preparation import CVData
 from model_analyzer.model_analysis import analyze_model
-from preprocessing.preprocessing import preprocess_text, get_stemmer
+from preprocessing.preprocessing_func import preprocess_text, get_stemmer
 from util import get_stopwords
 
 # classification

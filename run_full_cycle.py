@@ -8,21 +8,17 @@ import logging
 
 logging.basicConfig(level=logging.WARNING)
 
-from text_analyzer.smart_text_analyzer import analyze_text, analyze_text_df
+from text_analyzer.smart_text_analyzer import analyze_text_df
 from data_loader.webtext_data import load_data_pirates, load_data_king_arthur
-from feature_analyzing.feature_correlation import PreModelAnalysis
-from features_engineering.fe_main import extract_features, FeatureExtraction
 from mdoel_training.best_model import ModelCycle
 from mdoel_training.data_preparation import CVData
 from mdoel_training.model_utils import analyze_results
 from model_analyzer.model_analysis import analyze_model
-from preprocessing.preprocessing import preprocess_text_df, TextPreprocessor
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
-from cleaning.cleaning import clean_text_df, TextCleaner
-from cleaning import cleaning as cln
-from preprocessing import preprocessing as pp
-from features_engineering import fe_main
+from cleaning import cleaning_func as cln
+from preprocessing import preprocessing_func as pp
+from features_engineering import feature_main as fe_main
 from feature_analyzing import feature_correlation
 from mdoel_training import data_preparation
 from mdoel_training import best_model
@@ -90,7 +86,7 @@ def run_tcap(
     """
     # Step 1: Prepare text_cleaner object
     if not text_cleaner:
-        text_cleaner = TextCleaner()
+        text_cleaner = cln.TextCleaner()
     if data_spec:
         parameter_completer(data_spec, text_cleaner)
 
@@ -98,17 +94,17 @@ def run_tcap(
     if is_text_cleaner:
         print(chapter_message("cleaning"))
         text_cleaner.generate_report()
-        df = clean_text_df(text_cleaner)
+        df = cln.clean_text_df(text_cleaner)
 
     # Step 3: Prepare text_preprocesser object
     if is_text_preprocesser:
         if not text_preprocesser:
-            text_preprocesser = TextPreprocessor()
+            text_preprocesser = pp.TextPreprocessor()
         parameter_completer(text_cleaner, text_preprocesser)
         # pp
         print(chapter_message("preprocessing"))
         text_preprocesser.generate_report()
-        df = preprocess_text_df(text_preprocesser)
+        df = pp.preprocess_text_df(text_preprocesser)
 
     # Step 4: Prepare text_analyzer object
     if is_text_stats:
@@ -122,10 +118,10 @@ def run_tcap(
     # Step 5: Feature extraction
     if is_feature_extraction:
         if not feature_extraction:
-            feature_extraction = FeatureExtraction(training_data=df)
+            feature_extraction = fe_main.FeatureExtraction(training_data=df)
         parameter_super_completer([text_cleaner, text_preprocesser], feature_extraction)
         print(chapter_message("create embedding"))
-        train_embedding, test_embedding = extract_features(feature_extraction)
+        train_embedding, test_embedding = fe_main.extract_features(feature_extraction)
 
     # Step 6: Feature analysis and preparation for model training
     if is_feature_analysis or is_model_analysis or is_train_model:
@@ -137,7 +133,7 @@ def run_tcap(
     # Pre model analysis
     if is_feature_analysis:
         if not feature_analysis:
-            feature_analysis = PreModelAnalysis(df=train_embedding,
+            feature_analysis = feature_correlation.PreModelAnalysis(df=train_embedding,
                                                 target_column=target_column)
         print(chapter_message("model pre analysis"))
         feature_analysis.generate_report()
