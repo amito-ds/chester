@@ -5,8 +5,11 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.preprocessing import normalize
 
 
-def get_bow_embedding(training_data: pd.DataFrame, text_column: str = 'text', test_data: pd.DataFrame = None,
-                      ngram_range: Tuple[int, int] = (1, 1), embedding_size=100):
+def get_bow_embedding(training_data: pd.DataFrame,
+                      text_column: str = 'text',
+                      test_data: pd.DataFrame = None,
+                      ngram_range: Tuple[int, int] = (1, 1),
+                      embedding_size=100):
     """
     Extract bag of words embeddings for the text in the given column of the DataFrame.
 

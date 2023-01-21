@@ -8,9 +8,11 @@ from features_engineering.tfidf import get_tfidf_embedding
 
 def get_embeddings(training_data: pd.DataFrame,
                    test_data: pd.DataFrame = None,
-                   split_data: bool = True, split_prop: float = 0.3, split_random_state=42,
+                   split_data: bool = True, split_prop: float = 0.3,
+                   split_random_state=42,
                    text_column="clean_text", target_column='target',
-                   corex=True, corex_dim=50, tfidf=True, tfidf_dim=100, bow=True, bow_dim=100,
+                   corex=True, corex_dim=50, tfidf=True,
+                   tfidf_dim=100, bow=True, bow_dim=100,
                    ngram_range=(1, 1)):
     if split_data:
         if not test_data:
@@ -61,14 +63,17 @@ def get_embeddings(training_data: pd.DataFrame,
         [corex_test_embedding, tfidf_test_embedding, ner_bow_test_embedding, bow_test_embedding], axis=1)
 
     # # adding the label to train and test embedding
-    training_data.reset_index(drop=True, inplace=True)
-    embeddings.reset_index(drop=True, inplace=True)
-    embeddings = pd.concat([embeddings, training_data[target_column]], axis=1)
+    try:
+        training_data.reset_index(drop=True, inplace=True)
+        embeddings.reset_index(drop=True, inplace=True)
+        embeddings = pd.concat([embeddings, training_data[target_column]], axis=1)
 
-    test_data.reset_index(drop=True, inplace=True)
-    test_embeddings.reset_index(drop=True, inplace=True)
-    test_embeddings = pd.concat([test_embeddings, test_data[target_column]], axis=1)
-    print(f"Lastly, All embeddings have been concatenated")
+        test_data.reset_index(drop=True, inplace=True)
+        test_embeddings.reset_index(drop=True, inplace=True)
+        test_embeddings = pd.concat([test_embeddings, test_data[target_column]], axis=1)
+        print(f"Lastly, All embeddings have been concatenated")
+    except:
+        pass
     return embeddings, test_embeddings
 
 

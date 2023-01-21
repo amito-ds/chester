@@ -5,7 +5,8 @@ from corextopic import corextopic as ct
 from sklearn.feature_extraction.text import CountVectorizer
 
 
-def get_corex_embedding(training_data, test_data=None, text_column='text', ngram_range=(1, 1), n_topics=50,
+def get_corex_embedding(training_data, test_data=None, text_column='text', ngram_range=(1, 1),
+                        n_topics=50,
                         max_features=10000):
     # Preprocess data
     vectorizer = CountVectorizer(stop_words='english', max_features=max_features, binary=True, ngram_range=ngram_range)
@@ -38,4 +39,4 @@ def get_corex_embedding(training_data, test_data=None, text_column='text', ngram
 
         return topic_prob_df, test_topic_prob_df
     else:
-        return topic_prob_df
+        return topic_prob_df, None

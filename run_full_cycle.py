@@ -1,5 +1,8 @@
 import warnings
 
+import nltk
+
+from features_engineering.feature_main import FeatureExtraction
 from full_cycle.chapter_messages import chapter_message
 from text_analyzer.data_quality import TextAnalyzer
 
@@ -84,11 +87,15 @@ def run_tcap(
     perform requested tasks
 
     """
+    # Step 0: prepare outputs
+    df, train_embedding, test_embedding = None, None, None
+
     # Step 1: Prepare text_cleaner object
     if not text_cleaner:
         text_cleaner = cln.TextCleaner()
     if data_spec:
         parameter_completer(data_spec, text_cleaner)
+    origin_df = text_cleaner.df.copy()
 
     # Step 2: Apply Text Cleaning
     if is_text_cleaner:
@@ -119,6 +126,8 @@ def run_tcap(
     if is_feature_extraction:
         if not feature_extraction:
             feature_extraction = fe_main.FeatureExtraction(training_data=df)
+        if feature_extraction.training_data is None:
+            feature_extraction.training_data = df
         parameter_super_completer([text_cleaner, text_preprocesser], feature_extraction)
         print(chapter_message("create embedding"))
         train_embedding, test_embedding = fe_main.extract_features(feature_extraction)
@@ -134,7 +143,7 @@ def run_tcap(
     if is_feature_analysis:
         if not feature_analysis:
             feature_analysis = feature_correlation.PreModelAnalysis(df=train_embedding,
-                                                target_column=target_column)
+                                                                    target_column=target_column)
         print(chapter_message("model pre analysis"))
         feature_analysis.generate_report()
         feature_analysis.run()
@@ -156,12 +165,44 @@ def run_tcap(
         organized_results = pd.DataFrame(best_model.results)
         analyze_results(organized_results, best_model.parameters)
         analyze_model(best_model.model, cv_data, target_label=target_column)
-    return df, best_model.model
+    return origin_df, df, train_embedding, test_embedding, best_model
 
 
 # # #
-df1 = load_data_pirates().assign(target='chat_logs')
-df2 = load_data_king_arthur().assign(target='pirates')
-df = pd.concat([df1, df2])
+# df1 = load_data_pirates().assign(target='chat_logs')
+# df2 = load_data_king_arthur().assign(target='pirates')
+# df = pd.concat([df1, df2])
 
-run_tcap(DataSpec(df=df, text_column='text', target_column='target'))
+import pandas as pd
+# nltk.download('brown')
+from nltk.corpus import brown
+
+# Create an empty list to store the data
+data = []
+
+# Iterate through the samples and add the text and category to the data list
+# Select the categories to sample from
+categories = ['news', 'romance', 'science_fiction']
+for category in categories:
+    for text in brown.sents(categories=category)[:1000]:
+        data.append({'text': ' '.join(text), 'target': category})
+
+# Create a dataframe from the data list
+df = pd.DataFrame(data)
+
+# Print the first 5 rows of the dataframe
+print(df.head())
+
+out = run_tcap(
+    data_spec=DataSpec(df=df, text_column='text', target_column='target'),
+)
+
+# out = run_tcap(
+#     data_spec=DataSpec(df=df, text_column='text', target_column='target'),
+#     feature_extraction=FeatureExtraction(split_data=False),
+#     is_model_analysis=False, is_train_model=False, is_feature_analysis=False
+# )
+
+# concat
+# embedding_with_label = pd.concat([origin_df.reset_index(), train_embedding.reset_index()], axis = 0)
+
