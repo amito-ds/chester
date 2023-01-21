@@ -15,15 +15,15 @@ def chapter_message(chapter_name: str, prefix=" Running chapter: "):
         emoji = random.choice(CLEANING_EMOJIS)
     elif chapter_name == 'preprocessing':
         emoji = random.choice(PREPROCESSING_EMOJIS)
-    elif chapter_name == 'text_analyze':
+    elif chapter_name == 'text analyze':
         emoji = random.choice(TEXT_ANALYSIS_EMOJIS)
-    elif chapter_name == 'model_pre_analysis':
+    elif chapter_name == 'model pre analysis':
         emoji = random.choice(MODEL_PRE_ANALYSIS_EMOJIS)
-    elif chapter_name == 'model_run':
+    elif chapter_name == 'model training':
         emoji = random.choice(MODEL_RUN_EMOJIS)
-    elif chapter_name == 'post_model_analysis':
+    elif chapter_name == 'post model analysis':
         emoji = random.choice(POST_MODEL_ANALYSIS_EMOJIS)
-    elif chapter_name == 'create_embedding':
+    elif chapter_name == 'create embedding':
         emoji = random.choice(CREATE_EMBEDDING_EMOJIS)
     else:
         emoji = '📚'
@@ -31,4 +31,3 @@ def chapter_message(chapter_name: str, prefix=" Running chapter: "):
     return message
 
 
-print(chapter_message("create_embedding"))

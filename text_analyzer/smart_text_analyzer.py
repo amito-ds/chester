@@ -46,7 +46,6 @@ def print_analyze_message(create_wordcloud: bool = True,
                           n_sentences: int = 5):
     order_of_operations = ["First", "Next", "Then", "Additionally", "Furthermore", "Finally"]
     operations_counter = 0
-    print("Starting text analysis")
     if data_quality:
         print(
             f"{order_of_operations[operations_counter]} we will analyze text statistics such as the number of words, unique words and type-token ratio.")

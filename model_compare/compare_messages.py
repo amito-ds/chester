@@ -38,7 +38,6 @@ def compare_models_by_type_and_parameters(models_list: list[ModelResults]):
     else:
         # Get a list of lists, where each inner list contains the model tuples of models that are of the same type
         same_type_models = group_models_by_type(models_list)
-        print(same_type_models)
         # Initialize an empty list to store comparison messages
         comparison_messages = []
         for group in same_type_models:

@@ -40,7 +40,6 @@ def logistic_regression_with_outputs(cv_data: CVData, target_col: str, parameter
         X_test = X_test.drop(columns=[target_col])
         for param in parameters:
             setattr(model, param.name, param.value)
-        print([(p.name, p.value) for p in parameters])
         model.fit(X_train, y_train)
         train_pred = model.predict(X_train)
         test_pred = model.predict(X_test)

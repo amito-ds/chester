@@ -43,12 +43,6 @@ def tokenize(text):
     return tokens
 
 
-def pos_tag(text):
-    tokens = tokenize(text)
-    pos_tags = nltk.pos_tag(tokens)
-    return pos_tags
-
-
 # get port stemmer
 port_stemmer = PorterStemmer()
 # get word net lemmatizer
@@ -66,7 +60,7 @@ def preprocess_df_text(text_column, preprocessing_options: dict):
 
 
 def print_preprocessing_options(stemmer=None, lemmatizer=None, stem_flag=False, lemmatize_flag=False,
-                                tokenize_flag=True, pos_tag_flag=False):
+                                tokenize_flag=True):
     print("Preprocessing step:")
     if stem_flag:
         print("Stemming text using {} stemmer".format(stemmer.__class__.__name__))
@@ -74,8 +68,6 @@ def print_preprocessing_options(stemmer=None, lemmatizer=None, stem_flag=False, 
         print("Lemmatizing text using {} lemmatizer".format(lemmatizer.__class__.__name__))
     if tokenize_flag:
         print("Tokenizing text")
-    if pos_tag_flag:
-        print("Tagging parts of speech")
 
 
 def preprocess_text(text,
@@ -83,8 +75,7 @@ def preprocess_text(text,
                     lemmatizer=None,
                     stem_flag=False,
                     lemmatize_flag=False,
-                    tokenize_flag=True,
-                    pos_tag_flag=False):
+                    tokenize_flag=True):
     if stem_flag and lemmatize_flag:
         raise ValueError("Both stemmer and lemmatizer cannot be applied. Please choose one.")
 
@@ -93,15 +84,11 @@ def preprocess_text(text,
     else:
         tokens = text
 
-    if pos_tag_flag:
-        pos_tags = pos_tag(tokens)
-    else:
-        pos_tags = tokens
     if stem_flag:
-        stemmer = stemmer if stemmer is not None else PorterStemmer
-        stemmed_words = stem(pos_tags, stemmer=stemmer)
+        stemmer = stemmer if stemmer is not None else PorterStemmer()
+        stemmed_words = stem(tokens, stemmer=stemmer)
     else:
-        stemmed_words = pos_tags
+        stemmed_words = tokens
 
     if lemmatize_flag:
         lemmatized_words = lemmatize(stemmed_words,
@@ -121,10 +108,9 @@ class TextPreprocessor:
                  text_column: str = 'text',
                  stemmer=None,
                  lemmatizer=None,
-                 stem_flag=False,
+                 stem_flag=True,
                  lemmatize_flag=False,
-                 tokenize_flag=True,
-                 pos_tag_flag=False):
+                 tokenize_flag=True):
         self.df = df
         self.text_column = text_column
         self.stemmer = stemmer
@@ -132,7 +118,30 @@ class TextPreprocessor:
         self.stem_flag = stem_flag
         self.lemmatize_flag = lemmatize_flag
         self.tokenize_flag = tokenize_flag
-        self.pos_tag_flag = pos_tag_flag
+
+    def generate_report(self):
+        report_str = ""
+        if self.stem_flag:
+            if self.stemmer:
+                if self.stemmer == "snowball":
+                    report_str += "Using Snowball stemmer, "
+                else:
+                    report_str += f"Using {self.stemmer} stemmer, "
+            else:
+                report_str += "Stemming text, "
+        if self.lemmatize_flag:
+            if self.lemmatizer:
+                report_str += f"Using {self.lemmatizer} lemmatizer, "
+            else:
+                report_str += "Lemmatizing text, "
+        if self.tokenize_flag:
+            report_str += "Tokenizing text, "
+        if report_str:
+            report_str = report_str[:-2]
+            print(
+                f"The following preprocessing steps will be applied to the column '{self.text_column}': {report_str}.")
+        else:
+            print("No preprocessing steps selected.")
 
 
 def preprocess_text_df(text_preprocessor: TextPreprocessor):
@@ -146,6 +155,5 @@ def preprocess_text_df(text_preprocessor: TextPreprocessor):
         stem_flag=text_preprocessor.stem_flag,
         lemmatize_flag=text_preprocessor.lemmatize_flag,
         tokenize_flag=text_preprocessor.tokenize_flag,
-        pos_tag_flag=text_preprocessor.pos_tag_flag
     ))
     return df

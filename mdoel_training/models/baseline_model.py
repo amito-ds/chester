@@ -1,7 +1,4 @@
-from typing import List
-
 import pandas as pd
-from sklearn.metrics import accuracy_score, precision_recall_fscore_support, recall_score, f1_score
 
 from mdoel_training.data_preparation import CVData
 from mdoel_training.models.scoring import calculate_score_model
@@ -57,19 +54,14 @@ def predict_baseline(model, X):
     return model.transform(X)
 
 
-def baseline_with_outputs(cv_data: CVData, target_col: str, baseline_num=None, percentile=None,
-                          metric_funcs: List[callable] = None):
+def baseline_with_outputs(cv_data: CVData, target_col: str, baseline_num=None, percentile=None):
     results = []
-    if not metric_funcs:
-        metric_funcs = [accuracy_score, precision_recall_fscore_support, recall_score, f1_score]
     for i, (train_index, test_index) in enumerate(cv_data.splits):
         X_train, X_test = cv_data.train_data.iloc[train_index], cv_data.train_data.iloc[test_index]
         y_train, y_test = X_train[target_col], X_test[target_col]
         model = train_baseline(X_train, y_train, baseline_num, percentile)
         prediction = predict_baseline(model, X_test)
         prediction_train = predict_baseline(model, X_train)
-        # print("y_test is", y_test)
-        # print("prediction is", prediction)
         scores = calculate_score_model(y_test, prediction)
         results.append({'type': 'test', 'fold': i, **scores})
         scores = calculate_score_model(y_train, prediction_train)

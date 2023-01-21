@@ -19,15 +19,13 @@ class ModelCycle:
         self.parameters = parameters
         self.target_col = target_col
         self.metric_funcs = metric_funcs
-        print("now self.models_results_classification")
         self.models_results_classification = self.running_all_models()
 
     def get_best_model(self):
-        print("getting the best model!")
+        print("Choosing a model...\n")
         models_results_classification = self.models_results_classification
         compare_models_by_type_and_parameters(models_results_classification)  # get init message
         if len(models_results_classification) > 1:
-            print("classification results")
             return self.compare_results(models_results_classification)
 
     def compare_results(self, model_results: list[ModelResults]):
@@ -43,7 +41,6 @@ class ModelCycle:
         return best_model
 
     def running_all_models(self) -> list[ModelResults]:
-        print("try running running all models")
         print("Considering the inputs, running classification model")
         results1, model1 = baseline_with_outputs(cv_data=self.cv_data, target_col=self.target_col)
         results2, model2, lgbm_parameters = lgbm_with_outputs(
@@ -57,8 +54,6 @@ class ModelCycle:
         model_res3: ModelResults = ModelResults("logistic regression", model3, pd.DataFrame(results3),
                                                 logistic_regression_parameters, predictions=pd.Series())
         models_results_classification = [model_res1, model_res2, model_res3]
-
-
         return models_results_classification
 
 

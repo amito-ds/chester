@@ -174,6 +174,35 @@ class TextCleaner:
         self.remove_special_characters_flag = remove_special_characters_flag
         self.remove_html_tags_flag = remove_html_tags_flag
 
+    def generate_report(self):
+        report_str = ""
+        if self.remove_punctuation_flag:
+            report_str += "Removing punctuation, "
+        if self.remove_numbers_flag:
+            report_str += "Removing numbers, "
+        if self.remove_whitespace_flag:
+            report_str += "Removing whitespaces, "
+        if self.remove_empty_line_flag:
+            report_str += "Removing empty lines, "
+        if self.lowercase_flag:
+            report_str += "Lowercasing text, "
+        if self.remove_stopwords_flag:
+            if self.stopwords:
+                report_str += f"Stopwords are given, "
+            else:
+                report_str += "Removing stopwords, "
+        if self.remove_accented_characters_flag:
+            report_str += "Removing accented characters, "
+        if self.remove_special_characters_flag:
+            report_str += "Removing special characters, "
+        if self.remove_html_tags_flag:
+            report_str += "Removing html tags, "
+        if report_str:
+            report_str = report_str[:-2]
+            print(f"The following cleaning steps will be applied to clean column '{self.text_column}': {report_str}.")
+        else:
+            print("No cleaning steps selected.")
+
 
 def clean_text_df(text_cleaner: TextCleaner) -> pd.DataFrame:
     df = text_cleaner.df

@@ -19,11 +19,12 @@ class ModelAnalyzer:
         explainer = shap.Explainer(self.model, X_train, check_additivity=False)
         shap_values = explainer(X_train, check_additivity=False)
         plt.title("SHAP values for train set")
+        print(AnalyzeMessages().shap_values_message())
         shap.summary_plot(shap_values, X_train)
 
     def coefficients(self) -> None:
         coef = self.model.coef_[0]
-        if len(coef) < 50:
+        if len(coef) < 10:
             plt.bar(np.arange(len(coef)), coef)
             plt.title("Coefficients for logistic regression model")
             plt.xlabel("Features")
@@ -32,12 +33,13 @@ class ModelAnalyzer:
             sns.violinplot(coef, inner="stick")
             plt.title("Coefficients distribution for logistic regression model")
             plt.xlabel("Coefficients")
+            print(AnalyzeMessages().coefficients_message())
         plt.show()
 
     def performance_metrics(self, X_train: pd.DataFrame,
                             y_train: pd.Series,
                             X_test: pd.DataFrame,
-                            y_test: pd.Series) -> None:
+                            y_test: pd.Series):
         train_pred = self.model.predict(X_train)
         test_pred = self.model.predict(X_test)
         train_scores = calculate_score_model(y_train, train_pred)
@@ -46,17 +48,16 @@ class ModelAnalyzer:
         results.append(
             {'type': 'train', **train_scores})
         results.append({'type': 'test', **test_scores})
+        return results
 
     def analyze(self, X_train: pd.DataFrame, y_train: pd.Series,
                 X_test: pd.DataFrame, y_test: pd.Series,
                 model, shap_values: bool = True, coefficients: bool = True,
-                performance_metrics: bool = True, confusion_matrix: bool = True,
+                confusion_matrix: bool = True,
                 roc_curve: bool = True, learning_curve: bool = True,
                 feature_importance: bool = True) -> None:
-        messages = AnalyzeMessages()
         unique_classes = len(np.unique(y_train))
         if feature_importance:
-            # print(messages.feature_importance_message())
             try:
                 self.plot_feature_importance(X_train)
             except:
@@ -66,34 +67,28 @@ class ModelAnalyzer:
                     pass
         if shap_values:
             if unique_classes == 2:
-                # print(messages.shap_values_message())
                 try:
                     self.shap_values(X_train)
                 except:
                     pass
         if coefficients:
-            # print(messages.coefficients_message()
             try:
                 self.coefficients()
             except:
                 pass
-        if performance_metrics:
-            # print(messages.performance_metrics_message())
-            self.performance_metrics(X_train, y_train, X_test, y_test)
         if confusion_matrix:
-            # print(messages.confusion_matrix_message())
             self.confusion_matrix(X_test, y_test)
         if roc_curve:
             if unique_classes == 2:
-                # print(messages.roc_curve_message())
                 self.roc_curve(X_test, y_test)
         if learning_curve:
-            # print(messages.learning_curve_message())
             self.learning_curve(X_train, y_train)
 
     def confusion_matrix(self, X_test: pd.DataFrame, y_test: pd.Series) -> None:
         from sklearn.metrics import confusion_matrix
         import seaborn as sns
+        print(AnalyzeMessages().confusion_matrix_message())
+
         y_pred = self.model.predict(X_test)
         cm = confusion_matrix(y_test, y_pred)
         sns.heatmap(cm, annot=True, cmap='Blues', fmt='g')
@@ -117,6 +112,7 @@ class ModelAnalyzer:
             plt.ylabel('True Positive Rate')
             plt.title('Receiver operating characteristic')
             plt.legend(loc="lower right")
+            print(AnalyzeMessages().roc_curve_message())
             plt.show()
         except:
             pass
@@ -140,6 +136,7 @@ class ModelAnalyzer:
             plt.ylabel("Accuracy Score")
             plt.title("Learning Curve")
             plt.legend(loc="best")
+            print(AnalyzeMessages().learning_curve_message())
             plt.show()
         except:
             pass
@@ -162,6 +159,7 @@ class ModelAnalyzer:
         important_idx = np.argsort(feature_importance)
         data = {'feature_names': feature_names[important_idx], 'feature_importance': feature_importance[important_idx]}
         df = pd.DataFrame(data)
+        print(AnalyzeMessages().feature_importance_message())
         fig = px.bar(df, x='feature_importance', y='feature_names', orientation='h', text='feature_importance')
         fig.show()
 
@@ -171,35 +169,40 @@ class AnalyzeMessages:
         return "SHAP values can be used to understand the importance of each feature in the model's" \
                " predictions. The plot shows the average absolute SHAP value of each feature for all " \
                "the samples in the test set. Features with higher absolute SHAP values have a greater " \
-               "impact on the model's predictions."
+               "impact on the model's predictions.\n"
 
     def coefficients_message(self):
         return "The coefficient plot shows the weight of each feature in the model's predictions." \
                " Positive coefficients indicate that the feature has a positive relationship with" \
                " the target variable, while negative coefficients indicate a negative relationship." \
-               " The size of the boxplot represents the range of values for each feature."
+               " The size of the boxplot represents the range of values for each feature.\n"
 
     def performance_metrics_message(self):
         return "The performance metrics table shows the results of different evaluation metrics" \
                " applied on the model's predictions. These metrics can give you an idea of how well" \
-               " the model is performing in terms of accuracy, precision, recall, and other measures."
+               " the model is performing in terms of accuracy, precision, recall, and other measures.\n"
 
     def confusion_matrix_message(self):
         return "The confusion matrix shows the number of true positive, " \
                "true negative, false positive, and false negative predictions made by the model. " \
                "This can give you an idea of how well the model is able to distinguish between the " \
-               "different classes."
+               "different classes.\n"
 
     def roc_curve_message(self):
         return "The ROC curve shows the trade-off between true positive rate (sensitivity) " \
                "and false positive rate (1-specificity) for different threshold settings. T" \
-               "he AUC (Area under the curve) value gives an overall measure of the model's performance."
+               "he AUC (Area under the curve) value gives an overall measure of the model's performance.\n"
 
     def learning_curve_message(self):
         return "The learning curve shows the model's performance as the number of " \
                "training samples increases. A high training score and a low validation " \
                "score indicates overfitting, while a low training and high validation score " \
-               "indicates underfitting."
+               "indicates underfitting.\n"
+
+    def feature_importance_message(self):
+        return "The feature importance plot shows the relative importance of each feature in the model's predictions." \
+               " Features with higher importance have a greater impact on the model's predictions and are more useful" \
+               " for making accurate predictions.\n"
 
 
 def analyze_model(model, cv_data: CVData, target_label='target'):
@@ -252,34 +255,3 @@ def get_traffic_light(metric_name, value):
         return 'y'
     else:
         return 'g'
-
-
-
-
-def population_pyramid_plot(train_metrics, test_metrics=None):
-    # Get the colors for each metric
-    train_metrics['Color'] = train_metrics.apply(lambda x: get_traffic_light(x['Metric Name'], x['Value']), axis=1)
-    if test_metrics is not None:
-        test_metrics['Color'] = test_metrics.apply(lambda x: get_traffic_light(x['Metric Name'], x['Value']), axis=1)
-
-    # Set up the plot
-    fig, ax = plt.subplots()
-    ax.set_ylim(0, 100)
-    ax.set_xlim(-1, 1)
-    ax.axis('off')
-
-    def plot_metrics(metrics, ax):
-        x = np.array([-1, -1, -1, 0, 0, 0, 1, 1, 1])
-        y = np.array([0, metrics['Value'], 100, 100, metrics['Value'], 0, 0, metrics['Value'], 100])
-        # ax.fill_betweenx(y, x, color=metrics['Color'])
-        ax.text(0, metrics['Value'].iloc[0] / 2, str(metrics['Value'].iloc[0]), ha='center', va='center')
-        # ax.text(0, metrics['Value'] / 2, str(metrics['Value']), ha='center', va='center')
-
-    plot_metrics(train_metrics, ax)
-    if test_metrics is not None:
-        plot_metrics(test_metrics, ax)
-    # Add labels and show the plot
-    plt.title("Population Pyramid Metrics")
-    plt.xlabel("Metric Name")
-    plt.ylabel("Value")
-    plt.show()

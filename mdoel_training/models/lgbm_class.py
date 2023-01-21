@@ -30,9 +30,9 @@ default_parameters = {
     'metric': 'binary_logloss',
     'num_leaves': 31,
     'learning_rate': 0.05,
-    'feature_fraction': 0.9,
-    'bagging_fraction': 0.8,
-    'bagging_freq': 5,
+    'colsample_bytree': 0.9,
+    'subsample': 0.8,
+    'subsample_freq': 5,
     'verbose': -1
 }
 
@@ -42,9 +42,9 @@ lgbm_class_default_parameters = [
     Parameter('metric', default_parameters['metric']),
     Parameter('num_leaves', default_parameters['num_leaves']),
     Parameter('learning_rate', default_parameters['learning_rate']),
-    Parameter('feature_fraction', default_parameters['feature_fraction']),
-    Parameter('bagging_fraction', default_parameters['bagging_fraction']),
-    Parameter('bagging_freq', default_parameters['bagging_freq']),
+    Parameter('colsample_bytree', default_parameters['colsample_bytree']),
+    Parameter('subsample', default_parameters['subsample']),
+    Parameter('subsample_freq', default_parameters['subsample_freq']),
     Parameter('verbose', default_parameters['verbose'])
 ]
 
@@ -70,10 +70,7 @@ def train_lgbm(X_train, y_train, parameters: list[Parameter]):
         params['objective'] = 'multiclass'
         params['metric'] = 'multi_logloss'
         params['num_class'] = n_classes
-    print(params)
-    print(len(np.unique(y_train)))
-    print(type(y_train))
-    model = lgb.LGBMClassifier(**params, log_file='lightgbm.log')
+    model = lgb.LGBMClassifier(**params)
     model.fit(X_train, y_train, verbose=-1)
     return model
 
@@ -141,7 +138,6 @@ def lgbm_grid_search(cv_data: CVData, parameters: List[ComplexParameter], target
     y_train = cv_data.train_data[target_col]
     params['num_class'] = [len(np.unique(y_train))]
     gs = GridSearchCV(model, params, cv=cv_data.splits, scoring=metric_func, return_train_score=True)
-    print(np.unique(cv_data.train_data[target_col]))
     gs.fit(cv_data.train_data.drop(target_col, axis=1), y_train)
     return gs.cv_results_
 
@@ -151,6 +147,5 @@ def lgbm_class_hp(inputs: ModelInput):
     results = pd.DataFrame(results)
     results.drop([p.name for p in inputs.parameters], axis=1, inplace=True)
     results = results.loc[results['type'] == 'test']
-    print(results)
     avg_3rd_col = results.iloc[:, 2].mean()
     return avg_3rd_col

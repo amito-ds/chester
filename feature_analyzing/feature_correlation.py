@@ -69,6 +69,22 @@ class PreModelAnalysis:
         self.top_n_pairplot_bool = top_n_pairplot
         self.chi_square_test_all_features_bool = chi_square_test_all_features
 
+    def generate_report(self):
+        report_str = ""
+        if self.correlation_matrix_bool:
+            report_str += "Generating Correlation Matrix, "
+        if self.tsne_plot_bool:
+            report_str += "Generating t-SNE Plot, "
+        if self.top_n_pairplot_bool:
+            report_str += f"Generating top {self.top_n_features} features Pairplot, "
+        if self.chi_square_test_all_features_bool:
+            report_str += "Running Chi-Square test on all features, "
+        if report_str:
+            report_str = report_str[:-2]
+            print(f"The following EDA steps will be applied: {report_str}.")
+        else:
+            print("No EDA steps selected.")
+
     def get_model_type(self, class_threshold: int = 2):
         is_classification, is_regression = (False, False)
         if not self.is_model:
@@ -159,9 +175,6 @@ class PreModelAnalysis:
 
     def run(self):
         if self.top_n_features:
-            print("narrow featrues")
-            print("self.top_n_features", self.top_n_features)
-            print(self.select_top_variance_features(self.top_n_features))
             self.df = self.df[self.select_top_variance_features(self.top_n_features)]
         if self.correlation_matrix_bool:
             self.correlation_matrix()
@@ -173,8 +186,6 @@ class PreModelAnalysis:
             self.plot_pvalues()
 
     def select_top_variance_features(self, n=200):
-        print("this is self 10 10 ", self.df[0:10])
         variances = self.df.var()
-        print("variances dim", variances[0:10])
         top_features = variances.sort_values(ascending=False).head(n).index
         return top_features

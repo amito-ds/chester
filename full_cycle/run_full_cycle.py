@@ -1,13 +1,13 @@
 import warnings
 
+from full_cycle.chapter_messages import chapter_message
 from text_analyzer.data_quality import TextAnalyzer
 
 warnings.filterwarnings("ignore", category=UserWarning, module="lightgbm")
 import logging
 
-# logging.basicConfig(filename='lightgbm.log', level=logging.WARNING)
-# logging.basicConfig(level=logging.WARNING)
-logging.basicConfig(level=logging.ERROR)
+logging.basicConfig(level=logging.WARNING)
+
 from text_analyzer.smart_text_analyzer import analyze_text, analyze_text_df
 from data_loader.webtext_data import load_data_pirates, load_data_king_arthur
 from feature_analyzing.feature_correlation import PreModelAnalysis
@@ -48,50 +48,86 @@ class DataSpec:
         self.target_column = target_column
 
 
-def run_full_cycle(
+def run_tcap(
         data_spec: DataSpec = None,
         text_cleaner: cln.TextCleaner = None, is_text_cleaner: bool = True,
         text_preprocesser: pp.TextPreprocessor = None, is_text_preprocesser: bool = True,
         text_analyzer: TextAnalyzer = None, is_text_stats: bool = True,
-        feature_extraction: fe_main.FeatureExtraction = None, is_feature_extraction: bool = False,
-        feature_analysis: feature_correlation.PreModelAnalysis = None, is_feature_analysis: bool = False,
+        feature_extraction: fe_main.FeatureExtraction = None, is_feature_extraction: bool = True,
+        feature_analysis: feature_correlation.PreModelAnalysis = None, is_feature_analysis: bool = True,
         cv_data: data_preparation.CVData = None,
-        model_cycle: best_model.ModelCycle = None, is_train_model: bool = False,
-        is_model_analysis: bool = False
+        model_cycle: best_model.ModelCycle = None, is_train_model: bool = True,
+        is_model_analysis: bool = True
 ):
-    if not data_spec:
-        parameter_completer(data_spec, text_cleaner)
-    ###### clean ######
+    """
+    This function runs the full data processing and model training pipeline. It takes a series of optional inputs
+    (text_cleaner, text_preprocesser, text_analyzer, feature_extraction, feature_analysis, cv_data, model_cycle)
+    and applies them to the data according to the corresponding flags (is_text_cleaner, is_text_preprocesser,
+    is_text_stats, is_feature_extraction, is_feature_analysis, is_train_model, is_model_analysis). The function also
+    takes an optional input 'data_spec' which can be used to pass any additional information required for the pipeline.
+    The function returns the cleaned and preprocessed dataframe after all the processing steps have been applied.
+
+    Parameters:
+    data_spec (DataSpec, optional): An object containing the data, text column and (optional) target column
+    text_cleaner (cleaning.cleaning.TextCleaner, optional): An object containing the text cleaning settings.
+    is_text_cleaner (bool, optional): A flag indicating whether text cleaning should be applied.
+    text_preprocesser (preprocessing.preprocessing.TextPreprocessor, optional): An object containing the text preprocessing settings.
+    is_text_preprocesser (bool, optional): A flag indicating whether text preprocessing should be applied.
+    text_analyzer (TextAnalyzer, optional): An object containing the text analysis settings.
+    is_text_stats (bool, optional): A flag indicating whether text statistics should be generated.
+    feature_extraction (features_engineering.fe_main.FeatureExtraction, optional): An object containing the feature extraction settings.
+    is_feature_extraction (bool, optional): A flag indicating whether feature extraction should be applied.
+    feature_analysis (feature_analyzing.feature_correlation.PreModelAnalysis, optional): An object containing the feature analysis settings.
+    is_feature_analysis (bool, optional): A flag indicating whether feature analysis should be applied.
+    cv_data (mdoel_training.data_preparation.CVData, optional): An object containing the data for cross-validation.
+    model_cycle (model_training.best_model.ModelCycle, optional): An object containing the model training settings.
+    is_train_model (bool, optional): A flag indicating whether model training should be applied.
+    is_model_analysis (bool, optional): A flag indicating whether model analysis should be applied.
+
+    Actions:
+    perform requested tasks
+
+    """
+    # Step 1: Prepare text_cleaner object
     if not text_cleaner:
         text_cleaner = TextCleaner()
     if data_spec:
         parameter_completer(data_spec, text_cleaner)
-    if is_text_cleaner:
-        df = clean_text_df(text_cleaner)  # clean
 
-    ###### preprocess ######
+    # Step 2: Apply Text Cleaning
+    if is_text_cleaner:
+        print(chapter_message("cleaning"))
+        text_cleaner.generate_report()
+        df = clean_text_df(text_cleaner)
+
+    # Step 3: Prepare text_preprocesser object
     if is_text_preprocesser:
         if not text_preprocesser:
             text_preprocesser = TextPreprocessor()
         parameter_completer(text_cleaner, text_preprocesser)
         # pp
+        print(chapter_message("preprocessing"))
+        text_preprocesser.generate_report()
         df = preprocess_text_df(text_preprocesser)
 
-    ## Text stats
-    if not text_analyzer:
-        text_analyzer = TextAnalyzer()
-    parameter_completer(text_cleaner, text_analyzer)
-    parameter_completer(text_preprocesser, text_analyzer)
+    # Step 4: Prepare text_analyzer object
     if is_text_stats:
+        if not text_analyzer:
+            text_analyzer = TextAnalyzer()
+        parameter_completer(text_cleaner, text_analyzer)
+        parameter_completer(text_preprocesser, text_analyzer)
+        print(chapter_message("text analyze"))
         analyze_text_df(text_analyzer)
 
-    ##### Feature extraction
+    # Step 5: Feature extraction
     if is_feature_extraction:
         if not feature_extraction:
             feature_extraction = FeatureExtraction(training_data=df)
         parameter_super_completer([text_cleaner, text_preprocesser], feature_extraction)
+        print(chapter_message("create embedding"))
         train_embedding, test_embedding = extract_features(feature_extraction)
 
+    # Step 6: Feature analysis and preparation for model training
     if is_feature_analysis or is_model_analysis or is_train_model:
         target_column = feature_extraction.target_column or 'target'
         label_encoder = LabelEncoder()
@@ -103,25 +139,28 @@ def run_full_cycle(
         if not feature_analysis:
             feature_analysis = PreModelAnalysis(df=train_embedding,
                                                 target_column=target_column)
+        print(chapter_message("model pre analysis"))
+        feature_analysis.generate_report()
         feature_analysis.run()
 
-    # training a model
+    # Step 7: Model training
     best_model = None
     if is_train_model:
+        print(chapter_message("model run"))
         if not cv_data:
             cv_data = CVData(train_data=train_embedding, test_data=test_embedding)
         if not model_cycle:
             model_cycle = ModelCycle(cv_data=cv_data, target_col=target_column)
         best_model = model_cycle.get_best_model()
-        print("best_model", best_model.model_name)
+        print("Winning model: ", best_model.model_name)
 
-    # step 6: analyze the results and the best model
+    # Step 8: Model analysis
     if is_model_analysis:
+        print(chapter_message("post model analysis"))
         organized_results = pd.DataFrame(best_model.results)
         analyze_results(organized_results, best_model.parameters)
         analyze_model(best_model.model, cv_data, target_label=target_column)
-
-    return df
+    return df, best_model.model
 
 
 # # #
@@ -129,4 +168,4 @@ df1 = load_data_pirates().assign(target='chat_logs')
 df2 = load_data_king_arthur().assign(target='pirates')
 df = pd.concat([df1, df2])
 
-run_full_cycle(DataSpec(df=df, text_column='text', target_column='target'))
+run_tcap(DataSpec(df=df, text_column='text', target_column='target'))
