@@ -20,7 +20,9 @@ class ModelResults:
 
 
 class ModelInput:
-    def __init__(self, cv_data: CVData, parameters: List[Parameter], target_col: str):
+    def __init__(self, cv_data: CVData = None, parameters: List[Parameter] = None, target_col: str = 'target',
+                 name: str = None):
         self.cv_data = cv_data
         self.parameters = parameters
         self.target_col = target_col
+        self.name = name

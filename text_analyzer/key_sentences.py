@@ -84,7 +84,7 @@ def extract_key_sentences(df: pd.DataFrame, text_column='text', algorithm='LSA',
     else:
         raise ValueError(f'Invalid algorithm: {algorithm}')
 
-    return f'Key sentences out of based on {algorithm} algorithm: {sentences}'
+    return f'Key sentences out of based on {algorithm} algorithm: {sentences} \n'
 
 
 def extract_first_k_words(text, k):

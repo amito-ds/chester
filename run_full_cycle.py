@@ -51,7 +51,8 @@ def run_tcap(
         feature_extraction: fe_main.FeatureExtraction = None, is_feature_extraction: bool = True,
         feature_analysis: feature_correlation.PreModelAnalysis = None, is_feature_analysis: bool = True,
         cv_data: data_preparation.CVData = None,
-        model_cycle: best_model.ModelCycle = None, is_train_model: bool = True,
+        model_cycle: best_model.ModelCycle = None, model_compare: best_model.CompareModels = None,
+        is_train_model: bool = True,
         is_model_analysis: bool = True
 ):
     """
@@ -103,7 +104,6 @@ def run_tcap(
     if is_model_analysis:
         report += "Finally, we'll conduct a model analysis to understand the model's performance and behavior.\n"
     print(report)
-
 
     # Step 1: Prepare text_cleaner object
     if not text_cleaner:
@@ -171,6 +171,8 @@ def run_tcap(
             cv_data = CVData(train_data=train_embedding, test_data=test_embedding)
         if not model_cycle:
             model_cycle = ModelCycle(cv_data=cv_data, target_col=target_column)
+        if model_compare is not None:
+            model_cycle.compare_models = model_compare
         best_model = model_cycle.get_best_model()
         print("Winning model: ", best_model.model_name)
 
