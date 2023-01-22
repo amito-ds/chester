@@ -85,6 +85,25 @@ def run_tcap(
     """
     # Step 0: prepare outputs
     df, train_embedding, test_embedding = None, None, None
+    print(chapter_message(chapter_name="Creating report using TCAP:", prefix=""))
+    report = ""
+    report += "We're getting ready to start our data journey with TCAP.\n"
+    if is_text_cleaner:
+        report += "First, we'll be cleaning the text data to ensure that it is free of any unnecessary information. This will make it ready for further analysis.\n"
+    if is_text_preprocesser:
+        report += "Next, we'll be preprocessing the text data so that it's in the right format for feature extraction.\n"
+    if is_text_stats:
+        report += "With the text data prepped and ready, we'll dive deeper by analyzing it to understand its characteristics and generate statistics.\n"
+    if is_feature_extraction:
+        report += "With a good understanding of the text data, we'll move on to extracting features from it. This will allow us to represent the text data in a numerical format.\n"
+    if is_feature_analysis:
+        report += "Before training the model, we'll analyze the extracted features to understand their relationship with the target variable.\n"
+    if is_train_model:
+        report += "With all the preparation done, we'll now move on to training the model using the extracted features and evaluate its performance.\n"
+    if is_model_analysis:
+        report += "Finally, we'll conduct a model analysis to understand the model's performance and behavior.\n"
+    print(report)
+
 
     # Step 1: Prepare text_cleaner object
     if not text_cleaner:

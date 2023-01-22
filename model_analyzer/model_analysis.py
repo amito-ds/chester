@@ -197,7 +197,12 @@ class AnalyzeMessages:
         return "The learning curve shows the model's performance as the number of " \
                "training samples increases. A high training score and a low validation " \
                "score indicates overfitting, while a low training and high validation score " \
-               "indicates underfitting.\n"
+               "indicates underfitting. \n " \
+               "If the evaluation score is increasing over time and not stabilized on some value, " \
+               "it may indicate that the model could benefit from more data or further training.\n " \
+               "If the evaluation score is stabilized on some value, " \
+               "it may indicate that the model has reached its maximum performance or that the model is overfitting, " \
+               "in that case you may need to consider using regularization techniques or early stopping.\n"
 
     def feature_importance_message(self):
         return "The feature importance plot shows the relative importance of each feature in the model's predictions." \

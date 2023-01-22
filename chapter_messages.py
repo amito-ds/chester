@@ -26,8 +26,9 @@ def chapter_message(chapter_name: str, prefix=" Running chapter: "):
     elif chapter_name == 'create embedding':
         emoji = random.choice(CREATE_EMBEDDING_EMOJIS)
     else:
-        emoji = '📚'
+        emoji = '🍵'
     message = f'{stars}\n***{prefix} {chapter_name} {emoji} ***\n{stars}'
     return message
+
 
 
