@@ -1,6 +1,7 @@
 Metadata-Version: 2.1
-Name: TCAP
+Name: tcap
 Version: 0.1
 Home-page: https://github.com/amito-ds/TCAP
 Author: Amit Osi
 Author-email: amitosi6666@gmail.com
+Requires-Python: >=3.7

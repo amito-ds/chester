@@ -1,15 +1,19 @@
-from setuptools import setup, find_packages
+import setuptools
 
 with open('requirements.txt') as f:
     install_requires = f.read().strip().split('\n')
 
-setup(
-    name='TCAP',
-    version='0.1',
-    packages=find_packages(),  # include all packages in all directories
-    url='https://github.com/amito-ds/TCAP',
-    author='Amit Osi',
-    author_email='amitosi6666@gmail.com',
+setuptools.setup(
+    name="tcap",
+    version="0.1",
+    author="Amit Osi",
+    author_email="amitosi6666@gmail.com",
+    description=open('README.md').read(),
+    url="https://github.com/amito-ds/TCAP",
+    packages=setuptools.find_packages(exclude=["tests*"]),
+    include_package_data=True,
+    python_requires=">=3.7",
+    # List of dependencies for this package
     install_requires=install_requires,
-    long_description=open('README.md').read(),
+    setup_requires=["pytest-runner"]
 )
