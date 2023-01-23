@@ -1,6 +1,6 @@
 from typing import List
 import pandas as pd
-from tcap.model_training.data_preparation import Parameter, CVData
+from mdoel_training.data_preparation import Parameter, CVData
 
 
 class ModelResults:

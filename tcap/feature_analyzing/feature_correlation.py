@@ -1,12 +1,7 @@
+import pandas as pd
 import seaborn as sns
 from matplotlib import pyplot as plt
 from scipy.stats import chi2_contingency
-import pandas as pd
-from sklearn.preprocessing import LabelEncoder
-
-from features_engineering.feature_main import get_embeddings
-from mdoel_training.best_model import ModelCycle
-from mdoel_training.data_preparation import CVData
 
 # classification
 # buckets + chi square

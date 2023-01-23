@@ -2,7 +2,7 @@ import pandas as pd
 import seaborn as sns
 from matplotlib import pyplot as plt
 
-from tcap.model_training.data_preparation import Parameter
+from mdoel_training.data_preparation import Parameter
 from tcap.model_analyzer import model_analysis
 
 analysis_message = "The following graph displays boxplots of the calculated metrics for each fold\n, " \

@@ -1,7 +1,11 @@
 from typing import List, Tuple
-
+import random
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 import numpy as np
-from tcap.model_training.data_preparation import CVData, ComplexParameterSet
+
+from mdoel_training.data_preparation import CVData, ComplexParameterSet
+
 from sklearn.linear_model import LogisticRegression
 from skopt import gp_minimize
 
