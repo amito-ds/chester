@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import plotly.express as px
 import seaborn as sns
+import shap
 from sklearn import metrics
 
 from mdoel_training.data_preparation import CVData
@@ -15,7 +16,6 @@ class ModelAnalyzer:
         self.model = model
 
     def shap_values(self, X_train: pd.DataFrame):
-        import shap
         explainer = shap.Explainer(self.model, X_train, check_additivity=False)
         shap_values = explainer(X_train, check_additivity=False)
         plt.title("SHAP values for train set")
