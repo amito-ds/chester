@@ -2,13 +2,13 @@ from typing import List, Tuple
 
 import pandas as pd
 
-from tcap.mdoel_training.data_preparation import CVData, Parameter
-from tcap.mdoel_training.models.baseline_model import baseline_with_outputs
-from tcap.mdoel_training.models.lgbm_class import generate_lgbm_configs
-from tcap.mdoel_training.models.lgbm_class import lgbm_with_outputs
-from tcap.mdoel_training.models.logistic_regression import logistic_regression_with_outputs, \
+from tcap.model_training.data_preparation import CVData, Parameter
+from tcap.model_training.models.baseline_model import baseline_with_outputs
+from tcap.model_training.models.lgbm_class import generate_lgbm_configs
+from tcap.model_training.models.lgbm_class import lgbm_with_outputs
+from tcap.model_training.models.logistic_regression import logistic_regression_with_outputs, \
     generate_logistic_regression_configs
-from tcap.mdoel_training.models.model_input_and_output_classes import ModelResults
+from tcap.model_training.models.model_input_and_output_classes import ModelResults
 
 
 class CompareModels:

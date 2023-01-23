@@ -13,7 +13,7 @@ import logging
 logging.basicConfig(level=logging.WARNING)
 
 from mdoel_training.data_preparation import CVData
-from tcap.mdoel_training.model_utils import analyze_results
+from tcap.model_training.model_utils import analyze_results
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 from cleaning import cleaning_func as cln
@@ -21,7 +21,7 @@ from preprocessing import preprocessing_func as pp
 from features_engineering import feature_main as fe_main
 from tcap.feature_analyzing import feature_correlation
 from mdoel_training import data_preparation
-from tcap.mdoel_training import best_model as bm
+from tcap.model_training import best_model as bm
 
 
 def parameter_completer(instance1, instance2):
@@ -76,7 +76,7 @@ def run_tcap(
     is_feature_extraction (bool, optional): A flag indicating whether feature extraction should be applied.
     feature_analysis (feature_analyzing.feature_correlation.PreModelAnalysis, optional): An object containing the feature analysis settings.
     is_feature_analysis (bool, optional): A flag indicating whether feature analysis should be applied.
-    cv_data (mdoel_training.data_preparation.CVData, optional): An object containing the data for cross-validation.
+    cv_data (model_training.data_preparation.CVData, optional): An object containing the data for cross-validation.
     model_cycle (model_training.best_model.ModelCycle, optional): An object containing the model training settings.
     is_train_model (bool, optional): A flag indicating whether model training should be applied.
     is_model_analysis (bool, optional): A flag indicating whether model analysis should be applied.

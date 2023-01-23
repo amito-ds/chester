@@ -21,7 +21,7 @@ from data_loader.webtext_data import load_data_pirates, load_data_king_arthur
 from features_engineering.feature_main import get_embeddings
 from mdoel_training.best_model import ModelCycle
 from mdoel_training.data_preparation import CVData
-from tcap.mdoel_training.model_utils import  analyze_results
+from tcap.model_training.model_utils import  analyze_results
 from tcap.model_analyzer import analyze_model
 from preprocessing.preprocessing_func import preprocess_text, get_stemmer
 from tcap.util import get_stopwords
