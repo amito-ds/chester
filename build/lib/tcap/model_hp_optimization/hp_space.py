@@ -3,7 +3,7 @@ import random
 import numpy as np
 from typing import Union
 
-from mdoel_training.data_preparation import Parameter
+from tcap.model_training.data_preparation import Parameter
 from typing import List
 
 

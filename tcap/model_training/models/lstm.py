@@ -9,7 +9,7 @@ from keras.utils import to_categorical
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support, recall_score, f1_score
 from sklearn.preprocessing import LabelBinarizer
 
-from mdoel_training.data_preparation import CVData, Parameter
+from tcap.model_training.data_preparation import CVData, Parameter
 
 
 def get_default_parameters(X_train: pd.DataFrame):

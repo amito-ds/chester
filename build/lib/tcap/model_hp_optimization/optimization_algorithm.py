@@ -1,7 +1,7 @@
 from typing import List
 
-from mdoel_training.data_preparation import ComplexParameter
-from mdoel_training.models.model_input_and_output_classes import ModelInput
+from tcap.model_training.data_preparation import ComplexParameter
+from tcap.model_training.models.model_input_and_output_classes import ModelInput
 from .hp_space import sample_hp_space
 
 

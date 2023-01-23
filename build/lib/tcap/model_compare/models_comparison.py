@@ -2,8 +2,8 @@ from typing import List
 
 import pandas as pd
 
-from mdoel_training.data_preparation import Parameter
-from mdoel_training.models.model_input_and_output_classes import ModelResults
+from tcap.model_training.data_preparation import Parameter
+from tcap.model_training.models.model_input_and_output_classes import ModelResults
 from model_compare.compare_messages import compare_models_by_type_and_parameters
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression

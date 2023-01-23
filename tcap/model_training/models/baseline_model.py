@@ -1,7 +1,7 @@
 import pandas as pd
 
-from mdoel_training.data_preparation import CVData
-from mdoel_training.models.scoring import calculate_score_model
+from tcap.model_training.data_preparation import CVData
+from tcap.model_training.models.scoring import calculate_score_model
 
 
 class BaselineModel:

@@ -6,22 +6,19 @@ def warn(*args, **kwargs):
 
 
 import warnings
+from collections import defaultdict
+import logging
 
 warnings.warn = warn
 
-from collections import defaultdict
-import logging
 logging.basicConfig(level=logging.ERROR)
 
 import numpy as np
 import pandas as pd
-
-from mdoel_training.models.model_input_and_output_classes import ModelInput
-from mdoel_training.models.scoring import calculate_score_model
-
+from tcap.model_training.models.model_input_and_output_classes import ModelInput
+from tcap.model_training.models.scoring import calculate_score_model
 import lightgbm as lgb
-
-from mdoel_training.data_preparation import CVData, Parameter, ComplexParameter
+from tcap.model_training.data_preparation import CVData, Parameter, ComplexParameter
 from sklearn.model_selection import GridSearchCV
 from typing import List
 
