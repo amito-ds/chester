@@ -30,8 +30,9 @@ class ModelCycle:
         self.metric_funcs = metric_funcs
         self.compare_models = compare_models
         self.lgbm_models = lgbm_models
-        self.models_results_classification = self.running_all_models()
         self.logistic_regression_models = logistic_regression_models
+        # this one goes last
+        self.models_results_classification = self.running_all_models()
 
     def get_best_model(self):
         print("Choosing a model...\n")
@@ -54,10 +55,10 @@ class ModelCycle:
             if acc > max_acc:
                 max_acc = acc
                 best_model = model_results[i]
-        print("best model type", best_model.model_name)
-        print("best model params:")
+        print("Best model: ", best_model.model_name)
+        print("With parameters:")
         for param in best_model.parameters:
-            print(param.name, param.value)
+            print(param.name, "=", param.value)
         return best_model
 
     def run_chosen_models(self, compare_models: CompareModels) -> list[ModelResults]:
@@ -110,7 +111,7 @@ class ModelCycle:
         logistic_regression_models_results_organized = []
         if self.logistic_regression_models > 0:
             lr_confs = generate_logistic_regression_configs(self.logistic_regression_models)
-            print(f"Cpmparing {len(lr_confs)} LGBM confs")
+            print(f"Cpmparing {len(lr_confs)} Logistic regression confs")
             lr_models_results = [logistic_regression_with_outputs(
                 cv_data=self.cv_data, parameters=parameters, target_col=self.target_col
             ) for parameters in lr_confs]

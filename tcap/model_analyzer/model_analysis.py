@@ -120,6 +120,12 @@ class ModelAnalyzer:
     def learning_curve(self, X: pd.DataFrame, y: pd.Series) -> None:
         try:
             from sklearn.model_selection import learning_curve
+            def warn(*args, **kwargs):
+                pass
+
+            import warnings
+            warnings.warn = warn
+
             train_sizes, train_scores, test_scores = learning_curve(self.model, X, y, cv=5, scoring='accuracy')
             train_scores_mean = np.mean(train_scores, axis=1)
             train_scores_std = np.std(train_scores, axis=1)
