@@ -12,7 +12,7 @@ import logging
 
 logging.basicConfig(level=logging.WARNING)
 
-from mdoel_training.data_preparation import CVData
+from tcap.model_training.data_preparation import CVData
 from tcap.model_training.model_utils import analyze_results
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
@@ -20,7 +20,7 @@ from cleaning import cleaning_func as cln
 from preprocessing import preprocessing_func as pp
 from features_engineering import feature_main as fe_main
 from tcap.feature_analyzing import feature_correlation
-from mdoel_training import data_preparation
+from tcap.model_training import data_preparation
 from tcap.model_training import best_model as bm
 
 

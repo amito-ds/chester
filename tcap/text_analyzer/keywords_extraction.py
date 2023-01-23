@@ -1,12 +1,10 @@
 # Adapted from: github.com/aneesha/RAKE/rake.py
 from __future__ import division
-import operator
-import re
 
-import nltk
+import operator
 import string
 
-from data_loader.webtext_data import load_data_pirates
+import nltk
 
 
 def isPunct(word):
@@ -102,6 +100,3 @@ def trim_repeated_words(text, max_repeated_words):
             word_count[word] = 1
             new_words.append(word)
     return ' '.join(new_words)
-
-
-# print(trim_repeated_words("strategi requir quest holi grail brought success", max_repeated_words=3))
