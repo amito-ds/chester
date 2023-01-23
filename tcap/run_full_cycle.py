@@ -86,11 +86,6 @@ def run_tcap(
 
     """
 
-    def warn(*args, **kwargs):
-        pass
-
-    import warnings
-    warnings.warn = warn
 
 
     # Step 0: prepare outputs
@@ -180,7 +175,7 @@ def run_tcap(
             cv_data = CVData(train_data=train_embedding, test_data=test_embedding)
         if not model_cycle:
             model_cycle = bm.ModelCycle(cv_data=cv_data, target_col=target_column,
-                                        logistic_regression_models=10, lgbm_models=10)
+                                        logistic_regression_models=10, lgbm_models=1)
         if model_compare is not None:
             model_cycle.compare_models = model_compare
         best_model = model_cycle.get_best_model()

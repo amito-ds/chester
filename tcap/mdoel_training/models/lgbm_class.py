@@ -1,13 +1,17 @@
 # pylint: disable=W0123
+
+
+def warn(*args, **kwargs):
+    pass
+
+
 import warnings
+
+warnings.warn = warn
+
 from collections import defaultdict
-
-warnings.filterwarnings("ignore", category=UserWarning, module="LightGBM")
 import logging
-
 logging.basicConfig(level=logging.ERROR)
-
-import logging
 
 import numpy as np
 import pandas as pd
@@ -15,11 +19,7 @@ import pandas as pd
 from mdoel_training.models.model_input_and_output_classes import ModelInput
 from mdoel_training.models.scoring import calculate_score_model
 
-# logging.getLogger("lightgbm").setLevel(logging.WARN)
-# logging.getLogger("lightgbm").setLevel(logging.WARNING)
 import lightgbm as lgb
-
-from sklearn.metrics import accuracy_score, precision_recall_fscore_support, recall_score, f1_score
 
 from mdoel_training.data_preparation import CVData, Parameter, ComplexParameter
 from sklearn.model_selection import GridSearchCV
