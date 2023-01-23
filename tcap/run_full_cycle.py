@@ -21,7 +21,7 @@ from preprocessing import preprocessing_func as pp
 from features_engineering import feature_main as fe_main
 from tcap.feature_analyzing import feature_correlation
 from mdoel_training import data_preparation
-from mdoel_training import best_model
+from tcap.mdoel_training import best_model as bm
 
 
 def parameter_completer(instance1, instance2):
@@ -52,7 +52,7 @@ def run_tcap(
         feature_extraction: fe_main.FeatureExtraction = None, is_feature_extraction: bool = True,
         feature_analysis: feature_correlation.PreModelAnalysis = None, is_feature_analysis: bool = True,
         cv_data: data_preparation.CVData = None,
-        model_cycle: best_model.ModelCycle = None, model_compare: best_model.CompareModels = None,
+        model_cycle: bm.ModelCycle = None, model_compare: bm.CompareModels = None,
         is_train_model: bool = True,
         is_model_analysis: bool = True
 ):
@@ -171,7 +171,7 @@ def run_tcap(
         if not cv_data:
             cv_data = CVData(train_data=train_embedding, test_data=test_embedding)
         if not model_cycle:
-            model_cycle = ModelCycle(cv_data=cv_data, target_col=target_column)
+            model_cycle = bm.ModelCycle(cv_data=cv_data, target_col=target_column, lgbm_models=1)
         if model_compare is not None:
             model_cycle.compare_models = model_compare
         best_model = model_cycle.get_best_model()
