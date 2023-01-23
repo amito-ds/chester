@@ -1,9 +1,9 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-from features_engineering.bag_of_words import get_bow_embedding
+from tcap.features_engineering.bag_of_words import get_bow_embedding
 from tcap.features_engineering.corex import get_corex_embedding
-from features_engineering.tfidf import get_tfidf_embedding
+from tcap.features_engineering.tfidf import get_tfidf_embedding
 
 
 def get_embeddings(training_data: pd.DataFrame,
