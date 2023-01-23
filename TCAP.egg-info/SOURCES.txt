@@ -8,6 +8,7 @@ TCAP.egg-info/top_level.txt
 tcap/__init__.py
 tcap/chapter_messages.py
 tcap/run_full_cycle.py
+tcap/run_the_full_process.py
 tcap/util.py
 tcap.egg-info/PKG-INFO
 tcap.egg-info/SOURCES.txt
@@ -26,8 +27,6 @@ tcap/cleaning/cleaning_func.py
 tcap/cleaning/file.py
 tcap/data_loader/__init__.py
 tcap/data_loader/webtext_data.py
-tcap/data_loader/aaa/__init__.py
-tcap/data_loader/aaa/bbb.py
 tcap/feature_analyzing/__init__.py
 tcap/feature_analyzing/feature_correlation.py
 tcap/feature_analyzing/imported.py

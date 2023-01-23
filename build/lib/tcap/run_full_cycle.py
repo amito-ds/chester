@@ -86,8 +86,6 @@ def run_tcap(
 
     """
 
-
-
     # Step 0: prepare outputs
     df, train_embedding, test_embedding = None, None, None
     print(chapter_message(chapter_name="Creating report using TCAP:", prefix=""))
@@ -151,9 +149,19 @@ def run_tcap(
         print(chapter_message("create embedding"))
         train_embedding, test_embedding = fe_main.extract_features(feature_extraction)
 
+
+    # special case: not found target column
+    if 'target' not in df.columns:
+        is_feature_analysis = False
+        is_train_model = False
+        is_model_analysis = False
+
     # Step 6: Feature analysis and preparation for model training
     if is_feature_analysis or is_model_analysis or is_train_model:
-        target_column = feature_extraction.target_column or 'target'
+        try:
+            target_column = feature_extraction.target_column
+        except:
+            target_column = 'target'
         label_encoder = LabelEncoder()
         train_embedding[target_column] = label_encoder.fit_transform(train_embedding[target_column])
         test_embedding[target_column] = label_encoder.transform(test_embedding[target_column])
