@@ -171,7 +171,8 @@ def run_tcap(
         if not cv_data:
             cv_data = CVData(train_data=train_embedding, test_data=test_embedding)
         if not model_cycle:
-            model_cycle = bm.ModelCycle(cv_data=cv_data, target_col=target_column, lgbm_models=1)
+            model_cycle = bm.ModelCycle(cv_data=cv_data, target_col=target_column, lgbm_models=0,
+                                        logistic_regression_models=10)
         if model_compare is not None:
             model_cycle.compare_models = model_compare
         best_model = model_cycle.get_best_model()

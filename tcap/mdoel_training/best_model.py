@@ -1,14 +1,14 @@
 from typing import List, Tuple
 
 import pandas as pd
-from mdoel_training.data_preparation import CVData, Parameter
-from mdoel_training.models.baseline_model import baseline_with_outputs
-from mdoel_training.models.lgbm_class import lgbm_with_outputs
-from mdoel_training.models.logistic_regression import logistic_regression_with_outputs
-from mdoel_training.models.model_input_and_output_classes import ModelResults
-from model_compare.compare_messages import compare_models_by_type_and_parameters
 
+from tcap.mdoel_training.data_preparation import CVData, Parameter
+from tcap.mdoel_training.models.baseline_model import baseline_with_outputs
 from tcap.mdoel_training.models.lgbm_class import generate_lgbm_configs
+from tcap.mdoel_training.models.lgbm_class import lgbm_with_outputs
+from tcap.mdoel_training.models.logistic_regression import logistic_regression_with_outputs, \
+    generate_logistic_regression_configs
+from tcap.mdoel_training.models.model_input_and_output_classes import ModelResults
 
 
 class CompareModels:
@@ -23,14 +23,15 @@ class ModelCycle:
                  metric_funcs: List[callable] = None,
                  compare_models: CompareModels = None,
                  lgbm_models: int = 10,
-                 logistic_regression_models=5):
+                 logistic_regression_models: int = 10):
         self.cv_data = cv_data
         self.parameters = parameters
         self.target_col = target_col
         self.metric_funcs = metric_funcs
-        self.models_results_classification = self.running_all_models()
         self.compare_models = compare_models
         self.lgbm_models = lgbm_models
+        self.models_results_classification = self.running_all_models()
+        self.logistic_regression_models = logistic_regression_models
 
     def get_best_model(self):
         print("Choosing a model...\n")
@@ -38,7 +39,6 @@ class ModelCycle:
             models_results_classification = self.run_chosen_models(self.compare_models)
         else:
             models_results_classification = self.models_results_classification
-            compare_models_by_type_and_parameters(models_results_classification)  # get init message
         if len(models_results_classification) > 1:
             return self.compare_results(models_results_classification)
         else:
@@ -54,6 +54,10 @@ class ModelCycle:
             if acc > max_acc:
                 max_acc = acc
                 best_model = model_results[i]
+        print("best model type", best_model.model_name)
+        print("best model params:")
+        for param in best_model.parameters:
+            print(param.name, param.value)
         return best_model
 
     def run_chosen_models(self, compare_models: CompareModels) -> list[ModelResults]:
@@ -84,16 +88,13 @@ class ModelCycle:
 
     def running_all_models(self) -> list[ModelResults]:
         print("Considering the inputs, running classification model")
-        results1, model1 = baseline_with_outputs(cv_data=self.cv_data, target_col=self.target_col)
-
-        lgbm_models_results = []
+        results_baseline, model_baseline = baseline_with_outputs(cv_data=self.cv_data, target_col=self.target_col)
+        model_results_baseline: ModelResults = ModelResults("baseline", model_baseline, pd.DataFrame(results_baseline),
+                                                            [], predictions=pd.Series())
+        lgbm_models_results_organized = []
         if self.lgbm_models > 0:
             lgnm_confs = generate_lgbm_configs(self.lgbm_models)
-            print(f"checking {len(lgnm_confs)} lgnm confs")
-            print("example:")
-            first = lgnm_confs[0]
-            for p in first:
-                print(p.name, p.value)
+            print(f"Cpmparing {len(lgnm_confs)} LGBM confs")
             lgbm_models_results = [lgbm_with_outputs(
                 cv_data=self.cv_data, parameters=parameters, target_col=self.target_col
             )
@@ -106,17 +107,23 @@ class ModelCycle:
                                  predictions=pd.Series())
                 )
 
-        # results3, model3, logistic_regression_parameters = logistic_regression_with_outputs(
-        #     cv_data=self.cv_data, parameters=self.parameters, target_col=self.target_col)
-        # model_res1: ModelResults = ModelResults("baseline", model1, pd.DataFrame(results1), [],
-        #                                         predictions=pd.Series())
-        # model_res2: ModelResults = ModelResults("lgbm", model2, pd.DataFrame(results2), lgbm_parameters,
-        #                                         predictions=pd.Series())
-        # model_res3: ModelResults = ModelResults("logistic regression", model3, pd.DataFrame(results3),
-        #                                         logistic_regression_parameters, predictions=pd.Series())
-        # models_results_classification = [model_res1, model_res2, model_res3]
-        # return models_results_classification
-        return lgbm_models_results_organized
+        logistic_regression_models_results_organized = []
+        if self.logistic_regression_models > 0:
+            lr_confs = generate_logistic_regression_configs(self.logistic_regression_models)
+            print(f"Cpmparing {len(lr_confs)} LGBM confs")
+            lr_models_results = [logistic_regression_with_outputs(
+                cv_data=self.cv_data, parameters=parameters, target_col=self.target_col
+            ) for parameters in lr_confs]
+
+            for model_res in lr_models_results:
+                results, model, lr_parameters = model_res
+                logistic_regression_models_results_organized.append(
+                    ModelResults("logistic regression", model=model, results=pd.DataFrame(results),
+                                 parameters=lr_parameters,
+                                 predictions=pd.Series())
+                )
+
+        return lgbm_models_results_organized + logistic_regression_models_results_organized + [model_results_baseline]
 
 
 def is_metric_higher_better(metric_name: str) -> bool:

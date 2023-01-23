@@ -14,5 +14,5 @@ out = run_tcap(
     is_text_stats=False,
     is_feature_extraction=True,
     is_train_model=True,
-    is_model_analysis=True
+    is_model_analysis=False
 )

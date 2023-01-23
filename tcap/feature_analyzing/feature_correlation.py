@@ -144,7 +144,7 @@ class PreModelAnalysis:
         for feature in self.df.columns:
             if feature != self.target_column:
                 X = self.df[[feature]]
-                kmeans = KMeans(n_clusters=k)
+                kmeans = KMeans(n_clusters=k, n_init=10)
                 kmeans.fit(X)
                 X[feature + "_cluster"] = kmeans.labels_
                 crosstab = pd.crosstab(X[feature + "_cluster"], self.df[self.target_column])

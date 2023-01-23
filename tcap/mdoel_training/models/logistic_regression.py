@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, recall_score, f1_score, precision_recall_fscore_support
 
@@ -72,3 +74,33 @@ def logistic_regression_hp(inputs: ModelInput):
     print(inputs.parameters)
     avg_3rd_col = results.iloc[:, 2].mean()
     return avg_3rd_col
+
+
+from typing import List
+from sklearn.linear_model import LogisticRegression
+
+
+def generate_logistic_regression_configs(k: int) -> List[List[Parameter]]:
+    # List of additional configurations to test
+    additional_confs = [
+        {'penalty': 'l1', 'C': 0.1, 'solver': 'saga'},
+        {'penalty': 'l2', 'C': 0.1, 'solver': 'newton-cg'},
+        {'penalty': 'elasticnet', 'C': 0.1, 'solver': 'saga', 'l1_ratio': 0.5},
+        {'penalty': 'l2', 'C': 0.01, 'solver': 'lbfgs'},
+        {'penalty': 'l1', 'C': 0.5, 'solver': 'saga'},
+        {'penalty': 'l2', 'C': 0.5, 'solver': 'newton-cg'},
+        {'penalty': 'elasticnet', 'C': 0.5, 'solver': 'saga', 'l1_ratio': 0.5},
+        {'penalty': 'l2', 'C': 0.001, 'solver': 'lbfgs'},
+        {'penalty': 'l1', 'C': 1, 'solver': 'saga'},
+        {'penalty': 'l2', 'C': 1, 'solver': 'newton-cg'},
+    ]
+    # List to store the final configurations
+    logistic_regression_parameters = []
+    for conf in additional_confs[:k]:
+        # Create a dictionary to store the final configuration
+        final_conf = defaultdict(lambda: None, default_parameters)
+        final_conf.update(conf)
+        # Convert the dictionary to a list of Parameter objects
+        final_conf = [Parameter(key, value) for key, value in final_conf.items()]
+        logistic_regression_parameters.append(final_conf)
+    return logistic_regression_parameters
