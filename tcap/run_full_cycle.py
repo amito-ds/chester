@@ -115,6 +115,7 @@ def run_tcap(
         print(chapter_message("cleaning"))
         text_cleaner.generate_report()
         df = cln.clean_text_df(text_cleaner)
+    text_cleaner.df = df
 
     # Step 3: Prepare text_preprocesser object
     if is_text_preprocesser:
@@ -128,11 +129,12 @@ def run_tcap(
         print(chapter_message("preprocessing"))
         text_preprocesser.generate_report()
         df = pp.preprocess_text_df(text_preprocesser)
+        pp.df = df
 
     # Step 4: Prepare text_analyzer object
     if is_text_stats:
         if not text_analyzer:
-            text_analyzer = TextAnalyzer()
+            text_analyzer = TextAnalyzer(df=df)
         try:
             parameter_completer(text_cleaner, text_analyzer)
         except:
