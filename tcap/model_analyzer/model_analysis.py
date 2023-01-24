@@ -54,7 +54,7 @@ class ModelAnalyzer:
                 X_test: pd.DataFrame, y_test: pd.Series,
                 model, shap_values: bool = True, coefficients: bool = True,
                 confusion_matrix: bool = True,
-                roc_curve: bool = True, learning_curve: bool = True,
+                roc_curve: bool = True, learning_curve: bool = False,
                 feature_importance: bool = True) -> None:
         unique_classes = len(np.unique(y_train))
         if feature_importance:
