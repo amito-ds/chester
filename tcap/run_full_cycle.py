@@ -111,7 +111,10 @@ def run_tcap(
     if not text_cleaner:
         text_cleaner = cln.TextCleaner()
     if data_spec:
-        parameter_completer(data_spec, text_cleaner)
+        try:
+            parameter_completer(data_spec, text_cleaner)
+        except:
+            pass
     origin_df = text_cleaner.df.copy()
 
     # Step 2: Apply Text Cleaning
@@ -124,7 +127,10 @@ def run_tcap(
     if is_text_preprocesser:
         if not text_preprocesser:
             text_preprocesser = pp.TextPreprocessor()
-        parameter_completer(text_cleaner, text_preprocesser)
+        try:
+            parameter_completer(text_cleaner, text_preprocesser)
+        except:
+            pass
         # pp
         print(chapter_message("preprocessing"))
         text_preprocesser.generate_report()
@@ -134,8 +140,14 @@ def run_tcap(
     if is_text_stats:
         if not text_analyzer:
             text_analyzer = TextAnalyzer()
-        parameter_completer(text_cleaner, text_analyzer)
-        parameter_completer(text_preprocesser, text_analyzer)
+        try:
+            parameter_completer(text_cleaner, text_analyzer)
+        except:
+            pass
+        try:
+            parameter_completer(text_preprocesser, text_analyzer)
+        except:
+            pass
         print(chapter_message("text analyze"))
         analyze_text_df(text_analyzer)
 
@@ -145,10 +157,12 @@ def run_tcap(
             feature_extraction = fe_main.FeatureExtraction(training_data=df)
         if feature_extraction.training_data is None:
             feature_extraction.training_data = df
-        parameter_super_completer([text_cleaner, text_preprocesser], feature_extraction)
+        try:
+            parameter_super_completer([text_cleaner, text_preprocesser], feature_extraction)
+        except:
+            pass
         print(chapter_message("create embedding"))
         train_embedding, test_embedding = fe_main.extract_features(feature_extraction)
-
 
     # special case: not found target column
     if 'target' not in df.columns:
