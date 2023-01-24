@@ -1,11 +1,9 @@
 import warnings
 
-from tcap.model_analyzer.model_analysis import analyze_model
-
-from tcap.text_analyzer.smart_text_analyzer import analyze_text_df
-
 from tcap.chapter_messages import chapter_message
+from tcap.model_analyzer.model_analysis import analyze_model
 from tcap.text_analyzer.data_quality import TextAnalyzer
+from tcap.text_analyzer.smart_text_analyzer import analyze_text_df
 
 warnings.filterwarnings("ignore", category=UserWarning, module="lightgbm")
 import logging
@@ -30,11 +28,6 @@ def parameter_completer(instance1, instance2):
     for key in attributes1:
         if key in attributes2:
             setattr(instance2, key, getattr(instance1, key))
-
-
-def parameter_super_completer(instance_list: list, instance):
-    for instance_i in instance_list:
-        parameter_completer(instance_i, instance)
 
 
 class DataSpec:
@@ -158,7 +151,11 @@ def run_tcap(
         if feature_extraction.training_data is None:
             feature_extraction.training_data = df
         try:
-            parameter_super_completer([text_cleaner, text_preprocesser], feature_extraction)
+            parameter_completer(text_cleaner, feature_extraction)
+        except:
+            pass
+        try:
+            parameter_completer(text_preprocesser, feature_extraction)
         except:
             pass
         print(chapter_message("create embedding"))
