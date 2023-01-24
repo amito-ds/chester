@@ -1,7 +1,6 @@
 corextopic==1.1
 ipython==7.9.0
-keras==2.9.1
-tensorflow ==
+keras==2.11.0
 lightgbm==3.2.1
 matplotlib==3.6.2
 nltk==3.8.1
@@ -18,3 +17,4 @@ shap==0.41.0
 textblob==0.17.1
 tweedie==0.0.9
 wordcloud==1.8.2.2
+tensorflow==2.11.0
