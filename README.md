@@ -49,3 +49,4 @@ TCAP is released under the MIT License.
 # Acknowledgements
 The TCAP package was developed by Amit Osi
 TCAP makes use of the following open-source libraries: NLTK, spaCy, Gensim, Sklearn.
+

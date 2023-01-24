@@ -5,11 +5,11 @@ with open('requirements.txt') as f:
 
 setuptools.setup(
     name="tcap",
-    version="0.1",
+    version="0.2",
     author="Amit Osi",
     author_email="amitosi6666@gmail.com",
     description=open('README.md').read(),
-    url="https://github.com/amito-ds/TCAP",
+    url="https://github.com/amito-ds/TCAP/tree/user_features",
     packages=setuptools.find_packages(exclude=["tests*"]),
     include_package_data=True,
     python_requires=">=3.7",
