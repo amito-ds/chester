@@ -3,7 +3,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 import pandas as pd
 
 
-def find_similar_texts(data, index, K=5):
+def find_similar_texts(data, index, top_similarities=5):
     # Extract the text from the given index
     original_text = data.loc[index, 'text']
 
@@ -20,7 +20,7 @@ def find_similar_texts(data, index, K=5):
     similarity = cosine_similarity(embeddings)
 
     # Get the indices of the K most similar texts
-    most_similar = similarity[index].argsort()[-K:][::-1]
+    most_similar = similarity[index].argsort()[-top_similarities:][::-1]
 
     # Print the original text and target
     print(f'Original text: {original_text}')

@@ -106,6 +106,7 @@ def run_tcap(
     if data_spec:
         try:
             parameter_completer(data_spec, text_cleaner)
+            text_cleaner.df[text_cleaner.text_column].fillna('.', inplace=True)
         except:
             pass
     origin_df = text_cleaner.df.copy()
