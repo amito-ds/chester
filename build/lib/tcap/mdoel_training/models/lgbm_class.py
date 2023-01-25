@@ -51,7 +51,7 @@ lgbm_class_default_parameters = [
 ]
 
 
-def train_lgbm(X_train, y_train, parameters: list[Parameter]):
+def train_lgbm(X_train, y_train, parameters):
     """
     Trains a lightgbm model using the given parameters.
     :param X_train: The training data features
