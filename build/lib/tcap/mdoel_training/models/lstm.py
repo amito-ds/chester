@@ -1,11 +1,8 @@
-import numpy as np
-import pandas as pd
-from keras.models import Sequential
-from keras.layers import LSTM, Dense
-
 from typing import List
 
-from keras.utils import to_categorical
+import numpy as np
+import pandas as pd
+import tensorflow as tf
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support, recall_score, f1_score
 from sklearn.preprocessing import LabelBinarizer
 
@@ -45,11 +42,12 @@ def train_lstm(X_train, y_train, parameters: list[Parameter]):
     params = {}
     for param in parameters:
         params[param.name] = param.value
-    model = Sequential()
+    model = tf.keras.Sequential()
     model.add(
-        LSTM(params['output_dim'], input_shape=params['input_shape'], recurrent_dropout=params['recurrent_dropout'],
-             dropout=params['dropout']))
-    model.add(Dense(1, activation='sigmoid'))
+        tf.keras.layers.LSTM(params['output_dim'], input_shape=params['input_shape'],
+                             recurrent_dropout=params['recurrent_dropout'],
+                             dropout=params['dropout']))
+    model.add(tf.keras.layers.Dense(1, activation='sigmoid'))
     model.compile(loss='binary_crossentropy', optimizer=params['optimizer'], metrics=['accuracy'])
 
     # convert y_train to numerical values
