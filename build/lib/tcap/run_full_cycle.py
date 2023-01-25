@@ -11,7 +11,6 @@ import logging
 logging.basicConfig(level=logging.WARNING)
 
 from tcap.model_training.data_preparation import CVData
-from tcap.model_training.model_utils import analyze_results
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 from tcap.cleaning import cleaning_func as cln
@@ -20,6 +19,7 @@ from tcap.features_engineering import feature_main as fe_main
 from tcap.feature_analyzing import feature_correlation
 from tcap.model_training import data_preparation
 from tcap.model_training import best_model as bm
+from tcap.model_training.model_utils import analyze_results
 
 
 def parameter_completer(instance1, instance2):
