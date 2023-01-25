@@ -32,7 +32,7 @@ def get_model_name(model):
     return model_name
 
 
-def compare_models_by_type_and_parameters(models_list: list[ModelResults]):
+def compare_models_by_type_and_parameters(models_list):
     if len(models_list) <= 1:
         return None
     else:
@@ -53,7 +53,7 @@ def compare_models_by_type_and_parameters(models_list: list[ModelResults]):
             print(message)
 
 
-def group_models_by_type(models_list: list[ModelResults]):
+def group_models_by_type(models_list):
     # break to same types
     model_types = []
     for model_result in models_list:

@@ -45,7 +45,7 @@ class ModelCycle:
         else:
             return models_results_classification[0]
 
-    def compare_results(self, model_results: list[ModelResults]):
+    def compare_results(self, model_results):
         test_results = \
             [result.results[result.results['type'] == "test"] for result in model_results]
         max_acc = 0
@@ -61,7 +61,7 @@ class ModelCycle:
             print(param.name, "=", param.value)
         return best_model
 
-    def run_chosen_models(self, compare_models: CompareModels) -> list[ModelResults]:
+    def run_chosen_models(self, compare_models: CompareModels):
         models_input = compare_models.models_input
         models_results = []
         for name, value in models_input:
@@ -87,7 +87,7 @@ class ModelCycle:
                 print(f"{name} model not recognized")
         return models_results
 
-    def running_all_models(self) -> list[ModelResults]:
+    def running_all_models(self):
         print("Considering the inputs, running classification model")
         results_baseline, model_baseline = baseline_with_outputs(cv_data=self.cv_data, target_col=self.target_col)
         model_results_baseline: ModelResults = ModelResults("baseline", model_baseline, pd.DataFrame(results_baseline),

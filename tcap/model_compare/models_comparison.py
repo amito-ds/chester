@@ -10,7 +10,7 @@ from sklearn.linear_model import LogisticRegression
 
 
 class ModelComparison:
-    def __init__(self, model_results: list[ModelResults]):
+    def __init__(self, model_results):
         self.model_results = model_results
 
     def convert_to_model_tuples(self) -> List[tuple]:
