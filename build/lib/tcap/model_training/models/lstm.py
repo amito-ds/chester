@@ -1,15 +1,16 @@
-import numpy as np
-import pandas as pd
-from keras.models import Sequential
-from keras.layers import LSTM, Dense
-
 from typing import List
 
-from keras.utils import to_categorical
+import numpy as np
+import pandas as pd
+import tensorflow as tf
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support, recall_score, f1_score
 from sklearn.preprocessing import LabelBinarizer
+from sklearn.preprocessing import LabelEncoder
 
 from tcap.model_training.data_preparation import CVData, Parameter
+
+
+# from tensorflow.keras.layers import LSTM, Dense
 
 
 def get_default_parameters(X_train: pd.DataFrame):
@@ -29,9 +30,6 @@ def get_default_parameters(X_train: pd.DataFrame):
     return lstm_default_parameters
 
 
-from sklearn.preprocessing import LabelEncoder
-
-
 def train_lstm(X_train, y_train, parameters: list[Parameter]):
     """
     Trains a LSTM model using the given parameters.
@@ -45,11 +43,12 @@ def train_lstm(X_train, y_train, parameters: list[Parameter]):
     params = {}
     for param in parameters:
         params[param.name] = param.value
-    model = Sequential()
+    model = tf.keras.Sequential()
     model.add(
-        LSTM(params['output_dim'], input_shape=params['input_shape'], recurrent_dropout=params['recurrent_dropout'],
-             dropout=params['dropout']))
-    model.add(Dense(1, activation='sigmoid'))
+        tf.keras.layers.LSTM(params['output_dim'], input_shape=params['input_shape'],
+                             recurrent_dropout=params['recurrent_dropout'],
+                             dropout=params['dropout']))
+    model.add(tf.keras.layers.Dense(1, activation='sigmoid'))
     model.compile(loss='binary_crossentropy', optimizer=params['optimizer'], metrics=['accuracy'])
 
     # convert y_train to numerical values
