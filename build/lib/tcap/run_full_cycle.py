@@ -103,17 +103,13 @@ def run_tcap(
     # Step 1: Prepare text_cleaner object
     if not text_cleaner:
         text_cleaner = cln.TextCleaner()
-    if text_cleaner is not None and text_cleaner.df is not None:
-        origin_df = text_cleaner.df.copy()
     if data_spec:
         try:
             parameter_completer(data_spec, text_cleaner)
             text_cleaner.df[text_cleaner.text_column].fillna('.', inplace=True)
         except:
             pass
-
-    if data_spec is not None and data_spec.df is not None:
-        origin_df = data_spec.df
+    origin_df = text_cleaner.df.copy()
 
     # Step 2: Apply Text Cleaning
     if is_text_cleaner:
@@ -170,6 +166,7 @@ def run_tcap(
             target_column = feature_extraction.target_column
         except:
             target_column = 'target'
+        print("test_embedding", test_embedding[0:5])
         label_encoder = LabelEncoder()
         train_embedding[target_column] = label_encoder.fit_transform(train_embedding[target_column])
         test_embedding[target_column] = label_encoder.transform(test_embedding[target_column])
