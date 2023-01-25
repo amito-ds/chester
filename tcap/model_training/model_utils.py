@@ -11,7 +11,7 @@ analysis_message = "The following graph displays boxplots of the calculated metr
                    "train and test data. A large difference between the train and test boxplots may indicate overfitting."
 
 
-def analyze_results(results: pd.DataFrame, parameters: list[dp.Parameter]):
+def analyze_results(results: pd.DataFrame, parameters):
     # remove parameters columns from the results dataframe
     results_copy = results.drop([p.name for p in parameters], axis=1)
     # check if there are any lists in the dataframe

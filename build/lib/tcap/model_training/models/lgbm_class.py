@@ -1,6 +1,3 @@
-# pylint: disable=W0123
-
-
 def warn(*args, **kwargs):
     pass
 
@@ -18,9 +15,12 @@ import pandas as pd
 from tcap.model_training.models.model_input_and_output_classes import ModelInput
 from tcap.model_training.models.scoring import calculate_score_model
 import lightgbm as lgb
-from tcap.model_training.data_preparation import CVData, Parameter, ComplexParameter
-from sklearn.model_selection import GridSearchCV
 from typing import List
+import tcap.model_training.data_preparation as dp
+
+from tcap.model_training.data_preparation import CVData, ComplexParameter
+from sklearn.model_selection import GridSearchCV
+
 
 default_parameters = {
     'objective': 'binary',
@@ -35,19 +35,19 @@ default_parameters = {
 }
 
 lgbm_class_default_parameters = [
-    Parameter('objective', default_parameters['objective']),
-    Parameter('boosting_type', default_parameters['boosting_type']),
-    Parameter('metric', default_parameters['metric']),
-    Parameter('num_leaves', default_parameters['num_leaves']),
-    Parameter('learning_rate', default_parameters['learning_rate']),
-    Parameter('colsample_bytree', default_parameters['colsample_bytree']),
-    Parameter('subsample', default_parameters['subsample']),
-    Parameter('subsample_freq', default_parameters['subsample_freq']),
-    Parameter('verbose', default_parameters['verbose'])
+    dp.Parameter('objective', default_parameters['objective']),
+    dp.Parameter('boosting_type', default_parameters['boosting_type']),
+    dp.Parameter('metric', default_parameters['metric']),
+    dp.Parameter('num_leaves', default_parameters['num_leaves']),
+    dp.Parameter('learning_rate', default_parameters['learning_rate']),
+    dp.Parameter('colsample_bytree', default_parameters['colsample_bytree']),
+    dp.Parameter('subsample', default_parameters['subsample']),
+    dp.Parameter('subsample_freq', default_parameters['subsample_freq']),
+    dp.Parameter('verbose', default_parameters['verbose'])
 ]
 
 
-def train_lgbm(X_train, y_train, parameters: list[Parameter]):
+def train_lgbm(X_train, y_train, parameters: list[dp.Parameter]):
     """
     Trains a lightgbm model using the given parameters.
     :param X_train: The training data features
@@ -83,7 +83,7 @@ def predict_lgbm(model, X):
     return model.predict(X)
 
 
-def lgbm_with_outputs(cv_data: CVData, parameters: list[Parameter], target_col: str):
+def lgbm_with_outputs(cv_data: CVData, parameters: list[dp.Parameter], target_col: str):
     results = []
     if not parameters:
         parameters = lgbm_class_default_parameters
@@ -103,7 +103,7 @@ def lgbm_with_outputs(cv_data: CVData, parameters: list[Parameter], target_col: 
             {'type': 'train', 'fold': i, **{param.name: param.value for param in parameters}, **train_scores})
         results.append({'type': 'test', 'fold': i, **{param.name: param.value for param in parameters}, **test_scores})
 
-    parameters.append(Parameter("verbose", 1))
+    parameters.append(dp.Parameter("verbose", 1))
     model = train_lgbm(cv_data.train_data.drop(columns=[target_col]), cv_data.train_data[target_col], parameters)
     for i, (train_index, test_index) in enumerate(cv_data.splits):
         X_train, X_test = cv_data.train_data.iloc[train_index], cv_data.train_data.iloc[test_index]
@@ -148,7 +148,7 @@ def lgbm_class_hp(inputs: ModelInput):
     return avg_3rd_col
 
 
-def generate_lgbm_configs(k: int) -> List[List[Parameter]]:
+def generate_lgbm_configs(k: int) -> List[List[dp.Parameter]]:
     # List of additional configurations to test
     additional_confs = [
         {'num_leaves': 31, 'learning_rate': 0.1},
@@ -169,6 +169,6 @@ def generate_lgbm_configs(k: int) -> List[List[Parameter]]:
         final_conf = defaultdict(lambda: None, default_parameters)
         final_conf.update(conf)
         # Convert the dictionary to a list of Parameter objects
-        final_conf = [Parameter(key, value) for key, value in final_conf.items()]
+        final_conf = [dp.Parameter(key, value) for key, value in final_conf.items()]
         lgbm_class_parameters.append(final_conf)
     return lgbm_class_parameters

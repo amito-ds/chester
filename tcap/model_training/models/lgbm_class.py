@@ -15,11 +15,12 @@ import pandas as pd
 from tcap.model_training.models.model_input_and_output_classes import ModelInput
 from tcap.model_training.models.scoring import calculate_score_model
 import lightgbm as lgb
+from typing import List
 import tcap.model_training.data_preparation as dp
 
 from tcap.model_training.data_preparation import CVData, ComplexParameter
 from sklearn.model_selection import GridSearchCV
-from typing import List
+
 
 default_parameters = {
     'objective': 'binary',
@@ -46,7 +47,7 @@ lgbm_class_default_parameters = [
 ]
 
 
-def train_lgbm(X_train, y_train, parameters: list[dp.Parameter]):
+def train_lgbm(X_train, y_train, parameters):
     """
     Trains a lightgbm model using the given parameters.
     :param X_train: The training data features
@@ -82,7 +83,7 @@ def predict_lgbm(model, X):
     return model.predict(X)
 
 
-def lgbm_with_outputs(cv_data: CVData, parameters: list[dp.Parameter], target_col: str):
+def lgbm_with_outputs(cv_data: CVData, parameters, target_col: str):
     results = []
     if not parameters:
         parameters = lgbm_class_default_parameters
@@ -147,7 +148,7 @@ def lgbm_class_hp(inputs: ModelInput):
     return avg_3rd_col
 
 
-def generate_lgbm_configs(k: int) -> List[List[dp.Parameter]]:
+def generate_lgbm_configs(k: int):
     # List of additional configurations to test
     additional_confs = [
         {'num_leaves': 31, 'learning_rate': 0.1},
