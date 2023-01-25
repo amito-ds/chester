@@ -1,0 +1,262 @@
+import Levenshtein
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import plotly.express as px
+import seaborn as sns
+from sklearn import metrics
+
+from tcap.model_training.data_preparation import CVData
+from tcap.model_training.models.scoring import calculate_score_model
+
+
+class ModelAnalyzer:
+    def __init__(self, model):
+        self.model = model
+
+    def shap_values(self, X_train: pd.DataFrame):
+        import shap
+        explainer = shap.Explainer(self.model, X_train, check_additivity=False)
+        shap_values = explainer(X_train, check_additivity=False)
+        plt.title("SHAP values for train set")
+        print(AnalyzeMessages().shap_values_message())
+        shap.summary_plot(shap_values, X_train)
+
+    def coefficients(self) -> None:
+        coef = self.model.coef_[0]
+        if len(coef) < 10:
+            plt.bar(np.arange(len(coef)), coef)
+            plt.title("Coefficients for logistic regression model")
+            plt.xlabel("Features")
+            plt.ylabel("Values")
+        else:
+            sns.violinplot(coef, inner="stick")
+            plt.title("Coefficients distribution for logistic regression model")
+            plt.xlabel("Coefficients")
+            print(AnalyzeMessages().coefficients_message())
+        plt.show()
+
+    def performance_metrics(self, X_train: pd.DataFrame,
+                            y_train: pd.Series,
+                            X_test: pd.DataFrame,
+                            y_test: pd.Series):
+        train_pred = self.model.predict(X_train)
+        test_pred = self.model.predict(X_test)
+        train_scores = calculate_score_model(y_train, train_pred)
+        test_scores = calculate_score_model(y_test, test_pred)
+        results = []
+        results.append(
+            {'type': 'train', **train_scores})
+        results.append({'type': 'test', **test_scores})
+        return results
+
+    def analyze(self, X_train: pd.DataFrame, y_train: pd.Series,
+                X_test: pd.DataFrame, y_test: pd.Series,
+                model, shap_values: bool = True, coefficients: bool = True,
+                confusion_matrix: bool = True,
+                roc_curve: bool = True, learning_curve: bool = False,
+                feature_importance: bool = True) -> None:
+        unique_classes = len(np.unique(y_train))
+        if feature_importance:
+            try:
+                self.plot_feature_importance(X_train)
+            except:
+                try:
+                    self.plot_simple_feature_importance(X_train)
+                except:
+                    pass
+        if shap_values:
+            if unique_classes == 2:
+                try:
+                    self.shap_values(X_train)
+                except:
+                    pass
+        if coefficients:
+            try:
+                self.coefficients()
+            except:
+                pass
+        if confusion_matrix:
+            self.confusion_matrix(X_test, y_test)
+        if roc_curve:
+            if unique_classes == 2:
+                self.roc_curve(X_test, y_test)
+        if learning_curve:
+            self.learning_curve(X_train, y_train)
+
+    def confusion_matrix(self, X_test: pd.DataFrame, y_test: pd.Series) -> None:
+        from sklearn.metrics import confusion_matrix
+        import seaborn as sns
+        print(AnalyzeMessages().confusion_matrix_message())
+
+        y_pred = self.model.predict(X_test)
+        cm = confusion_matrix(y_test, y_pred)
+        sns.heatmap(cm, annot=True, cmap='Blues', fmt='g')
+        plt.title('Confusion Matrix')
+        plt.xlabel('Predicted')
+        plt.ylabel('Actual')
+        plt.show()
+
+    def roc_curve(self, X_test: pd.DataFrame, y_test: pd.Series) -> None:
+        from sklearn.metrics import roc_curve, auc
+        try:
+            y_pred = self.model.predict_proba(X_test)
+            fpr, tpr, thresholds = roc_curve(y_test, y_pred[:, 1])
+            roc_auc = auc(fpr, tpr)
+            plt.figure()
+            plt.plot(fpr, tpr, color='darkorange', lw=1, label='ROC curve (area = %0.2f)' % roc_auc)
+            plt.plot([0, 1], [0, 1], color='navy', lw=1, linestyle='--')
+            plt.xlim([0.0, 1.0])
+            plt.ylim([0.0, 1.05])
+            plt.xlabel('False Positive Rate')
+            plt.ylabel('True Positive Rate')
+            plt.title('Receiver operating characteristic')
+            plt.legend(loc="lower right")
+            print(AnalyzeMessages().roc_curve_message())
+            plt.show()
+        except:
+            pass
+
+    def learning_curve(self, X: pd.DataFrame, y: pd.Series) -> None:
+        try:
+            from sklearn.model_selection import learning_curve
+            train_sizes, train_scores, test_scores = learning_curve(self.model, X, y, cv=5, scoring='accuracy')
+            train_scores_mean = np.mean(train_scores, axis=1)
+            train_scores_std = np.std(train_scores, axis=1)
+            test_scores_mean = np.mean(test_scores, axis=1)
+            test_scores_std = np.std(test_scores, axis=1)
+            plt.plot(train_sizes, train_scores_mean, 'o-', color="r", label="Training score")
+            plt.plot(train_sizes, test_scores_mean, 'o-', color="g", label="Cross-validation score")
+            plt.fill_between(train_sizes, train_scores_mean - train_scores_std,
+                             train_scores_mean + train_scores_std, alpha=0.1, color="r")
+            plt.fill_between(train_sizes, test_scores_mean - test_scores_std,
+                             test_scores_mean + test_scores_std, alpha=0.1, color="g")
+            plt.grid()
+            plt.xlabel("Training examples")
+            plt.ylabel("Accuracy Score")
+            plt.title("Learning Curve")
+            plt.legend(loc="best")
+            print(AnalyzeMessages().learning_curve_message())
+            plt.show()
+        except:
+            pass
+
+    def plot_simple_feature_importance(self, X_train: pd.DataFrame):
+        feature_importance = self.model.feature_importances_
+        feature_importance = 100.0 * (feature_importance / feature_importance.max())
+        feature_names = X_train.columns
+        important_idx = np.argsort(feature_importance)
+        data = {'feature_names': feature_names[important_idx], 'feature_importance': feature_importance[important_idx]}
+        df = pd.DataFrame(data)
+        sns.barplot(y='feature_names', x='feature_importance', data=df)
+        plt.xlabel("Feature importance")
+        plt.show()
+
+    def plot_feature_importance(self, X_train: pd.DataFrame):
+        feature_importance = self.model.feature_importances_
+        feature_importance = 100.0 * (feature_importance / feature_importance.max())
+        feature_names = X_train.columns
+        important_idx = np.argsort(feature_importance)
+        data = {'feature_names': feature_names[important_idx], 'feature_importance': feature_importance[important_idx]}
+        df = pd.DataFrame(data)
+        print(AnalyzeMessages().feature_importance_message())
+        fig = px.bar(df, x='feature_importance', y='feature_names', orientation='h', text='feature_importance')
+        fig.show()
+
+
+class AnalyzeMessages:
+    def shap_values_message(self):
+        return "SHAP values can be used to understand the importance of each feature in the model's" \
+               " predictions. The plot shows the average absolute SHAP value of each feature for all " \
+               "the samples in the test set. Features with higher absolute SHAP values have a greater " \
+               "impact on the model's predictions.\n"
+
+    def coefficients_message(self):
+        return "The coefficient plot shows the weight of each feature in the model's predictions." \
+               " Positive coefficients indicate that the feature has a positive relationship with" \
+               " the target variable, while negative coefficients indicate a negative relationship." \
+               " The size of the boxplot represents the range of values for each feature.\n"
+
+    def performance_metrics_message(self):
+        return "The performance metrics table shows the results of different evaluation metrics" \
+               " applied on the model's predictions. These metrics can give you an idea of how well" \
+               " the model is performing in terms of accuracy, precision, recall, and other measures.\n"
+
+    def confusion_matrix_message(self):
+        return "The confusion matrix shows the number of true positive, " \
+               "true negative, false positive, and false negative predictions made by the model. " \
+               "This can give you an idea of how well the model is able to distinguish between the " \
+               "different classes.\n"
+
+    def roc_curve_message(self):
+        return "The ROC curve shows the trade-off between true positive rate (sensitivity) " \
+               "and false positive rate (1-specificity) for different threshold settings. T" \
+               "he AUC (Area under the curve) value gives an overall measure of the model's performance.\n"
+
+    def learning_curve_message(self):
+        return "The learning curve shows the model's performance as the number of " \
+               "training samples increases. A high training score and a low validation " \
+               "score indicates overfitting, while a low training and high validation score " \
+               "indicates underfitting. \n " \
+               "If the evaluation score is increasing over time and not stabilized on some value, " \
+               "it may indicate that the model could benefit from more data or further training.\n " \
+               "If the evaluation score is stabilized on some value, " \
+               "it may indicate that the model has reached its maximum performance or that the model is overfitting, " \
+               "in that case you may need to consider using regularization techniques or early stopping.\n"
+
+    def feature_importance_message(self):
+        return "The feature importance plot shows the relative importance of each feature in the model's predictions." \
+               " Features with higher importance have a greater impact on the model's predictions and are more useful" \
+               " for making accurate predictions.\n"
+
+
+def analyze_model(model, cv_data: CVData, target_label='target'):
+    X_train, X_test, y_train, y_test = \
+        cv_data.train_data.drop(columns=[target_label]), \
+            cv_data.test_data.drop(columns=[target_label]), \
+            cv_data.train_data[target_label], \
+            cv_data.test_data[target_label]
+    metric_functions = get_default_metrics(y_train)
+    analyzer = ModelAnalyzer(model)
+    analyzer.analyze(X_train, y_train, X_test, y_test, metric_functions, model)
+
+
+def get_default_metrics(y):
+    n_classes = len(np.unique(y))
+    if n_classes == 2:
+        return [metrics.accuracy_score, metrics.f1_score, metrics.mean_squared_error, metrics.r2_score]
+    elif n_classes > 2:
+        return [metrics.accuracy_score, metrics.f1_score]
+    else:
+        return [metrics.mean_squared_error, metrics.r2_score]
+
+
+def get_traffic_light(metric_name, value):
+    thresholds = {"Accuracy": (0.8, 0.9, 0.95),
+                  "F1-Score": (0.7, 0.8, 0.9),
+                  "Precision": (0.7, 0.8, 0.9),
+                  "Recall": (0.7, 0.8, 0.9),
+                  "ROC-AUC": (0.7, 0.8, 0.9),
+                  "BLEU Score": (0.7, 0.8, 0.9),
+                  "METEOR Score": (0.7, 0.8, 0.9),
+                  "Rouge Score": (0.7, 0.8, 0.9),
+                  "CIDEr Score": (0.7, 0.8, 0.9),
+                  "Embedding Average Cosine Similarity": (0.7, 0.8, 0.9)}
+    metric_name = metric_name.lower()
+    closest_metric = None
+    closest_distance = float('inf')
+    for metric in thresholds.keys():
+        distance = Levenshtein.distance(metric_name, metric.lower())
+        if distance < closest_distance:
+            closest_metric = metric
+            closest_distance = distance
+    if closest_metric is None:
+        return 'w'
+    if value < thresholds[closest_metric][0]:
+        return 'r'
+    elif value < thresholds[closest_metric][1]:
+        return (1, 0.5, 0)
+    elif value < thresholds[closest_metric][2]:
+        return 'y'
+    else:
+        return 'g'
