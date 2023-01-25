@@ -2,7 +2,7 @@ import pandas as pd
 import seaborn as sns
 from matplotlib import pyplot as plt
 
-from tcap.model_training.data_preparation import Parameter
+import tcap.model_training.data_preparation as dp
 from tcap.model_analyzer import model_analysis
 
 analysis_message = "The following graph displays boxplots of the calculated metrics for each fold\n, " \
@@ -11,7 +11,7 @@ analysis_message = "The following graph displays boxplots of the calculated metr
                    "train and test data. A large difference between the train and test boxplots may indicate overfitting."
 
 
-def analyze_results(results: pd.DataFrame, parameters: list[Parameter]):
+def analyze_results(results: pd.DataFrame, parameters: list[dp.Parameter]):
     # remove parameters columns from the results dataframe
     results_copy = results.drop([p.name for p in parameters], axis=1)
     # check if there are any lists in the dataframe
@@ -36,8 +36,5 @@ def analyze_results(results: pd.DataFrame, parameters: list[Parameter]):
     print(results_pivot)
 
     sns.boxplot(x='fold', y='value', hue='variable', data=results_melt, palette="Set3")
-    # sns.boxplot(x='fold', y='value', hue='variable', data=results_melt, palette="Set3")
     print(analysis_message)
     plt.show()
-
-
