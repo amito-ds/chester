@@ -2,7 +2,6 @@ import nltk
 import pandas as pd
 import seaborn as sns
 
-# nltk.download('punkt')
 from pandas.io.json import json_normalize
 import matplotlib.pyplot as plt
 

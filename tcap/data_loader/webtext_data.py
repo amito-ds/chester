@@ -2,8 +2,8 @@ import pandas as pd
 from nltk.corpus import webtext
 import nltk
 
-nltk.download('webtext', silent=True)
-nltk.download('punkt', silent=True)
+nltk.download('webtext', quite=True)
+nltk.download('punkt', quite=True)
 
 
 def webtext_to_df(full_text: str) -> pd.DataFrame:
