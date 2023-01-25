@@ -169,6 +169,6 @@ def generate_lgbm_configs(k: int):
         final_conf = defaultdict(lambda: None, default_parameters)
         final_conf.update(conf)
         # Convert the dictionary to a list of Parameter objects
-        final_conf = [Parameter(key, value) for key, value in final_conf.items()]
+        final_conf = [dp.Parameter(key, value) for key, value in final_conf.items()]
         lgbm_class_parameters.append(final_conf)
     return lgbm_class_parameters
