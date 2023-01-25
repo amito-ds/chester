@@ -21,7 +21,7 @@ logistic_regression_default_parameters = [
 ]
 
 
-def logistic_regression_with_outputs(cv_data: CVData, target_col: str, parameters: list[Parameter] = None,
+def logistic_regression_with_outputs(cv_data: CVData, target_col: str, parameters=None,
                                      metric_funcs: List[callable] = None):
     results = []
     if not parameters:

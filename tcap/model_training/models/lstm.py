@@ -30,7 +30,7 @@ def get_default_parameters(X_train: pd.DataFrame):
     return lstm_default_parameters
 
 
-def train_lstm(X_train, y_train, parameters: list[Parameter]):
+def train_lstm(X_train, y_train, parameters):
     """
     Trains a LSTM model using the given parameters.
     :param X_train: The training data features
@@ -83,7 +83,7 @@ def score_lstm(y, prediction, metric_funcs: List[callable]):
     return scores
 
 
-def lstm_with_outputs(cv_data: CVData, parameters: list[Parameter], target_col: str,
+def lstm_with_outputs(cv_data: CVData, parameters, target_col: str,
                       metric_funcs: List[callable] = None, label_encoder=None):
     results = []
     if not metric_funcs:
