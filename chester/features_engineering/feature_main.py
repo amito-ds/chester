@@ -74,7 +74,6 @@ def get_embeddings(training_data: pd.DataFrame,
         print(f"Lastly, All embeddings have been concatenated")
     except:
         pass
-    print("test_embeddings", test_embeddings[0:30])
     return embeddings, test_embeddings
 
 

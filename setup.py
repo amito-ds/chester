@@ -4,7 +4,7 @@ with open('requirements.txt') as f:
     install_requires = f.read().strip().split('\n')
 
 setuptools.setup(
-    name="tcap",
+    name="chester",
     version="2.22",
     author="Amit Osi",
     author_email="amitosi6666@gmail.com",

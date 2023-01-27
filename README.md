@@ -20,7 +20,7 @@ Here's an example of how to use the run_tcap function:
 import pandas as pd
 
 from data_loader.webtext_data import load_data_pirates, load_data_king_arthur
-from tcap.run_full_cycle import run_tcap, DataSpec
+from chester.run_full_cycle import run_tcap, DataSpec
 
 df1 = load_data_pirates().assign(target='chat_logs')
 df2 = load_data_king_arthur().assign(target='pirates')
