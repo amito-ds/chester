@@ -15,7 +15,7 @@ import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 from chester.cleaning import cleaning_func as cln
 from chester.preprocessing import preprocessing_func as pp
-from chester.features_engineering import feature_main as fe_main
+from chester.features_engineering import fe_nlp as fe_main
 from chester.feature_analyzing import feature_correlation
 from chester.model_training import data_preparation
 from chester.model_training import best_model as bm

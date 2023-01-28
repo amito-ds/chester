@@ -9,6 +9,20 @@ class DataInfo:
     def __init__(self, data: pd.DataFrame, target: str = None):
         self.data = data
         self.target = target
+        self.problem_type_val = None
+        self.feature_types_val = None
+        self.loss_detector_val = None
+        self.metrics_detector_val = None
+        self.model_selection_val = None
+        self.label_transformation_val = None
+
+    def calculate(self):
+        self.problem_type_val = self.problem_type()
+        self.feature_types_val = self.feature_types()
+        self.loss_detector_val = self.loss_detector()
+        self.metrics_detector_val = self.metrics_detector()
+        self.model_selection_val = self.model_selection()
+        self.label_transformation_val = self.label_transformation()
 
     def has_target(self) -> bool:
         return self.target is not None
@@ -33,18 +47,34 @@ class DataInfo:
                 numerical_cols.append(col)
         return numerical_cols
 
+    def _determine_boolean_cols(self):
+        boolean_cols = []
+        for col in self.data.columns:
+            if pd.api.types.is_bool_dtype(self.data[col]):
+                boolean_cols.append(col)
+        return boolean_cols
+
     def feature_types(self):
         numerical_cols = self._determine_numerical_cols()
+        boolean_cols = self._determine_boolean_cols()
         text_cols = []
         categorical_cols = []
         for col in self.data.columns:
-            if col not in numerical_cols:
+            if col not in numerical_cols and col not in boolean_cols:
                 is_text, is_categorical = determine_if_text_or_categorical_column(self.data[col])
                 if is_text:
                     text_cols.append(col)
                 elif is_categorical:
                     categorical_cols.append(col)
-        return {'numeric': numerical_cols, 'text': text_cols, 'categorical': categorical_cols}
+        if self.target in numerical_cols:
+            numerical_cols.remove(self.target)
+        if self.target in boolean_cols:
+            boolean_cols.remove(self.target)
+        if self.target in text_cols:
+            text_cols.remove(self.target)
+        if self.target in categorical_cols:
+            categorical_cols.remove(self.target)
+        return {'numeric': numerical_cols, 'boolean': boolean_cols, 'text': text_cols, 'categorical': categorical_cols}
 
     def loss_detector(self):
         problem_type = self.problem_type()
@@ -91,15 +121,16 @@ class DataInfo:
 
     def __str__(self):
         report = "Data Information Report\n"
-        report += "Problem Type: " + self.problem_type() + "\n"
+        if self.problem_type_val:
+            report += "Problem Type: " + self.problem_type_val + "\n"
         if self.target:
             report += "Target Variable: " + self.target + "\n"
-        report += "Feature Types: " + str(self.feature_types()) + "\n"
+        report += "Feature Types: " + str(self.feature_types_val) + "\n"
         if self.target:
-            report += "Loss Function: " + self.loss_detector() + "\n"
-            report += "Evaluation Metrics: " + str(self.metrics_detector()) + "\n"
-            report += "Model Selection: " + str(self.model_selection()) + "\n"
-            report += "Label Transformation: " + str(self.label_transformation())
+            report += "Loss Function: " + self.loss_detector_val + "\n"
+        report += "Evaluation Metrics: " + str(self.metrics_detector_val) + "\n"
+        report += "Model Selection: " + str(self.model_selection_val) + "\n"
+        report += "Label Transformation: " + str(self.label_transformation_val)
         return report
 
 
@@ -138,4 +169,51 @@ class DataInfo:
 # # No target variable example
 # data = pd.DataFrame({'a': [1, 2, 3, 4], 'b': [5, 6, 7, 8]})
 # spec = DataInfo(data)
+# print(spec)
+
+
+# Create a DataFrame with 30 columns
+# data = pd.DataFrame({'target': [1, 2, 3, 4],
+#                     'a': [1, 2, 3, 4],
+#                     'b': [5, 6, 7, 8],
+#                     'c': ['a', 'b', 'c', 'd'],
+#                     'd': [1.1, 2.2, 3.3, 4.4],
+#                     'e': [True, False, True, False],
+#                     'f': [1, 2, 3, 4],
+#                     'g': [5, 6, 7, 8],
+#                     'h': ['a', 'b', 'c', 'd'],
+#                     'i': [1.1, 2.2, 3.3, 4.4],
+#                     'j': [True, False, True, False],
+#                     'k': [1, 2, 3, 4],
+#                     'l': [5, 6, 7, 8],
+#                     'm': ['a', 'b', 'c', 'd'],
+#                     'n': [1.1, 2.2, 3.3, 4.4],
+#                     'o': [True, False, True, False],
+#                     'p': [1, 2, 3, 4],
+#                     'q': [5, 6, 7, 8],
+#                     'r': ['a', 'b', 'c', 'd'],
+#                     's': [1.1, 2.2, 3.3, 4.4],
+#                     't': [True, False, True, False],
+#                     'u': [1, 2, 3, 4],
+#                     'v': [5, 6, 7, 8],
+#                     'w': ['a', 'b', 'c', 'd'],
+#                     'x': [1.1, 2.2, 3.3, 4.4],
+#                     'y': [True, False, True, False],
+#                     'z': [1, 2, 3, 4]
+#                    })
+
+from data_loader.webtext_data import load_data_pirates, load_data_king_arthur
+from chester.features_engineering.fe_nlp import FeatureExtraction
+
+from chester.run_full_cycle import run_tcap, DataSpec
+
+df1 = load_data_pirates().assign(target='chat_logs')
+df2 = load_data_king_arthur().assign(target='pirates')
+df = pd.concat([df1, df2])
+
+# Create an instance of the DataInfo class
+spec = DataInfo(df, target='target')
+
+# Print the summary of the DataFrame
+# calc = spec.calculate()
 # print(spec)

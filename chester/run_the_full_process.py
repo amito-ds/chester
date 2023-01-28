@@ -1,7 +1,7 @@
 import pandas as pd
 
 from data_loader.webtext_data import load_data_pirates, load_data_king_arthur
-from chester.features_engineering.feature_main import FeatureExtraction
+from chester.features_engineering.fe_nlp import FeatureExtraction
 
 from chester.run_full_cycle import run_tcap, DataSpec
 
