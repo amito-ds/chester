@@ -3,7 +3,6 @@ import random
 import sys
 from typing import List
 
-
 path = os.path.abspath("TCAP")
 sys.path.append(path)
 
@@ -11,10 +10,19 @@ from sklearn.model_selection import KFold
 
 
 class CVData:
-    def __init__(self, train_data, test_data, folds=5):
+    def __init__(self, train_data, test_data, target_column, folds=5):
         self.train_data = train_data
         self.test_data = test_data
+        self.target_column = target_column
         self.splits = self.cv_preparation(train_data=train_data, test_data=test_data, k_fold=folds)
+
+    def format_splits(self):
+        formatted_splits = []
+        for train_index, test_index in self.splits:
+            X_train, y_train = self.train_data.iloc[train_index], self.train_data.iloc[train_index][self.target_column]
+            X_test, y_test = self.train_data.iloc[test_index], self.train_data.iloc[test_index][self.target_column]
+            formatted_splits.append((X_train, y_train, X_test, y_test))
+        return formatted_splits
 
     @staticmethod
     def cv_preparation(train_data, test_data=None, k_fold=0):
