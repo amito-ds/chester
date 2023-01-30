@@ -1,14 +1,14 @@
 from chester.model_training.data_preparation import CVData
 from chester.model_training.models.chester_models.base_model import BaseModel
-from chester.model_training.models.chester_models.logistic_regression.logistic_regression_utils import \
-    generate_logistic_regression_configs, logistic_regression_with_outputs, compare_models
+from chester.model_training.models.chester_models.catboost.catboost_utils import \
+    generate_catboost_configs, catboost_with_outputs, compare_models
 from chester.zero_break.problem_specification import DataInfo
 
 
 class LogisticRegressionModel(BaseModel):
     def __init__(self, data_info: DataInfo, cv_data: CVData, num_models_to_compare=10):
         super().__init__(data_info, cv_data, num_models_to_compare)
-        self.hp_list = generate_logistic_regression_configs(self.num_models_to_compare)
+        self.hp_list = generate_catboost_configs(self.num_models_to_compare, problem_type=self.data.problem_type_val)
 
     def get_best_model(self):
         models = self.data.model_selection_val
@@ -16,24 +16,21 @@ class LogisticRegressionModel(BaseModel):
         if models is None:
             return None
         else:
-            models = [model for model in models if "logistic" in model]
-            # print("lr_models", lr_models)
+            models = [model for model in models if "catboost" in model]
+            # print("models", models)
             if len(models) == 0:
                 return None
             else:
                 results = []
                 for _ in models:
                     for params in self.hp_list:
-                        base_res, model = logistic_regression_with_outputs(
+                        base_res, model = catboost_with_outputs(
                             cv_data=self.cv_data, target_col=self.cv_data.target_column,
                             parameters=params, metrics=metrics, problem_type=self.data.problem_type_val)
                         results.append((base_res, model))
                 best = compare_models(results)
                 return best
 
-    def calc_model_score(self, model):
-        # calculate the score of a given baseline model
-        pass
 
 # df1 = load_data_pirates().assign(target='pirate')
 # df2 = load_data_king_arthur().assign(target='arthur')

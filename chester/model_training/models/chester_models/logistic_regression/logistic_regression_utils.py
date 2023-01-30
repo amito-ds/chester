@@ -56,7 +56,7 @@ def logistic_regression_with_outputs(cv_data: CVData,
 
 def compare_models(results):
     all_results = [(pd.DataFrame(result), model) for result, model in results]
-    print("all_results", all_results[0][0])
+    # print("all_results", all_results[0][0])
     metric_name = [col for col in all_results[0][0].columns if col not in ['type', 'fold']][0]
     sort_ascending = is_metric_higher_is_better(metric_name)
     best_result = None

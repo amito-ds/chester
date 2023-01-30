@@ -51,10 +51,3 @@ class BaseModel:
 
     def get_best_model(self):
         pass
-
-    def calc_model_score(self, model):
-        pass
-
-
-
-

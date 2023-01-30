@@ -1,5 +1,3 @@
-from typing import Dict, List
-
 import pandas as pd
 
 from chester.zero_break.text_detector import determine_if_text_or_categorical_column
@@ -202,17 +200,14 @@ class DataInfo:
 #                     'z': [1, 2, 3, 4]
 #                    })
 
-from data_loader.webtext_data import load_data_pirates, load_data_king_arthur
-from chester.features_engineering.fe_nlp import FeatureExtraction
-
-from chester.run_full_cycle import run_tcap, DataSpec
-
-df1 = load_data_pirates().assign(target='chat_logs')
-df2 = load_data_king_arthur().assign(target='pirates')
-df = pd.concat([df1, df2])
-
-# Create an instance of the DataInfo class
-spec = DataInfo(df, target='target')
+# from chester.data_loader.webtext_data import load_data_pirates, load_data_king_arthur
+#
+# df1 = load_data_pirates().assign(target='chat_logs')
+# df2 = load_data_king_arthur().assign(target='pirates')
+# df = pd.concat([df1, df2])
+#
+# # Create an instance of the DataInfo class
+# spec = DataInfo(df, target='target')
 
 # Print the summary of the DataFrame
 # calc = spec.calculate()
