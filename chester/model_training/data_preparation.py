@@ -15,12 +15,15 @@ class CVData:
         self.test_data = test_data
         self.target_column = target_column
         self.splits = self.cv_preparation(train_data=train_data, test_data=test_data, k_fold=folds)
+        # self.splits = self.format_splits()
 
     def format_splits(self):
         formatted_splits = []
         for train_index, test_index in self.splits:
-            X_train, y_train = self.train_data.iloc[train_index], self.train_data.iloc[train_index][self.target_column]
-            X_test, y_test = self.train_data.iloc[test_index], self.train_data.iloc[test_index][self.target_column]
+            X_train, y_train = self.train_data.drop(self.target_column, axis=1).iloc[train_index], \
+                self.train_data.iloc[train_index][self.target_column]
+            X_test, y_test = self.train_data.drop(self.target_column, axis=1).iloc[test_index], \
+                self.train_data.iloc[test_index][self.target_column]
             formatted_splits.append((X_train, y_train, X_test, y_test))
         return formatted_splits
 

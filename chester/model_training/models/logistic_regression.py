@@ -40,15 +40,6 @@ def logistic_regression_with_outputs(cv_data: CVData, target_col: str, parameter
         model.fit(X_train, y_train)
         train_pred = model.predict(X_train)
         test_pred = model.predict(X_test)
-        # label handeling
-        # label_binarizer = LabelBinarizer()
-        # y_train = label_binarizer.fit_transform(y_train)
-        # y_test = label_binarizer.transform(y_test)
-        # train_pred = label_binarizer.transform(train_pred)
-        # test_pred = label_binarizer.transform(test_pred)
-
-        # print("y_train", y_train)
-        # print("train_pred", train_pred)
 
         train_scores = calculate_score_model(y_train, train_pred)
         test_scores = calculate_score_model(y_test, test_pred)

@@ -62,32 +62,30 @@ class BaselineModel(BaseModel):
         # calculate the score of a given baseline model
         pass
 
-
-df1 = load_data_pirates().assign(target='chat_logs')
-df2 = load_data_king_arthur().assign(target='pirates')
-df = pd.concat([df1, df2])
-df['target'] = np.random.randint(0, 3, size=len(df))
-
-# Add numerical column
-df["number"] = np.random.uniform(0, 1, df.shape[0])
-
-# Add categorical column
-df["categ"] = 'aaa'
-
-# Add boolean column
-df["booly"] = True
-
-df.drop(columns='text', inplace=True)
-df = df.sample(frac=1).reset_index(drop=True)
-
-# calc data into
-data_info = DataInfo(data=df, target='target')
-data_info.calculate()
-print(data_info)
-
-cv_data = CVData(train_data=df, test_data=None, target_column='target')
-baseline_model = BaselineModel(data_info=data_info, cv_data=cv_data)
-model_results = baseline_model.get_best_model() # returns resultf of the best baseline model
-print(model_results)
-# for model_res in model_results:
-#     print(pd.DataFrame(model_res))
+#
+# df1 = load_data_pirates().assign(target='chat_logs')
+# df2 = load_data_king_arthur().assign(target='pirates')
+# df = pd.concat([df1, df2])
+# df['target'] = np.random.randint(0, 3, size=len(df))
+#
+# # Add numerical column
+# df["number"] = np.random.uniform(0, 1, df.shape[0])
+#
+# # Add categorical column
+# df["categ"] = 'aaa'
+#
+# # Add boolean column
+# df["booly"] = True
+#
+# df.drop(columns='text', inplace=True)
+# df = df.sample(frac=1).reset_index(drop=True)
+#
+# # calc data into
+# data_info = DataInfo(data=df, target='target')
+# data_info.calculate()
+# print(data_info)
+#
+# cv_data = CVData(train_data=df, test_data=None, target_column='target')
+# baseline_model = BaselineModel(data_info=data_info, cv_data=cv_data)
+# model_results = baseline_model.get_best_model() # returns resultf of the best baseline model
+# print(model_results)
