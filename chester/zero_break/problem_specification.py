@@ -31,11 +31,11 @@ class DataInfo:
         if self.target is None:
             return "No target variable"
         elif pd.api.types.is_numeric_dtype(self.data[self.target]):
-            if len(self.data[self.target].unique()) == 2:
+            if self.data[[self.target]].drop_duplicates().shape[0] == 2:
                 return "Binary regression"
             else:
                 return "Regression"
-        elif len(self.data[self.target].unique()) == 2:
+        elif self.data[[self.target]].drop_duplicates().shape[0] == 2:
             return "Binary classification"
         else:
             return "Multiclass classification"

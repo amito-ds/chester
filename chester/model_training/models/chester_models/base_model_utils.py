@@ -16,10 +16,8 @@ def calculate_metric_score(y_true, y_pred, metric, problem_type_val):
     # print(y_true)
     # print("and y_pred")
     # print(y_pred)
-    print("trying to", metric(y_true, y_pred))
-
     try:
-        print("trying to", metric(y_true, y_pred))
+        # print("trying to", metric(y_true, y_pred))
         return metric_name, metric(y_true, y_pred)
     except:
         try:

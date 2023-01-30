@@ -20,3 +20,6 @@ class LogisticRegressionModel:
     def fit_transform(self, X, y):
         self.fit(X, y)
         return self.transform(X)
+
+    def get_params(self):
+        return self.parameters
