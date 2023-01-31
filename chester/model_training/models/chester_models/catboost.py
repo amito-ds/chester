@@ -55,7 +55,7 @@ df["booly"] = True
 # dataset = pd.read_csv(url, names=names)
 # dataset.rename(columns={'class': 'target'}, inplace=True)
 
-df.drop(columns='text', inplace=True)
+# df.drop(columns='text', inplace=True)
 # df = dataset.sample(frac=1).reset_index(drop=True)
 # df['target'] = df['target'].apply(lambda x: 0 if "Iris-setos" in x else 1)
 

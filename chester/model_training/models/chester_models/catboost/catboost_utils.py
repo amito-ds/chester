@@ -48,6 +48,7 @@ def catboost_with_outputs(cv_data: CVData,
         prediction_train = predict_catboost(model, X_train)
         # print("prediction_train", prediction_train)
         # print(metrics)
+        print("this is y_test", y_test)
         scores = calculate_metrics_scores(y_test, prediction, metrics, problem_type)
         results.append({'type': 'test', 'fold': i, **scores})
         scores = calculate_metrics_scores(y_train, prediction_train, metrics, problem_type)
@@ -85,15 +86,15 @@ default_parameters = {
 
 # For regression
 regression_parameters = default_parameters.copy()
-regression_parameters.update({'loss_function': 'RMSE', 'evaluation_metric': 'RMSE'})
+regression_parameters.update({'loss_function': 'RMSE', 'eval_metric': 'RMSE'})
 
 # For binary classification
 binary_classification_parameters = default_parameters.copy()
-binary_classification_parameters.update({'loss_function': 'Logloss', 'evaluation_metric': 'AUC'})
+binary_classification_parameters.update({'loss_function': 'Logloss', 'eval_metric': 'AUC'})
 
 # For multiclass classification
 multiclass_classification_parameters = default_parameters.copy()
-multiclass_classification_parameters.update({'loss_function': 'MultiClass', 'evaluation_metric': 'F1'})
+multiclass_classification_parameters.update({'loss_function': 'MultiClass', 'eval_metric': 'Accuracy'})
 
 
 def generate_catboost_configs(k: int, problem_type: str) -> List[List[Parameter]]:
