@@ -5,18 +5,11 @@ from sklearn.preprocessing import LabelEncoder
 
 def calculate_metric_score(y_true, y_pred, metric, problem_type_val):
     metric_name = metric.__name__
-    print("this is the original y_pred", y_pred)
     if problem_type_val in ["Binary regression"]:
         y_pred = pd.Series(y_pred[:, 1], name='y_pred')
     elif problem_type_val in ["Multiclass classification", "Binary classification"]:
         # print("look what you not did")
         y_pred = pd.Series(y_pred.argmax(axis=1), name='y_pred')
-    # print("extracted predictions", type(y_pred))
-    # print("extracted y_true", type(y_true))
-    # print("and y_true")
-    # print(y_true)
-    # print("and y_pred")
-    # print(y_pred)
     try:
         # print("trying to", metric(y_true, y_pred))
         return metric_name, metric(y_true, y_pred)

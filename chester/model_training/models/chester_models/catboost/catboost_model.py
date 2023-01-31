@@ -1,14 +1,14 @@
-import catboost
-from catboost import CatBoostClassifier
+from catboost import CatBoostClassifier, CatBoostRegressor
+
 
 class CatboostModel:
     def __init__(self, parameters: list, model_type: str):
         self.parameters = parameters
         self.model_type = model_type
-        print("this is the problem type", self.model_type)
-        if "regression" in self.model_type:
-            self.model = catboost.CatBoostRegressor()
-        elif "classification" in self.model_type:
+        # print("this is the model type")
+        if "regression" in self.model_type.lower():
+            self.model = CatBoostRegressor()
+        elif "classification" in self.model_type.lower():
             self.model = CatBoostClassifier()
 
     def fit(self, X, y):

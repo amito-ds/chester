@@ -5,11 +5,8 @@ import pandas as pd
 
 from chester.model_training.data_preparation import CVData
 from chester.model_training.data_preparation import Parameter
-from chester.model_training.models.chester_models.base_model_utils import calculate_metrics_scores
 from chester.model_training.models.chester_models.base_model_utils import is_metric_higher_is_better
 from chester.model_training.models.chester_models.catboost.catboost_model import CatboostModel
-from chester.model_training.models.chester_models.logistic_regression.logistic_regression_model import \
-    LogisticRegressionModel
 
 
 def train_catboost(X_train, y_train, parameters: list, problem_type: str):
@@ -48,10 +45,9 @@ def catboost_with_outputs(cv_data: CVData,
         prediction_train = predict_catboost(model, X_train)
         # print("prediction_train", prediction_train)
         # print(metrics)
-        print("this is y_test", y_test)
-        scores = calculate_metrics_scores(y_test, prediction, metrics, problem_type)
+        scores = calculate_catboost_metrics_scores(y_test, prediction, metrics, problem_type)
         results.append({'type': 'test', 'fold': i, **scores})
-        scores = calculate_metrics_scores(y_train, prediction_train, metrics, problem_type)
+        scores = calculate_catboost_metrics_scores(y_train, prediction_train, metrics, problem_type)
         results.append({'type': 'train', 'fold': i, **scores})
     return results, model
 
@@ -65,7 +61,8 @@ def compare_models(results):
     best_model = None
     best_value = None
     for (result, model) in all_results:
-        test_result = result[result['type'] == 'test'].groupby('fold').mean().reset_index()
+        # print("this is the results!", result)
+        test_result = result[result['type'] == 'test'].groupby('fold').mean(numeric_only=True).reset_index()
         mean_value = test_result[metric_name].mean()
         if best_value is None or \
                 (sort_ascending and mean_value > best_value) \
@@ -140,3 +137,37 @@ def generate_catboost_configs(k: int, problem_type: str) -> List[List[Parameter]
         final_conf = [Parameter(key, value) for key, value in final_conf.items()]
         catboost_parameters.append(final_conf)
     return catboost_parameters
+
+
+def calculate_catboost_metric_score(y_true, y_pred, metric, problem_type_val):
+    metric_name = metric.__name__
+
+    if problem_type_val in ["Binary regression"]:
+        print()
+    # elif problem_type_val in ["Binary classification"]:
+    #     y_pred = pd.Series(y_pred.argmax(axis=1), name='y_pred')
+    elif problem_type_val in ["Multiclass classification"]:
+        y_pred = [item[0] for item in y_pred]
+
+    # print("this is y_pred")
+    # print(y_pred)
+
+    try:
+        return metric_name, metric(y_true, y_pred)
+    except:
+        try:
+            if problem_type_val in ["Binary regression", "Binary classification"]:
+                return metric_name, metric(y_true, y_pred, average='binary')
+            elif problem_type_val == "Multiclass classification":
+                return metric_name, metric(y_true, y_pred, average='macro')
+        except:
+            pass
+    return None, None
+
+
+def calculate_catboost_metrics_scores(y, prediction, metrics_list, problem_type=None):
+    results = {}
+    for metric in metrics_list:
+        metric_name, metric_value = calculate_catboost_metric_score(y, prediction, metric, problem_type)
+        results[metric_name] = metric_value
+    return results

@@ -12,9 +12,10 @@ from chester.zero_break.problem_specification import DataInfo
 
 
 class CatboostModel(BaseModel):
-    def __init__(self, data_info: DataInfo, cv_data: CVData, num_models_to_compare=10):
+    def __init__(self, data_info: DataInfo, cv_data: CVData, num_models_to_compare=3):
         super().__init__(data_info, cv_data, num_models_to_compare)
         self.hp_list = generate_catboost_configs(self.num_models_to_compare, problem_type=self.data.problem_type_val)
+        print(f"running {self.num_models_to_compare} catboost models")
 
     def get_best_model(self):
         models = self.data.model_selection_val
@@ -38,17 +39,20 @@ class CatboostModel(BaseModel):
                 return best
 
 
-df1 = load_data_pirates().assign(target='pirate')
-df2 = load_data_king_arthur().assign(target='arthur')
-df3 = load_data_chat_logs().assign(target='chat')
-df = pd.concat([df1, df2, df3])
+df1 = load_data_pirates().assign(target='pirate').sample(100, replace=True)
+df2 = load_data_king_arthur().assign(target='arthur').sample(100, replace=True)
+df3 = load_data_chat_logs().assign(target='chat').sample(100, replace=True)
+df = pd.concat([df1, df2
+                   , df3
+                ])
 target_column = 'target'
 #
 df = df.sample(frac=1).reset_index(drop=True)
 df["number"] = np.random.uniform(0, 1, df.shape[0])
 df["categ"] = 'aaa'
 df["booly"] = True
-# df['target'] = df['target'].apply(lambda x: 0 if "pirate" in x or "arthur" in x else 1)
+df['target'] = df['target'].apply(lambda x: 0 if "pirate" in x else 1 if 'arthur' in x else 2)
+# print(df['target'].unique())
 #
 # url = "https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data"
 # names = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
@@ -81,8 +85,8 @@ cv_data = CVData(train_data=final_df, test_data=None, target_column='target')
 model = CatboostModel(data_info=data_info, cv_data=cv_data)
 # #
 model_results = model.get_best_model()  # returns resultf of the best baseline model
-# # print(model_results[0].drop(columns=['type', 'fold']))
-# params = model_results[1].get_params()
-# for p in params:
-#     print(p.name, p.value)
+print(model_results[0].drop(columns=['type', 'fold']))
+params = model_results[1].get_params()
+for p in params:
+    print(p.name, p.value)
 # #
