@@ -1,16 +1,15 @@
 import catboost
 from catboost import CatBoostClassifier
-from catboost import CatBoostRegressor
-
 
 class CatboostModel:
     def __init__(self, parameters: list, model_type: str):
         self.parameters = parameters
         self.model_type = model_type
-        if self.model_type == "classification":
+        print("this is the problem type", self.model_type)
+        if "regression" in self.model_type:
+            self.model = catboost.CatBoostRegressor()
+        elif "classification" in self.model_type:
             self.model = CatBoostClassifier()
-        elif self.model_type == "regression":
-            self.model = CatBoostRegressor()
 
     def fit(self, X, y):
         hyperparams = {param.name: param.value for param in self.parameters}

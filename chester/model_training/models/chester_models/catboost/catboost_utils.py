@@ -93,7 +93,7 @@ binary_classification_parameters.update({'loss_function': 'Logloss', 'evaluation
 
 # For multiclass classification
 multiclass_classification_parameters = default_parameters.copy()
-multiclass_classification_parameters.update({'loss_function': 'MultiClass', 'evaluation_metric': 'Accuracy'})
+multiclass_classification_parameters.update({'loss_function': 'MultiClass', 'evaluation_metric': 'F1'})
 
 
 def generate_catboost_configs(k: int, problem_type: str) -> List[List[Parameter]]:
