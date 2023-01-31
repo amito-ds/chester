@@ -6,15 +6,15 @@ from chester.data_loader.webtext_data import load_data_pirates, load_data_king_a
 from chester.features_engineering.features_handler import FeaturesHandler
 from chester.model_training.data_preparation import CVData
 from chester.model_training.models.chester_models.base_model import BaseModel
-from chester.model_training.models.chester_models.catboost.catboost_utils import \
-    generate_catboost_configs, catboost_with_outputs, compare_models
+from chester.model_training.models.chester_models.linear_regression.linear_regression_utils import \
+    generate_linear_regression_configs , linear_regression_with_outputs, compare_models
 from chester.zero_break.problem_specification import DataInfo
 
 
-class CatboostModel(BaseModel):
+class LinearRegressionModel(BaseModel):
     def __init__(self, data_info: DataInfo, cv_data: CVData, num_models_to_compare=15):
         super().__init__(data_info, cv_data, num_models_to_compare)
-        self.hp_list = generate_catboost_configs(self.num_models_to_compare, problem_type=self.data.problem_type_val)
+        self.hp_list = generate_linear_regression_configs(self.num_models_to_compare, problem_type=self.data.problem_type_val)
         print(f"running {self.num_models_to_compare} catboost models")
 
     def get_best_model(self):
@@ -31,7 +31,7 @@ class CatboostModel(BaseModel):
                 results = []
                 for _ in models:
                     for params in self.hp_list:
-                        base_res, model = catboost_with_outputs(
+                        base_res, model = linear_regression_with_outputs(
                             cv_data=self.cv_data, target_col=self.cv_data.target_column,
                             parameters=params, metrics=metrics, problem_type=self.data.problem_type_val)
                         results.append((base_res, model))
@@ -83,7 +83,7 @@ final_df[target_column] = label_encoder.fit_transform(final_df[target_column])
 # # print(final_df)
 # #
 cv_data = CVData(train_data=final_df, test_data=None, target_column='target')
-model = CatboostModel(data_info=data_info, cv_data=cv_data)
+model = LinearRegressionModel(data_info=data_info, cv_data=cv_data)
 # #
 model_results = model.get_best_model()  # returns resultf of the best baseline model
 print(model_results[0].drop(columns=['type', 'fold']))
