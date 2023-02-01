@@ -6,9 +6,7 @@ from sklearn.preprocessing import LabelEncoder
 
 from chester.cleaning.cleaner_handler import CleanerHandler
 from chester.features_engineering.features_handler import FeaturesHandler
-from chester.model_analyzer.model_analysis import analyze_model
 from chester.model_training.data_preparation import CVData
-from chester.model_training.model_utils import analyze_results
 from chester.model_training.models.chester_models import best_catboost
 from chester.model_training.models.chester_models import best_logistic_regression
 from chester.model_training.models.chester_models.base_model import BaseModel
@@ -71,27 +69,35 @@ class BestModel(BaseModel):
 # df = pd.concat([df1, df2
 #                    # , df3
 #                 ])
-# target_column = 'target'
+target_column = 'target'
 #
 
-target_column = 'target'
+# target_column = 'target'
+# url = "https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data"
+# names = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
+# dataset = pd.read_csv(url, names=names)
+# dataset.rename(columns={'class': 'target'}, inplace=True)
+
+# df = dataset.sample(frac=1).reset_index(drop=True)
+# df['target'] = df['target'].apply(lambda x: 0 if "Iris-setos" in x else 1)
+
 
 # Load the Boston Housing dataset
 # boston = fetch_openml(name='boston', version=1)
 # df = pd.DataFrame(boston.data, columns=boston.feature_names)
 # df['target'] = boston.target
-# df = pd.read_csv("chester/model_training/models/chester_models/day.csv")
-# df.rename(columns={'cnt': 'target'}, inplace=True)
+df = pd.read_csv("chester/model_training/models/chester_models/day.csv")
+df.rename(columns={'cnt': 'target'}, inplace=True)
 
-newsgroups_train = fetch_20newsgroups(subset='train')
-df = pd.DataFrame(newsgroups_train.data, columns=['text'])
-y = newsgroups_train.target
-df['target'] = y
-category_counts = Counter(y)
-top_3_categories = category_counts.most_common(2)
-top_3_categories = [cat for cat, count in top_3_categories]
-df = df[df.target.isin(top_3_categories)].sample(300)
-df['target'] = "category: " + df['target'].astype(str)
+# newsgroups_train = fetch_20newsgroups(subset='train')
+# df = pd.DataFrame(newsgroups_train.data, columns=['text'])
+# y = newsgroups_train.target
+# df['target'] = y
+# category_counts = Counter(y)
+# top_3_categories = category_counts.most_common(3)
+# top_3_categories = [cat for cat, count in top_3_categories]
+# df = df[df.target.isin(top_3_categories)].sample(1000)
+# df['target'] = "category: " + df['target'].astype(str)
 
 # import pandas as pd
 # from sklearn import datasets
