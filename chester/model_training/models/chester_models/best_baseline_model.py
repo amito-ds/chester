@@ -13,22 +13,10 @@ from chester.zero_break.problem_specification import DataInfo
 class BaselineModel(BaseModel):
     def __init__(self, data_info: DataInfo, cv_data: CVData, num_models_to_compare=10):
         super().__init__(data_info, cv_data, num_models_to_compare)
-
-    def train_single_model(self, param: list):
-        results = []
-        metrics_func = self.get_metrics_functions()
-        for i, X_train, y_train, X_test, y_test in enumerate(self.cv_data.format_splits()):
-            model = train_baseline(X_train=X_train, y_train=y_train)
-            prediction = predict_baseline(model, X_test)
-            prediction_train = predict_baseline(model, X_train)
-            scores = calculate_metrics_scores(y_test, prediction, metrics_func)
-            results.append({'type': 'test', 'fold': i, **scores})
-            scores = calculate_metrics_scores(y_train, prediction_train, metrics_func)
-            results.append({'type': 'train', 'fold': i, **scores})
-        return results
+        print(f"Running baseline model")
 
     def get_best_model(self):
-        models = self.data.model_selection_val
+        models = self.data_info.model_selection_val
         metrics = self.get_metrics_functions()
         if models is None:
             return None
@@ -54,7 +42,8 @@ class BaselineModel(BaseModel):
                         cv_data=self.cv_data, target_col=self.cv_data.target_column,
                         baseline_value=baseline_value, avg_baseline=average_baseline, median_baseline=median_baseline,
                         metrics=metrics)
-                    results.append(base_res)
+                    # results.append(base_res)
+                    results.append((base_res, model))
                 best = compare_models(results)
                 return best
 

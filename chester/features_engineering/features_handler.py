@@ -34,23 +34,27 @@ class FeaturesHandler:
     def transform(self):
         feature_types = {'numeric': [], 'categorical': []}
         feature_handlers = self._get_features_handler(data=self.data)
+        print(f"Handling {len(feature_handlers)} raw features")
         feat_values = []
         feat_names = []
         for feature_handler in feature_handlers:
-            values, names = feature_handler.handle_feature()
-            feat_values.append(values)
-            if feature_handler.feature_type == 'numeric':
-                feature_types['numeric'].extend(names)
-                feat_names.append(names)
-            elif feature_handler.feature_type == 'boolean':
-                feature_types['numeric'].extend(names)
-                feat_names.append(names)
-            elif feature_handler.feature_type == 'text':
-                feature_types['numeric'].extend(names)
-                feat_names.append(names)
-            elif feature_handler.feature_type == 'categorical':
-                feat_names.append(names)
-                feature_types['categorical'].extend(names)
+            try:
+                values, names = feature_handler.handle_feature()
+                feat_values.append(values)
+                if feature_handler.feature_type == 'numeric':
+                    feature_types['numeric'].extend(names)
+                    feat_names.append(names)
+                elif feature_handler.feature_type == 'boolean':
+                    feature_types['numeric'].extend(names)
+                    feat_names.append(names)
+                elif feature_handler.feature_type == 'text':
+                    feature_types['numeric'].extend(names)
+                    feat_names.append(names)
+                elif feature_handler.feature_type == 'categorical':
+                    feat_names.append(names)
+                    feature_types['categorical'].extend(names)
+            except:
+                pass
         final_df = pd.DataFrame()
         for value in feat_values:
             if type(value) == pd.DataFrame:
@@ -79,11 +83,11 @@ df["booly"] = True
 df.drop(columns='text', inplace=True)
 
 # calc data into
-data_info = DataInfo(data=df, target='target')
-data_info.calculate()
-print(data_info)
-# extract features
-feat_hand = FeaturesHandler(data_info)
-feature_types, final_df = feat_hand.transform()
-print(feature_types)
-print(final_df)
+# data_info = DataInfo(data=df, target='target')
+# data_info.calculate()
+# print(data_info)
+# # extract features
+# feat_hand = FeaturesHandler(data_info)
+# feature_types, final_df = feat_hand.transform()
+# print(feature_types)
+# print(final_df)

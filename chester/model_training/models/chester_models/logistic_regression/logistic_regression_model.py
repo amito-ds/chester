@@ -4,18 +4,21 @@ from sklearn.linear_model import LogisticRegression
 class LogisticRegressionModel:
     def __init__(self, parameters: list):
         self.parameters = parameters
-        self.logreg = LogisticRegression()
+        self.model = LogisticRegression()
 
     def fit(self, X, y):
         hyperparams = {param.name: param.value for param in self.parameters}
-        self.logreg.set_params(**hyperparams)
-        self.logreg.fit(X, y)
+        self.model.set_params(**hyperparams)
+        self.model.fit(X, y)
+
+    def retrain(self, X, y):
+        self.model.fit(X, y)
 
     def transform(self, X):
-        return self.logreg.predict_proba(X)
+        return self.model.predict_proba(X)
 
     def predict(self, X):
-        return self.logreg.predict(X)
+        return self.model.predict(X)
 
     def fit_transform(self, X, y):
         self.fit(X, y)

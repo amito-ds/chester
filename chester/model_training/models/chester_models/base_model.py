@@ -3,8 +3,8 @@ from chester.zero_break.problem_specification import DataInfo
 
 
 class BaseModel:
-    def __init__(self, data: DataInfo, cv_data: CVData, num_models_to_compare=10):
-        self.data = data
+    def __init__(self, data_info: DataInfo, cv_data: CVData, num_models_to_compare=10):
+        self.data_info = data_info
         self.cv_data = cv_data
         self.num_models_to_compare = num_models_to_compare
         self.best_model = None
@@ -36,7 +36,7 @@ class BaseModel:
 
     def get_metrics_functions(self):
         metric_functions = []
-        metrics = self.data.metrics_detector_val
+        metrics = self.data_info.metrics_detector_val
         for metric in metrics:
             metric_function = self.get_metric_function(metric)
             if metric_function is not None:

@@ -65,9 +65,13 @@ class FeatureHandler:
             return self.handle_boolean()
         elif self.feature_type == 'text':
             return self.handle_text()
-        else:
-            print(f"No appropriate feature handler found for feature {self.col_name}. This feature will be ignored.")
+        elif self.feature_type == 'time':
             return None, None
+        else:
+            if not (self.col_name == self.col_name):
+                print(
+                    f"No appropriate feature handler found for feature {self.col_name}. This feature will be ignored.")
+                return None, None
 
 # Example usage:
 # df = pd.DataFrame({'age': [21, 22, 23], 'name': ['Alice', 'Bob', 'Charlie']})

@@ -2,6 +2,7 @@ from collections import defaultdict
 from typing import List
 
 import pandas as pd
+from sklearn.exceptions import UndefinedMetricWarning
 
 from chester.model_training.data_preparation import CVData
 from chester.model_training.data_preparation import Parameter
@@ -113,18 +114,9 @@ def generate_linear_regression_configs(k: int, problem_type: str) -> List[List[P
 
 
 def calculate_linear_regression_metric_score(y_true, y_pred, metric, problem_type_val):
+    import warnings
+    warnings.filterwarnings("ignore", category=UndefinedMetricWarning)
     metric_name = metric.__name__
-
-    # if problem_type_val in ["Binary regression"]:
-    #     print()
-    # elif problem_type_val in ["Binary classification"]:
-    #     y_pred = pd.Series(y_pred.argmax(axis=1), name='y_pred')
-    # elif problem_type_val in ["Multiclass classification"]:
-    #     y_pred = [item[0] for item in y_pred]
-
-    # print("this is y_pred")
-    # print(y_pred)
-
     try:
         return metric_name, metric(y_true, y_pred)
     except:

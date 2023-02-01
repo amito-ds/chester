@@ -6,13 +6,19 @@ from typing import List
 path = os.path.abspath("TCAP")
 sys.path.append(path)
 
-from sklearn.model_selection import KFold
+from sklearn.model_selection import KFold, train_test_split
 
 
 class CVData:
-    def __init__(self, train_data, test_data, target_column, folds=5):
+    def __init__(self, train_data, test_data, target_column, folds=5,
+                 split_data=False, split_prop=0.2, split_random_state=999):
         self.train_data = train_data
         self.test_data = test_data
+        if self.test_data is None:
+            if split_data:
+                self.test_data, self.test_data = train_test_split(self.train_data, test_size=split_prop,
+                                                                  random_state=split_random_state)
+
         self.target_column = target_column
         self.splits = self.cv_preparation(train_data=train_data, test_data=test_data, k_fold=folds)
         # self.splits = self.format_splits()

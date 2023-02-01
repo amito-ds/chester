@@ -190,19 +190,15 @@ class AnalyzeMessages:
 
     def roc_curve_message(self):
         return "The ROC curve shows the trade-off between true positive rate (sensitivity) " \
-               "and false positive rate (1-specificity) for different threshold settings. T" \
+               "and false positive rate (1-specificity) for different threshold settings.\n T" \
                "he AUC (Area under the curve) value gives an overall measure of the model's performance.\n"
 
     def learning_curve_message(self):
-        return "The learning curve shows the model's performance as the number of " \
-               "training samples increases\n. A high training score and a low validation " \
-               "score indicates overfitting, while a low training and high validation score " \
-               "indicates underfitting. \n " \
-               "If the evaluation score is increasing over time and not stabilized on some value, \n" \
-               "it may indicate that the model could benefit from more data or further training.\n " \
-               "If the evaluation score is stabilized on some value, \n" \
-               "it may indicate that the model has reached its maximum performance or that the model is overfitting,\n " \
-               "in that case you may need to consider using regularization techniques or early stopping.\n"
+        return "The learning curve displays model performance as training samples increase.\n" \
+               "High training and low validation suggest overfitting,\n" \
+               "low training and high validation suggest underfitting.\n" \
+               "To improve performance, consider adding more data or using regularization techniques\n" \
+               "if the evaluation score plateaus."
 
     def feature_importance_message(self):
         return "The feature importance plot shows the relative importance of each feature in the model's predictions.\n" \
@@ -231,6 +227,9 @@ def get_default_metrics(y):
         return [metrics.mean_squared_error, metrics.r2_score]
 
 
+import Levenshtein
+
+
 def get_traffic_light(metric_name, value):
     thresholds = {"Accuracy": (0.8, 0.9, 0.95),
                   "F1-Score": (0.7, 0.8, 0.9),
@@ -251,12 +250,12 @@ def get_traffic_light(metric_name, value):
             closest_metric = metric
             closest_distance = distance
     if closest_metric is None:
-        return 'w'
+        return 'grey'
     if value < thresholds[closest_metric][0]:
-        return 'r'
+        return 'red'
     elif value < thresholds[closest_metric][1]:
-        return (1, 0.5, 0)
+        return 'yellow'
     elif value < thresholds[closest_metric][2]:
-        return 'y'
+        return 'green'
     else:
-        return 'g'
+        return 'bright green'

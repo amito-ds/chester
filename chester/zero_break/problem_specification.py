@@ -1,6 +1,29 @@
 import pandas as pd
+from dateutil.parser import parse
 
 from chester.zero_break.text_detector import determine_if_text_or_categorical_column
+
+
+def is_date(string):
+    try:
+        parse(string)
+        return True
+    except ValueError:
+        return False
+
+    # import requests
+    # from bs4 import BeautifulSoup
+    #
+    # url = "https://github.com/amito-ds/TCAP/blob/main/entities2vec.ipynb"
+    #
+    # page = requests.get(url)
+    #
+    # soup = BeautifulSoup(page.content, "html.parser")
+    # soup
+
+    # print all the job titles in the page
+    # for job_title in soup.find_all("span", class_="job-title-text"):
+    #     print(job_title.text)
 
 
 class DataInfo:
@@ -38,6 +61,25 @@ class DataInfo:
         else:
             return "Multiclass classification"
 
+    def _determine_time_cols(self):
+        time_cols = []
+        for col in self.data.columns:
+            if self.data[col].dtype in ['int64', 'float64']:
+                pass
+            elif col == self.target:
+                pass
+            elif pd.api.types.is_datetime64_dtype(self.data[col]):
+                time_cols.append(col)
+            else:
+                non_missing_values = self.data[col][self.data[col].notna()].astype(str)
+                count = 0
+                for value in non_missing_values:
+                    if is_date(value):
+                        count += 1
+                if count / non_missing_values.shape[0] >= 0.9:
+                    time_cols.append(col)
+        return time_cols
+
     def _determine_numerical_cols(self):
         numerical_cols = []
         for col in self.data.columns:
@@ -55,6 +97,7 @@ class DataInfo:
     def feature_types(self):
         numerical_cols = self._determine_numerical_cols()
         boolean_cols = self._determine_boolean_cols()
+        time_cols = self._determine_time_cols()
         text_cols = []
         categorical_cols = []
         for col in self.data.columns:
@@ -72,7 +115,17 @@ class DataInfo:
             text_cols.remove(self.target)
         if self.target in categorical_cols:
             categorical_cols.remove(self.target)
-        return {'numeric': numerical_cols, 'boolean': boolean_cols, 'text': text_cols, 'categorical': categorical_cols}
+
+        for numeric_col in numerical_cols:
+            if numeric_col in time_cols:
+                time_cols.remove(numeric_col)
+        for time_col in time_cols:
+            if time_col in text_cols:
+                text_cols.remove(time_col)
+            elif time_col in categorical_cols:
+                categorical_cols.remove(time_col)
+        return {'numeric': numerical_cols, 'boolean': boolean_cols, 'text': text_cols,
+                'categorical': categorical_cols, 'time': time_cols}
 
     def loss_detector(self):
         problem_type = self.problem_type()
@@ -130,7 +183,6 @@ class DataInfo:
         report += "Model Selection: " + str(self.model_selection_val) + "\n"
         report += "Label Transformation: " + str(self.label_transformation_val)
         return report
-
 
 # data = pd.DataFrame({'target': [1, 2, 3, 4, 5], 'feature1': [1, 2, 3, 4, 5], 'feature2': [2, 3, 4, 5, 6]})
 # spec = DataInfo(data, target='target')

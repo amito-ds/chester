@@ -63,7 +63,7 @@ def compare_models(results):
     best_model = None
     best_value = None
     for (result, model) in all_results:
-        test_result = result[result['type'] == 'test'].groupby('fold').mean().reset_index()
+        test_result = result[result['type'] == 'test'].groupby('fold').mean(numeric_only=True).reset_index()
         mean_value = test_result[metric_name].mean()
         if best_value is None or \
                 (sort_ascending and mean_value > best_value) \

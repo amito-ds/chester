@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from sklearn.exceptions import UndefinedMetricWarning
 from sklearn.preprocessing import LabelEncoder
 
 
@@ -25,6 +26,8 @@ def calculate_metric_score(y_true, y_pred, metric, problem_type_val):
 
 
 def calculate_metrics_scores(y, prediction, metrics_list, problem_type=None):
+    import warnings
+    warnings.filterwarnings("ignore", category=UndefinedMetricWarning)
     results = {}
     for metric in metrics_list:
         metric_name, metric_value = calculate_metric_score(y, prediction, metric, problem_type)

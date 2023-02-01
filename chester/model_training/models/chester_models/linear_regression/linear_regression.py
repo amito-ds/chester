@@ -13,6 +13,9 @@ class LinearRegressionModel:
         self.model.set_params(**hyperparams)
         self.model.fit(X, y)
 
+    def retrain(self, X, y):
+        self.model.fit(X, y)
+
     def transform(self, X):
         return self.model.predict(X)
 

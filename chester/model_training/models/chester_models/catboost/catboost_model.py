@@ -11,9 +11,14 @@ class CatboostModel:
         elif "classification" in self.model_type.lower():
             self.model = CatBoostClassifier()
 
+    # def fit_new
+
     def fit(self, X, y):
         hyperparams = {param.name: param.value for param in self.parameters}
         self.model.set_params(**hyperparams)
+        self.model.fit(X, y)
+
+    def retrain(self, X, y):
         self.model.fit(X, y)
 
     def transform(self, X):
@@ -27,4 +32,6 @@ class CatboostModel:
         return self.transform(X)
 
     def get_params(self):
+        # return self.model.get_params()
+        # return params
         return self.parameters

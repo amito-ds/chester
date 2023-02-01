@@ -61,16 +61,37 @@ import pandas as pd
 
 
 def compare_models(results):
-    all_results = [pd.DataFrame(result) for result in results]
-    metric_name = [col for col in all_results[0].columns if col not in ['type', 'fold']][0]
+    all_results = [(pd.DataFrame(result), model) for result, model in results]
+    # print("all_results", all_results[0][0])
+    metric_name = [col for col in all_results[0][0].columns if col not in ['type', 'fold']][0]
     sort_ascending = is_metric_higher_is_better(metric_name)
     best_result = None
+    best_model = None
     best_value = None
-    for result in all_results:
-        test_result = result[result['type'] == 'test'].groupby('fold').mean().reset_index()
+    for (result, model) in all_results:
+        # print("this is the results!", result)
+        test_result = result[result['type'] == 'test'].groupby('fold').mean(numeric_only=True).reset_index()
         mean_value = test_result[metric_name].mean()
-        if best_value is None or (sort_ascending and mean_value > best_value) or (
-                not sort_ascending and mean_value < best_value):
+        if best_value is None or \
+                (sort_ascending and mean_value > best_value) \
+                or (not sort_ascending and mean_value < best_value):
             best_value = mean_value
             best_result = result
-    return best_result
+            best_model = model
+    return best_result, best_model
+
+#
+# def compare_models(results):
+#     all_results = [pd.DataFrame(result) for result in results]
+#     metric_name = [col for col in all_results[0].columns if col not in ['type', 'fold']][0]
+#     sort_ascending = is_metric_higher_is_better(metric_name)
+#     best_result = None
+#     best_value = None
+#     for result in all_results:
+#         test_result = result[result['type'] == 'test'].groupby('fold').mean(numeric_only=True).reset_index()
+#         mean_value = test_result[metric_name].mean()
+#         if best_value is None or (sort_ascending and mean_value > best_value) or (
+#                 not sort_ascending and mean_value < best_value):
+#             best_value = mean_value
+#             best_result = result
+#     return best_result
