@@ -5,13 +5,17 @@ from sklearn.datasets import fetch_20newsgroups
 from sklearn.preprocessing import LabelEncoder
 
 from chester.cleaning.cleaner_handler import CleanerHandler
+from chester.data_loader.webtext_data import load_data_pirates, load_data_king_arthur, load_data_chat_logs
 from chester.features_engineering.features_handler import FeaturesHandler
+from chester.model_monitor.mm_bootstrap import ModelBootstrap
+from chester.model_monitor.mm_weaknesses import ModelWeaknesses
 from chester.model_training.data_preparation import CVData
 from chester.model_training.models.chester_models import best_catboost
 from chester.model_training.models.chester_models import best_logistic_regression
 from chester.model_training.models.chester_models.base_model import BaseModel
 from chester.model_training.models.chester_models.best_baseline_model import BaselineModel
 from chester.model_training.models.chester_models.best_linear_regression import LinearRegressionModel
+from chester.model_training.models.chester_models.best_logistic_regression import LogisticRegressionModel
 from chester.model_training.models.chester_models.catboost.catboost_utils import compare_best_models
 from chester.post_model_analysis.post_model_analysis_class import PostModelAnalysis
 from chester.preprocessing.preprocessor_handler import PreprocessHandler
@@ -63,31 +67,39 @@ class BestModel(BaseModel):
             return best
 
 
+target_column = 'target'
+################################################################################################
 # df1 = load_data_pirates().assign(target='pirate').sample(100, replace=True)
 # df2 = load_data_king_arthur().assign(target='arthur').sample(100, replace=True)
 # df3 = load_data_chat_logs().assign(target='chat').sample(100, replace=True)
 # df = pd.concat([df1, df2
-#                    # , df3
+#                    , df3
 #                 ])
-target_column = 'target'
+################################################################################################
+
+
 #
 
-# target_column = 'target'
+################################################################################################
 # url = "https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data"
 # names = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
 # dataset = pd.read_csv(url, names=names)
 # dataset.rename(columns={'class': 'target'}, inplace=True)
-
 # df = dataset.sample(frac=1).reset_index(drop=True)
-# df['target'] = df['target'].apply(lambda x: 0 if "Iris-setos" in x else 1)
+# df['target'] = df['target'].apply(lambda x: 0 if "Iris-setos" in x else 1) # can do with or without
+###############################################################################################
 
-
+###############################################################################################
 # Load the Boston Housing dataset
 # boston = fetch_openml(name='boston', version=1)
 # df = pd.DataFrame(boston.data, columns=boston.feature_names)
 # df['target'] = boston.target
+###############################################################################################
+
+###############################################################################################
 df = pd.read_csv("chester/model_training/models/chester_models/day.csv")
 df.rename(columns={'cnt': 'target'}, inplace=True)
+###############################################################################################
 
 # newsgroups_train = fetch_20newsgroups(subset='train')
 # df = pd.DataFrame(newsgroups_train.data, columns=['text'])
@@ -100,19 +112,16 @@ df.rename(columns={'cnt': 'target'}, inplace=True)
 # df['target'] = "category: " + df['target'].astype(str)
 
 # import pandas as pd
+################################################################################################
 # from sklearn import datasets
-
-# Load the digits dataset from scikit-learn
 # digits = datasets.load_digits()
-
-# Flatten the images from 8x8 arrays to 64-dimensional vectors
 # X = digits.images.reshape((len(digits.images), -1))
-
-# Create a dataframe with the features and target
 # df = pd.DataFrame(X)
 # df.rename(columns={col: "feat_" + str(col) for col in df.columns}, inplace=True)
 # df['target'] = digits.target
 # df['target'] = "category: " + df['target'].astype(str)
+################################################################################################
+
 
 # Print the first 5 rows of the dataframe
 
@@ -147,11 +156,16 @@ model = BestModel(data_info=data_info, cv_data=cv_data, num_models_to_compare=3)
 # model = BestModel(data_info=data_info, cv_data=cv_data, num_models_to_compare=15)
 # #
 model_results = model.get_best_model()  # returns resultf of the best baseline model
-# print(model_results[0][['type', 'fold', 'mean_squared_error', 'mean_absolute_error']])
 # print(model_results[0])
-# params = model_results[1].get_params()
-# for p in params:
-#     print(p.name, p.value)
-    # #
-PostModelAnalysis(cv_data, data_info, model=model_results[1]).analyze()
+params = model_results[1].get_params()
+for p in params:
+    print(p.name, p.value)
+# #
+# PostModelAnalysis(cv_data, data_info, model=model_results[1]).analyze()
 # analyze_model(model_results[0], cv_data, target_label=target_column)
+# ModelBootstrap(cv_data, data_info, model=model_results[1]).plot()
+
+model_weaknesses = ModelWeaknesses(cv_data, data_info, model=model_results[1])
+print("Error!")
+print(model_weaknesses.error)
+model_weaknesses.plot_decision_tree_error_regressor(min_samples_leaf=0.2)

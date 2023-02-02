@@ -164,7 +164,8 @@ def compare_best_models(results, plot_results=False):
             best_result = result
             best_model = model
     print(f"Optimized {metric_name}, with best value: {round(best_value, 2)}. "
-          f"Traffic light {get_traffic_light(metric_name, best_value)}")
+          # f"Traffic light {get_traffic_light(metric_name, best_value)}"
+          )
     return best_result, best_model
 
 
