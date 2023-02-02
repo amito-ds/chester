@@ -1,8 +1,8 @@
-import graphviz
 import numpy as np
 import pandas as pd
+import seaborn as sns
+from catboost import CatBoostRegressor
 from matplotlib import pyplot as plt
-from sklearn import tree
 from sklearn.tree import DecisionTreeRegressor, plot_tree
 
 from chester.model_training.data_preparation import CVData
@@ -70,4 +70,12 @@ class ModelWeaknesses:
                   '(Light - Low Error, Stronger Orange = Higher Error)')
         plt.show()
 
-    # train a catboost model
+    def plot_catboost_error_regressor(self, iterations=100, depth=2, learning_rate=0.1):
+        model = CatBoostRegressor(iterations=iterations, depth=depth, learning_rate=learning_rate)
+        model.fit(self.X_test, self.error)
+        plt.figure(figsize=(15, 15))
+        feature_imp = pd.DataFrame({'Feature': self.X_test.columns, 'Importance': model.feature_importances_})
+        feature_imp = feature_imp.sort_values(by='Importance', ascending=False)
+        sns.barplot(x=feature_imp['Importance'], y=feature_imp['Feature'])
+        plt.title('CatBoost Feature Importance to Detect Segments with High Error')
+        plt.show()

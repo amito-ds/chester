@@ -168,4 +168,4 @@ for p in params:
 model_weaknesses = ModelWeaknesses(cv_data, data_info, model=model_results[1])
 print("Error!")
 print(model_weaknesses.error)
-model_weaknesses.plot_decision_tree_error_regressor(min_samples_leaf=0.2)
+model_weaknesses.plot_catboost_error_regressor()
