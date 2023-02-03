@@ -79,14 +79,8 @@ class CategoricalStats:
 
             # add more columns
             # 1. % from all that covers the top 5 values
-            top_5 = value_counts.iloc[:5]["count"].sum() / value_counts["count"].sum()
-            print("wow top_5", top_5)
-            result_dicts[-1]['Top 5 value coverage'] = f"{top_5:.0f}%"
-
-            # 2. how many values it takes to cover 50% of the rows
-            value_counts["cumulative_sum"] = value_counts["count"].cumsum()
-            fifty_percent = value_counts[value_counts["cumulative_sum"] >= (value_counts["count"].sum() / 2)]
-            result_dicts[-1]['# of values to cover 50% of rows'] = fifty_percent.iloc[0]["index"]
+            top_5 = 100 * value_counts.iloc[:5]["count"].sum() / value_counts["count"].sum()
+            result_dicts[-1][f'Top {min(5, col_len)} values coverage'] = f"{top_5:.0f}%"
 
         results_df = pd.DataFrame(result_dicts)
         if is_print:
