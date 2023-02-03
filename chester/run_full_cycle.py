@@ -2,8 +2,8 @@ import warnings
 
 from chester.chapter_messages import chapter_message
 from chester.model_analyzer.model_analysis import analyze_model
-from chester.text_analyzer.data_quality import TextAnalyzer
-from chester.text_analyzer.smart_text_analyzer import analyze_text_df
+from chester.text_stats_analysis.data_quality import TextAnalyzer
+from chester.text_stats_analysis.smart_text_analyzer import analyze_text_df
 
 warnings.filterwarnings("ignore", category=UserWarning, module="lightgbm")
 import logging
@@ -51,7 +51,7 @@ def run_tcap(
 ):
     """
     This function runs the full data processing and model training pipeline. It takes a series of optional inputs
-    (text_cleaner, text_preprocesser, text_analyzer, feature_extraction, feature_analysis, cv_data, model_cycle)
+    (text_cleaner, text_preprocesser, text_stats_analysis, feature_extraction, feature_analysis, cv_data, model_cycle)
     and applies them to the data according to the corresponding flags (is_text_cleaner, is_text_preprocesser,
     is_text_stats, is_feature_extraction, is_feature_analysis, is_train_model, is_model_analysis). The function also
     takes an optional input 'data_spec' which can be used to pass any additional information required for the pipeline.
@@ -63,7 +63,7 @@ def run_tcap(
     is_text_cleaner (bool, optional): A flag indicating whether text cleaning should be applied.
     text_preprocesser (preprocessing.preprocessing.TextPreprocessor, optional): An object containing the text preprocessing settings.
     is_text_preprocesser (bool, optional): A flag indicating whether text preprocessing should be applied.
-    text_analyzer (TextAnalyzer, optional): An object containing the text analysis settings.
+    text_stats_analysis (TextAnalyzer, optional): An object containing the text analysis settings.
     is_text_stats (bool, optional): A flag indicating whether text statistics should be generated.
     feature_extraction (features_engineering.fe_main.FeatureExtraction, optional): An object containing the feature extraction settings.
     is_feature_extraction (bool, optional): A flag indicating whether feature extraction should be applied.
@@ -136,7 +136,7 @@ def run_tcap(
         df = pp.preprocess_text_df(text_preprocesser)
         text_preprocesser.df = df
 
-    # Step 4: Prepare text_analyzer object
+    # Step 4: Prepare text_stats_analysis object
     if text_preprocesser is not None and text_preprocesser.df is not None:
         last_df = df
     elif text_cleaner is not None and text_cleaner.df is not None:

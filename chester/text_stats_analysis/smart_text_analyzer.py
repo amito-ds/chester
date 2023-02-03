@@ -1,11 +1,11 @@
 import pandas as pd
 
-from chester.text_analyzer import common_words as cw, corex_topics as corex, keywords_extraction as kw_extract
+from chester.text_stats_analysis import common_words as cw, corex_topics as corex, keywords_extraction as kw_extract
 
-from chester.text_analyzer.data_quality import analyze_text_stats, TextAnalyzer
-from chester.text_analyzer.key_sentences import extract_key_sentences
-from chester.text_analyzer.sentiment import analyze_sentiment, report_sentiment_stats, plot_sentiment_scores
-from chester.text_analyzer.word_cloud import create_word_cloud
+from chester.text_stats_analysis.data_quality import analyze_text_stats, TextAnalyzer
+from chester.text_stats_analysis.key_sentences import extract_key_sentences
+from chester.text_stats_analysis.sentiment import analyze_sentiment, report_sentiment_stats, plot_sentiment_scores
+from chester.text_stats_analysis.word_cloud import create_word_cloud
 
 data_quality_message = "Before we start analyzing the text, it's important to make sure that the data we are working " \
                        "with is clean and of good quality. The following report provides some key statistics about the " \
