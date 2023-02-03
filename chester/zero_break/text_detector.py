@@ -4,14 +4,15 @@ from nltk import FreqDist
 
 
 def determine_if_text_or_categorical_column(column):
-    # Check if column is a string data type
-    if pd.api.types.is_string_dtype(column):
+    # Check if column is a string or categorical data type
+    if column.dtype == 'object' or column.dtype.name == 'category':
         # Check if column contains more than 50% unique values
         if len(column.unique()) > 0.5 * len(column):
             return True, False  # Text column
         else:
             return False, True  # Categorical column
     return False, False  # Not a text or categorical column
+
 
 
 def test_determine_if_text_column():

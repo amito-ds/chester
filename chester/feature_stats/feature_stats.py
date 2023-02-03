@@ -1,12 +1,14 @@
 import pandas as pd
+from sklearn.datasets import fetch_openml
 from sklearn.preprocessing import LabelEncoder
 
 from chester.cleaning.cleaner_handler import CleanerHandler
+from chester.data_loader.webtext_data import load_data_pirates, load_data_king_arthur, load_data_chat_logs
+from chester.feature_stats.categorical_stats import CategoricalStats
 from chester.feature_stats.numeric_stats import NumericStats
 from chester.features_engineering.features_handler import FeaturesHandler
 from chester.model_training.data_preparation import CVData
 from chester.preprocessing.preprocessor_handler import PreprocessHandler
-from chester.utils.df_utils import format_df
 from chester.zero_break.problem_specification import DataInfo
 
 
@@ -41,15 +43,15 @@ target_column = 'target'
 ###############################################################################################
 
 ###############################################################################################
-# Load the Boston Housing dataset
-# boston = fetch_openml(name='boston', version=1)
-# df = pd.DataFrame(boston.data, columns=boston.feature_names)
-# df['target'] = boston.target
+# Load the Boston Housing dataset. categorical
+boston = fetch_openml(name='boston', version=1)
+df = pd.DataFrame(boston.data, columns=boston.feature_names)
+df['target'] = boston.target
 ###############################################################################################
 
 ###############################################################################################
-df = pd.read_csv("chester/model_training/models/chester_models/day.csv")
-df.rename(columns={'cnt': 'target'}, inplace=True)
+# df = pd.read_csv("chester/model_training/models/chester_models/day.csv")
+# df.rename(columns={'cnt': 'target'}, inplace=True)
 ###############################################################################################
 
 # newsgroups_train = fetch_20newsgroups(subset='train')
@@ -74,6 +76,15 @@ df.rename(columns={'cnt': 'target'}, inplace=True)
 ################################################################################################
 
 
+################################################################################################
+# categorical features
+# import seaborn as sns
+#
+# df = sns.load_dataset("tips")
+# df.rename(columns={'tip': target_column}, inplace=True)
+################################################################################################
+
+
 # Print the first 5 rows of the dataframe
 
 # # calc data into
@@ -91,13 +102,22 @@ pp = PreprocessHandler(data_info)
 pp.transform()
 data_info = pp.data_info
 
-## stats
-NumericStats(data_info).calculate_stats()
-# # extract features
-# feat_hand = FeaturesHandler(data_info)
-# feature_types, final_df = feat_hand.transform()
-# final_df[target_column] = data_info.data[data_info.target]
 
+# extract features
+feat_hand = FeaturesHandler(data_info)
+feature_types, final_df = feat_hand.transform()
+final_df[target_column] = data_info.data[data_info.target]
+
+label_encoder = LabelEncoder()
+final_df[target_column] = label_encoder.fit_transform(final_df[target_column])
+
+cv_data = CVData(train_data=final_df, test_data=None, target_column='target', split_data=True)
+## stats
+data_info_num_stats = DataInfo(data=final_df)
+data_info_num_stats.calculate()
+# print(data_info)
+# NumericStats(data_info_num_stats).plot_correlation()
+CategoricalStats(data_info).calculate_stats()
 #
 # # # label transformer
 # label_encoder = LabelEncoder()

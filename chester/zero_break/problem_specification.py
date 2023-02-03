@@ -30,6 +30,7 @@ class DataInfo:
     def __init__(self, data: pd.DataFrame, target: str = None):
         self.data = data
         self.target = target
+        self.is_model = False if self.target is None else True
         self.problem_type_val = None
         self.feature_types_val = None
         self.loss_detector_val = None
