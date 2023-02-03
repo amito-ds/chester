@@ -83,6 +83,7 @@ class CategoricalStats:
             result_dicts[-1][f'Top {min(5, col_len)} values coverage'] = f"{top_5:.0f}%"
 
         results_df = pd.DataFrame(result_dicts)
+
         if is_print:
             print(format_df(results_df))
         return results_df
