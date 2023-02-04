@@ -61,20 +61,21 @@ class NumericPreModelAnalysis:
             else:
                 contingency_table = pd.crosstab(index=labels, columns=self.target)
                 chi2, pvalue, _, _ = chi2_contingency(contingency_table)
-            print(col, num_groups, pvalue)
             feature_pvalue_list.append((col, pvalue))
 
         sorted_list = sorted(feature_pvalue_list, key=lambda x: x[1], reverse=False)
         self.cols_sorted_with_pvalue = sorted_list
         return [x[0] for x in sorted_list]
 
-    def analyze_pvalue(self, is_plot=True):
+    def analyze_pvalue(self, is_plot=True, top_features=10):
         self.sort_by_pvalue()
+        self.plot_wordcloud_pvalues(self.cols_sorted_with_pvalue)
         if is_plot:
             if self.n_cols > 50:
-                self.plot_histogram_pvalues(self.cols_sorted_with_pvalue)  # histogram plot
-            self.plot_heatmap_pvalues(self.cols_sorted_with_pvalue)
-        # print report for top 5 features if exits
+                print("plotting!")
+                self.plot_histogram_pvalues(self.cols_sorted_with_pvalue)
+        print("Pvalues for top features:")
+        print(pd.DataFrame(self.cols_sorted_with_pvalue[0:top_features], columns=["feature", "pvalue"]))
 
     @staticmethod
     def plot_histogram_pvalues(features_pvalues):
@@ -84,15 +85,21 @@ class NumericPreModelAnalysis:
         :return: None.
         """
         pvalues = [pvalue for _, pvalue in features_pvalues]
-        plt.hist(pvalues, bins=50, edgecolor='k')
-        plt.title("Histogram of P-values for Numerical Features")
-        plt.xlabel("P-value")
-        plt.ylabel("Frequency")
-        plt.show()
+        fig, ax = plt.subplots()
+        ax.hist(pvalues, bins=50, edgecolor='k', color='#2ecc71')
+        ax.set_title("Histogram of P-values for Numerical Features", fontsize=16)
+        ax.set_xlabel("P-value", fontsize=14)
+        ax.set_ylabel("Frequency", fontsize=14)
+        ax.spines['right'].set_visible(False)
+        ax.spines['top'].set_visible(False)
+        ax.spines['left'].set_linewidth(0.5)
+        ax.spines['bottom'].set_linewidth(0.5)
+        ax.tick_params(axis='both', which='both', labelsize=12)
+        plt.show(block=False)
 
     @staticmethod
-    def plot_heatmap_pvalues(features_pvalues,
-                             title="Features Pvalues Based on Partial Plot"):
+    def plot_wordcloud_pvalues(features_pvalues,
+                               title="Features Pvalues Based on Partial Plot"):
         """
         Plot word cloud of features weighted by their p-value.
         :param features_pvalues: List of tuples (column name, pvalue).
@@ -100,14 +107,14 @@ class NumericPreModelAnalysis:
         :return: None.
         """
         features_pvalues = [(feature, 1 - pvalue) for feature, pvalue in features_pvalues]
-        wordcloud = WordCloud(random_state=21,
-                              normalize_plurals=False).generate_from_frequencies(dict(features_pvalues))
-        plt.figure(figsize=(6, 6), facecolor=None)
+        wordcloud = WordCloud(
+            random_state=21,
+            normalize_plurals=True).generate_from_frequencies(dict(features_pvalues))
         plt.imshow(wordcloud)
         plt.axis("off")
         plt.tight_layout(pad=0)
-        plt.title(title, fontsize=20)
-        plt.show()
+        plt.title(title, fontsize=15)
+        plt.show(block=False)
 
 
 def format_df(df, max_value_width=10, ci_max_value_width=15, ci_col="CI"):
