@@ -10,9 +10,10 @@ from chester.model_training.data_preparation import CVData
 from chester.model_training.data_preparation import Parameter
 from chester.model_training.models.chester_models.base_model_utils import is_metric_higher_is_better
 from chester.model_training.models.chester_models.catboost.catboost_model import CatboostModel
+from chester.zero_break.problem_specification import DataInfo
 
 
-def train_catboost(X_train, y_train, parameters: list, problem_type: str):
+def train_catboost(X_train, y_train, parameters: list, data_info: DataInfo):
     """
     Trains a baseline model using the given parameters.
     :param X_train: The training data features (unused in this function)
@@ -20,7 +21,7 @@ def train_catboost(X_train, y_train, parameters: list, problem_type: str):
     :param parameters: parameters list
     :return: A trained baseline model
     """
-    model = CatboostModel(parameters, problem_type)
+    model = CatboostModel(parameters, data_info)
     model.fit(X_train, y_train)
     return model
 
@@ -39,11 +40,12 @@ def catboost_with_outputs(cv_data: CVData,
                           metrics: list,
                           target_col: str,
                           parameters: list,
-                          problem_type=None,
+                          data_info: DataInfo,
                           ):
     results = []
+    problem_type = data_info.problem_type_val
     for i, (X_train, y_train, X_test, y_test) in enumerate(cv_data.format_splits()):
-        model = train_catboost(X_train, y_train, parameters=parameters, problem_type=problem_type)
+        model = train_catboost(X_train, y_train, parameters=parameters, data_info=data_info)
         prediction = predict_catboost(model, X_test)
         prediction_train = predict_catboost(model, X_train)
         # print("prediction_train", prediction_train)

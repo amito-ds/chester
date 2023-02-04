@@ -37,6 +37,7 @@ class DataInfo:
         self.metrics_detector_val = None
         self.model_selection_val = None
         self.label_transformation_val = None
+        self.rows = self.data.shape[0]
 
     def calculate(self):
         self.problem_type_val = self.problem_type()

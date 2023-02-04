@@ -1,8 +1,8 @@
-from chester.feature_stats.utils import round_value
-from chester.zero_break.problem_specification import DataInfo
+import pandas as pd
 import seaborn as sns
 from matplotlib import pyplot as plt
-import pandas as pd
+
+from chester.zero_break.problem_specification import DataInfo
 
 
 class CategoricalStats:
@@ -25,6 +25,10 @@ class CategoricalStats:
         sorted_cardinalities = sorted(cardinalities, key=lambda x: x[1], reverse=True)
         return [x[0] for x in sorted_cardinalities]
 
+    def sample_top_features(self, n):
+        top_features = self.cols_sorted[:3 * n]
+        return top_features
+
     def plot_value_counts(self, n=25):
         if not self.any_categorical():
             return None
@@ -32,8 +36,6 @@ class CategoricalStats:
         if len(top_n) == 1:
             col = top_n[0]
             fig, ax = plt.subplots(1, 1, figsize=(20, 5))
-            # data = self.data[col].value_counts()
-            # sns.barplot(x=data.index[:5], y=data.values[:5], ax=ax)
             cat_col = self.data[col].apply(lambda x: "cat " + str(x))
             data = cat_col.value_counts()
             sns.barplot(x=data.index[:5], y=data.values[:5], ax=ax)
@@ -80,7 +82,7 @@ class CategoricalStats:
             # add more columns
             # 1. % from all that covers the top 5 values
             top_5 = 100 * value_counts.iloc[:5]["count"].sum() / value_counts["count"].sum()
-            result_dicts[-1][f'Top {min(5, col_len)} values coverage'] = f"{top_5:.0f}%"
+            result_dicts[-1][f'Top 5 values coverage'] = f"{top_5:.0f}%"
 
         results_df = pd.DataFrame(result_dicts)
 
@@ -88,8 +90,12 @@ class CategoricalStats:
             print(format_df(results_df))
         return results_df
 
+    def run(self):
+        self.calculate_stats()
+        self.plot_value_counts()
 
-def format_df(df, max_value_width=10, distribution_max_value_width=15, distribution_col="Distribution"):
+
+def format_df(df, max_value_width=12, distribution_max_value_width=20, distribution_col="Distribution"):
     pd.options.display.max_columns = None
 
     def trim_value(val):

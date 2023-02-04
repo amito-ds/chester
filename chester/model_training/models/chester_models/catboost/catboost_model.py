@@ -1,15 +1,18 @@
 from catboost import CatBoostClassifier, CatBoostRegressor
 
+from chester.zero_break.problem_specification import DataInfo
+
 
 class CatboostModel:
-    def __init__(self, parameters: list, model_type: str):
+    def __init__(self, parameters: list, data_info: DataInfo):
         self.parameters = parameters
-        self.model_type = model_type
+        self.model_type = data_info.problem_type_val
         # print("this is the model type")
         if "regression" in self.model_type.lower():
-            self.model = CatBoostRegressor()
+            # check categorical
+            self.model = CatBoostRegressor(cat_features=data_info.feature_types_val["categorical"])
         elif "classification" in self.model_type.lower():
-            self.model = CatBoostClassifier()
+            self.model = CatBoostClassifier(cat_features=data_info.feature_types_val["categorical"])
 
     # def fit_new
 

@@ -166,6 +166,4 @@ for p in params:
 # ModelBootstrap(cv_data, data_info, model=model_results[1]).plot()
 
 model_weaknesses = ModelWeaknesses(cv_data, data_info, model=model_results[1])
-print("Error!")
-print(model_weaknesses.error)
 model_weaknesses.plot_catboost_error_regressor()
