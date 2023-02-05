@@ -67,14 +67,46 @@ target_column = 'target'
 
 ################################################################################################
 # categorical
-import seaborn as sns
-df = sns.load_dataset("titanic")
-df.rename(columns={'survived': target_column}, inplace=True)
-df.drop(columns=['alive'], inplace=True)
+# import seaborn as sns
+# df = sns.load_dataset("titanic")
+# df.rename(columns={'survived': target_column}, inplace=True)
+# df.drop(columns=['alive'], inplace=True)
 ###############################################################################################
 
+###############################################################################################
+import pandas as pd
+import numpy as np
 
-# Print the first 5 rows of the dataframe
+
+def generate_data(n_features, n_rows, target_type='binary'):
+    if target_type == 'binary':
+        # Create binary target column
+        target = np.random.choice(['yes', 'no'], size=n_rows)
+    elif target_type == 'multiclass':
+        # Create multiclass target column
+        target = np.random.choice(['class_1', 'class_2', 'class_3', 'class_4',
+                                   'class_5', 'class_6', 'class_7', 'class_8',
+                                   'class_9', 'class_10', 'class_11', 'class_12'], size=n_rows)
+    else:
+        raise ValueError("Invalid target_type. Must be either 'binary' or 'multiclass'.")
+
+    # Create feature categorical columns
+    features = {}
+    for i in range(n_features):
+        feature = np.random.choice(['A', 'B', 'C', 'D'], size=n_rows)
+        features[f'feature_{i}'] = feature
+
+    # Create pandas DataFrame
+    df = pd.DataFrame(features)
+    df['target'] = target
+
+    return df
+
+
+# df = generate_data(5, 1000, target_type='binary')
+df = generate_data(5, 1000, target_type='multiclass')
+###############################################################################################
+
 
 # # calc data into
 df = df.sample(frac=1).reset_index(drop=True)

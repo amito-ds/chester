@@ -85,21 +85,24 @@ class CategoricPreModelAnalysis:
         feature_index = {feature: index for index, feature in enumerate(self.cols_sorted)}
         top_feature_names.sort(key=lambda x: feature_index[x])
 
-        if self.data_info.problem_type_val in ["Binary regression"]:
-            plt.figure(figsize=(10, 6))
-            plt.suptitle("Partial Plot to Identify Patterns between Sampled Features and Target", fontsize=16,
+        if self.data_info.problem_type_val in ["Binary regression", "Binary classification"]:
+            plt.figure(figsize=(16, 16))
+            plt.suptitle("Heatmap to Show Correlation between Sampled Features (top 5 categories) and Target",
+                         fontsize=16,
                          fontweight='bold')
-            for i in range(len(top_feature_names)):
-                plt.subplot(1, top_features, i + 1)
-                col = top_feature_names[i]
-                column = self.data[col]
-                target = self.target
-
-                column = pd.to_numeric(column, errors='coerce')
-                target = pd.to_numeric(target, errors='coerce' )
-                sns.regplot(x=column, y=target, logistic=True, n_boot=500, y_jitter=.03)
-                plt.xlabel(col)
-                plt.ylabel(self.data_info.target)
+            top_features = 16
+            top_feature_names = self.data[:top_features].columns
+            rows = 4
+            cols = 4
+            for i, col in enumerate(top_feature_names):
+                plt.subplot(rows, cols, i + 1)
+                crosstab = pd.crosstab(self.data[col], self.target, normalize='index') * 100
+                crosstab = crosstab[(crosstab.T != 0).any()]
+                crosstab = crosstab.loc[:, (crosstab != 0).any(axis=0)]
+                crosstab = crosstab.loc[crosstab.sum(axis=1).sort_values(ascending=False).index[:5]]
+                sns.heatmap(crosstab, annot=False, cmap="YlGnBu", fmt='g')
+                plt.title(col)
+            plt.tight_layout()
             plt.show()
         if self.data_info.problem_type_val in ["Regression"]:
             from sklearn.cluster import KMeans
@@ -107,7 +110,6 @@ class CategoricPreModelAnalysis:
             kmeans = KMeans(n_clusters=10)
             clusters = kmeans.fit_predict(target.values.reshape(-1, 1))
             target["cluster"] = clusters
-
             plt.figure(figsize=(12, 12))
             plt.suptitle("Partial Plot to Identify Patterns between Sampled Features and Target", fontsize=16,
                          fontweight='bold')
@@ -125,18 +127,25 @@ class CategoricPreModelAnalysis:
                 plt.ylabel("Clusters")
                 plt.subplots_adjust(hspace=0.5, wspace=0.5)
             plt.show()
-
-        # elif self.data_info.problem_type_val in ["Binary classification", "Multiclass classification"]:
-        #     plt.figure(figsize=(9, 6))
-        #     plt.suptitle("Partial Plot to Identify Patterns between Sampled Features and Target Label", fontsize=16,
-        #                  fontweight='bold')
-        #     for i in range(len(top_feature_names)):
-        #         if i < 9:
-        #             plt.subplot(3, 3, i + 1)
-        #             col = top_feature_names[i]
-        #             if self.data[col].dtype == "object":
-        #                 # convert column to categorical and select the top 5 categories only
-        #                 data
+        elif self.data_info.problem_type_val in ["Multiclass classification"]:
+            plt.figure(figsize=(16, 16))
+            plt.suptitle("Heatmap to Show Correlation between Sampled Features (top 5 categories) and Target",
+                         fontsize=16,
+                         fontweight='bold')
+            top_features = 16
+            top_feature_names = self.data[:top_features].columns
+            rows = 4
+            cols = 4
+            for i, col in enumerate(top_feature_names):
+                plt.subplot(rows, cols, i + 1)
+                crosstab = pd.crosstab(self.data[col], self.target, normalize='index') * 100
+                crosstab = crosstab[(crosstab.T != 0).any()]
+                crosstab = crosstab.loc[:, (crosstab != 0).any(axis=0)]
+                crosstab = crosstab.loc[crosstab.sum(axis=1).sort_values(ascending=False).index[:5]]
+                sns.heatmap(crosstab, annot=False, cmap="YlGnBu", fmt='g')
+                plt.title(col)
+            plt.tight_layout()
+            plt.show()
 
     @staticmethod
     def plot_histogram_pvalues(features_pvalues):
