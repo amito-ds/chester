@@ -96,7 +96,7 @@ class CategoricPreModelAnalysis:
                 target = self.target
 
                 column = pd.to_numeric(column, errors='coerce')
-                target = pd.to_numeric(target, errors='coerce')
+                target = pd.to_numeric(target, errors='coerce' )
                 sns.regplot(x=column, y=target, logistic=True, n_boot=500, y_jitter=.03)
                 plt.xlabel(col)
                 plt.ylabel(self.data_info.target)
