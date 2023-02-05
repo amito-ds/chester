@@ -130,7 +130,7 @@ data_info_num_stats.calculate()
 # pma
 # CategoricalPreModelAnalysis(data_info).analyze_pvalue()
 # CategoricalPreModelAnalysis(data_info).partial_plot()
-CategoricalPreModelAnalysis(data_info).tse()
+CategoricalPreModelAnalysis(data_info).tsne()
 
 
 # NumericPreModelAnalysis(data_info_num_stats).analyze_pvalue()
@@ -144,4 +144,4 @@ CategoricalPreModelAnalysis(data_info).tse()
 # encode labels
 # label_encoder = LabelEncoder()
 # final_df[target_column] = label_encoder.fit_transform(final_df[target_column])
-# cv_data = CVData(train_data=final_df, test_data=None, target_column='target', split_data=True)
+cv_data = CVData(train_data=final_df, test_data=None, target_column='target', split_data=True)

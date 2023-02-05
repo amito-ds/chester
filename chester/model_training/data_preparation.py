@@ -12,16 +12,22 @@ from sklearn.model_selection import KFold, train_test_split
 class CVData:
     def __init__(self, train_data, test_data, target_column, folds=5,
                  split_data=False, split_prop=0.2, split_random_state=999):
-        self.train_data = train_data
+        # check if nulls in the target
+        null_count = int(train_data[target_column].isnull().sum())
+        if null_count > 0:
+            null_rows = train_data[train_data[target_column].isnull()].index
+            not_null_rows = train_data[~train_data[target_column].isnull()].index
+            self.train_data = train_data.loc[not_null_rows]
+            self.data_to_predict = train_data.loc[null_rows]
+        else:
+            self.train_data = train_data
         self.test_data = test_data
         if self.test_data is None:
             if split_data:
-                self.test_data, self.test_data = train_test_split(self.train_data, test_size=split_prop,
-                                                                  random_state=split_random_state)
-
+                self.train_data, self.test_data = train_test_split(self.train_data, test_size=split_prop,
+                                                                   random_state=split_random_state)
         self.target_column = target_column
         self.splits = self.cv_preparation(train_data=train_data, test_data=test_data, k_fold=folds)
-        # self.splits = self.format_splits()
 
     def format_splits(self):
         formatted_splits = []

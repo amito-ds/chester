@@ -23,7 +23,7 @@ class CategoricalPreModelAnalysis:
         self.target_df = self.data_info.data[[self.data_info.target]]
         self.data = self.data_info.data[self.cols]
 
-    def tse(self):
+    def tsne(self):
         if self.n_cols == 1:
             return None
         if self.data_info.problem_type_val in ["Regression"]:
