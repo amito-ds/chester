@@ -8,18 +8,19 @@ from chester.feature_stats.categorical_stats import CategoricalStats
 from chester.feature_stats.numeric_stats import NumericStats
 from chester.features_engineering.features_handler import FeaturesHandler
 from chester.model_training.data_preparation import CVData
+from chester.pre_model_analysis.categorical import CategoricPreModelAnalysis
 from chester.pre_model_analysis.numerics import NumericPreModelAnalysis
 from chester.preprocessing.preprocessor_handler import PreprocessHandler
 from chester.zero_break.problem_specification import DataInfo
 
 target_column = 'target'
 ################################################################################################
-df1 = load_data_pirates().assign(target='pirate').sample(100, replace=True)
-df2 = load_data_king_arthur().assign(target='arthur').sample(100, replace=True)
-df3 = load_data_chat_logs().assign(target='chat').sample(100, replace=True)
-df = pd.concat([df1, df2
-                   , df3
-                ])
+# df1 = load_data_pirates().assign(target='pirate').sample(100, replace=True)
+# df2 = load_data_king_arthur().assign(target='arthur').sample(100, replace=True)
+# df3 = load_data_chat_logs().assign(target='chat').sample(100, replace=True)
+# df = pd.concat([df1, df2
+#                    , df3
+#                 ])
 ################################################################################################
 
 
@@ -59,9 +60,9 @@ df = pd.concat([df1, df2
 
 ################################################################################################
 # categorical features
-# import seaborn as sns
-# df = sns.load_dataset("tips")
-# df.rename(columns={'tip': target_column}, inplace=True)
+import seaborn as sns
+df = sns.load_dataset("tips")
+df.rename(columns={'tip': target_column}, inplace=True)
 ################################################################################################
 
 ################################################################################################
@@ -94,27 +95,21 @@ feat_hand = FeaturesHandler(data_info)
 feature_types, final_df = feat_hand.transform()
 final_df[target_column] = data_info.data[data_info.target]
 
-label_encoder = LabelEncoder()
-final_df[target_column] = label_encoder.fit_transform(final_df[target_column])
-
-cv_data = CVData(train_data=final_df, test_data=None, target_column='target', split_data=True)
-
-########## code for stats ################
+########## code for stats and PMA ################
 data_info_num_stats = DataInfo(data=final_df, target='target')
 data_info_num_stats.calculate()
 
 # pma
-NumericPreModelAnalysis(data_info_num_stats).analyze_pvalue()
-
-
+# CategoricPreModelAnalysis(data_info).analyze_pvalue()
+CategoricPreModelAnalysis(data_info).partial_plot()
+# NumericPreModelAnalysis(data_info_num_stats).analyze_pvalue()
+# print(NumericPreModelAnalysis(data_info_num_stats).partial_plot())
 # NumericStats(data_info_num_stats).run()
 # CategoricalStats(data_info).run()
 ########## code for stats ################
 
-#
-# # # label transformer
+#### model
+# encode labels
 # label_encoder = LabelEncoder()
 # final_df[target_column] = label_encoder.fit_transform(final_df[target_column])
-# # print(final_df)
-# #
 # cv_data = CVData(train_data=final_df, test_data=None, target_column='target', split_data=True)

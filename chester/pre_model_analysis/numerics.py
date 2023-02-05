@@ -1,8 +1,13 @@
+import random
 from math import floor
 
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
+import seaborn as sns
 from pandas.errors import SettingWithCopyWarning
+from scipy.stats import chi2_contingency
+from sklearn.cluster import KMeans
 from wordcloud import WordCloud
 
 from chester.zero_break.problem_specification import DataInfo
@@ -33,8 +38,6 @@ class NumericPreModelAnalysis:
         return True if len(self.cols) > 0 else False
 
     def sort_by_pvalue(self):
-        from sklearn.cluster import KMeans
-        from scipy.stats import chi2_contingency
         import warnings
         warnings.simplefilter("ignore")
 
@@ -72,7 +75,6 @@ class NumericPreModelAnalysis:
         self.plot_wordcloud_pvalues(self.cols_sorted_with_pvalue)
         if is_plot:
             if self.n_cols > 50:
-                print("plotting!")
                 self.plot_histogram_pvalues(self.cols_sorted_with_pvalue)
         print("Pvalues for top features:")
         print(pd.DataFrame(self.cols_sorted_with_pvalue[0:top_features], columns=["feature", "pvalue"]))
@@ -115,6 +117,91 @@ class NumericPreModelAnalysis:
         plt.tight_layout(pad=0)
         plt.title(title, fontsize=15)
         plt.show(block=False)
+
+    def partial_plot(self):
+        import warnings
+        warnings.simplefilter("ignore")
+        top_features = 25
+        if self.n_cols <= 25:
+            sample_features = self.n_cols
+            top_features = self.n_cols
+        else:
+            sample_features = min(2 * 25, int(self.n_cols / 2))
+        top_feature_names = random.sample(self.cols_sorted[0:sample_features], top_features)
+        feature_index = {feature: index for index, feature in enumerate(self.cols_sorted)}
+        top_feature_names.sort(key=lambda x: feature_index[x])
+        if self.data_info.problem_type_val in ["Binary regression"]:
+            plt.figure(figsize=(10, 6))
+            plt.suptitle("Partial Plot to Identify Patterns between Sampled Features and Target", fontsize=16,
+                         fontweight='bold')
+            for i in range(len(top_feature_names)):
+                plt.subplot(1, top_features, i + 1)
+                col = top_feature_names[i]
+                column = self.data[col]
+                target = self.target
+                sns.regplot(x=column, y=target, logistic=True, n_boot=500, y_jitter=.03)
+                plt.xlabel(col)
+                plt.ylabel(self.data_info.target)
+            plt.show()
+        if self.data_info.problem_type_val in ["Regression"]:
+            plt.figure(figsize=(12, 12))
+            plt.suptitle("Partial Plot to Identify Patterns between Sampled Features and Target", fontsize=16,
+                         fontweight='bold')
+            grid_size = 4
+            num_features = min(grid_size*grid_size, top_features)
+            num_rows = int(np.ceil(num_features / grid_size))
+            for i, col in enumerate(top_feature_names[:num_features]):
+                plt.subplot(num_rows, grid_size, i + 1)
+                column = self.data[col]
+                target = self.target
+                plt.scatter(column, target)
+                plt.xlabel(col)
+                plt.ylabel(self.data_info.target)
+            plt.show()
+        elif self.data_info.problem_type_val in ["Binary classification"]:
+            plt.figure(figsize=(9, 6))
+            plt.suptitle("Partial Plot to Identify Patterns between Sampled Features and Target Label", fontsize=16,
+                         fontweight='bold')
+            for i in range(len(top_feature_names)):
+                if i < 9:
+                    plt.subplot(3, 3, i + 1)
+                    col = top_feature_names[i]
+                    data_col = self.data[[col]]
+                    num_groups = min(floor(self.data_info.rows / 20), 10)
+                    kmeans = KMeans(n_clusters=num_groups, n_init=10)
+                    if self.data[col].isna().any():
+                        data_col = self.median_imputation(self.data, col)
+                    kmeans.fit(data_col)
+                    labels = kmeans.labels_
+                    contingency_table = pd.crosstab(index=labels, columns=self.target)
+                    contingency_table_pct = contingency_table.div(contingency_table.sum(1), axis=0)
+                    sns.heatmap(contingency_table_pct, annot=False, cmap='Blues')
+                    plt.ylabel("Cluster", fontsize=12, fontweight='bold')
+                    plt.title(col, fontsize=12, fontweight='bold')
+        elif self.data_info.problem_type_val in ["Multiclass classification"]:
+            plt.figure(figsize=(8, 8))
+            plt.suptitle("Partial Plot to Identify Patterns between Sampled Features and Target Label",
+                         fontsize=16,
+                         fontweight='bold')
+            for i in range(len(top_feature_names)):
+                if i < 4:
+                    plt.subplot(2, 2, i + 1)
+                    col = top_feature_names[i]
+                    data_col = self.data[[col]]
+                    num_groups = min(floor(self.data_info.rows / 20), 10)
+                    kmeans = KMeans(n_clusters=num_groups, n_init=10)
+                    if self.data[col].isna().any():
+                        data_col = self.median_imputation(self.data, col)
+                    kmeans.fit(data_col)
+                    labels = kmeans.labels_
+                    top_5_target_values = self.target.value_counts().index[:5]
+                    target_filtered = self.target[self.target.isin(top_5_target_values)]
+                    labels_filtered = labels[self.target.isin(top_5_target_values)]
+                    contingency_table = pd.crosstab(index=labels_filtered, columns=target_filtered)
+                    contingency_table_pct = contingency_table.div(contingency_table.sum(1), axis=0)
+                    sns.heatmap(contingency_table_pct, annot=False, cmap='Blues')
+                    plt.ylabel("Cluster", fontsize=12, fontweight='bold')
+                    plt.title(col, fontsize=12, fontweight='bold')
 
 
 def format_df(df, max_value_width=10, ci_max_value_width=15, ci_col="CI"):
