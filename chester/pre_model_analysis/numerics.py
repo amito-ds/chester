@@ -5,10 +5,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
+from matplotlib.patches import Patch
 from pandas.errors import SettingWithCopyWarning
 from scipy.stats import chi2_contingency
 from sklearn.cluster import KMeans
 from wordcloud import WordCloud
+from sklearn.manifold import TSNE
 
 from chester.zero_break.problem_specification import DataInfo
 
@@ -24,6 +26,38 @@ class NumericPreModelAnalysis:
         # calc
         self.cols_sorted = self.sort_by_pvalue()
         self.cols_sorted_with_pvalue = None
+
+    def tse(self):
+        if self.n_cols == 1:
+            return None
+        if self.data_info.problem_type_val in ["Regression"]:
+            X_tsne = TSNE(n_components=2).fit_transform(self.data)
+            plt.scatter(X_tsne[:, 0], X_tsne[:, 1], c=self.target, cmap='viridis', edgecolors='black', s=20)
+            plt.colorbar()
+            plt.title("Visualizing Numerical Features and Target with t-SNE")
+        elif self.data_info.problem_type_val in ["Binary regression", "Binary classification"]:
+            X_tsne = TSNE(n_components=2).fit_transform(self.data)
+            target_classes = self.target.unique()
+            color_map = {target_class: color for target_class, color in zip(target_classes, ['red', 'blue'])}
+            colors = self.target.apply(lambda x: color_map[x])
+            plt.scatter(X_tsne[:, 0], X_tsne[:, 1], c=colors)
+            legend_handles = [Patch(color=color_map[target_class], label=target_class) for target_class in
+                              target_classes]
+            plt.title("Visualizing Numerical Features and Target with t-SNE")
+            plt.legend(handles=legend_handles)
+            plt.show()
+        else:  # Multi-class classification
+            X_tsne = TSNE(n_components=2).fit_transform(self.data)
+            target_classes = self.target.unique()
+            color_map = {target_class: color for target_class, color in
+                         zip(target_classes, plt.cm.rainbow(np.linspace(0, 1, len(target_classes))))}
+            colors = self.target.apply(lambda x: color_map[x])
+            plt.scatter(X_tsne[:, 0], X_tsne[:, 1], c=colors)
+            legend_handles = [Patch(color=color_map[target_class], label=target_class) for target_class in
+                              target_classes]
+            plt.title("Visualizing Numerical Features and Target with t-SNE")
+            plt.legend(handles=legend_handles)
+            plt.show()
 
     @staticmethod
     def median_imputation(df, col):
@@ -148,7 +182,7 @@ class NumericPreModelAnalysis:
             plt.suptitle("Partial Plot to Identify Patterns between Sampled Features and Target", fontsize=16,
                          fontweight='bold')
             grid_size = 4
-            num_features = min(grid_size*grid_size, top_features)
+            num_features = min(grid_size * grid_size, top_features)
             num_rows = int(np.ceil(num_features / grid_size))
             for i, col in enumerate(top_feature_names[:num_features]):
                 plt.subplot(num_rows, grid_size, i + 1)

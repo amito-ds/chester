@@ -8,7 +8,7 @@ from chester.feature_stats.categorical_stats import CategoricalStats
 from chester.feature_stats.numeric_stats import NumericStats
 from chester.features_engineering.features_handler import FeaturesHandler
 from chester.model_training.data_preparation import CVData
-from chester.pre_model_analysis.categorical import CategoricPreModelAnalysis
+from chester.pre_model_analysis.categorical import CategoricalPreModelAnalysis
 from chester.pre_model_analysis.numerics import NumericPreModelAnalysis
 from chester.preprocessing.preprocessor_handler import PreprocessHandler
 from chester.zero_break.problem_specification import DataInfo
@@ -74,37 +74,32 @@ target_column = 'target'
 ###############################################################################################
 
 ###############################################################################################
-import pandas as pd
 import numpy as np
-
-
-def generate_data(n_features, n_rows, target_type='binary'):
-    if target_type == 'binary':
-        # Create binary target column
-        target = np.random.choice(['yes', 'no'], size=n_rows)
-    elif target_type == 'multiclass':
-        # Create multiclass target column
-        target = np.random.choice(['class_1', 'class_2', 'class_3', 'class_4',
-                                   'class_5', 'class_6', 'class_7', 'class_8',
-                                   'class_9', 'class_10', 'class_11', 'class_12'], size=n_rows)
-    else:
-        raise ValueError("Invalid target_type. Must be either 'binary' or 'multiclass'.")
-
-    # Create feature categorical columns
-    features = {}
-    for i in range(n_features):
-        feature = np.random.choice(['A', 'B', 'C', 'D'], size=n_rows)
-        features[f'feature_{i}'] = feature
-
-    # Create pandas DataFrame
-    df = pd.DataFrame(features)
-    df['target'] = target
-
-    return df
-
-
+# def generate_data(n_features, n_rows, target_type='binary'):
+#     if target_type == 'binary':
+#         # Create binary target column
+#         target = np.random.choice(['yes', 'no'], size=n_rows)
+#     elif target_type == 'multiclass':
+#         # Create multiclass target column
+#         target = np.random.choice(['class_1', 'class_2', 'class_3', 'class_4',
+#                                    'class_5', 'class_6', 'class_7', 'class_8',
+#                                    'class_9', 'class_10', 'class_11', 'class_12'], size=n_rows)
+#     else:
+#         raise ValueError("Invalid target_type. Must be either 'binary' or 'multiclass'.")
+#
+#     # Create feature categorical columns
+#     features = {}
+#     for i in range(n_features):
+#         feature = np.random.choice(['A', 'B', 'C', 'D'], size=n_rows)
+#         features[f'feature_{i}'] = feature
+#
+#     # Create pandas DataFrame
+#     df = pd.DataFrame(features)
+#     df['target'] = target
+#
+#     return df
 # df = generate_data(5, 1000, target_type='binary')
-df = generate_data(5, 1000, target_type='multiclass')
+# df = generate_data(5, 1000, target_type='multiclass')
 ###############################################################################################
 
 
@@ -133,9 +128,13 @@ data_info_num_stats = DataInfo(data=final_df, target='target')
 data_info_num_stats.calculate()
 
 # pma
-# CategoricPreModelAnalysis(data_info).analyze_pvalue()
-CategoricPreModelAnalysis(data_info).partial_plot()
+# CategoricalPreModelAnalysis(data_info).analyze_pvalue()
+# CategoricalPreModelAnalysis(data_info).partial_plot()
+CategoricalPreModelAnalysis(data_info).tse()
+
+
 # NumericPreModelAnalysis(data_info_num_stats).analyze_pvalue()
+# NumericPreModelAnalysis(data_info_num_stats).tse()
 # print(NumericPreModelAnalysis(data_info_num_stats).partial_plot())
 # NumericStats(data_info_num_stats).run()
 # CategoricalStats(data_info).run()

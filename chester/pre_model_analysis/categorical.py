@@ -2,8 +2,11 @@ from math import floor
 
 import matplotlib.pyplot as plt
 import pandas as pd
+from matplotlib.patches import Patch
 from pandas.errors import SettingWithCopyWarning
 from wordcloud import WordCloud
+from sklearn.manifold import TSNE
+from sklearn.preprocessing import OneHotEncoder
 
 from chester.zero_break.problem_specification import DataInfo
 import random
@@ -11,16 +14,49 @@ import seaborn as sns
 import numpy as np
 
 
-class CategoricPreModelAnalysis:
+class CategoricalPreModelAnalysis:
     def __init__(self, data_info: DataInfo):
         self.data_info = data_info
-        self.cols = self.data_info.feature_types_val["boolean"] + self.data_info.feature_types_val["categorical"]
+        self.cols = self.data_info.feature_types_val["categorical"]
         self.n_cols = len(self.cols)
         self.target = self.data_info.data[self.data_info.target]
         self.target_df = self.data_info.data[[self.data_info.target]]
         self.data = self.data_info.data[self.cols]
-        self.cols_sorted = self.sort_by_pvalue()
-        self.cols_sorted_with_pvalue = None
+
+    def tse(self):
+        if self.n_cols == 1:
+            return None
+        if self.data_info.problem_type_val in ["Regression"]:
+            encoder = OneHotEncoder()
+            encoded_data = encoder.fit_transform(self.data)
+            categorical_data = encoded_data.toarray()
+            X_tsne = TSNE(n_components=2).fit_transform(categorical_data)
+            plt.scatter(X_tsne[:, 0], X_tsne[:, 1], c=self.target, cmap='viridis', edgecolors='black', s=20)
+            plt.colorbar()
+            plt.title("Visualizing Numerical Features and Target with t-SNE")
+        elif self.data_info.problem_type_val in ["Binary regression", "Binary classification"]:
+            X_tsne = TSNE(n_components=2).fit_transform(pd.get_dummies(self.data))
+            target_classes = self.target.unique()
+            color_map = {target_class: color for target_class, color in zip(target_classes, ['red', 'blue'])}
+            colors = self.target.apply(lambda x: color_map[x])
+            plt.scatter(X_tsne[:, 0], X_tsne[:, 1], c=colors)
+            legend_handles = [Patch(color=color_map[target_class], label=target_class) for target_class in
+                              target_classes]
+            plt.title("Visualizing Categorical Features and Target with t-SNE")
+            plt.legend(handles=legend_handles)
+            plt.show()
+        else:  # Multi-class classification
+            X_tsne = TSNE(n_components=2).fit_transform(pd.get_dummies(self.data))
+            target_classes = self.target.unique()
+            color_map = {target_class: color for target_class, color in
+                         zip(target_classes, plt.cm.rainbow(np.linspace(0, 1, len(target_classes))))}
+            colors = self.target.apply(lambda x: color_map[x])
+            plt.scatter(X_tsne[:, 0], X_tsne[:, 1], c=colors)
+            legend_handles = [Patch(color=color_map[target_class], label=target_class) for target_class in
+                              target_classes]
+            plt.title("Visualizing Categorical Features and Target with t-SNE")
+            plt.legend(handles=legend_handles)
+            plt.show()
 
     @staticmethod
     def mode_imputation(df, col):
