@@ -27,7 +27,7 @@ class NumericPreModelAnalysis:
         self.cols_sorted = self.sort_by_pvalue()
         self.cols_sorted_with_pvalue = None
 
-    def tse(self):
+    def tsne(self):
         if self.n_cols == 1:
             return None
         if self.data_info.problem_type_val in ["Regression"]:
@@ -131,7 +131,8 @@ class NumericPreModelAnalysis:
         ax.spines['left'].set_linewidth(0.5)
         ax.spines['bottom'].set_linewidth(0.5)
         ax.tick_params(axis='both', which='both', labelsize=12)
-        plt.show(block=False)
+        plt.savefig("plot.png")
+        plt.show()
 
     @staticmethod
     def plot_wordcloud_pvalues(features_pvalues,
@@ -148,7 +149,6 @@ class NumericPreModelAnalysis:
             normalize_plurals=True).generate_from_frequencies(dict(features_pvalues))
         plt.imshow(wordcloud)
         plt.axis("off")
-        plt.tight_layout(pad=0)
         plt.title(title, fontsize=15)
         plt.show(block=False)
 
@@ -236,6 +236,11 @@ class NumericPreModelAnalysis:
                     sns.heatmap(contingency_table_pct, annot=False, cmap='Blues')
                     plt.ylabel("Cluster", fontsize=12, fontweight='bold')
                     plt.title(col, fontsize=12, fontweight='bold')
+
+    def run(self):
+        self.partial_plot()
+        self.analyze_pvalue()
+        self.tsne()
 
 
 def format_df(df, max_value_width=10, ci_max_value_width=15, ci_col="CI"):

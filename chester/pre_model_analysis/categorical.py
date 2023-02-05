@@ -22,18 +22,19 @@ class CategoricalPreModelAnalysis:
         self.target = self.data_info.data[self.data_info.target]
         self.target_df = self.data_info.data[[self.data_info.target]]
         self.data = self.data_info.data[self.cols]
+        # calc
+        self.cols_sorted = self.sort_by_pvalue()
+        self.cols_sorted_with_pvalue = None
 
     def tsne(self):
-        if self.n_cols == 1:
+        if self.n_cols in (0, 1):
             return None
         if self.data_info.problem_type_val in ["Regression"]:
-            encoder = OneHotEncoder()
-            encoded_data = encoder.fit_transform(self.data)
-            categorical_data = encoded_data.toarray()
-            X_tsne = TSNE(n_components=2).fit_transform(categorical_data)
-            plt.scatter(X_tsne[:, 0], X_tsne[:, 1], c=self.target, cmap='viridis', edgecolors='black', s=20)
+            X_tsne = TSNE(n_components=2).fit_transform(pd.get_dummies(self.data))
+            plt.hexbin(X_tsne[:, 0], X_tsne[:, 1], C=self.target, gridsize=50, cmap='viridis', edgecolors='black')
             plt.colorbar()
             plt.title("Visualizing Numerical Features and Target with t-SNE")
+            plt.tight_layout()
         elif self.data_info.problem_type_val in ["Binary regression", "Binary classification"]:
             X_tsne = TSNE(n_components=2).fit_transform(pd.get_dummies(self.data))
             target_classes = self.target.unique()
@@ -44,7 +45,6 @@ class CategoricalPreModelAnalysis:
                               target_classes]
             plt.title("Visualizing Categorical Features and Target with t-SNE")
             plt.legend(handles=legend_handles)
-            plt.show()
         else:  # Multi-class classification
             X_tsne = TSNE(n_components=2).fit_transform(pd.get_dummies(self.data))
             target_classes = self.target.unique()
@@ -56,7 +56,8 @@ class CategoricalPreModelAnalysis:
                               target_classes]
             plt.title("Visualizing Categorical Features and Target with t-SNE")
             plt.legend(handles=legend_handles)
-            plt.show()
+        plt.tight_layout()
+        plt.show()
 
     @staticmethod
     def mode_imputation(df, col):
@@ -100,6 +101,8 @@ class CategoricalPreModelAnalysis:
 
     def analyze_pvalue(self, is_plot=True, top_features=10):
         self.sort_by_pvalue()
+        if len(self.cols) == 0:
+            return None
         self.plot_wordcloud_pvalues(self.cols_sorted_with_pvalue)
         if is_plot:
             if self.n_cols > 50:
@@ -138,7 +141,6 @@ class CategoricalPreModelAnalysis:
                 crosstab = crosstab.loc[crosstab.sum(axis=1).sort_values(ascending=False).index[:5]]
                 sns.heatmap(crosstab, annot=False, cmap="YlGnBu", fmt='g')
                 plt.title(col)
-            plt.tight_layout()
             plt.show()
         if self.data_info.problem_type_val in ["Regression"]:
             from sklearn.cluster import KMeans
@@ -180,7 +182,6 @@ class CategoricalPreModelAnalysis:
                 crosstab = crosstab.loc[crosstab.sum(axis=1).sort_values(ascending=False).index[:5]]
                 sns.heatmap(crosstab, annot=False, cmap="YlGnBu", fmt='g')
                 plt.title(col)
-            plt.tight_layout()
             plt.show()
 
     @staticmethod
@@ -218,9 +219,13 @@ class CategoricalPreModelAnalysis:
             normalize_plurals=True).generate_from_frequencies(dict(features_pvalues))
         plt.imshow(wordcloud)
         plt.axis("off")
-        plt.tight_layout(pad=0)
         plt.title(title, fontsize=15)
         plt.show(block=False)
+
+    def run(self):
+        self.partial_plot()
+        self.analyze_pvalue()
+        self.tsne()
 
 
 def format_df(df, max_value_width=10, ci_max_value_width=15, ci_col="CI"):
