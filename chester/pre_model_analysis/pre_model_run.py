@@ -60,16 +60,17 @@ target_column = 'target'
 
 ################################################################################################
 # categorical features
-import seaborn as sns
-df = sns.load_dataset("tips")
-df.rename(columns={'tip': target_column}, inplace=True)
+# import seaborn as sns
+# df = sns.load_dataset("tips")
+# df.rename(columns={'tip': target_column}, inplace=True)
 ################################################################################################
 
 ################################################################################################
-# import seaborn as sns
-# df = sns.load_dataset("titanic")
-# df.rename(columns={'survived': target_column}, inplace=True)
-# df.drop(columns=['alive'], inplace=True)
+# categorical
+import seaborn as sns
+df = sns.load_dataset("titanic")
+df.rename(columns={'survived': target_column}, inplace=True)
+df.drop(columns=['alive'], inplace=True)
 ###############################################################################################
 
 

@@ -14,7 +14,7 @@ import numpy as np
 class CategoricPreModelAnalysis:
     def __init__(self, data_info: DataInfo):
         self.data_info = data_info
-        self.cols = self.data_info.feature_types_val["categorical"]
+        self.cols = self.data_info.feature_types_val["boolean"] + self.data_info.feature_types_val["categorical"]
         self.n_cols = len(self.cols)
         self.target = self.data_info.data[self.data_info.target]
         self.target_df = self.data_info.data[[self.data_info.target]]
@@ -94,11 +94,21 @@ class CategoricPreModelAnalysis:
                 col = top_feature_names[i]
                 column = self.data[col]
                 target = self.target
+
+                column = pd.to_numeric(column, errors='coerce')
+                target = pd.to_numeric(target, errors='coerce')
                 sns.regplot(x=column, y=target, logistic=True, n_boot=500, y_jitter=.03)
+
                 plt.xlabel(col)
                 plt.ylabel(self.data_info.target)
             plt.show()
         if self.data_info.problem_type_val in ["Regression"]:
+            from sklearn.cluster import KMeans
+            target = self.target
+            kmeans = KMeans(n_clusters=10)
+            clusters = kmeans.fit_predict(target.values.reshape(-1, 1))
+            target["cluster"] = clusters
+
             plt.figure(figsize=(12, 12))
             plt.suptitle("Partial Plot to Identify Patterns between Sampled Features and Target", fontsize=16,
                          fontweight='bold')
@@ -108,11 +118,15 @@ class CategoricPreModelAnalysis:
             for i, col in enumerate(top_feature_names[:num_features]):
                 plt.subplot(num_rows, grid_size, i + 1)
                 column = self.data[col]
-                target = self.target
-                plt.scatter(column, target)
-                plt.xlabel(col)
-                plt.ylabel(self.data_info.target)
+                if column.dtype == "object":
+                    column = column.astype("category").cat.codes
+                    column = column[column < 5]
+                crosstab = pd.crosstab(target["cluster"], column)
+                sns.heatmap(crosstab, annot=False, fmt="d")
+                plt.ylabel("Clusters")
+                plt.subplots_adjust(hspace=0.5, wspace=0.5)
             plt.show()
+
         # elif self.data_info.problem_type_val in ["Binary classification", "Multiclass classification"]:
         #     plt.figure(figsize=(9, 6))
         #     plt.suptitle("Partial Plot to Identify Patterns between Sampled Features and Target Label", fontsize=16,
