@@ -52,7 +52,7 @@ class ModelAnalyzer:
 
     def analyze(self, X_train: pd.DataFrame, y_train: pd.Series,
                 X_test: pd.DataFrame, y_test: pd.Series,
-                model, shap_values: bool = True, coefficients: bool = True,
+                model, plot_shap_values: bool = True, coefficients: bool = True,
                 confusion_matrix: bool = True,
                 roc_curve: bool = True, learning_curve: bool = False,
                 feature_importance: bool = True) -> None:
@@ -65,7 +65,7 @@ class ModelAnalyzer:
                     self.plot_simple_feature_importance(X_train)
                 except:
                     pass
-        if shap_values:
+        if plot_shap_values:
             if unique_classes == 2:
                 try:
                     self.shap_values(X_train)
@@ -77,7 +77,10 @@ class ModelAnalyzer:
             except:
                 pass
         if confusion_matrix:
-            self.confusion_matrix(X_test, y_test)
+            try:
+                self.confusion_matrix(X_test, y_test)
+            except:
+                pass
         if roc_curve:
             if unique_classes == 2:
                 self.roc_curve(X_test, y_test)
@@ -212,9 +215,10 @@ def analyze_model(model, cv_data: CVData, target_label='target'):
             cv_data.test_data.drop(columns=[target_label]), \
             cv_data.train_data[target_label], \
             cv_data.test_data[target_label]
-    metric_functions = get_default_metrics(y_train)
+    # metric_functions = get_default_metrics(y_train)
     analyzer = ModelAnalyzer(model)
-    analyzer.analyze(X_train, y_train, X_test, y_test, metric_functions, model)
+    analyzer.analyze(X_train=X_train, y_train=y_train, X_test=X_test, y_test=y_test,
+                     model=model)
 
 
 def get_default_metrics(y):

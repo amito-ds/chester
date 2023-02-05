@@ -122,48 +122,48 @@ df.rename(columns={'cnt': 'target'}, inplace=True)
 # df['target'] = "category: " + df['target'].astype(str)
 ################################################################################################
 
-
-# Print the first 5 rows of the dataframe
-
-# # calc data into
-df = df.sample(frac=1).reset_index(drop=True)
-data_info = DataInfo(data=df, target='target')
-data_info.calculate()
-print(data_info)
-
-# clean
-cleaner = CleanerHandler(data_info)
-cleaner.transform()
-data_info = cleaner.data_info
-
-pp = PreprocessHandler(data_info)
-pp.transform()
-data_info = pp.data_info
-
-# # extract features
-feat_hand = FeaturesHandler(data_info)
-feature_types, final_df = feat_hand.transform()
-final_df[target_column] = data_info.data[data_info.target]
-
 #
-# # # label transformer
-label_encoder = LabelEncoder()
-final_df[target_column] = label_encoder.fit_transform(final_df[target_column])
-# # print(final_df)
+# # Print the first 5 rows of the dataframe
+#
+# # # calc data into
+# df = df.sample(frac=1).reset_index(drop=True)
+# data_info = DataInfo(data=df, target='target')
+# data_info.calculate()
+# print(data_info)
+#
+# # clean
+# cleaner = CleanerHandler(data_info)
+# cleaner.transform()
+# data_info = cleaner.data_info
+#
+# pp = PreprocessHandler(data_info)
+# pp.transform()
+# data_info = pp.data_info
+#
+# # # extract features
+# feat_hand = FeaturesHandler(data_info)
+# feature_types, final_df = feat_hand.transform()
+# final_df[target_column] = data_info.data[data_info.target]
+#
 # #
-cv_data = CVData(train_data=final_df, test_data=None, target_column='target', split_data=True)
-model = BestModel(data_info=data_info, cv_data=cv_data, num_models_to_compare=3)
-# model = BestModel(data_info=data_info, cv_data=cv_data, num_models_to_compare=15)
-# #
-model_results = model.get_best_model()  # returns resultf of the best baseline model
-# print(model_results[0])
-params = model_results[1].get_params()
-for p in params:
-    print(p.name, p.value)
-# #
-# PostModelAnalysis(cv_data, data_info, model=model_results[1]).analyze()
-# analyze_model(model_results[0], cv_data, target_label=target_column)
-# ModelBootstrap(cv_data, data_info, model=model_results[1]).plot()
-
-model_weaknesses = ModelWeaknesses(cv_data, data_info, model=model_results[1])
-model_weaknesses.plot_catboost_error_regressor()
+# # # # label transformer
+# label_encoder = LabelEncoder()
+# final_df[target_column] = label_encoder.fit_transform(final_df[target_column])
+# # # print(final_df)
+# # #
+# cv_data = CVData(train_data=final_df, test_data=None, target_column='target', split_data=True)
+# model = BestModel(data_info=data_info, cv_data=cv_data, num_models_to_compare=3)
+# # model = BestModel(data_info=data_info, cv_data=cv_data, num_models_to_compare=15)
+# # #
+# model_results = model.get_best_model()  # returns resultf of the best baseline model
+# # print(model_results[0])
+# params = model_results[1].get_params()
+# for p in params:
+#     print(p.name, p.value)
+# # #
+# # PostModelAnalysis(cv_data, data_info, model=model_results[1]).analyze()
+# # analyze_model(model_results[0], cv_data, target_label=target_column)
+# # ModelBootstrap(cv_data, data_info, model=model_results[1]).plot()
+#
+# model_weaknesses = ModelWeaknesses(cv_data, data_info, model=model_results[1])
+# model_weaknesses.plot_catboost_error_regressor()

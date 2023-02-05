@@ -1,9 +1,16 @@
+from io import StringIO
+
 import numpy as np
 import pandas as pd
+import pydotplus
 import seaborn as sns
 from catboost import CatBoostRegressor
 from matplotlib import pyplot as plt
-from sklearn.tree import DecisionTreeRegressor, plot_tree
+# import trees.dtreeviz  # remember to load the package
+import dtreeviz
+from sklearn.tree import DecisionTreeRegressor, plot_tree, export_graphviz
+import plotly.express as px
+import plotly.graph_objs as go
 
 from chester.model_training.data_preparation import CVData
 from chester.zero_break.problem_specification import DataInfo
@@ -62,13 +69,20 @@ class ModelWeaknesses:
             return pd.Series(smape, name='error')
 
     def plot_decision_tree_error_regressor(self, min_samples_leaf=0.2, max_depth=2):
+        from sklearn import tree
         model = DecisionTreeRegressor(min_samples_leaf=min_samples_leaf, max_depth=max_depth)
         model.fit(self.X_test, self.error)
-        plt.figure(figsize=(15, 15))
-        plot_tree(model, filled=True, feature_names=self.X_test.columns)
-        plt.title('Regression Tree Showing To Detect Segments With High Error\n'
-                  '(Light - Low Error, Stronger Orange = Higher Error)')
-        plt.show()
+        tree.plot_tree(model,
+                       feature_names=self.X_test.columns,
+                       class_names=self.error,
+                       rounded=True,
+                       filled=True)
+
+        # plt.figure(figsize=(15, 15))
+        # plot_tree(model, filled=True, feature_names=self.X_test.columns)
+        # plt.title('Regression Tree Showing To Detect Segments With High Error\n'
+        #           '(Light - Low Error, Stronger Orange = Higher Error)')
+        # plt.show()
 
     def plot_catboost_error_regressor(self, iterations=100, depth=2, learning_rate=0.1):
         model = CatBoostRegressor(iterations=iterations, depth=depth, learning_rate=learning_rate)
@@ -79,3 +93,7 @@ class ModelWeaknesses:
         sns.barplot(x=feature_imp['Importance'], y=feature_imp['Feature'])
         plt.title('CatBoost Feature Importance to Detect Segments with High Error')
         plt.show()
+
+    def run(self):
+        self.plot_catboost_error_regressor()
+        self.plot_decision_tree_error_regressor()

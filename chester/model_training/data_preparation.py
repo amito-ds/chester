@@ -11,7 +11,7 @@ from sklearn.model_selection import KFold, train_test_split
 
 class CVData:
     def __init__(self, train_data, test_data, target_column, folds=5,
-                 split_data=False, split_prop=0.2, split_random_state=999):
+                 split_data=False, split_prop=0.2, split_random_state=42):
         # check if nulls in the target
         null_count = int(train_data[target_column].isnull().sum())
         if null_count > 0:
@@ -27,7 +27,7 @@ class CVData:
                 self.train_data, self.test_data = train_test_split(self.train_data, test_size=split_prop,
                                                                    random_state=split_random_state)
         self.target_column = target_column
-        self.splits = self.cv_preparation(train_data=train_data, test_data=test_data, k_fold=folds)
+        self.splits = self.cv_preparation(train_data=self.train_data, test_data=self.test_data, k_fold=folds)
 
     def format_splits(self):
         formatted_splits = []

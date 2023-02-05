@@ -131,7 +131,6 @@ class NumericPreModelAnalysis:
         ax.spines['left'].set_linewidth(0.5)
         ax.spines['bottom'].set_linewidth(0.5)
         ax.tick_params(axis='both', which='both', labelsize=12)
-        plt.savefig("plot.png")
         plt.show()
 
     @staticmethod
@@ -150,7 +149,7 @@ class NumericPreModelAnalysis:
         plt.imshow(wordcloud)
         plt.axis("off")
         plt.title(title, fontsize=15)
-        plt.show(block=False)
+        plt.show()
 
     def partial_plot(self):
         import warnings

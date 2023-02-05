@@ -7,16 +7,20 @@ from chester.data_loader.webtext_data import load_data_pirates, load_data_king_a
 from chester.feature_stats.categorical_stats import CategoricalStats
 from chester.feature_stats.numeric_stats import NumericStats
 from chester.features_engineering.features_handler import FeaturesHandler
+from chester.model_analyzer.model_analysis import analyze_model
+from chester.model_monitor.mm_bootstrap import ModelBootstrap
+from chester.model_monitor.mm_weaknesses import ModelWeaknesses
 from chester.model_training.data_preparation import CVData
+from chester.model_training.models.chester_models.best_model import BestModel
+from chester.post_model_analysis.post_model_analysis_class import PostModelAnalysis
 from chester.pre_model_analysis.categorical import CategoricalPreModelAnalysis
 from chester.pre_model_analysis.numerics import NumericPreModelAnalysis
 from chester.preprocessing.preprocessor_handler import PreprocessHandler
 from chester.zero_break.problem_specification import DataInfo
 import matplotlib
-import matplotlib.pyplot as plt
-matplotlib.use("Agg")
 
-
+# matplotlib.use("Agg")
+#
 target_column = 'target'
 ################################################################################################
 # df1 = load_data_pirates().assign(target='pirate').sample(100, replace=True)
@@ -36,7 +40,7 @@ names = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
 dataset = pd.read_csv(url, names=names)
 dataset.rename(columns={'class': 'target'}, inplace=True)
 df = dataset.sample(frac=1).reset_index(drop=True)
-df['target'] = df['target'].apply(lambda x: 0 if "Iris-setos" in x else 1) # can do with or without
+df['target'] = df['target'].apply(lambda x: 0 if "Iris-setos" in x else 1)  # can do with or without
 ###############################################################################################
 
 ###############################################################################################
@@ -79,6 +83,7 @@ df['target'] = df['target'].apply(lambda x: 0 if "Iris-setos" in x else 1) # can
 
 ###############################################################################################
 import numpy as np
+
 # def generate_data(n_features, n_rows, target_type='binary'):
 #     if target_type == 'binary':
 #         # Create binary target column
@@ -142,8 +147,32 @@ NumericPreModelAnalysis(data_info_num_stats).run()
 CategoricalPreModelAnalysis(data_info).run()
 ########## code for stats ################
 
-#### model
-# encode labels
-# label_encoder = LabelEncoder()
-# final_df[target_column] = label_encoder.fit_transform(final_df[target_column])
+#################################### model####################################
+# encode labels if needed (for classification problem only)
+if data_info.problem_type_val in ["Binary classification", "Multiclass classification"]:
+    print("Encoding target")
+    label_encoder = LabelEncoder()
+    final_df[target_column] = label_encoder.fit_transform(final_df[target_column])
+
+# prepare data
 cv_data = CVData(train_data=final_df, test_data=None, target_column='target', split_data=True)
+# Run the model
+model = BestModel(data_info=data_info, cv_data=cv_data, num_models_to_compare=3)
+model_results = model.get_best_model()  # returns resultf of the best baseline model
+print(model_results[0])
+params = model_results[1].get_params()
+for p in params:
+    print(p.name, p.value)
+#################################### model####################################
+
+#################################### PMA####################################
+PostModelAnalysis(cv_data, data_info, model=model_results[1]).analyze()
+analyze_model(model=model_results[1], cv_data=cv_data, target_label=target_column)
+ModelBootstrap(cv_data, data_info, model=model_results[1]).plot()
+#################################### PMA####################################
+
+
+#################################### monitor ####################################
+model_weaknesses = ModelWeaknesses(cv_data, data_info, model=model_results[1])
+model_weaknesses.run()
+#################################### monitor####################################
