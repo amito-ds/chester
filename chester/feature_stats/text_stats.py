@@ -10,7 +10,7 @@ class TextStats:
         self.cols = self.data_info.feature_types_val["text"]
         self.data = self.data_info.data[self.cols]
 
-    def calculate_stats(self):
+    def run(self):
         text_analyzer = TextAnalyzer(df=self.data)
         print(chapter_message("text analyze"))
         analyze_text_df(text_analyzer)

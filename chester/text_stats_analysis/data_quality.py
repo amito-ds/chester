@@ -1,9 +1,7 @@
+import matplotlib.pyplot as plt
 import nltk
 import pandas as pd
 import seaborn as sns
-
-from pandas.io.json import json_normalize
-import matplotlib.pyplot as plt
 
 
 def calculate_text_metrics(text):
@@ -60,11 +58,15 @@ def plot_text_length_and_num_words(df):
     plt.show()
 
 
-def analyze_text_stats(df):
-    df, num_unique_words = calculate_text_column_metrics(df)
-    report = create_report(df, num_unique_words)
-    print(report)
+def analyze_text_stats(df, text_column='text'):
+    df, num_unique_words = calculate_text_column_metrics(df, text_column)
     plot_text_length_and_num_words(df)
+    report = create_report(df, num_unique_words)
+    df_report = pd.DataFrame(
+        data=[[row.split(":")[0], float(row.split(":")[1].strip())] for row in report.strip().split("\n")],
+        columns=["Metric", "Value"])
+    df_report["Value"] = df_report["Value"].apply(lambda x: f"{int(x)}" if x.is_integer() else f"{x:.2f}")
+    return df_report
 
 
 class TextAnalyzer:

@@ -7,75 +7,71 @@ from chester.text_stats_analysis.key_sentences import extract_key_sentences
 from chester.text_stats_analysis.sentiment import analyze_sentiment, report_sentiment_stats, plot_sentiment_scores
 from chester.text_stats_analysis.word_cloud import create_word_cloud
 
-data_quality_message = "Before we start analyzing the text, it's important to make sure that the data we are working " \
-                       "with is clean and of good quality. The following report provides some key statistics about the " \
-                       "data, such as the number of rows with missing data, " \
-                       "number of unique words, average and median type-token ratio, average and median number " \
-                       "of words and sentences per text, as well as average and median length of text.\n"
+data_quality_message = "Before analyzing text, ensure data is clean and of good quality.\n" \
+                       "Report provides key stats on data quality, incl. missing data,\n" \
+                       "unique words, type-token ratio, words/sentences per text, and text length:"
 
-common_words_message = "One of the most basic text analysis techniques is counting the frequency of words in the text. " \
-                       "The following report shows the most common words in the text data, which can give us an idea of" \
-                       " the overall topic and content of the text.\n"
+common_words_message = "Count word frequency for basic text analysis.\n" \
+                       "Report shows most common words, giving insight into text topic and content:"
 
-word_cloud_message = "A word cloud is a visual representation of the most common words in a piece of text, where the " \
-                     "size of each word corresponds to its frequency. The word cloud can help us quickly identify " \
-                     "the main themes and topics in the text data.\n"
+word_cloud_message = "A word cloud visualizes most common words in text. Size indicates frequency.\n" \
+                     "It quickly identifies text data's main themes and topics.\n"
 
-sentiment_analysis_message = "Sentiment analysis is a technique used to determine the emotional tone of a piece of " \
-                             "text. The following report shows the sentiment of the text data and provides " \
-                             "a breakdown of positive, negative, and neutral sentiments.\n"
+sentiment_analysis_message = "Sentiment analysis determines emotional tone of text.\n" \
+                             "Report shows sentiment breakdown: positive, negative, neutral:"
 
-corex_topic_message = "Corex is a topic modeling technique that helps identify latent topics in the text data. " \
-                      "The following report shows the top topics extracted from the text data and provides a " \
-                      "word cloud for each topic.\n"
+corex_topic_message = "Corex topic modeling identifies latent topics in text data.\n" \
+                      "Report shows top topics, each topic represented by the following words:"
 
-key_sentences_message = "Extracting key sentences from a piece of text is a technique used to identify the most " \
-                        "important or representative sentences in the text. The following report shows the top" \
-                        " sentences for each topic of the text data.\n"
+key_sentences_message = "Extracting key sentences identifies important/representative sentences in text.\n" \
+                        "Report shows top sentences for each text topic:\n"
 
-kws_message = "Extracting key words from a piece of text is a technique used to identify the most important " \
-              "or representative words in the text. " \
-              "The following report shows the top words for each topic of the text data.\n"
-
-ner_message = "\nExtracting named entities from a piece of text is a technique used to identify and categorize proper " \
-              "nouns and terms that represent people, organizations, locations and more. " \
-              "The following report shows the top named entities for each category of the text data.\n"
+kws_message = "Extracting key words identifies important/representative words in text.\n" \
+              "Report shows top words for each text topic:"
 
 
 def print_analyze_message(create_wordcloud: bool = True,
                           corex_topics: bool = True,
                           key_sentences: bool = True,
-                          common_words: bool = False,
-                          sentiment: bool = False,
-                          data_quality: bool = False,
+                          common_words: bool = True,
+                          sentiment: bool = True,
+                          data_quality: bool = True,
                           corex_topics_num: int = 10,
                           top_words: int = 10,
                           n_sentences: int = 5):
-    order_of_operations = ["First", "Next", "Then", "Additionally", "Furthermore", "Finally"]
+    order_of_operations = ["First,", "Next,", "Then,", "Additionally,", "Furthermore,", "Later,"]
     operations_counter = 0
     if data_quality:
         print(
-            f"{order_of_operations[operations_counter]} we will analyze text statistics such as the number of words, unique words and type-token ratio.")
+            f"{order_of_operations[operations_counter]} "
+            f"we will analyze text statistics such as the number of words, unique words and type-token ratio.")
         operations_counter += 1
     if create_wordcloud:
         print(
-            f"{order_of_operations[operations_counter]} we will create a wordcloud to visualize the most common words in the text.")
+            f"{order_of_operations[operations_counter]} "
+            f"we will create a wordcloud to visualize the most common words in the text.")
         operations_counter += 1
     if corex_topics:
         print(
-            f"{order_of_operations[operations_counter]} we will extract {corex_topics_num} key topics using Corex and present them with their top words.")
+            f"{order_of_operations[operations_counter]} "
+            f"we will extract {corex_topics_num} key topics using Corex and present them with their top words.")
         operations_counter += 1
     if key_sentences:
-        print(f"{order_of_operations[operations_counter]} we will identify key sentences in the text.")
+        print(f"{order_of_operations[operations_counter]} "
+              f"we will identify key sentences in the text.")
         operations_counter += 1
     if common_words:
         print(
-            f"{order_of_operations[operations_counter]} we will extract the {top_words} most common words from the text.")
+            f"{order_of_operations[operations_counter]} "
+            f"we will extract the {top_words} most common words from the text.")
         operations_counter += 1
     if sentiment:
-        print(f"{order_of_operations[operations_counter]} we will analyze the sentiment of the text.")
+        print(f"{order_of_operations[operations_counter]} "
+              f"we will analyze the sentiment of the text.")
         operations_counter += 1
-    print("Finally, Text analysis completed")
+    print("The results of text cleaning and preprocessing, including key words and key sentences,\n"
+          "may not accurately reflect the original content and could lead to incorrect conclusions,\n "
+          "if not handled properly.\n")
 
 
 def analyze_text(df: pd.DataFrame,
@@ -105,13 +101,21 @@ def analyze_text(df: pd.DataFrame,
     :param n_sentences: number of sentences to return
     """
 
+    is_clean_col_exists = True if f"clean_{text_column}" in df.columns else False
+    modified_df = df.drop(columns=[text_column], axis=1). \
+        rename(columns={f'clean_{text_column}': text_column})
+
     print_analyze_message()
     if data_quality:
         print(data_quality_message)
-        analyze_text_stats(df)
+        if is_clean_col_exists:
+            print(analyze_text_stats(modified_df, text_column), "\n")
+        else:
+            print(analyze_text_stats(df, text_column), "\n")
     if common_words:
         print(common_words_message)
-        print(cw.most_common_words(df, common_words=top_words))
+        print("\t", cw.most_common_words(df, common_words=top_words))
+        print("\n")
     if create_wordcloud:
         print(word_cloud_message)
         create_word_cloud(df)
@@ -119,7 +123,7 @@ def analyze_text(df: pd.DataFrame,
         print(sentiment_analysis_message)
         df = df.copy()
         df = analyze_sentiment(df)
-        print(report_sentiment_stats(df))
+        print(report_sentiment_stats(df), "\n")
         plot_sentiment_scores(df)
     if corex_topics:
         print(corex_topic_message)
@@ -131,10 +135,12 @@ def analyze_text(df: pd.DataFrame,
         print(kws_message)
         full_text = '. '.join(df[text_column])
         kws_rake = kw_extract.RakeKeywordExtractor()
-        print(kws_rake.extract(text=full_text))
+        print("\t", kws_rake.extract(text=full_text))
+
 
 def analyze_text_df(text_analyzer: TextAnalyzer):
     df = text_analyzer.df
+    # split to cleaned and pped text
     analyze_text(df,
                  create_wordcloud=text_analyzer.create_wordcloud,
                  corex_topics=text_analyzer.corex_topics,

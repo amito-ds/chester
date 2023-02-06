@@ -6,6 +6,7 @@ from chester.cleaning.cleaner_handler import CleanerHandler
 from chester.data_loader.webtext_data import load_data_pirates, load_data_king_arthur, load_data_chat_logs
 from chester.feature_stats.categorical_stats import CategoricalStats
 from chester.feature_stats.numeric_stats import NumericStats
+from chester.feature_stats.text_stats import TextStats
 from chester.features_engineering.features_handler import FeaturesHandler
 from chester.model_analyzer.model_analysis import analyze_model
 from chester.model_monitor.mm_bootstrap import ModelBootstrap
@@ -30,6 +31,7 @@ df3 = load_data_chat_logs().assign(target='chat').sample(100, replace=True)
 df = pd.concat([df1, df2
                    , df3
                 ])
+df.rename(columns={'text': 'text_wow'}, inplace=True)
 ################################################################################################
 
 
@@ -128,7 +130,11 @@ data_info = cleaner.data_info
 print("XXXXXXXXXXXXXXXXXXXXXXXXPPXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
 pp = PreprocessHandler(data_info)
 pp.transform()
+data_info_original = data_info
 data_info = pp.data_info
+
+
+# data_info_text_cleaning
 
 # extract features
 print("XXXXXXXXXXXXXXXXXXXXXXXXExtract featuresXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
@@ -144,6 +150,8 @@ print("Numerical Feature statistics")
 # NumericStats(data_info_num_stats).run()
 print("Categorical Feature statistics")
 # CategoricalStats(data_info).run()
+print("Text Feature statistics")
+TextStats(data_info).run()
 #### stats: end
 
 
@@ -166,24 +174,23 @@ if data_info.problem_type_val in ["Binary classification", "Multiclass classific
 cv_data = CVData(train_data=final_df, test_data=None, target_column='target', split_data=True)
 # Run the model
 # model = BestModel(data_info=data_info, cv_data=cv_data, num_models_to_compare=3)
-model = CatboostModel(data_info=data_info, cv_data=cv_data, num_models_to_compare=3)
-model_results = model.get_best_model()  # returns resultf of the best baseline model
-params = model_results[1].get_params()
-print(f"Best model: {type(model_results[1])}, with parameters:")
-for p in params:
-    print(p.name, ":", p.value)
-# #################################### model####################################
-#
-# #################################### PMA####################################
-# print("XXXXXXXXXXXXXXXXXXXXXXXXPost model analysisXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-PostModelAnalysis(cv_data, data_info, model=model_results[1]).analyze()
-# # analyze_model(model=model_results[1], cv_data=cv_data, target_label=target_column)
+# model = CatboostModel(data_info=data_info, cv_data=cv_data, num_models_to_compare=3)
+# model_results = model.get_best_model()  # returns resultf of the best baseline model
+# params = model_results[1].get_params()
+# print(f"Best model: {type(model_results[1])}, with parameters:")
+# for p in params:
+#     print(p.name, ":", p.value)
+# # #################################### model####################################
+# #
+# # #################################### PMA####################################
+# # print("XXXXXXXXXXXXXXXXXXXXXXXXPost model analysisXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+# # PostModelAnalysis(cv_data, data_info, model=model_results[1]).analyze()
 # ModelBootstrap(cv_data, data_info, model=model_results[1]).plot()
-# #################################### PMA####################################
-#
-#
-# #################################### monitor ####################################
-# print("XXXXXXXXXXXXXXXXXXXXXXXXMoitorXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-# model_weaknesses = ModelWeaknesses(cv_data, data_info, model=model_results[1])
-# model_weaknesses.run()
-# #################################### monitor####################################
+# # #################################### PMA####################################
+# #
+# #
+# # #################################### monitor ####################################
+# # print("XXXXXXXXXXXXXXXXXXXXXXXXMoitorXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+# # model_weaknesses = ModelWeaknesses(cv_data, data_info, model=model_results[1])
+# # model_weaknesses.run()
+# # #################################### monitor####################################

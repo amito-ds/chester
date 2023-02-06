@@ -5,6 +5,28 @@ import pandas as pd
 import seaborn as sns
 from textblob import TextBlob
 
+# def report_sentiment_stats(sentiment_df: pd.DataFrame):
+#     # count number of positive, negative and neutral sentiments
+#     pos_count = len(sentiment_df[sentiment_df['sentiment'] > 0])
+#     neg_count = len(sentiment_df[sentiment_df['sentiment'] < 0])
+#     neutral_count = len(sentiment_df[sentiment_df['sentiment'] == 0])
+#     # calculate percentage of positive, negative and neutral sentiments
+#     total_count = pos_count + neg_count + neutral_count
+#     pos_percent = pos_count / total_count * 100
+#     neg_percent = neg_count / total_count * 100
+#     neutral_percent = neutral_count / total_count * 100
+#
+#     # return results as a formatted string
+#     result = (f"Positive count: {pos_count}\n"
+#               f"Negative count: {neg_count}\n"
+#               f"Neutral count: {neutral_count}\n"
+#               f"Positive percent: {pos_percent:.1f}%\n"
+#               f"Negative percent: {neg_percent:.1f}%\n"
+#               f"Neutral percent: {neutral_percent:.1f}%")
+#     return result
+
+from prettytable import PrettyTable
+
 
 def report_sentiment_stats(sentiment_df: pd.DataFrame) -> Dict[str, Union[int, float]]:
     # count number of positive, negative and neutral sentiments
@@ -17,15 +39,14 @@ def report_sentiment_stats(sentiment_df: pd.DataFrame) -> Dict[str, Union[int, f
     neg_percent = neg_count / total_count * 100
     neutral_percent = neutral_count / total_count * 100
 
-    # return results as a dictionary
-    return {
-        'positive_count': pos_count,
-        'negative_count': neg_count,
-        'neutral_count': neutral_count,
-        'positive_percent': pos_percent,
-        'negative_percent': neg_percent,
-        'neutral_percent': neutral_percent
-    }
+    # create a table
+    table = PrettyTable()
+    table.field_names = ["Sentiment", "Count", "Percentage"]
+    table.add_row(["Positive", pos_count, f"{pos_percent:.1f}%"])
+    table.add_row(["Negative", neg_count, f"{neg_percent:.1f}%"])
+    table.add_row(["Neutral", neutral_count, f"{neutral_percent:.1f}%"])
+
+    return table.get_string(title="Sentiment Statistics")
 
 
 def analyze_sentiment(df):

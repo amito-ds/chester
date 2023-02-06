@@ -24,23 +24,6 @@ class PostModelAnalysis:
         self.model.retrain(self.X_train, self.y_train)
         self.predict_test = self.model.predict(self.X_test)
 
-    # def plot_feature_importance(self, X_train: pd.DataFrame, top_feat: int = 25):
-    #     from plotly.offline import iplot
-    #
-    #     feature_importance = self.model.model.feature_importances_
-    #     # print("These are", feature_importance)
-    #     total_feat = len(feature_importance)
-    #     feature_importance = feature_importance[0:min(top_feat, total_feat)]
-    #     feature_importance = 100.0 * (feature_importance / feature_importance.max())
-    #     feature_names = X_train.columns
-    #     important_idx = np.argsort(feature_importance)
-    #     data = {'feature_names': feature_names[important_idx], 'feature_importance': feature_importance[important_idx]}
-    #     df = pd.DataFrame(data)
-    #     # print(AnalyzeMessages().feature_importance_message())
-    #     fig = px.bar(df, x='feature_importance', y='feature_names', orientation='h', text='feature_importance')
-    #     # fig.show()
-    #     iplot(fig)
-
     def plot_feature_importance(self, X_train: pd.DataFrame, top_feat=30):
         feature_importance = self.model.model.feature_importances_
         feature_importance = 100.0 * (feature_importance / feature_importance.max())
@@ -87,24 +70,19 @@ class PostModelAnalysis:
     def analyze(self,
                 shap_values: bool = True,
                 coefficients: bool = True,
-                confusion_matrix: bool = False,
+                confusion_matrix: bool = True,
                 roc_curve: bool = True,
-                learning_curve: bool = False,
+                learning_curve: bool = True,
                 feature_importance: bool = True,
                 regression_visual: bool = True) -> None:
         if 'regression' in self.data_info.problem_type_val.lower():
             if regression_visual:
                 VisualizeRegressionResults(self.y_test, self.predict_test).all_plots()
         if feature_importance:
-            # try:
-            print("wow try1")
-            self.plot_feature_importance(self.X_train)
-        # except:
-        #     try:
-        #         print("wow try1")
-        #         self.plot_simple_feature_importance(self.X_train)
-        #     except:
-        #         pass
+            try:
+                self.plot_feature_importance(self.X_train)
+            except:
+                pass
         if shap_values:
             try:
                 import shap as shp
