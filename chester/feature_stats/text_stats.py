@@ -8,7 +8,7 @@ class TextStats:
     def __init__(self, data_info: DataInfo):
         self.data_info = data_info
         self.cols = self.data_info.feature_types_val["text"]
-        self.data = self.data_info.data[self.cols]
+        self.data = self.data_info.data#[self.cols]
 
     def run(self):
         print(chapter_message("text analyze"))

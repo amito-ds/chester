@@ -133,14 +133,21 @@ def analyze_text(df: pd.DataFrame,
     if sentiment:
         print(sentiment_analysis_message)
         df = df.copy()
-        df = analyze_sentiment(df, text_column=text_column)
+        modified_df = modified_df.copy()
+
+        if is_clean_col_exists:
+            df = analyze_sentiment(modified_df, text_column=text_column)
+        else:
+            df = analyze_sentiment(df, text_column=text_column)
         print(report_sentiment_stats(df), "\n")
         plot_sentiment_scores(df)
+
     if corex_topics:
         print(corex_topic_message)
 
         if is_clean_col_exists:
-            corex.plot_corex_wordcloud(modified_df, n_topics=corex_topics_num, top_words=top_words, text_column=text_column)
+            corex.plot_corex_wordcloud(modified_df, n_topics=corex_topics_num, top_words=top_words,
+                                       text_column=text_column)
         else:
             corex.plot_corex_wordcloud(df, n_topics=corex_topics_num, top_words=top_words, text_column=text_column)
 

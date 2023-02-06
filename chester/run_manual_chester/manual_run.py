@@ -29,7 +29,7 @@ df1 = load_data_pirates().assign(target='pirate').sample(100, replace=True)
 df2 = load_data_king_arthur().assign(target='arthur').sample(100, replace=True)
 df3 = load_data_chat_logs().assign(target='chat').sample(100, replace=True)
 df = pd.concat([df1, df2
-                   , df3
+                   # , df3
                 ])
 # df['text_trimmed'] = df['text'].apply(lambda x: x[:100])
 df.rename(columns={'text': 'text_a'}, inplace=True)
