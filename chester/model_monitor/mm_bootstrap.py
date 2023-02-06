@@ -20,7 +20,6 @@ class ModelBootstrap:
         self.X_test = self.cv_data.test_data.drop(columns=[self.cv_data.target_column])
         self.y_test = self.cv_data.test_data[self.cv_data.target_column]
         # retrain the model
-        print("retraining model...")
         self.model.retrain(self.X_train, self.y_train)
         self.predict_test = self.model.predict(self.X_test)
         self.metrics = self.get_metrics_functions()
@@ -79,10 +78,6 @@ class ModelBootstrap:
                         y=y_sample, prediction=y_pred, metrics_list=self.metrics,
                         problem_type=self.data_info.problem_type_val)
                 )
-            # except:
-            #     return []
-        print("bootstrap_metrics for example")
-        print(bootstrap_metrics[0])
         return bootstrap_metrics
 
     def plot(self):

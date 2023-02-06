@@ -137,7 +137,6 @@ def visualize_performance(df, with_baseline=True):
 
 
 def compare_best_models(results, plot_results=False):
-    print(f"res len {len(results)}")
     all_results = []
     all_results_with_models = []
     for res in results:
@@ -165,9 +164,7 @@ def compare_best_models(results, plot_results=False):
             best_value = mean_value
             best_result = result
             best_model = model
-    print(f"Optimized {metric_name}, with best value: {round(best_value, 2)}. "
-          # f"Traffic light {get_traffic_light(metric_name, best_value)}"
-          )
+    print(f"Optimized {metric_name}, with best value: {round(best_value, 2)}. ")
     return best_result, best_model
 
 

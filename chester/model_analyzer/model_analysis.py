@@ -215,7 +215,6 @@ def analyze_model(model, cv_data: CVData, target_label='target'):
             cv_data.test_data.drop(columns=[target_label]), \
             cv_data.train_data[target_label], \
             cv_data.test_data[target_label]
-    # metric_functions = get_default_metrics(y_train)
     analyzer = ModelAnalyzer(model)
     analyzer.analyze(X_train=X_train, y_train=y_train, X_test=X_test, y_test=y_test,
                      model=model)

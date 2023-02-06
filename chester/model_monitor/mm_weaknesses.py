@@ -1,16 +1,9 @@
-from io import StringIO
-
 import numpy as np
 import pandas as pd
-import pydotplus
 import seaborn as sns
 from catboost import CatBoostRegressor
 from matplotlib import pyplot as plt
-# import trees.dtreeviz  # remember to load the package
-import dtreeviz
-from sklearn.tree import DecisionTreeRegressor, plot_tree, export_graphviz
-import plotly.express as px
-import plotly.graph_objs as go
+from sklearn.tree import DecisionTreeRegressor
 
 from chester.model_training.data_preparation import CVData
 from chester.zero_break.problem_specification import DataInfo
@@ -26,7 +19,6 @@ class ModelWeaknesses:
         self.X_test = self.cv_data.test_data.drop(columns=[self.cv_data.target_column])
         self.y_test = self.cv_data.test_data[self.cv_data.target_column]
         # retrain the model
-        print("retraining model...")
         self.model.retrain(self.X_train, self.y_train)
         # predicting
         self.predict_test = self.model.predict(self.X_test)
@@ -45,17 +37,12 @@ class ModelWeaknesses:
 
     def calculate_error(self):
         if 'class' in self.data_info.problem_type_val.lower():
-            print("examples for calculate error")
             y_test = self.y_test.reset_index(drop=True)
             try:
                 predict_test = self.predict_test.reset_index(drop=True)
             except:
                 predict_test = self.predict_test
-            print(predict_test[0:10])
-            print(y_test[0:10])
             error_per_row = 1 - (y_test == predict_test)
-            print("error")
-            print(error_per_row)
             return pd.Series(error_per_row, name='error')
         elif 'regression' in self.data_info.problem_type_val.lower():
             y_test = self.y_test.reset_index(drop=True)
@@ -86,7 +73,7 @@ class ModelWeaknesses:
 
     def plot_catboost_error_regressor(self, iterations=100, depth=2, learning_rate=0.1):
         model = CatBoostRegressor(iterations=iterations, depth=depth, learning_rate=learning_rate)
-        model.fit(self.X_test, self.error)
+        model.fit(self.X_test, self.error, verbose=False)
         plt.figure(figsize=(15, 15))
         feature_imp = pd.DataFrame({'Feature': self.X_test.columns, 'Importance': model.feature_importances_})
         feature_imp = feature_imp.sort_values(by='Importance', ascending=False)

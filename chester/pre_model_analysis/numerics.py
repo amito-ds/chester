@@ -109,8 +109,9 @@ class NumericPreModelAnalysis:
         self.plot_wordcloud_pvalues(self.cols_sorted_with_pvalue)
         if is_plot:
             if self.n_cols > 50:
+                print("Numerical Pvalues plot")
                 self.plot_histogram_pvalues(self.cols_sorted_with_pvalue)
-        print("Pvalues for top features:")
+        print("Pvalues for top numerical features for chi square test:")
         print(pd.DataFrame(self.cols_sorted_with_pvalue[0:top_features], columns=["feature", "pvalue"]))
 
     @staticmethod
@@ -135,7 +136,7 @@ class NumericPreModelAnalysis:
 
     @staticmethod
     def plot_wordcloud_pvalues(features_pvalues,
-                               title="Features Pvalues Based on Partial Plot"):
+                               title="Numeric Features Pvalues Based on Partial Plot"):
         """
         Plot word cloud of features weighted by their p-value.
         :param features_pvalues: List of tuples (column name, pvalue).
@@ -165,7 +166,7 @@ class NumericPreModelAnalysis:
         top_feature_names.sort(key=lambda x: feature_index[x])
         if self.data_info.problem_type_val in ["Binary regression"]:
             plt.figure(figsize=(10, 6))
-            plt.suptitle("Partial Plot to Identify Patterns between Sampled Features and Target", fontsize=16,
+            plt.suptitle("Partial Plot to Identify Patterns between Sampled Numeric Features and Target", fontsize=16,
                          fontweight='bold')
             for i in range(len(top_feature_names)):
                 plt.subplot(1, top_features, i + 1)
@@ -178,7 +179,7 @@ class NumericPreModelAnalysis:
             plt.show()
         if self.data_info.problem_type_val in ["Regression"]:
             plt.figure(figsize=(12, 12))
-            plt.suptitle("Partial Plot to Identify Patterns between Sampled Features and Target", fontsize=16,
+            plt.suptitle("Partial Plot to Identify Patterns between Sampled Numeric Features and Target", fontsize=16,
                          fontweight='bold')
             grid_size = 4
             num_features = min(grid_size * grid_size, top_features)
@@ -193,7 +194,7 @@ class NumericPreModelAnalysis:
             plt.show()
         elif self.data_info.problem_type_val in ["Binary classification"]:
             plt.figure(figsize=(9, 6))
-            plt.suptitle("Partial Plot to Identify Patterns between Sampled Features and Target Label", fontsize=16,
+            plt.suptitle("Partial Plot to Identify Patterns between Sampled Numeric Features and Target Label", fontsize=16,
                          fontweight='bold')
             for i in range(len(top_feature_names)):
                 if i < 9:
@@ -211,9 +212,10 @@ class NumericPreModelAnalysis:
                     sns.heatmap(contingency_table_pct, annot=False, cmap='Blues')
                     plt.ylabel("Cluster", fontsize=12, fontweight='bold')
                     plt.title(col, fontsize=12, fontweight='bold')
+            plt.show()
         elif self.data_info.problem_type_val in ["Multiclass classification"]:
             plt.figure(figsize=(8, 8))
-            plt.suptitle("Partial Plot to Identify Patterns between Sampled Features and Target Label",
+            plt.suptitle("Partial Plot to Identify Patterns between Sampled Numeric Features and Target Label",
                          fontsize=16,
                          fontweight='bold')
             for i in range(len(top_feature_names)):
@@ -235,11 +237,18 @@ class NumericPreModelAnalysis:
                     sns.heatmap(contingency_table_pct, annot=False, cmap='Blues')
                     plt.ylabel("Cluster", fontsize=12, fontweight='bold')
                     plt.title(col, fontsize=12, fontweight='bold')
+            plt.show()
 
     def run(self):
-        self.partial_plot()
-        self.analyze_pvalue()
-        self.tsne()
+        if self.n_cols > 1:
+            self.analyze_pvalue()
+            self.partial_plot()
+            self.tsne()
+        elif self.n_cols == 1:
+            self.analyze_pvalue()
+            self.partial_plot()
+        else:
+            return None
 
 
 def format_df(df, max_value_width=10, ci_max_value_width=15, ci_col="CI"):

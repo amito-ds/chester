@@ -40,7 +40,7 @@ class NumericStats:
             plot_title = f"Pearson Correlation Plot for {n} randomly sampled Features"
         sns.heatmap(corr, annot=False)
         plt.title(plot_title)
-        print("Plotting matrix correlation")
+        print("Plotting matrix correlation for numerical features")
         print("""\n
         Rule of thumbs:
         1. Strong positive correlation: >= 0.7
@@ -95,7 +95,8 @@ class NumericStats:
     # for top 9 features with the highest var: plot 3X3 histogram
 
 
-def format_df(df, max_value_width=10, ci_max_value_width=15, ci_col="CI"):
+def format_df(df, max_value_width=12, col_max_value_width=20, ci_max_value_width=15,
+              ci_col="CI", col_col="col"):
     pd.options.display.max_columns = None
 
     def trim_value(val):
@@ -108,9 +109,15 @@ def format_df(df, max_value_width=10, ci_max_value_width=15, ci_col="CI"):
             return str(val)[:ci_max_value_width] + "..."
         return str(val)
 
-    df_subset = df.drop(ci_col, axis=1)
+    def trim_col_value(val):
+        if len(str(val)) > col_max_value_width:
+            return str(val)[:ci_max_value_width] + "..."
+        return str(val)
+
+    df_subset = df.drop([ci_col, col_col], axis=1)
     df_subset = df_subset.applymap(trim_value)
     df[df_subset.columns] = df_subset
     df[ci_col] = df[ci_col].apply(trim_ci_value)
+    df[col_col] = df[col_col].apply(trim_col_value)
 
     return df

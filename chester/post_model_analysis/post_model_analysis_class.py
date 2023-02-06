@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import plotly.express as px
 import seaborn as sns
+from wordcloud import WordCloud
 
 from chester.model_analyzer.model_analysis import AnalyzeMessages
 from chester.model_training.data_preparation import CVData
@@ -20,32 +21,60 @@ class PostModelAnalysis:
         self.X_test = self.cv_data.test_data.drop(columns=[self.cv_data.target_column])
         self.y_test = self.cv_data.test_data[self.cv_data.target_column]
         # retrain the model
-        print("retraining model...")
         self.model.retrain(self.X_train, self.y_train)
         self.predict_test = self.model.predict(self.X_test)
 
-    def plot_feature_importance(self, X_train: pd.DataFrame, top_feat: int = 25):
-        feature_importance = self.model.model.feature_importances_
-        total_feat = len(feature_importance)
-        feature_importance = feature_importance[0:min(top_feat, total_feat)]
-        feature_importance = 100.0 * (feature_importance / feature_importance.max())
-        feature_names = X_train.columns
-        important_idx = np.argsort(feature_importance)
-        data = {'feature_names': feature_names[important_idx], 'feature_importance': feature_importance[important_idx]}
-        df = pd.DataFrame(data)
-        # print(AnalyzeMessages().feature_importance_message())
-        fig = px.bar(df, x='feature_importance', y='feature_names', orientation='h', text='feature_importance')
-        fig.show()
+    # def plot_feature_importance(self, X_train: pd.DataFrame, top_feat: int = 25):
+    #     from plotly.offline import iplot
+    #
+    #     feature_importance = self.model.model.feature_importances_
+    #     # print("These are", feature_importance)
+    #     total_feat = len(feature_importance)
+    #     feature_importance = feature_importance[0:min(top_feat, total_feat)]
+    #     feature_importance = 100.0 * (feature_importance / feature_importance.max())
+    #     feature_names = X_train.columns
+    #     important_idx = np.argsort(feature_importance)
+    #     data = {'feature_names': feature_names[important_idx], 'feature_importance': feature_importance[important_idx]}
+    #     df = pd.DataFrame(data)
+    #     # print(AnalyzeMessages().feature_importance_message())
+    #     fig = px.bar(df, x='feature_importance', y='feature_names', orientation='h', text='feature_importance')
+    #     # fig.show()
+    #     iplot(fig)
 
-    def plot_simple_feature_importance(self, X_train: pd.DataFrame):
-        feature_importance = self.model.feature_importances_
+    def plot_feature_importance(self, X_train: pd.DataFrame, top_feat=30):
+        feature_importance = self.model.model.feature_importances_
         feature_importance = 100.0 * (feature_importance / feature_importance.max())
         feature_names = X_train.columns
         important_idx = np.argsort(feature_importance)
-        data = {'feature_names': feature_names[important_idx], 'feature_importance': feature_importance[important_idx]}
+        data = {'feature_names': feature_names[important_idx],
+                'feature_importance': feature_importance[important_idx]}
         df = pd.DataFrame(data)
-        sns.barplot(y='feature_names', x='feature_importance', data=df)
-        plt.xlabel("Feature importance")
+        print(AnalyzeMessages().feature_importance_message())
+        df.sort_values(by='feature_importance', ascending=False, inplace=True)
+        sns.barplot(x='feature_importance', y='feature_names', data=df[0:top_feat])
+        plt.title(f'Feature Importance (top {top_feat} features)')
+        self.plot_wordcloud_importance(df=df)
+        plt.show()
+
+    @staticmethod
+    def plot_wordcloud_importance(df, title="Feature Importance Cloud"):
+        """
+        Plot word cloud of features weighted by their importance.
+        :param features_importance: List of tuples (feature name, feature importance).
+        :param title: Title of the plot.
+        :return: None.
+        """
+        df = df.sort_values(by='feature_importance', ascending=False)
+        features_importance = list(zip(df['feature_names'], df['feature_importance']))
+
+        wordcloud = WordCloud(
+            random_state=21,
+            normalize_plurals=True,
+            max_words=100).generate_from_frequencies(dict(features_importance))
+        plt.figure(figsize=(10, 10))
+        plt.imshow(wordcloud)
+        plt.axis("off")
+        plt.title(title, fontsize=15)
         plt.show()
 
     def shap_values(self, X_train: pd.DataFrame, shap):
@@ -58,24 +87,24 @@ class PostModelAnalysis:
     def analyze(self,
                 shap_values: bool = True,
                 coefficients: bool = True,
-                confusion_matrix: bool = True,
+                confusion_matrix: bool = False,
                 roc_curve: bool = True,
                 learning_curve: bool = False,
-                feature_importance: bool = False,
+                feature_importance: bool = True,
                 regression_visual: bool = True) -> None:
         if 'regression' in self.data_info.problem_type_val.lower():
             if regression_visual:
-                print("doing regression stuff")
                 VisualizeRegressionResults(self.y_test, self.predict_test).all_plots()
-
         if feature_importance:
-            try:
-                self.plot_feature_importance(self.X_train)
-            except:
-                try:
-                    self.plot_simple_feature_importance(self.X_train)
-                except:
-                    pass
+            # try:
+            print("wow try1")
+            self.plot_feature_importance(self.X_train)
+        # except:
+        #     try:
+        #         print("wow try1")
+        #         self.plot_simple_feature_importance(self.X_train)
+        #     except:
+        #         pass
         if shap_values:
             try:
                 import shap as shp
@@ -100,7 +129,6 @@ class PostModelAnalysis:
                 self.roc_curve(self.X_test, self.y_test)
             except:
                 try:
-                    print("trying roc auc for multiclass!!!!!!!!")
                     self.roc_curve_multiclass(self.X_test, self.y_test)
                 except:
                     pass

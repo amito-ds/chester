@@ -27,13 +27,11 @@ class CategoricalPreModelAnalysis:
         self.cols_sorted_with_pvalue = None
 
     def tsne(self):
-        if self.n_cols in (0, 1):
-            return None
         if self.data_info.problem_type_val in ["Regression"]:
             X_tsne = TSNE(n_components=2).fit_transform(pd.get_dummies(self.data))
             plt.hexbin(X_tsne[:, 0], X_tsne[:, 1], C=self.target, gridsize=50, cmap='viridis', edgecolors='black')
             plt.colorbar()
-            plt.title("Visualizing Numerical Features and Target with t-SNE")
+            plt.title("Visualizing Categorical Features and Target with t-SNE")
             plt.tight_layout()
         elif self.data_info.problem_type_val in ["Binary regression", "Binary classification"]:
             X_tsne = TSNE(n_components=2).fit_transform(pd.get_dummies(self.data))
@@ -126,9 +124,10 @@ class CategoricalPreModelAnalysis:
 
         if self.data_info.problem_type_val in ["Binary regression", "Binary classification"]:
             plt.figure(figsize=(16, 16))
-            plt.suptitle("Heatmap to Show Correlation between Sampled Features (top 5 categories) and Target",
-                         fontsize=16,
-                         fontweight='bold')
+            plt.suptitle(
+                "Heatmap to Show Correlation between Categorical Sampled Features (top 5 categories) and Target",
+                fontsize=16,
+                fontweight='bold')
             top_features = 16
             top_feature_names = self.data[:top_features].columns
             rows = 4
@@ -149,7 +148,8 @@ class CategoricalPreModelAnalysis:
             clusters = kmeans.fit_predict(target.values.reshape(-1, 1))
             target["cluster"] = clusters
             plt.figure(figsize=(12, 12))
-            plt.suptitle("Partial Plot to Identify Patterns between Sampled Features and Target", fontsize=16,
+            plt.suptitle("Partial Plot to Identify Patterns between Categorical Sampled Features and Target",
+                         fontsize=16,
                          fontweight='bold')
             grid_size = 4
             num_features = min(grid_size * grid_size, top_features)
@@ -160,16 +160,18 @@ class CategoricalPreModelAnalysis:
                 if column.dtype == "object":
                     column = column.astype("category").cat.codes
                     column = column[column < 5]
-                crosstab = pd.crosstab(target["cluster"], column)
-                sns.heatmap(crosstab, annot=False, fmt="d")
+                crosstab = pd.crosstab(target["cluster"], column, normalize='index')
+                sns.heatmap(crosstab, annot=False, cmap='Greens', cbar=True)
                 plt.ylabel("Clusters")
+                plt.xlabel("{} Value".format(col))
                 plt.subplots_adjust(hspace=0.5, wspace=0.5)
-            plt.show()
+
         elif self.data_info.problem_type_val in ["Multiclass classification"]:
             plt.figure(figsize=(16, 16))
-            plt.suptitle("Heatmap to Show Correlation between Sampled Features (top 5 categories) and Target",
-                         fontsize=16,
-                         fontweight='bold')
+            plt.suptitle(
+                "Heatmap to Show Correlation between Sampled Categorical Features (top 5 categories) and Target",
+                fontsize=16,
+                fontweight='bold')
             top_features = 16
             top_feature_names = self.data[:top_features].columns
             rows = 4
@@ -194,7 +196,7 @@ class CategoricalPreModelAnalysis:
         pvalues = [pvalue for _, pvalue in features_pvalues]
         fig, ax = plt.subplots()
         ax.hist(pvalues, bins=50, edgecolor='k', color='#2ecc71')
-        ax.set_title("Histogram of P-values for Numerical Features", fontsize=16)
+        ax.set_title("Histogram of P-values for Categorical Features", fontsize=16)
         ax.set_xlabel("P-value", fontsize=14)
         ax.set_ylabel("Frequency", fontsize=14)
         ax.spines['right'].set_visible(False)
@@ -206,7 +208,7 @@ class CategoricalPreModelAnalysis:
 
     @staticmethod
     def plot_wordcloud_pvalues(features_pvalues,
-                               title="Features Pvalues Based on Partial Plot"):
+                               title="Categorical Features Pvalues Based on Partial Plot"):
         """
         Plot word cloud of features weighted by their p-value.
         :param features_pvalues: List of tuples (column name, pvalue).
@@ -223,9 +225,15 @@ class CategoricalPreModelAnalysis:
         plt.show(block=False)
 
     def run(self):
-        self.partial_plot()
-        self.analyze_pvalue()
-        self.tsne()
+        if self.n_cols > 1:
+            self.analyze_pvalue()
+            self.partial_plot()
+            self.tsne()
+        elif self.n_cols == 1:
+            self.analyze_pvalue()
+            self.partial_plot()
+        else:
+            return None
 
 
 def format_df(df, max_value_width=10, ci_max_value_width=15, ci_col="CI"):
