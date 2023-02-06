@@ -70,7 +70,7 @@ def analyze_text_stats(df, text_column='text'):
 
 
 class TextAnalyzer:
-    def __init__(self, df: pd.DataFrame = None, create_wordcloud: bool = True,
+    def __init__(self, df: pd.DataFrame = None, text_column: str = 'text', create_wordcloud: bool = True,
                  corex_topics: bool = True, key_sentences: bool = True,
                  common_words: bool = True, sentiment: bool = True,
                  ner_extraction: bool = True, kewords_extraction: bool = True,
@@ -88,3 +88,4 @@ class TextAnalyzer:
         self.corex_topics_num = corex_topics_num
         self.top_words = top_words
         self.n_sentences = n_sentences
+        self.text_column = text_column

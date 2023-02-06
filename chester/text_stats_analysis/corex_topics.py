@@ -7,9 +7,9 @@ from sklearn.feature_extraction.text import CountVectorizer
 from wordcloud import WordCloud
 
 
-def plot_corex_wordcloud(df, top_words=10, n_topics=5, plot = False):
+def plot_corex_wordcloud(df, top_words=10, n_topics=5, plot=False, text_column='text'):
     # Get top words and weights
-    top_words_list = get_top_words(df, top_words, n_topics)
+    top_words_list = get_top_words(df, top_words, n_topics, text_column=text_column)
 
     if plot:
         # Combine words and weights into a single list
@@ -32,14 +32,14 @@ def get_top_words(df: pd.DataFrame,
                   top_words,
                   n_topics,
                   max_features=1000,
-                  text_col: str = 'text',
+                  text_column: str = 'text',
                   ngram_range=(1, 3)):
     # Preprocess data
     vectorizer = CountVectorizer(stop_words='english',
                                  max_features=max_features,
                                  binary=True,
                                  ngram_range=ngram_range)
-    doc_word = vectorizer.fit_transform(df[text_col])
+    doc_word = vectorizer.fit_transform(df[text_column])
     doc_word = ss.csr_matrix(doc_word)
     feature_names = list(vectorizer.vocabulary_.keys())
     words = list(np.asarray(feature_names))
@@ -58,7 +58,7 @@ def get_top_words(df: pd.DataFrame,
         topic_words, weights, _ = zip(*topic)
         num_words = min(top_words, len(topic_words))  # Use smaller of n and num words in topic
         top_words_list += [(topic_words[j], weights[j]) for j in range(num_words)]
-        print('\t{}: '.format(i) + ', '.join(topic_words))
+        print('\tTopic {}: '.format(i + 1) + ', '.join(topic_words))
     print("\n")
 
     return top_words_list

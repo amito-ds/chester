@@ -56,8 +56,6 @@ class BestModel(BaseModel):
                     cv_data=self.cv_data,
                     num_models_to_compare=self.num_models_to_compare
                 ).get_best_model()
-                print("linear base res")
-                print(base_res)
                 models.append((base_res, model))
         if models is None:
             return None

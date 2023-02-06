@@ -102,8 +102,9 @@ def analyze_text(df: pd.DataFrame,
     """
 
     is_clean_col_exists = True if f"clean_{text_column}" in df.columns else False
-    modified_df = df.drop(columns=[text_column], axis=1). \
-        rename(columns={f'clean_{text_column}': text_column})
+    if is_clean_col_exists:
+        modified_df = df.drop(columns=[text_column], axis=1). \
+            rename(columns={f'clean_{text_column}': text_column})
 
     print_analyze_message()
     if data_quality:
@@ -114,34 +115,58 @@ def analyze_text(df: pd.DataFrame,
             print(analyze_text_stats(df, text_column), "\n")
     if common_words:
         print(common_words_message)
-        print("\t", cw.most_common_words(df, common_words=top_words))
+
+        if is_clean_col_exists:
+            print("\t", cw.most_common_words(modified_df, common_words=top_words, text_column=text_column))
+        else:
+            print("\t", cw.most_common_words(df, common_words=top_words, text_column=text_column))
+
         print("\n")
     if create_wordcloud:
         print(word_cloud_message)
-        create_word_cloud(df)
+
+        if is_clean_col_exists:
+            create_word_cloud(modified_df, text_column=text_column)
+        else:
+            create_word_cloud(df, text_column=text_column)
+
     if sentiment:
         print(sentiment_analysis_message)
         df = df.copy()
-        df = analyze_sentiment(df)
+        df = analyze_sentiment(df, text_column=text_column)
         print(report_sentiment_stats(df), "\n")
         plot_sentiment_scores(df)
     if corex_topics:
         print(corex_topic_message)
-        corex.plot_corex_wordcloud(df, n_topics=corex_topics_num, top_words=top_words)
+
+        if is_clean_col_exists:
+            corex.plot_corex_wordcloud(modified_df, n_topics=corex_topics_num, top_words=top_words, text_column=text_column)
+        else:
+            corex.plot_corex_wordcloud(df, n_topics=corex_topics_num, top_words=top_words, text_column=text_column)
+
     if key_sentences:
         print(key_sentences_message)
-        print(extract_key_sentences(df, n_sentences=n_sentences))
+
+        if is_clean_col_exists:
+            print(extract_key_sentences(modified_df, n_sentences=n_sentences, text_column=text_column))
+        else:
+            print(extract_key_sentences(df, n_sentences=n_sentences, text_column=text_column))
+
     if kewords_extraction:
         print(kws_message)
-        full_text = '. '.join(df[text_column])
+
+        if is_clean_col_exists:
+            full_text = '. '.join(modified_df[text_column])
+        else:
+            full_text = '. '.join(df[text_column])
+
         kws_rake = kw_extract.RakeKeywordExtractor()
         print("\t", kws_rake.extract(text=full_text))
 
 
 def analyze_text_df(text_analyzer: TextAnalyzer):
     df = text_analyzer.df
-    # split to cleaned and pped text
-    analyze_text(df,
+    analyze_text(df=df, text_column=text_analyzer.text_column,
                  create_wordcloud=text_analyzer.create_wordcloud,
                  corex_topics=text_analyzer.corex_topics,
                  key_sentences=text_analyzer.key_sentences,

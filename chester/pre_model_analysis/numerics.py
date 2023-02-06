@@ -28,36 +28,39 @@ class NumericPreModelAnalysis:
         self.cols_sorted_with_pvalue = None
 
     def tsne(self):
-        if self.n_cols == 1:
+        if self.n_cols in (1, 2):
             return None
+        X_tsne_3d = TSNE(n_components=3).fit_transform(pd.get_dummies(self.data))
+        X_tsne_2d = X_tsne_3d[:, :2]
+        fig = plt.figure(figsize=(16, 8))
+        ax1 = fig.add_subplot(121)
+        ax2 = fig.add_subplot(122, projection='3d')
+
         if self.data_info.problem_type_val in ["Regression"]:
-            X_tsne = TSNE(n_components=2).fit_transform(self.data)
-            plt.scatter(X_tsne[:, 0], X_tsne[:, 1], c=self.target, cmap='viridis', edgecolors='black', s=20)
-            plt.colorbar()
-            plt.title("Visualizing Numerical Features and Target with t-SNE")
+            ax1.scatter(X_tsne_2d[:, 0], X_tsne_2d[:, 1], c=self.target, cmap='viridis')
+            ax2.scatter(X_tsne_3d[:, 0], X_tsne_3d[:, 1], X_tsne_3d[:, 2], c=self.target, cmap='viridis')
+            ax1.set_title("Visualizing Numerical Features and Target with t-SNE (2D)")
+            ax2.set_title("Visualizing Numerical Features and Target with t-SNE (2D)")
         elif self.data_info.problem_type_val in ["Binary regression", "Binary classification"]:
-            X_tsne = TSNE(n_components=2).fit_transform(self.data)
             target_classes = self.target.unique()
             color_map = {target_class: color for target_class, color in zip(target_classes, ['red', 'blue'])}
             colors = self.target.apply(lambda x: color_map[x])
-            plt.scatter(X_tsne[:, 0], X_tsne[:, 1], c=colors)
+            ax1.scatter(X_tsne_2d[:, 0], X_tsne_2d[:, 1], c=colors)
+            ax2.scatter(X_tsne_3d[:, 0], X_tsne_3d[:, 1], X_tsne_3d[:, 2], c=colors)
             legend_handles = [Patch(color=color_map[target_class], label=target_class) for target_class in
                               target_classes]
-            plt.title("Visualizing Numerical Features and Target with t-SNE")
-            plt.legend(handles=legend_handles)
-            plt.show()
+            ax1.set_title("Visualizing Numerical Features and Target with t-SNE (2D)")
+            ax2.set_title("Visualizing Numerical Features and Target with t-SNE (3D)")
+            ax1.legend(handles=legend_handles)
         else:  # Multi-class classification
-            X_tsne = TSNE(n_components=2).fit_transform(self.data)
             target_classes = self.target.unique()
             color_map = {target_class: color for target_class, color in
                          zip(target_classes, plt.cm.rainbow(np.linspace(0, 1, len(target_classes))))}
             colors = self.target.apply(lambda x: color_map[x])
-            plt.scatter(X_tsne[:, 0], X_tsne[:, 1], c=colors)
-            legend_handles = [Patch(color=color_map[target_class], label=target_class) for target_class in
-                              target_classes]
-            plt.title("Visualizing Numerical Features and Target with t-SNE")
-            plt.legend(handles=legend_handles)
-            plt.show()
+            ax1.scatter(X_tsne_2d[:, 0], X_tsne_2d[:, 1], c=colors)
+            ax2.scatter(X_tsne_3d[:, 0], X_tsne_3d[:, 1], X_tsne_3d[:, 2], c=colors)
+            ax1.set_title("Visualizing Numerical Features and Target with t-SNE (2D)")
+            ax2.set_title("Visualizing Numerical Features and Target with t-SNE (3D)")
 
     @staticmethod
     def median_imputation(df, col):
@@ -113,6 +116,7 @@ class NumericPreModelAnalysis:
                 self.plot_histogram_pvalues(self.cols_sorted_with_pvalue)
         print("Pvalues for top numerical features for chi square test:")
         print(pd.DataFrame(self.cols_sorted_with_pvalue[0:top_features], columns=["feature", "pvalue"]))
+        return None
 
     @staticmethod
     def plot_histogram_pvalues(features_pvalues):
@@ -133,6 +137,7 @@ class NumericPreModelAnalysis:
         ax.spines['bottom'].set_linewidth(0.5)
         ax.tick_params(axis='both', which='both', labelsize=12)
         plt.show()
+        return None
 
     @staticmethod
     def plot_wordcloud_pvalues(features_pvalues,
@@ -151,6 +156,7 @@ class NumericPreModelAnalysis:
         plt.axis("off")
         plt.title(title, fontsize=15)
         plt.show()
+        return None
 
     def partial_plot(self):
         import warnings
@@ -194,7 +200,8 @@ class NumericPreModelAnalysis:
             plt.show()
         elif self.data_info.problem_type_val in ["Binary classification"]:
             plt.figure(figsize=(9, 6))
-            plt.suptitle("Partial Plot to Identify Patterns between Sampled Numeric Features and Target Label", fontsize=16,
+            plt.suptitle("Partial Plot to Identify Patterns between Sampled Numeric Features and Target Label",
+                         fontsize=16,
                          fontweight='bold')
             for i in range(len(top_feature_names)):
                 if i < 9:
@@ -236,8 +243,9 @@ class NumericPreModelAnalysis:
                     contingency_table_pct = contingency_table.div(contingency_table.sum(1), axis=0)
                     sns.heatmap(contingency_table_pct, annot=False, cmap='Blues')
                     plt.ylabel("Cluster", fontsize=12, fontweight='bold')
-                    plt.title(col, fontsize=12, fontweight='bold')
+                    # plt.title(col, fontsize=12, fontweight='bold')
             plt.show()
+            return None
 
     def run(self):
         if self.n_cols > 1:
@@ -247,8 +255,7 @@ class NumericPreModelAnalysis:
         elif self.n_cols == 1:
             self.analyze_pvalue()
             self.partial_plot()
-        else:
-            return None
+        return None
 
 
 def format_df(df, max_value_width=10, ci_max_value_width=15, ci_col="CI"):

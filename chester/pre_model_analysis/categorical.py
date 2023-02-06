@@ -27,37 +27,37 @@ class CategoricalPreModelAnalysis:
         self.cols_sorted_with_pvalue = None
 
     def tsne(self):
+        X_tsne_3d = TSNE(n_components=3).fit_transform(pd.get_dummies(self.data))
+        X_tsne_2d = X_tsne_3d[:, :2]
+
+        fig = plt.figure(figsize=(16, 8))
+        ax1 = fig.add_subplot(121)
+        ax2 = fig.add_subplot(122, projection='3d')
         if self.data_info.problem_type_val in ["Regression"]:
-            X_tsne = TSNE(n_components=2).fit_transform(pd.get_dummies(self.data))
-            plt.hexbin(X_tsne[:, 0], X_tsne[:, 1], C=self.target, gridsize=50, cmap='viridis', edgecolors='black')
-            plt.colorbar()
-            plt.title("Visualizing Categorical Features and Target with t-SNE")
-            plt.tight_layout()
+            ax1.hexbin(X_tsne_2d[:, 0], X_tsne_2d[:, 1], C=self.target, gridsize=50, cmap='viridis', edgecolors='black')
+            ax2.scatter(X_tsne_3d[:, 0], X_tsne_3d[:, 1], X_tsne_3d[:, 2], c=self.target, cmap='viridis')
+            ax1.set_title("Visualizing Categorical Features and Target with t-SNE (2D)")
+            ax2.set_title("Visualizing Categorical Features and Target with t-SNE (3D)")
         elif self.data_info.problem_type_val in ["Binary regression", "Binary classification"]:
-            X_tsne = TSNE(n_components=2).fit_transform(pd.get_dummies(self.data))
             target_classes = self.target.unique()
             color_map = {target_class: color for target_class, color in zip(target_classes, ['red', 'blue'])}
             colors = self.target.apply(lambda x: color_map[x])
-            plt.scatter(X_tsne[:, 0], X_tsne[:, 1], c=colors)
+            ax1.scatter(X_tsne_2d[:, 0], X_tsne_2d[:, 1], c=colors)
+            ax2.scatter(X_tsne_3d[:, 0], X_tsne_3d[:, 1], X_tsne_3d[:, 2], c=colors)
             legend_handles = [Patch(color=color_map[target_class], label=target_class) for target_class in
                               target_classes]
-            plt.title("Visualizing Categorical Features and Target with t-SNE")
-            plt.legend(handles=legend_handles)
+            ax1.set_title("Visualizing Categorical Features and Target with t-SNE (2D)")
+            ax2.set_title("Visualizing Categorical Features and Target with t-SNE (3D)")
+            ax1.legend(handles=legend_handles)
         else:  # Multi-class classification
-            X_tsne = TSNE(n_components=2).fit_transform(pd.get_dummies(self.data))
             target_classes = self.target.unique()
             color_map = {target_class: color for target_class, color in
                          zip(target_classes, plt.cm.rainbow(np.linspace(0, 1, len(target_classes))))}
-            colors = self.target.apply(lambda x: color_map[x])
-            plt.scatter(X_tsne[:, 0], X_tsne[:, 1], c=colors)
-            legend_handles = [Patch(color=color_map[target_class], label=target_class) for target_class in
-                              target_classes]
-            plt.title("Visualizing Categorical Features and Target with t-SNE")
-            plt.legend(handles=legend_handles)
-        plt.tight_layout()
-        plt.show()
+            ax1.legend(
+                handles=[Patch(color=color_map[target_class], label=target_class) for target_class in target_classes])
+            ax2.legend(
+                handles=[Patch(color=color_map[target_class], label=target_class) for target_class in target_classes])
 
-    @staticmethod
     def mode_imputation(df, col):
         import warnings
         warnings.filterwarnings("ignore", category=SettingWithCopyWarning)
@@ -133,13 +133,15 @@ class CategoricalPreModelAnalysis:
             rows = 4
             cols = 4
             for i, col in enumerate(top_feature_names):
+                if i >= rows * cols:
+                    return None
                 plt.subplot(rows, cols, i + 1)
                 crosstab = pd.crosstab(self.data[col], self.target, normalize='index') * 100
                 crosstab = crosstab[(crosstab.T != 0).any()]
                 crosstab = crosstab.loc[:, (crosstab != 0).any(axis=0)]
                 crosstab = crosstab.loc[crosstab.sum(axis=1).sort_values(ascending=False).index[:5]]
                 sns.heatmap(crosstab, annot=False, cmap="YlGnBu", fmt='g')
-                plt.title(col)
+                plt.title(col, fontsize=12, fontweight='bold')
             plt.show()
         if self.data_info.problem_type_val in ["Regression"]:
             from sklearn.cluster import KMeans
@@ -183,8 +185,9 @@ class CategoricalPreModelAnalysis:
                 crosstab = crosstab.loc[:, (crosstab != 0).any(axis=0)]
                 crosstab = crosstab.loc[crosstab.sum(axis=1).sort_values(ascending=False).index[:5]]
                 sns.heatmap(crosstab, annot=False, cmap="YlGnBu", fmt='g')
-                plt.title(col)
+                plt.title(col, fontsize=12, fontweight='bold')
             plt.show()
+            return None
 
     @staticmethod
     def plot_histogram_pvalues(features_pvalues):
@@ -205,6 +208,7 @@ class CategoricalPreModelAnalysis:
         ax.spines['bottom'].set_linewidth(0.5)
         ax.tick_params(axis='both', which='both', labelsize=12)
         plt.show(block=False)
+        return None
 
     @staticmethod
     def plot_wordcloud_pvalues(features_pvalues,
@@ -223,6 +227,7 @@ class CategoricalPreModelAnalysis:
         plt.axis("off")
         plt.title(title, fontsize=15)
         plt.show(block=False)
+        return None
 
     def run(self):
         if self.n_cols > 1:
@@ -232,8 +237,7 @@ class CategoricalPreModelAnalysis:
         elif self.n_cols == 1:
             self.analyze_pvalue()
             self.partial_plot()
-        else:
-            return None
+        return None
 
 
 def format_df(df, max_value_width=10, ci_max_value_width=15, ci_col="CI"):

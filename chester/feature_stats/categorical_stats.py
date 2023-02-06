@@ -1,3 +1,5 @@
+import math
+
 import pandas as pd
 import seaborn as sns
 from matplotlib import pyplot as plt
@@ -29,32 +31,40 @@ class CategoricalStats:
         top_features = self.cols_sorted[:3 * n]
         return top_features
 
+    import math
+
     def plot_value_counts(self, n=25):
         if not self.any_categorical():
             return None
         top_n = self.cols_sorted[:min(len(self.cols_sorted), n)]
-        if len(top_n) == 1:
+        num_plots = len(top_n)
+        if num_plots == 1:
             col = top_n[0]
             fig, ax = plt.subplots(1, 1, figsize=(20, 5))
             cat_col = self.data[col].apply(lambda x: "cat " + str(x))
-            data = cat_col.value_counts()
+            data = cat_col.value_counts(normalize=True)
             sns.barplot(x=data.index[:5], y=data.values[:5], ax=ax)
             plot_title = f"{col}"
             ax.set_title(plot_title)
             ax.set_xlabel(None)
-            # return None
+            ax.set_ylim(0, 1)
+            return None
         else:
-            fig, ax = plt.subplots(1, len(top_n), figsize=(20, 5))
+            num_rows = math.ceil(num_plots / 5)
+            fig, ax = plt.subplots(num_rows, 5, figsize=(20, 5 * num_rows))
             for i, col in enumerate(top_n):
-                data = self.data[col].value_counts()
-                # print("wow wow!!", data.index[:5])
-                # print("wow wow!!", data.values[:5])
+                data = self.data[col].value_counts(normalize=True)
                 plot_title = f"{col}"
-                sns.barplot(x=data.index[:5], y=data.values[:5], ax=ax[i])
-                ax[i].set_title(plot_title)
-                ax[i].set_xlabel(None)
-            plt.suptitle("Top 5 Value Counts for Each Feature")
+                row = i // 5
+                col = i % 5
+                sns.barplot(x=data.index[:5], y=data.values[:5], ax=ax[row][col])
+                ax[row][col].set_title(plot_title)
+                ax[row][col].set_xlabel(None)
+                ax[row][col].set_ylim(0, 1)
+            plt.tight_layout()
+            plt.suptitle("Top 5 Value Counts (Percentage) for Each Feature")
             plt.show()
+            return None
 
     def calculate_stats(self, is_print=True):
         if not self.any_categorical():
@@ -93,6 +103,7 @@ class CategoricalStats:
     def run(self):
         self.calculate_stats()
         self.plot_value_counts()
+        return None
 
 
 def format_df(df, max_value_width=12, distribution_max_value_width=20, distribution_col="Distribution"):

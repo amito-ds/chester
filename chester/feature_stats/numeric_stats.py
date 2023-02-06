@@ -89,6 +89,7 @@ class NumericStats:
     def run(self):
         self.calculate_stats()
         self.plot_correlation()
+        return None
 
     # plots:
     # matrix corr pearson

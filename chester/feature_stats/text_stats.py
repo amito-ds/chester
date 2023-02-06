@@ -11,6 +11,8 @@ class TextStats:
         self.data = self.data_info.data[self.cols]
 
     def run(self):
-        text_analyzer = TextAnalyzer(df=self.data)
         print(chapter_message("text analyze"))
-        analyze_text_df(text_analyzer)
+        for col in self.cols:
+            print(f"** Analayzing {col} column")
+            text_analyzer = TextAnalyzer(df=self.data, text_column=col)
+            analyze_text_df(text_analyzer)
