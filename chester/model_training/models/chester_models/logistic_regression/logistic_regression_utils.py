@@ -9,9 +9,10 @@ from chester.model_training.models.chester_models.base_model_utils import calcul
 from chester.model_training.models.chester_models.base_model_utils import is_metric_higher_is_better
 from chester.model_training.models.chester_models.logistic_regression.logistic_regression_model import \
     LogisticRegressionModel
+from chester.zero_break.problem_specification import DataInfo
 
 
-def train_logistic_regression(X_train, y_train, parameters: list):
+def train_logistic_regression(X_train, y_train, parameters: list, data_info: DataInfo):
     """
     Trains a baseline model using the given parameters.
     :param X_train: The training data features (unused in this function)
@@ -19,7 +20,7 @@ def train_logistic_regression(X_train, y_train, parameters: list):
     :param parameters: parameters list
     :return: A trained baseline model
     """
-    model = LogisticRegressionModel(parameters)
+    model = LogisticRegressionModel(parameters, data_info)
     model.fit(X_train, y_train)
     return model
 
@@ -38,15 +39,14 @@ def logistic_regression_with_outputs(cv_data: CVData,
                                      metrics: list,
                                      target_col: str,
                                      parameters: list,
+                                     data_info:DataInfo,
                                      problem_type=None,
                                      ):
     results = []
     for i, (X_train, y_train, X_test, y_test) in enumerate(cv_data.format_splits()):
-        model = train_logistic_regression(X_train, y_train, parameters=parameters)
+        model = train_logistic_regression(X_train, y_train, parameters=parameters, data_info=data_info)
         prediction = predict_logistic_regression(model, X_test)
         prediction_train = predict_logistic_regression(model, X_train)
-        # print("prediction_train", prediction_train)
-        # print(metrics)
         scores = calculate_metrics_scores(y_test, prediction, metrics, problem_type)
         results.append({'type': 'test', 'fold': i, **scores})
         scores = calculate_metrics_scores(y_train, prediction_train, metrics, problem_type)

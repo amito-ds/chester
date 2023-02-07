@@ -75,16 +75,16 @@ def print_analyze_message(create_wordcloud: bool = True,
 
 
 def analyze_text(df: pd.DataFrame,
-                 create_wordcloud: bool = True,
+                 create_wordcloud: bool = False,
                  corex_topics: bool = True,
-                 key_sentences: bool = True,
-                 common_words: bool = True,
-                 sentiment: bool = True,
-                 data_quality: bool = True,
-                 kewords_extraction: bool = True,
+                 key_sentences: bool = False,
+                 common_words: bool = False,
+                 sentiment: bool = False,
+                 data_quality: bool = False,
+                 kewords_extraction: bool = False,
                  corex_topics_num: int = 10,
                  top_words: int = 10,
-                 n_sentences: int = 5,
+                 n_sentences: int = 10,
                  text_column: str = 'text'):
     """
     Analyze text using various text analysis techniques.

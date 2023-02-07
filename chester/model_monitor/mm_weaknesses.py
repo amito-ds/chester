@@ -108,7 +108,7 @@ class ModelWeaknesses:
         model.fit(self.X_test, self.error, verbose=False)
         plt.figure(figsize=(15, 15))
         feature_imp = pd.DataFrame({'Feature': self.X_test.columns, 'Importance': model.feature_importances_})
-        feature_imp = feature_imp.sort_values(by='Importance', ascending=False)
+        feature_imp = feature_imp.sort_values(by='Importance', ascending=False)[0:30]
         sns.barplot(x=feature_imp['Importance'], y=feature_imp['Feature'])
         plt.title('CatBoost Feature Importance to Detect Segments with High Error')
         plt.show()

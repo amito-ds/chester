@@ -12,7 +12,9 @@ from chester.features_engineering.features_handler import FeaturesHandler
 from chester.model_monitor.mm_bootstrap import ModelBootstrap
 from chester.model_monitor.mm_weaknesses import ModelWeaknesses
 from chester.model_training.data_preparation import CVData
+from chester.model_training.models.chester_models.best_catboost import CatboostModel
 from chester.model_training.models.chester_models.best_linear_regression import LinearRegressionModel
+from chester.model_training.models.chester_models.best_logistic_regression import LogisticRegressionModel
 from chester.model_training.models.chester_models.best_model import BestModel
 from chester.post_model_analysis.post_model_analysis_class import PostModelAnalysis
 from chester.pre_model_analysis.categorical import CategoricalPreModelAnalysis
@@ -30,12 +32,10 @@ df1 = load_data_pirates().assign(target='pirate').sample(100, replace=True)
 df2 = load_data_king_arthur().assign(target='arthur').sample(100, replace=True)
 df3 = load_data_chat_logs().assign(target='chat').sample(100, replace=True)
 df = pd.concat([df1, df2
-                # , df3
+                , df3
                 ])
 # df['text_trimmed'] = df['text'].apply(lambda x: x[:100])
-df.rename(columns={'text': 'text_a'}, inplace=True)
-
-
+# df.rename(columns={'text': 'text_a'}, inplace=True)
 ################################################################################################
 
 
@@ -133,7 +133,7 @@ def load_vlad():
     return df
 
 
-df = load_vlad()
+# df = load_vlad()
 
 # # calc data into
 print("XXXXXXXXXXXXXXXXXXXXXXXXData infoXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
@@ -182,48 +182,50 @@ data_info_num_stats.calculate()
 # print("Categorical Feature statistics")
 # CategoricalStats(data_info).run()
 # print("Text Feature statistics")
-# data_info.data = clean_text_df
-# TextStats(data_info).run()
+data_info.data = clean_text_df
+TextStats(data_info).run()
 #### stats: end
-
-
-# ########## code for stats and PMA ################
-# # pma
-print("XXXXXXXXXXXXXXXXXXXXXXXXPre model analysisXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-# NumericPreModelAnalysis(data_info_num_stats).run()
-data_info.data = df
-CategoricalPreModelAnalysis(data_info).run()
-# # ########## code for stats ################
 #
-# # #################################### model####################################
-# # # encode labels if needed (for classification problem only)
+#
+# # ########## code for stats and PMA ################
+# # # pma
+# print("XXXXXXXXXXXXXXXXXXXXXXXXPre model analysisXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+# NumericPreModelAnalysis(data_info_num_stats).run()
+# data_info.data = df
+# CategoricalPreModelAnalysis(data_info).run()
+# # # ########## code for stats ################
+# #
+# # # #################################### model####################################
+# # # # encode labels if needed (for classification problem only)
 # print("XXXXXXXXXXXXXXXXXXXXXXXXModel runXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
 # if data_info.problem_type_val in ["Binary classification", "Multiclass classification"]:
 #     print("Encoding target")
 #     label_encoder = LabelEncoder()
 #     final_df[target_column] = label_encoder.fit_transform(final_df[target_column])
-
-# Run the model
+#
+# # Run the model
 # cv_data = CVData(train_data=final_df, test_data=None, target_column='target', split_data=True)
 # data_info.feature_types_val = feature_types
 # model = BestModel(data_info=data_info, cv_data=cv_data, num_models_to_compare=3)
-# model = LinearRegressionModel(data_info=data_info, cv_data=cv_data, num_models_to_compare=2)
+# # model = LogisticRegressionModel(data_info=data_info, cv_data=cv_data, num_models_to_compare=3)
+# # model = LinearRegressionModel(data_info=data_info, cv_data=cv_data, num_models_to_compare=2)
+# # model = CatboostModel(data_info=data_info, cv_data=cv_data, num_models_to_compare=2)
 # model_results = model.get_best_model()  # returns resultf of the best baseline model
 # params = model_results[1].get_params()
 # print(f"Best model: {type(model_results[1])}, with parameters:")
 # for p in params:
 #     print(p.name, ":", p.value)
-################################### model####################################
-
-#################################### PMA####################################
-print("XXXXXXXXXXXXXXXXXXXXXXXXPost model analysisXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+# ################################### model####################################
+#
+# #################################### PMA####################################
+# print("XXXXXXXXXXXXXXXXXXXXXXXXPost model analysisXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
 # PostModelAnalysis(cv_data, data_info, model=model_results[1]).analyze()
 # ModelBootstrap(cv_data, data_info, model=model_results[1]).plot()
-#################################### PMA ####################################
-
-
-#################################### monitor ####################################
-print("XXXXXXXXXXXXXXXXXXXXXXXXMoitorXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+# #################################### PMA ####################################
+#
+#
+# #################################### monitor ####################################
+# print("XXXXXXXXXXXXXXXXXXXXXXXXMoitorXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
 # model_weaknesses = ModelWeaknesses(cv_data, data_info, model=model_results[1])
 # model_weaknesses.run()
-#################################### monitor####################################
+# #################################### monitor####################################

@@ -143,10 +143,17 @@ class CategoricalPreModelAnalysis:
                 if i >= num_rows * num_rows:
                     return None
                 ax_i = ax[i // dim, i % dim]
-                crosstab = pd.crosstab(self.data[col], self.target, normalize='index') * 100
-                crosstab = crosstab[(crosstab.T != 0).any()]
-                crosstab = crosstab.loc[:, (crosstab != 0).any(axis=0)]
-                crosstab = crosstab.loc[crosstab.sum(axis=1).sort_values(ascending=False).index[:5]]
+                if classification_row_percent:
+                    crosstab = pd.crosstab(self.data[col], self.target, normalize='index') * 100
+                    crosstab = crosstab[(crosstab.T != 0).any()]
+                    crosstab = crosstab.loc[:, (crosstab != 0).any(axis=0)]
+                    crosstab = crosstab.loc[crosstab.sum(axis=1).sort_values(ascending=False).index[:5]]
+                else:
+                    crosstab = pd.crosstab(self.data[col], self.target, normalize='columns') * 100
+                    crosstab = crosstab[(crosstab.T != 0).any()]
+                    crosstab = crosstab.loc[:, (crosstab != 0).any(axis=0)]
+                    crosstab = crosstab.loc[crosstab.sum(axis=1).sort_values(ascending=False).index[:5]]
+                    print("crosstab", crosstab)
                 sns.heatmap(crosstab, annot=False, cmap="YlGnBu", fmt='g', ax=ax_i)
                 ax_i.set_ylabel(None)
                 ax_i.set_xlabel(None)
@@ -177,7 +184,6 @@ class CategoricalPreModelAnalysis:
                 plt.ylabel("Clusters")
                 plt.xlabel("{} Value".format(col))
                 plt.subplots_adjust(hspace=0.5, wspace=0.5)
-
         elif self.data_info.problem_type_val in ["Multiclass classification"]:
             plt.figure(figsize=(16, 16))
             plt.suptitle(

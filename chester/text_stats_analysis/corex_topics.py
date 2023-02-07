@@ -7,24 +7,28 @@ from sklearn.feature_extraction.text import CountVectorizer
 from wordcloud import WordCloud
 
 
-def plot_corex_wordcloud(df, top_words=10, n_topics=5, plot=False, text_column='text'):
+def plot_corex_wordcloud(df, top_words=10, n_topics=10, plot=False, text_column='text'):
     # Get top words and weights
     top_words_list = get_top_words(df, top_words, n_topics, text_column=text_column)
 
     if plot:
-        # Combine words and weights into a single list
-        words = [word for word, weight in top_words_list]
-        weights = [weight for word, weight in top_words_list]
+        fig, axs = plt.subplots(3, 3, figsize=(15, 15))
+        fig.suptitle("Top Words Word Clouds")
 
-        # Create word cloud
-        wordcloud = WordCloud(width=800, height=400)
-        wordcloud.generate_from_frequencies(dict(zip(words, weights)))
+        for i, (words, weights) in enumerate(top_words_list[:9]):
+            # Combine words and weights into a single list
+            words = [word for word, weight in zip(words, weights)]
+            weights = [weight for word, weight in zip(words, weights)]
 
-        # Plot word cloud
-        plt.figure()
-        plt.imshow(wordcloud, interpolation="bilinear")
-        plt.axis("off")
-        plt.title("Top Words Word Cloud")
+            # Create word cloud
+            wordcloud = WordCloud(width=800, height=400)
+            wordcloud.generate_from_frequencies(dict(zip(words, weights)))
+
+            # Plot word cloud
+            axs[i // 3, i % 3].imshow(wordcloud, interpolation="bilinear")
+            axs[i // 3, i % 3].axis("off")
+            axs[i // 3, i % 3].set_title(f"Topic {i + 1}")
+
         plt.show()
 
 
