@@ -8,9 +8,10 @@ from chester.model_training.data_preparation import CVData
 from chester.model_training.data_preparation import Parameter
 from chester.model_training.models.chester_models.base_model_utils import is_metric_higher_is_better
 from chester.model_training.models.chester_models.linear_regression.linear_regression import LinearRegressionModel
+from chester.zero_break.problem_specification import DataInfo
 
 
-def train_linear_regression(X_train, y_train, parameters: list, problem_type: str):
+def train_linear_regression(X_train, y_train, parameters: list, data_info: DataInfo):
     """
     Trains a baseline model using the given parameters.
     :param X_train: The training data features (unused in this function)
@@ -18,7 +19,7 @@ def train_linear_regression(X_train, y_train, parameters: list, problem_type: st
     :param parameters: parameters list
     :return: A trained baseline model
     """
-    model = LinearRegressionModel(parameters, problem_type)
+    model = LinearRegressionModel(parameters, data_info)
     model.fit(X_train, y_train)
     return model
 
@@ -37,18 +38,19 @@ def linear_regression_with_outputs(cv_data: CVData,
                                    metrics: list,
                                    target_col: str,
                                    parameters: list,
-                                   problem_type=None,
+                                   data_info: DataInfo,
                                    ):
     results = []
     for i, (X_train, y_train, X_test, y_test) in enumerate(cv_data.format_splits()):
-        model = train_linear_regression(X_train, y_train, parameters=parameters, problem_type=problem_type)
+        model = train_linear_regression(X_train, y_train, parameters=parameters, data_info=data_info)
         prediction = predict_linear_regression(model, X_test)
         prediction_train = predict_linear_regression(model, X_train)
         # print("prediction_train", prediction_train)
         # print(metrics)
-        scores = calculate_linear_regression_metrics_scores(y_test, prediction, metrics, problem_type)
+        scores = calculate_linear_regression_metrics_scores(y_test, prediction, metrics, data_info.problem_type_val)
         results.append({'type': 'test', 'fold': i, **scores})
-        scores = calculate_linear_regression_metrics_scores(y_train, prediction_train, metrics, problem_type)
+        scores = calculate_linear_regression_metrics_scores(y_train, prediction_train, metrics,
+                                                            data_info.problem_type_val)
         results.append({'type': 'train', 'fold': i, **scores})
     return results, model
 

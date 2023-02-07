@@ -13,10 +13,12 @@ class FeatureHandler:
         self.col_name = col_name
 
     def handle_numerical(self):
+        self.column.name = "num_" + self.column.name
         return self.column, ["num_" + self.col_name]
 
     def handle_boolean(self):
         column = self.column.astype(int)
+        column.name = "is_" + self.column.name
         return column, ["is_" + self.column.name]
 
     def handle_categorical(self):

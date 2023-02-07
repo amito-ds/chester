@@ -34,7 +34,7 @@ class LinearRegressionModel(BaseModel):
                     for params in self.hp_list:
                         base_res, model = linear_regression_with_outputs(
                             cv_data=self.cv_data, target_col=self.cv_data.target_column,
-                            parameters=params, metrics=metrics, problem_type=self.data_info.problem_type_val)
+                            parameters=params, metrics=metrics, data_info=self.data_info)
                         results.append((base_res, model))
                 best = compare_models(results)
                 return best

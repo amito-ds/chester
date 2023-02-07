@@ -3,6 +3,10 @@ import pandas as pd
 import seaborn as sns
 from catboost import CatBoostRegressor
 from matplotlib import pyplot as plt
+from sklearn.compose import ColumnTransformer
+from sklearn.impute import SimpleImputer
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import OneHotEncoder
 from sklearn.tree import DecisionTreeRegressor
 
 from chester.model_training.data_preparation import CVData
@@ -57,19 +61,47 @@ class ModelWeaknesses:
 
     def plot_decision_tree_error_regressor(self, min_samples_leaf=0.2, max_depth=2):
         from sklearn import tree
-        model = DecisionTreeRegressor(min_samples_leaf=min_samples_leaf, max_depth=max_depth)
-        model.fit(self.X_test, self.error)
-        tree.plot_tree(model,
-                       feature_names=self.X_test.columns,
-                       class_names=self.error,
-                       rounded=True,
-                       filled=True)
+        from matplotlib import pyplot as plt
 
-        # plt.figure(figsize=(15, 15))
-        # plot_tree(model, filled=True, feature_names=self.X_test.columns)
-        # plt.title('Regression Tree Showing To Detect Segments With High Error\n'
-        #           '(Light - Low Error, Stronger Orange = Higher Error)')
-        # plt.show()
+        # Prepare the numerical features for processing
+        numerical_transformer = SimpleImputer(strategy='median')
+        # Prepare the categorical features for processing
+        categorical_transformer = OneHotEncoder(handle_unknown='ignore')
+        # Use the ColumnTransformer to apply the transformations to the corresponding features
+        transformer = ColumnTransformer(
+            transformers=[
+                ('c', categorical_transformer, self.data_info.feature_types_val["categorical"]),
+                ('n', numerical_transformer, self.data_info.feature_types_val["numeric"])
+            ])
+        # Apply the transformations to the X_test data
+        X_test_transformed = transformer.fit_transform(self.X_test)
+
+        # Train the DecisionTreeRegressor model
+        model = DecisionTreeRegressor(min_samples_leaf=min_samples_leaf, max_depth=max_depth)
+        model.fit(X_test_transformed, self.error)
+
+        # Get the feature names of the numeric features
+        # Get the feature names of the numeric features
+        numeric_feature_names = self.data_info.feature_types_val["numeric"]
+        # Get the feature names of the categorical features
+        categorical_transformer.fit(self.X_test[self.data_info.feature_types_val["categorical"]])
+        categories = categorical_transformer.categories_
+        categorical_feature_names = []
+        for i, col in enumerate(self.data_info.feature_types_val["categorical"]):
+            for j in range(len(categories[i])):
+                categorical_feature_names.append(f"{col}_{categories[i][j]}")
+        # Concatenate the feature names of the categorical and numeric features
+        feature_names = numeric_feature_names + categorical_feature_names
+
+        plt.figure()
+        tree.plot_tree(model,
+                       feature_names=feature_names,
+                       class_names=['error'],
+                       rounded=True,
+                       filled=True,
+                       )
+        plt.suptitle("Decision Tree Trained on Model Error")
+        return None
 
     def plot_catboost_error_regressor(self, iterations=100, depth=2, learning_rate=0.1):
         model = CatBoostRegressor(iterations=iterations, depth=depth, learning_rate=learning_rate)

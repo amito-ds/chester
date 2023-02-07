@@ -91,10 +91,6 @@ class NumericStats:
         self.plot_correlation()
         return None
 
-    # plots:
-    # matrix corr pearson
-    # for top 9 features with the highest var: plot 3X3 histogram
-
 
 def format_df(df, max_value_width=12, col_max_value_width=20, ci_max_value_width=15,
               ci_col="CI", col_col="col"):

@@ -50,19 +50,25 @@ class CategoricalStats:
             ax.set_ylim(0, 1)
             return None
         else:
-            num_rows = math.ceil(num_plots / 5)
-            fig, ax = plt.subplots(num_rows, 5, figsize=(20, 5 * num_rows))
+            dim = 4
+            num_rows = math.ceil(num_plots / dim)
+            fig, ax = plt.subplots(num_rows, dim)
+            fig.tight_layout()
+            fig.suptitle("Top 5 Value % for Each Feature")
             for i, col in enumerate(top_n):
-                data = self.data[col].value_counts(normalize=True)
+                data = self.data[col].value_counts(normalize=True)[0:dim]
+                print("this is data: \n", data)
                 plot_title = f"{col}"
-                row = i // 5
-                col = i % 5
-                sns.barplot(x=data.index[:5], y=data.values[:5], ax=ax[row][col])
-                ax[row][col].set_title(plot_title)
-                ax[row][col].set_xlabel(None)
-                ax[row][col].set_ylim(0, 1)
+                row = i // dim
+                col = i % dim
+                sns.barplot(x=data.index, y=data.values, ax=ax[i])
+                height = data.values[i]
+                # ax[i].annotate(data.index[i], xy=(i, height), xytext=(0, 3), textcoords="offset points", ha='center',
+                #                va='bottom')
+                ax[i].set_title(plot_title)
+                ax[i].set_xlabel(None)
+                ax[i].set_ylim(0, 1)
             plt.tight_layout()
-            plt.suptitle("Top 5 Value Counts (Percentage) for Each Feature")
             plt.show()
             return None
 
@@ -71,22 +77,22 @@ class CategoricalStats:
             return None
         result_dicts = []
         for col in self.cols:
+            print("now in col", col)
             data = self.data[col]
             unique_values = data.nunique()
             missing_values = data.isnull().sum()
             value_counts = data.value_counts().rename("count").reset_index()
             value_counts["percentage"] = 100 * value_counts["count"] / value_counts["count"].sum()
             value_counts = value_counts.sort_values("count", ascending=False)
-
-            # 1. in Distribution you need to print the value like this: A:countA, B:countB.
             dist_str = ', '.join([f"{row['index']}: {row['percentage']:.0f}%" for _, row in value_counts.iterrows()])
             result_dicts.append(
                 {'col': col, '# unique': unique_values, '# missing': missing_values, 'Distribution': dist_str})
-
-            # 2. In addition sample 3 values out of the distinct values of the column and add it to the result df
             data_unique_values = data.dropna().drop_duplicates()
             col_len = len(data_unique_values)
-            sample_values = data_unique_values.sample(min(col_len, 3)).values
+            values_to_sample = 3
+            if col_len < values_to_sample:
+                values_to_sample = col_len
+            sample_values = data_unique_values.sample(min(col_len, values_to_sample)).values
             result_dicts[-1]['Sample'] = ', '.join(sample_values)
 
             # add more columns
@@ -106,7 +112,7 @@ class CategoricalStats:
         return None
 
 
-def format_df(df, max_value_width=12, distribution_max_value_width=20, distribution_col="Distribution"):
+def format_df(df, max_value_width=20, distribution_max_value_width=25, distribution_col="Distribution"):
     pd.options.display.max_columns = None
 
     def trim_value(val):

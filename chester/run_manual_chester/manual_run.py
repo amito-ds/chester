@@ -12,6 +12,7 @@ from chester.features_engineering.features_handler import FeaturesHandler
 from chester.model_monitor.mm_bootstrap import ModelBootstrap
 from chester.model_monitor.mm_weaknesses import ModelWeaknesses
 from chester.model_training.data_preparation import CVData
+from chester.model_training.models.chester_models.best_linear_regression import LinearRegressionModel
 from chester.model_training.models.chester_models.best_model import BestModel
 from chester.post_model_analysis.post_model_analysis_class import PostModelAnalysis
 from chester.pre_model_analysis.categorical import CategoricalPreModelAnalysis
@@ -25,14 +26,14 @@ from chester.zero_break.problem_specification import DataInfo
 
 target_column = 'target'
 ################################################################################################
-df1 = load_data_pirates().assign(target='pirate').sample(100, replace=True)
-df2 = load_data_king_arthur().assign(target='arthur').sample(100, replace=True)
-df3 = load_data_chat_logs().assign(target='chat').sample(100, replace=True)
-df = pd.concat([df1, df2
-                   # , df3
-                ])
+# df1 = load_data_pirates().assign(target='pirate').sample(100, replace=True)
+# df2 = load_data_king_arthur().assign(target='arthur').sample(100, replace=True)
+# df3 = load_data_chat_logs().assign(target='chat').sample(100, replace=True)
+# df = pd.concat([df1, df2
+# , df3
+# ])
 # df['text_trimmed'] = df['text'].apply(lambda x: x[:100])
-df.rename(columns={'text': 'text_a'}, inplace=True)
+# df.rename(columns={'text': 'text_a'}, inplace=True)
 ################################################################################################
 
 
@@ -114,6 +115,23 @@ df.rename(columns={'text': 'text_a'}, inplace=True)
 # df = generate_data(5, 1000, target_type='multiclass')
 ###############################################################################################
 
+### vlad
+df = pd.read_csv("chester/model_training/models/chester_models/data.csv")
+df.rename(columns={'TOTAL_BET_AMOUNT': 'target'}, inplace=True)
+df['target'] = 1 * (df['REVENUE'] > 0.00001)
+df.drop(columns=['REVENUE', 'Unnamed: 0', 'PLAYER_ID', 'MEDIAN_BET', 'SESSION_MINS', 'SPINS_COMPLETED', 'SPINS_STARTED',
+                 'TOTAL_SPIN_LENGTH'], inplace=True)
+
+## sample
+class_0 = df[df['target'] == 0].sample(2500)
+class_1 = df[df['target'] == 1]
+df = pd.concat([class_0, class_1])
+
+# fill na for numerics
+# columns = ['END_LEVEL', 'ENDING_BANKROLL', 'LEVEL_UPS', 'MAX_BETS', 'SESSIONS',
+#            'SLOT_WIN_COINS', 'START_LEVEL', 'STARTING_BANKROLL', 'TOTAL_FREE_COINS',
+#            'TOTAL_OOC', 'TOTAL_WIN_AMOUNT']
+# df[columns] = df[columns].fillna(0.0)
 
 # # calc data into
 print("XXXXXXXXXXXXXXXXXXXXXXXXData infoXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
@@ -147,7 +165,7 @@ data_info = pp.data_info
 if len(text_cols) > 0:
     clean_text_df = pd.concat([df, clean_text_df], axis=1)
 
-# extract features
+# # extract features
 print("XXXXXXXXXXXXXXXXXXXXXXXXExtract featuresXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
 feat_hand = FeaturesHandler(data_info)
 feature_types, final_df = feat_hand.transform()
@@ -157,53 +175,53 @@ final_df[target_column] = data_info.data[data_info.target]
 print("XXXXXXXXXXXXXXXXXXXXXXXXFeature StatsXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
 data_info_num_stats = DataInfo(data=final_df, target=target_column)
 data_info_num_stats.calculate()
-print("Numerical Feature statistics")
-NumericStats(data_info_num_stats).run()
+# print("Numerical Feature statistics")
+# NumericStats(data_info_num_stats).run()
 print("Categorical Feature statistics")
 CategoricalStats(data_info).run()
-print("Text Feature statistics")
-data_info.data = clean_text_df
-TextStats(data_info).run()
+# print("Text Feature statistics")
+# data_info.data = clean_text_df
+# TextStats(data_info).run()
 #### stats: end
 
 
-########## code for stats and PMA ################
-# pma
+# ########## code for stats and PMA ################
+# # pma
 print("XXXXXXXXXXXXXXXXXXXXXXXXPre model analysisXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-NumericPreModelAnalysis(data_info_num_stats).run()
-data_info.data = df
-CategoricalPreModelAnalysis(data_info).run()
-# ########## code for stats ################
+# NumericPreModelAnalysis(data_info_num_stats).run()
+# data_info.data = df
+# CategoricalPreModelAnalysis(data_info).run()
+# # ########## code for stats ################
 #
-# #################################### model####################################
-# # encode labels if needed (for classification problem only)
-print("XXXXXXXXXXXXXXXXXXXXXXXXModel runXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-if data_info.problem_type_val in ["Binary classification", "Multiclass classification"]:
-    print("Encoding target")
-    label_encoder = LabelEncoder()
-    final_df[target_column] = label_encoder.fit_transform(final_df[target_column])
+# # #################################### model####################################
+# # # encode labels if needed (for classification problem only)
+# print("XXXXXXXXXXXXXXXXXXXXXXXXModel runXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+# if data_info.problem_type_val in ["Binary classification", "Multiclass classification"]:
+#     print("Encoding target")
+#     label_encoder = LabelEncoder()
+#     final_df[target_column] = label_encoder.fit_transform(final_df[target_column])
 
-# prepare data
-cv_data = CVData(train_data=final_df, test_data=None, target_column='target', split_data=True)
 # Run the model
-data_info.feature_types_val = feature_types
-model = BestModel(data_info=data_info, cv_data=cv_data, num_models_to_compare=3)
-model_results = model.get_best_model()  # returns resultf of the best baseline model
-params = model_results[1].get_params()
-print(f"Best model: {type(model_results[1])}, with parameters:")
-for p in params:
-    print(p.name, ":", p.value)
+# cv_data = CVData(train_data=final_df, test_data=None, target_column='target', split_data=True)
+# data_info.feature_types_val = feature_types
+# model = BestModel(data_info=data_info, cv_data=cv_data, num_models_to_compare=3)
+# model = LinearRegressionModel(data_info=data_info, cv_data=cv_data, num_models_to_compare=2)
+# model_results = model.get_best_model()  # returns resultf of the best baseline model
+# params = model_results[1].get_params()
+# print(f"Best model: {type(model_results[1])}, with parameters:")
+# for p in params:
+#     print(p.name, ":", p.value)
 ################################### model####################################
 
 #################################### PMA####################################
 print("XXXXXXXXXXXXXXXXXXXXXXXXPost model analysisXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-PostModelAnalysis(cv_data, data_info, model=model_results[1]).analyze()
-ModelBootstrap(cv_data, data_info, model=model_results[1]).plot()
-#################################### PMA####################################
+# PostModelAnalysis(cv_data, data_info, model=model_results[1]).analyze()
+# ModelBootstrap(cv_data, data_info, model=model_results[1]).plot()
+#################################### PMA ####################################
 
 
 #################################### monitor ####################################
 print("XXXXXXXXXXXXXXXXXXXXXXXXMoitorXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-model_weaknesses = ModelWeaknesses(cv_data, data_info, model=model_results[1])
-model_weaknesses.run()
+# model_weaknesses = ModelWeaknesses(cv_data, data_info, model=model_results[1])
+# model_weaknesses.run()
 #################################### monitor####################################
