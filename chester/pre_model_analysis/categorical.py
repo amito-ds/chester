@@ -119,14 +119,13 @@ class CategoricalPreModelAnalysis:
             top_features = self.n_cols
         else:
             sample_features = min(2 * 25, int(self.n_cols / 2))
-        top_feature_names = random.sample(self.cols_sorted[0:sample_features], top_features)
-        feature_index = {feature: index for index, feature in enumerate(self.cols_sorted)}
+        top_feature_names = random.sample(self.cols_sorted[0:top_features], sample_features)
+        feature_index = {feature: index for index, feature in enumerate(self.cols_sorted[0:top_features])}
         top_feature_names.sort(key=lambda x: feature_index[x])
-
         if self.data_info.problem_type_val in ["Binary regression", "Binary classification"]:
             max_plots = 9
             top_n = self.data[:top_features].columns
-            dim = int(math.sqrt(len(top_n)))
+            dim = math.ceil(math.sqrt(len(top_n)))
             num_rows = math.ceil(max_plots / dim)
             fig, ax = plt.subplots(dim, dim)
             fig.tight_layout()
@@ -152,7 +151,6 @@ class CategoricalPreModelAnalysis:
                     crosstab = crosstab[(crosstab.T != 0).any()]
                     crosstab = crosstab.loc[:, (crosstab != 0).any(axis=0)]
                     crosstab = crosstab.loc[crosstab.sum(axis=1).sort_values(ascending=False).index[:5]]
-                    print("crosstab", crosstab)
                 sns.heatmap(crosstab, annot=False, cmap="YlGnBu", fmt='g', ax=ax_i)
                 ax_i.set_ylabel(None)
                 ax_i.set_xlabel(None)
@@ -194,6 +192,8 @@ class CategoricalPreModelAnalysis:
             rows = 4
             cols = 4
             for i, col in enumerate(top_feature_names):
+                if i > 15:
+                    return None
                 plt.subplot(rows, cols, i + 1)
                 crosstab = pd.crosstab(self.data[col], self.target, normalize='index') * 100
                 crosstab = crosstab[(crosstab.T != 0).any()]

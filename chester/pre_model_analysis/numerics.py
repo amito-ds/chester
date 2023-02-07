@@ -191,7 +191,7 @@ class NumericPreModelAnalysis:
         top_feature_names.sort(key=lambda x: feature_index[x])
 
         num_plots = len(top_feature_names)
-        dim = int(math.sqrt(num_plots))
+        dim = math.ceil(math.sqrt(num_plots))
         num_rows = math.ceil(num_plots / dim)
         fig, ax = plt.subplots(num_rows, dim)
         if self.data_info.problem_type_val in ["Binary regression"]:

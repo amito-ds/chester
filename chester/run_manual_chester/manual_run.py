@@ -23,6 +23,7 @@ from chester.preprocessing.preprocessor_handler import PreprocessHandler
 from chester.zero_break.problem_specification import DataInfo
 
 import matplotlib
+
 # matplotlib.use("Agg")
 
 matplotlib.use('TkAgg')
@@ -75,9 +76,9 @@ target_column = 'target'
 
 ################################################################################################
 # categorical features
-import seaborn as sns
-df = sns.load_dataset("tips")
-df.rename(columns={'tip': target_column}, inplace=True)
+# import seaborn as sns
+# df = sns.load_dataset("tips")
+# df.rename(columns={'tip': target_column}, inplace=True)
 ################################################################################################
 
 ################################################################################################
@@ -116,26 +117,26 @@ def generate_data(n_features, n_rows, target_type='binary'):
 
 
 # df = generate_data(20, 1000, target_type='binary')
-# df = generate_data(5, 1000, target_type='multiclass')
+# df = generate_data(30, 100, target_type='multiclass')
 ###############################################################################################
 
 ## vlad
 def load_vlad():
     df = pd.read_csv("chester/model_training/models/chester_models/data.csv")
     df.rename(columns={'TOTAL_BET_AMOUNT': 'target'}, inplace=True)
-    df['target'] = 1 * (df['REVENUE'] > 0.00001)
+    df['target'] = 1 * (df['REVENUE'] > 0.00001) + 1 * (df['REVENUE'] > 2)
     df.drop(
         columns=['REVENUE', 'Unnamed: 0', 'PLAYER_ID', 'MEDIAN_BET', 'SESSION_MINS', 'SPINS_COMPLETED', 'SPINS_STARTED',
                  'TOTAL_SPIN_LENGTH'], inplace=True)
 
     ## sample
-    class_0 = df[df['target'] == 0].sample(2500)
+    class_0 = df[df['target'] == 0].sample(5000)
     class_1 = df[df['target'] == 1]
     df = pd.concat([class_0, class_1])
     return df
 
 
-# df = load_vlad()
+df = load_vlad()
 
 # # calc data into
 print("XXXXXXXXXXXXXXXXXXXXXXXXData infoXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")

@@ -50,7 +50,7 @@ class CategoricalStats:
             ax.set_ylim(0, 1)
             return None
         else:
-            dim = int(math.sqrt(len(top_n)))
+            dim = math.ceil(math.sqrt(len(top_n)))
             num_rows = math.ceil(num_plots / dim)
             fig, ax = plt.subplots(num_rows, dim)
             fig.tight_layout()
