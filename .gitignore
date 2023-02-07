@@ -1,1 +1,3 @@
 .requirements-compiled.txt
+.chester/model_training/models/chester_models/day.csv
+.chester/model_training/models/chester_models/data.csv
