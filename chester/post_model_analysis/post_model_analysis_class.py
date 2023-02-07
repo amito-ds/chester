@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import plotly.express as px
 import seaborn as sns
 from wordcloud import WordCloud
 
@@ -187,30 +186,6 @@ class PostModelAnalysis:
         plt.legend(loc="lower right")
         print(AnalyzeMessages().roc_curve_message())
         plt.show()
-
-    # def learning_curve(self, X: pd.DataFrame, y: pd.Series) -> None:
-    #     try:
-    #         from sklearn.model_selection import learning_curve
-    #         train_sizes, train_scores, test_scores = learning_curve(self.model.model, X, y, cv=5, scoring='accuracy')
-    #         train_scores_mean = np.mean(train_scores, axis=1)
-    #         train_scores_std = np.std(train_scores, axis=1)
-    #         test_scores_mean = np.mean(test_scores, axis=1)
-    #         test_scores_std = np.std(test_scores, axis=1)
-    #         plt.plot(train_sizes, train_scores_mean, 'o-', color="r", label="Training score")
-    #         plt.plot(train_sizes, test_scores_mean, 'o-', color="g", label="Cross-validation score")
-    #         plt.fill_between(train_sizes, train_scores_mean - train_scores_std,
-    #                          train_scores_mean + train_scores_std, alpha=0.1, color="r")
-    #         plt.fill_between(train_sizes, test_scores_mean - test_scores_std,
-    #                          test_scores_mean + test_scores_std, alpha=0.1, color="g")
-    #         plt.grid()
-    #         plt.xlabel("Training examples")
-    #         plt.ylabel("Accuracy Score")
-    #         plt.title("Learning Curve")
-    #         plt.legend(loc="best")
-    #         print(AnalyzeMessages().learning_curve_message())
-    #         plt.show()
-    #     except:
-    #         pass
 
     def learning_curve(self, X: pd.DataFrame, y: pd.Series) -> None:
         import os

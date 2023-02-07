@@ -75,13 +75,13 @@ def print_analyze_message(create_wordcloud: bool = True,
 
 
 def analyze_text(df: pd.DataFrame,
-                 create_wordcloud: bool = False,
+                 create_wordcloud: bool = True,
                  corex_topics: bool = True,
-                 key_sentences: bool = False,
-                 common_words: bool = False,
-                 sentiment: bool = False,
-                 data_quality: bool = False,
-                 kewords_extraction: bool = False,
+                 key_sentences: bool = True,
+                 common_words: bool = True,
+                 sentiment: bool = True,
+                 data_quality: bool = True,
+                 kewords_extraction: bool = True,
                  corex_topics_num: int = 10,
                  top_words: int = 10,
                  n_sentences: int = 10,
@@ -134,7 +134,6 @@ def analyze_text(df: pd.DataFrame,
         print(sentiment_analysis_message)
         df = df.copy()
         modified_df = modified_df.copy()
-
         if is_clean_col_exists:
             df = analyze_sentiment(modified_df, text_column=text_column)
         else:

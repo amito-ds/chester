@@ -136,12 +136,11 @@ def visualize_performance(df, with_baseline=True):
     return pivot
 
 
-def compare_best_models(results, plot_results=False):
+def compare_best_models(results, plot_results=True):
     all_results = []
     all_results_with_models = []
     for res in results:
         result, model = res
-        # print(result)
         result_organized = pd.DataFrame(result)
         result_organized['model'] = get_model_name(model)
         all_results.append(result_organized)

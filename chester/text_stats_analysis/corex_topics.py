@@ -1,3 +1,5 @@
+import math
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -7,29 +9,27 @@ from sklearn.feature_extraction.text import CountVectorizer
 from wordcloud import WordCloud
 
 
-def plot_corex_wordcloud(df, top_words=10, n_topics=10, plot=False, text_column='text'):
-    # Get top words and weights
+def plot_corex_wordcloud(df, top_words=20, n_topics=10, plot=True, text_column='text'):
     top_words_list = get_top_words(df, top_words, n_topics, text_column=text_column)
-
+    top_words_list = pd.DataFrame(top_words_list, columns=["topic_index", "term", "weight"])
     if plot:
-        fig, axs = plt.subplots(3, 3, figsize=(15, 15))
-        fig.suptitle("Top Words Word Clouds")
+        # Plot the word cloud
+        N = math.floor(math.sqrt(n_topics))
+        fig, axs = plt.subplots(N, N, figsize=(N * 4, N * 4), dpi=100)
+        fig.suptitle("Word Clouds for Top Word for Corex Topics", fontsize=16)
 
-        for i, (words, weights) in enumerate(top_words_list[:9]):
-            # Combine words and weights into a single list
-            words = [word for word, weight in zip(words, weights)]
-            weights = [weight for word, weight in zip(words, weights)]
-
-            # Create word cloud
-            wordcloud = WordCloud(width=800, height=400)
-            wordcloud.generate_from_frequencies(dict(zip(words, weights)))
-
-            # Plot word cloud
-            axs[i // 3, i % 3].imshow(wordcloud, interpolation="bilinear")
-            axs[i // 3, i % 3].axis("off")
-            axs[i // 3, i % 3].set_title(f"Topic {i + 1}")
-
-        plt.show()
+        for i in range(N * N):
+            topic_words = top_words_list[top_words_list["topic_index"] == i]
+            topic_words = dict(zip(topic_words["term"], topic_words["weight"]))
+            subplot_index = i + 1
+            ax = plt.subplot(N, N, subplot_index)
+            wordcloud = WordCloud(width=800, height=800, background_color='black',
+                                  stopwords=None, min_font_size=10).generate_from_frequencies(topic_words)
+            plt.imshow(wordcloud)
+            plt.axis("off")
+            plt.title("Topic {}".format(i), fontsize=14)
+            plt.tight_layout()
+            plt.show()
 
 
 def get_top_words(df: pd.DataFrame,
@@ -61,7 +61,7 @@ def get_top_words(df: pd.DataFrame,
     for i, topic in enumerate(topics):
         topic_words, weights, _ = zip(*topic)
         num_words = min(top_words, len(topic_words))  # Use smaller of n and num words in topic
-        top_words_list += [(topic_words[j], weights[j]) for j in range(num_words)]
+        top_words_list += [(i, topic_words[j], weights[j]) for j in range(num_words)]
         print('\tTopic {}: '.format(i + 1) + ', '.join(topic_words))
     print("\n")
 

@@ -174,58 +174,56 @@ feature_types, final_df = feat_hand.transform()
 final_df[target_column] = data_info.data[data_info.target]
 
 #### stats: start
-# print("XXXXXXXXXXXXXXXXXXXXXXXXFeature StatsXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+print("XXXXXXXXXXXXXXXXXXXXXXXXFeature StatsXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
 data_info_num_stats = DataInfo(data=final_df, target=target_column)
 data_info_num_stats.calculate()
-# print("Numerical Feature statistics")
-# NumericStats(data_info_num_stats).run()
-# print("Categorical Feature statistics")
-# CategoricalStats(data_info).run()
-# print("Text Feature statistics")
+
+print("Numerical Feature statistics")
+NumericStats(data_info_num_stats).run()
+print("Categorical Feature statistics")
+CategoricalStats(data_info).run()
+print("Text Feature statistics")
 data_info.data = clean_text_df
 TextStats(data_info).run()
-#### stats: end
-#
-#
-# # ########## code for stats and PMA ################
-# # # pma
-# print("XXXXXXXXXXXXXXXXXXXXXXXXPre model analysisXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-# NumericPreModelAnalysis(data_info_num_stats).run()
-# data_info.data = df
-# CategoricalPreModelAnalysis(data_info).run()
-# # # ########## code for stats ################
-# #
-# # # #################################### model####################################
-# # # # encode labels if needed (for classification problem only)
-# print("XXXXXXXXXXXXXXXXXXXXXXXXModel runXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-# if data_info.problem_type_val in ["Binary classification", "Multiclass classification"]:
-#     print("Encoding target")
-#     label_encoder = LabelEncoder()
-#     final_df[target_column] = label_encoder.fit_transform(final_df[target_column])
+### stats: end
+
+
+########## code for stats and PMA ################
+# pma
+print("XXXXXXXXXXXXXXXXXXXXXXXXPre model analysisXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+NumericPreModelAnalysis(data_info_num_stats).run()
+data_info.data = df
+CategoricalPreModelAnalysis(data_info).run()
+# ########## code for stats ################
+
+# #################################### model####################################
+# encode labels if needed (for classification problem only)
+print("XXXXXXXXXXXXXXXXXXXXXXXXModel runXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+if data_info.problem_type_val in ["Binary classification", "Multiclass classification"]:
+    print("Encoding target")
+    label_encoder = LabelEncoder()
+    final_df[target_column] = label_encoder.fit_transform(final_df[target_column])
 #
 # # Run the model
-# cv_data = CVData(train_data=final_df, test_data=None, target_column='target', split_data=True)
-# data_info.feature_types_val = feature_types
-# model = BestModel(data_info=data_info, cv_data=cv_data, num_models_to_compare=3)
-# # model = LogisticRegressionModel(data_info=data_info, cv_data=cv_data, num_models_to_compare=3)
-# # model = LinearRegressionModel(data_info=data_info, cv_data=cv_data, num_models_to_compare=2)
-# # model = CatboostModel(data_info=data_info, cv_data=cv_data, num_models_to_compare=2)
-# model_results = model.get_best_model()  # returns resultf of the best baseline model
-# params = model_results[1].get_params()
-# print(f"Best model: {type(model_results[1])}, with parameters:")
-# for p in params:
-#     print(p.name, ":", p.value)
-# ################################### model####################################
-#
-# #################################### PMA####################################
-# print("XXXXXXXXXXXXXXXXXXXXXXXXPost model analysisXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-# PostModelAnalysis(cv_data, data_info, model=model_results[1]).analyze()
-# ModelBootstrap(cv_data, data_info, model=model_results[1]).plot()
-# #################################### PMA ####################################
-#
-#
-# #################################### monitor ####################################
-# print("XXXXXXXXXXXXXXXXXXXXXXXXMoitorXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-# model_weaknesses = ModelWeaknesses(cv_data, data_info, model=model_results[1])
-# model_weaknesses.run()
-# #################################### monitor####################################
+cv_data = CVData(train_data=final_df, test_data=None, target_column='target', split_data=True)
+data_info.feature_types_val = feature_types
+model = BestModel(data_info=data_info, cv_data=cv_data, num_models_to_compare=3)
+model_results = model.get_best_model()  # returns resultf of the best baseline model
+params = model_results[1].get_params()
+print(f"Best model: {type(model_results[1])}, with parameters:")
+for p in params:
+    print(p.name, ":", p.value)
+################################### model####################################
+
+#################################### PMA####################################
+print("XXXXXXXXXXXXXXXXXXXXXXXXPost model analysisXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+PostModelAnalysis(cv_data, data_info, model=model_results[1]).analyze()
+ModelBootstrap(cv_data, data_info, model=model_results[1]).plot()
+#################################### PMA ####################################
+
+
+#################################### monitor ####################################
+print("XXXXXXXXXXXXXXXXXXXXXXXXMoitorXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+model_weaknesses = ModelWeaknesses(cv_data, data_info, model=model_results[1])
+model_weaknesses.run()
+#################################### monitor####################################
