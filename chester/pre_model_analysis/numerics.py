@@ -173,7 +173,6 @@ class NumericPreModelAnalysis:
             random_state=21,
             normalize_plurals=True).generate_from_frequencies(dict(features_pvalues))
         plt.imshow(wordcloud)
-        plt.axis("off")
         plt.title(title, fontsize=15)
         plt.show()
         return None
@@ -253,29 +252,6 @@ class NumericPreModelAnalysis:
                     sns.heatmap(contingency_table_pct, annot=False, cmap='Blues')
                     plt.ylabel(col, fontsize=8, fontweight='bold')
                     plt.xlabel(None)
-            # plt2.suptitle("Partial Plot to Identify Patterns between Sampled Numeric Features and Target\n"
-            #               "Showing % from Target (column)",
-            #               fontsize=14, fontweight='bold')
-            # for i in range(len(top_feature_names)):
-            #     if i < 9:
-            #         plt2.subplot(3, 3, i + 1)
-            #         col = top_feature_names[i]
-            #         data_col = self.data[[col]]
-            #         num_groups = min(floor(self.data_info.rows / 20), 10)
-            #         kmeans = KMeans(n_clusters=num_groups, n_init=10)
-            #         if self.data[col].isna().any():
-            #             data_col = self.median_imputation(data_col)
-            #         kmeans.fit(data_col)
-            #         labels = kmeans.labels_
-            #         top_5_target_values = self.target.value_counts().index[:5]
-            #         target_filtered = self.target[self.target.isin(top_5_target_values)]
-            #         labels_filtered = labels[self.target.isin(top_5_target_values)]
-            #         contingency_table = pd.crosstab(index=labels_filtered, columns=target_filtered)
-            #         contingency_table_pct = contingency_table.div(contingency_table.sum(0), axis=1)
-            #         sns.heatmap(contingency_table_pct, annot=False, cmap='Blues')
-            #         plt2.ylabel(col, fontsize=8, fontweight='bold')
-            #         plt2.xlabel(None)
-            # plt2.show()
             plt.show()
             return None
 

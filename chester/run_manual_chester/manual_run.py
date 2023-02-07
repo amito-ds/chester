@@ -22,22 +22,22 @@ from chester.pre_model_analysis.numerics import NumericPreModelAnalysis
 from chester.preprocessing.preprocessor_handler import PreprocessHandler
 from chester.zero_break.problem_specification import DataInfo
 
-# import matplotlib
+import matplotlib
 # matplotlib.use("Agg")
 
-
+matplotlib.use('TkAgg')
 target_column = 'target'
 
 
 ################################################################################################
-df1 = load_data_pirates().assign(target='pirate').sample(100, replace=True)
-df2 = load_data_king_arthur().assign(target='arthur').sample(100, replace=True)
-df3 = load_data_chat_logs().assign(target='chat').sample(100, replace=True)
-df = pd.concat([df1, df2
-                , df3
-                ])
-df['text_trimmed'] = df['text'].apply(lambda x: x[:100])
-df.rename(columns={'text': 'text_a'}, inplace=True)
+# df1 = load_data_pirates().assign(target='pirate').sample(100, replace=True)
+# df2 = load_data_king_arthur().assign(target='arthur').sample(100, replace=True)
+# df3 = load_data_chat_logs().assign(target='chat').sample(100, replace=True)
+# df = pd.concat([df1, df2
+#                 , df3
+#                 ])
+# df['text_trimmed'] = df['text'].apply(lambda x: x[:100])
+# df.rename(columns={'text': 'text_a'}, inplace=True)
 ################################################################################################
 
 
@@ -75,9 +75,9 @@ df.rename(columns={'text': 'text_a'}, inplace=True)
 
 ################################################################################################
 # categorical features
-# import seaborn as sns
-# df = sns.load_dataset("tips")
-# df.rename(columns={'tip': target_column}, inplace=True)
+import seaborn as sns
+df = sns.load_dataset("tips")
+df.rename(columns={'tip': target_column}, inplace=True)
 ################################################################################################
 
 ################################################################################################

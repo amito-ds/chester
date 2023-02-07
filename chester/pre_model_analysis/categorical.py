@@ -1,18 +1,17 @@
 import math
+import random
 from math import floor
 
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
+import seaborn as sns
 from matplotlib.patches import Patch
 from pandas.errors import SettingWithCopyWarning
-from wordcloud import WordCloud
 from sklearn.manifold import TSNE
-from sklearn.preprocessing import OneHotEncoder
+from wordcloud import WordCloud
 
 from chester.zero_break.problem_specification import DataInfo
-import random
-import seaborn as sns
-import numpy as np
 
 
 class CategoricalPreModelAnalysis:
@@ -164,8 +163,8 @@ class CategoricalPreModelAnalysis:
             from sklearn.cluster import KMeans
             target = self.target
             kmeans = KMeans(n_clusters=10)
-            clusters = kmeans.fit_predict(target.values.reshape(-1, 1))
-            target["cluster"] = clusters
+            kmeans.fit(self.target_df)
+            target_labels = kmeans.labels_
             plt.figure(figsize=(12, 12))
             plt.suptitle("Partial Plot to Identify Patterns between Categorical Sampled Features and Target",
                          fontsize=16,
@@ -179,7 +178,7 @@ class CategoricalPreModelAnalysis:
                 if column.dtype == "object":
                     column = column.astype("category").cat.codes
                     column = column[column < 5]
-                crosstab = pd.crosstab(target["cluster"], column, normalize='index')
+                crosstab = pd.crosstab(target_labels, column, normalize='index')
                 sns.heatmap(crosstab, annot=False, cmap='Greens', cbar=True)
                 plt.ylabel("Clusters")
                 plt.xlabel("{} Value".format(col))
@@ -223,7 +222,7 @@ class CategoricalPreModelAnalysis:
         ax.spines['left'].set_linewidth(0.5)
         ax.spines['bottom'].set_linewidth(0.5)
         ax.tick_params(axis='both', which='both', labelsize=12)
-        plt.show(block=False)
+        plt.show()
         return None
 
     @staticmethod
@@ -242,20 +241,20 @@ class CategoricalPreModelAnalysis:
         plt.imshow(wordcloud)
         plt.axis("off")
         plt.title(title, fontsize=15)
-        plt.show(block=False)
+        plt.show()
         return None
 
     def run(self):
         if self.n_cols > 1:
-            # self.analyze_pvalue()
+            self.analyze_pvalue()
             if 'classification' or 'binary regression' in self.data_info.problem_type_val.lower():
                 self.partial_plot(classification_row_percent=False)
                 self.partial_plot(classification_row_percent=True)
             else:
                 self.partial_plot()
-            # self.tsne()
+            self.tsne()
         elif self.n_cols == 1:
-            self.analyze_pvalue()
+            self.analyze_pvalue(is_plot=False)
             self.partial_plot()
         return None
 
