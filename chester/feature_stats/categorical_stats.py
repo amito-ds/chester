@@ -56,18 +56,13 @@ class CategoricalStats:
             fig.tight_layout()
             fig.suptitle("Top 5 Value % for Each Feature")
             for i, col in enumerate(top_n):
-                data = self.data[col].value_counts(normalize=True)[0:dim]
-                print("this is data: \n", data)
+                data = pd.DataFrame(self.data[col].value_counts(normalize=True)[0:5]).reset_index(drop=False)
                 plot_title = f"{col}"
-                row = i // dim
-                col = i % dim
-                sns.barplot(x=data.index, y=data.values, ax=ax[i])
-                height = data.values[i]
-                # ax[i].annotate(data.index[i], xy=(i, height), xytext=(0, 3), textcoords="offset points", ha='center',
-                #                va='bottom')
-                ax[i].set_title(plot_title)
-                ax[i].set_xlabel(None)
-                ax[i].set_ylim(0, 1)
+                ax_i = ax[i // dim, i % dim]
+                sns.barplot(x=data.iloc[:, 0], y=data.iloc[:, 1].to_list(), ax=ax_i)
+                ax_i.set_title(plot_title)
+                ax_i.set_xlabel(None)
+                ax_i.set_ylim(0, 1)
             plt.tight_layout()
             plt.show()
             return None

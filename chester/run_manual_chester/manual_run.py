@@ -86,46 +86,46 @@ target_column = 'target'
 
 ###############################################################################################
 
-# def generate_data(n_features, n_rows, target_type='binary'):
-#     if target_type == 'binary':
-#         # Create binary target column
-#         target = np.random.choice(['yes', 'no'], size=n_rows)
-#     elif target_type == 'multiclass':
-#         # Create multiclass target column
-#         target = np.random.choice(['class_1', 'class_2', 'class_3', 'class_4',
-#                                    'class_5', 'class_6', 'class_7', 'class_8',
-#                                    'class_9', 'class_10', 'class_11', 'class_12'], size=n_rows)
-#     else:
-#         raise ValueError("Invalid target_type. Must be either 'binary' or 'multiclass'.")
-#
-#     # Create feature categorical columns
-#     features = {}
-#     for i in range(n_features):
-#         feature = np.random.choice(['A', 'B', 'C', 'D'], size=n_rows)
-#         features[f'feature_{i}'] = feature
-#
-#     # Create pandas DataFrame
-#     df = pd.DataFrame(features)
-#     df['target'] = target
-#
-#     return df
+def generate_data(n_features, n_rows, target_type='binary'):
+    if target_type == 'binary':
+        # Create binary target column
+        target = np.random.choice(['yes', 'no'], size=n_rows)
+    elif target_type == 'multiclass':
+        # Create multiclass target column
+        target = np.random.choice(['class_1', 'class_2', 'class_3', 'class_4',
+                                   'class_5', 'class_6', 'class_7', 'class_8',
+                                   'class_9', 'class_10', 'class_11', 'class_12'], size=n_rows)
+    else:
+        raise ValueError("Invalid target_type. Must be either 'binary' or 'multiclass'.")
+
+    # Create feature categorical columns
+    features = {}
+    for i in range(n_features):
+        feature = np.random.choice(['A', 'B', 'C', 'D'], size=n_rows)
+        features[f'feature_{i}'] = feature
+
+    # Create pandas DataFrame
+    df = pd.DataFrame(features)
+    df['target'] = target
+
+    return df
 
 
 # df = generate_data(20, 1000, target_type='binary')
-# df = generate_data(5, 1000, target_type='multiclass')
+df = generate_data(5, 1000, target_type='multiclass')
 ###############################################################################################
 
 ### vlad
-df = pd.read_csv("chester/model_training/models/chester_models/data.csv")
-df.rename(columns={'TOTAL_BET_AMOUNT': 'target'}, inplace=True)
-df['target'] = 1 * (df['REVENUE'] > 0.00001)
-df.drop(columns=['REVENUE', 'Unnamed: 0', 'PLAYER_ID', 'MEDIAN_BET', 'SESSION_MINS', 'SPINS_COMPLETED', 'SPINS_STARTED',
-                 'TOTAL_SPIN_LENGTH'], inplace=True)
-
-## sample
-class_0 = df[df['target'] == 0].sample(2500)
-class_1 = df[df['target'] == 1]
-df = pd.concat([class_0, class_1])
+# df = pd.read_csv("chester/model_training/models/chester_models/data.csv")
+# df.rename(columns={'TOTAL_BET_AMOUNT': 'target'}, inplace=True)
+# df['target'] = 1 * (df['REVENUE'] > 0.00001)
+# df.drop(columns=['REVENUE', 'Unnamed: 0', 'PLAYER_ID', 'MEDIAN_BET', 'SESSION_MINS', 'SPINS_COMPLETED', 'SPINS_STARTED',
+#                  'TOTAL_SPIN_LENGTH'], inplace=True)
+#
+# ## sample
+# class_0 = df[df['target'] == 0].sample(2500)
+# class_1 = df[df['target'] == 1]
+# df = pd.concat([class_0, class_1])
 
 # fill na for numerics
 # columns = ['END_LEVEL', 'ENDING_BANKROLL', 'LEVEL_UPS', 'MAX_BETS', 'SESSIONS',
