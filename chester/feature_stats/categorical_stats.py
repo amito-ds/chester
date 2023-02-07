@@ -33,7 +33,7 @@ class CategoricalStats:
 
     import math
 
-    def plot_value_counts(self, n=25):
+    def plot_value_counts(self, n=25, norm=True):
         if not self.any_categorical():
             return None
         top_n = self.cols_sorted[:min(len(self.cols_sorted), n)]
@@ -42,7 +42,7 @@ class CategoricalStats:
             col = top_n[0]
             fig, ax = plt.subplots(1, 1, figsize=(20, 5))
             cat_col = self.data[col].apply(lambda x: "cat " + str(x))
-            data = cat_col.value_counts(normalize=True)
+            data = cat_col.value_counts(normalize=norm)
             sns.barplot(x=data.index[:5], y=data.values[:5], ax=ax)
             plot_title = f"{col}"
             ax.set_title(plot_title)
@@ -50,19 +50,23 @@ class CategoricalStats:
             ax.set_ylim(0, 1)
             return None
         else:
-            dim = 4
+            dim = int(math.sqrt(len(top_n)))
             num_rows = math.ceil(num_plots / dim)
             fig, ax = plt.subplots(num_rows, dim)
             fig.tight_layout()
-            fig.suptitle("Top 5 Value % for Each Feature")
+            if norm:
+                fig.suptitle("Top 5 Value % for Each Feature")
+            else:
+                fig.suptitle("Top 5 Value Counts for Each Feature")
             for i, col in enumerate(top_n):
-                data = pd.DataFrame(self.data[col].value_counts(normalize=True)[0:5]).reset_index(drop=False)
+                data = pd.DataFrame(self.data[col].value_counts(normalize=norm)[0:5]).reset_index(drop=False)
                 plot_title = f"{col}"
                 ax_i = ax[i // dim, i % dim]
                 sns.barplot(x=data.iloc[:, 0], y=data.iloc[:, 1].to_list(), ax=ax_i)
                 ax_i.set_title(plot_title)
                 ax_i.set_xlabel(None)
-                ax_i.set_ylim(0, 1)
+                if norm:
+                    ax_i.set_ylim(0, 1)
             plt.tight_layout()
             plt.show()
             return None
@@ -103,7 +107,8 @@ class CategoricalStats:
 
     def run(self):
         self.calculate_stats()
-        self.plot_value_counts()
+        self.plot_value_counts(norm=True)
+        self.plot_value_counts(norm=False)
         return None
 
 

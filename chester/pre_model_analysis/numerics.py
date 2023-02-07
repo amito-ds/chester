@@ -1,7 +1,9 @@
+import math
 import random
-from math import floor
+from math import floor, ceil
 
 import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt2
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -176,7 +178,7 @@ class NumericPreModelAnalysis:
         plt.show()
         return None
 
-    def partial_plot(self):
+    def partial_plot(self, classification_row_percent=True):
         import warnings
         warnings.simplefilter("ignore")
         top_features = 25
@@ -188,21 +190,25 @@ class NumericPreModelAnalysis:
         top_feature_names = random.sample(self.cols_sorted[0:sample_features], top_features)
         feature_index = {feature: index for index, feature in enumerate(self.cols_sorted)}
         top_feature_names.sort(key=lambda x: feature_index[x])
+
+        num_plots = len(top_feature_names)
+        dim = int(math.sqrt(num_plots))
+        num_rows = math.ceil(num_plots / dim)
+        fig, ax = plt.subplots(num_rows, dim)
         if self.data_info.problem_type_val in ["Binary regression"]:
-            plt.figure(figsize=(10, 6))
-            plt.suptitle("Partial Plot to Identify Patterns between Sampled Numeric Features and Target", fontsize=16,
-                         fontweight='bold')
+            plt.suptitle("Partial Plot to Identify Patterns between Sampled Numeric Features and Target",
+                         fontsize=16, fontweight='bold')
             for i in range(len(top_feature_names)):
-                plt.subplot(1, top_features, i + 1)
                 col = top_feature_names[i]
                 column = self.data[col]
                 target = self.target
-                sns.regplot(x=column, y=target, logistic=True, n_boot=500, y_jitter=.03)
-                plt.xlabel(col)
-                plt.ylabel(self.data_info.target)
+                ax_i = ax[i // dim, i % dim]
+                sns.regplot(x=column, y=target, logistic=True, n_boot=250, y_jitter=.03, ax=ax_i)
+                ax_i.set_xlabel("")
+                ax_i.set_ylabel("")
+                ax_i.set_title(col, fontweight='bold', transform=ax_i.transAxes, y=0.5)
             plt.show()
         if self.data_info.problem_type_val in ["Regression"]:
-            plt.figure(figsize=(12, 12))
             plt.suptitle("Partial Plot to Identify Patterns between Sampled Numeric Features and Target", fontsize=16,
                          fontweight='bold')
             grid_size = 4
@@ -216,38 +222,18 @@ class NumericPreModelAnalysis:
                 plt.xlabel(col)
                 plt.ylabel(self.data_info.target)
             plt.show()
-        elif self.data_info.problem_type_val in ["Binary classification"]:
-            rows = ceil(len(top_feature_names) / 2)
-            plt.figure(figsize=(9, 6 * rows))
-            plt.suptitle("Partial Plot to Identify Patterns between Sampled Numeric Features and Target Label",
-                         fontsize=16,
-                         fontweight='bold')
-            for i in range(rows):
-                for j in range(2):
-                    if i * 2 + j < len(top_feature_names):
-                        plt.subplot(rows, 2, i * 2 + j + 1)
-                        col = top_feature_names[i * 2 + j]
-                        data_col = self.data[[col]]
-                        num_groups = min(floor(self.data_info.rows / 20), 10)
-                        kmeans = KMeans(n_clusters=num_groups, n_init=10)
-                        if self.data[col].isna().any():
-                            data_col = self.median_imputation(data_col)
-                        kmeans.fit(data_col)
-                        labels = kmeans.labels_
-                        contingency_table = pd.crosstab(index=labels, columns=self.target)
-                        contingency_table_pct = contingency_table.div(contingency_table.sum(1), axis=0)
-                        sns.heatmap(contingency_table_pct, annot=False, cmap='Blues')
-                        plt.ylabel("Cluster", fontsize=12, fontweight='bold')
-                        plt.title(col, fontsize=12, fontweight='bold')
-            plt.show()
-        elif self.data_info.problem_type_val in ["Multiclass classification"]:
-            plt.figure(figsize=(8, 8))
-            plt.suptitle("Partial Plot to Identify Patterns between Sampled Numeric Features and Target Label",
-                         fontsize=16,
-                         fontweight='bold')
+        elif self.data_info.problem_type_val in ["Multiclass classification", "Binary classification"]:
+            if classification_row_percent:
+                plt.suptitle("Partial Plot to Identify Patterns between Sampled Numeric Features and Target\n"
+                             "Showing % from cluster (row)",
+                             fontsize=14, fontweight='bold')
+            else:
+                plt.suptitle("Partial Plot to Identify Patterns between Sampled Numeric Features and Target\n"
+                             "Showing % from Target (column)",
+                             fontsize=14, fontweight='bold')
             for i in range(len(top_feature_names)):
-                if i < 4:
-                    plt.subplot(2, 2, i + 1)
+                if i < 9:
+                    plt.subplot(3, 3, i + 1)
                     col = top_feature_names[i]
                     data_col = self.data[[col]]
                     num_groups = min(floor(self.data_info.rows / 20), 10)
@@ -260,24 +246,55 @@ class NumericPreModelAnalysis:
                     target_filtered = self.target[self.target.isin(top_5_target_values)]
                     labels_filtered = labels[self.target.isin(top_5_target_values)]
                     contingency_table = pd.crosstab(index=labels_filtered, columns=target_filtered)
-                    contingency_table_pct = contingency_table.div(contingency_table.sum(1), axis=0)
+                    if classification_row_percent:
+                        contingency_table_pct = contingency_table.div(contingency_table.sum(1), axis=0)
+                    else:
+                        contingency_table_pct = contingency_table.div(contingency_table.sum(0), axis=1)
                     sns.heatmap(contingency_table_pct, annot=False, cmap='Blues')
-                    plt.ylabel("Cluster", fontsize=12, fontweight='bold')
-                    # plt.title(col, fontsize=12, fontweight='bold')
+                    plt.ylabel(col, fontsize=8, fontweight='bold')
+                    plt.xlabel(None)
+            # plt2.suptitle("Partial Plot to Identify Patterns between Sampled Numeric Features and Target\n"
+            #               "Showing % from Target (column)",
+            #               fontsize=14, fontweight='bold')
+            # for i in range(len(top_feature_names)):
+            #     if i < 9:
+            #         plt2.subplot(3, 3, i + 1)
+            #         col = top_feature_names[i]
+            #         data_col = self.data[[col]]
+            #         num_groups = min(floor(self.data_info.rows / 20), 10)
+            #         kmeans = KMeans(n_clusters=num_groups, n_init=10)
+            #         if self.data[col].isna().any():
+            #             data_col = self.median_imputation(data_col)
+            #         kmeans.fit(data_col)
+            #         labels = kmeans.labels_
+            #         top_5_target_values = self.target.value_counts().index[:5]
+            #         target_filtered = self.target[self.target.isin(top_5_target_values)]
+            #         labels_filtered = labels[self.target.isin(top_5_target_values)]
+            #         contingency_table = pd.crosstab(index=labels_filtered, columns=target_filtered)
+            #         contingency_table_pct = contingency_table.div(contingency_table.sum(0), axis=1)
+            #         sns.heatmap(contingency_table_pct, annot=False, cmap='Blues')
+            #         plt2.ylabel(col, fontsize=8, fontweight='bold')
+            #         plt2.xlabel(None)
+            # plt2.show()
             plt.show()
             return None
 
     def run(self):
         if self.n_cols > 1:
-            print("analyze pvalue in numerics")
             self.analyze_pvalue()
-            # print("analyze partial plots in numerics")
-            # self.partial_plot()
-            print("analyze tsne")
+            if 'classification' in self.data_info.problem_type_val.lower():
+                self.partial_plot(classification_row_percent=True)
+                # self.partial_plot(classification_row_percent=False)
+            else:
+                self.partial_plot()
             self.tsne()
         elif self.n_cols == 1:
             self.analyze_pvalue()
-            self.partial_plot()
+            if 'classification' in self.data_info.problem_type_val.lower():
+                self.partial_plot(classification_row_percent=True)
+                self.partial_plot(classification_row_percent=False)
+            else:
+                self.partial_plot()
         return None
 
 

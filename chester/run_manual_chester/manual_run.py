@@ -26,14 +26,16 @@ from chester.zero_break.problem_specification import DataInfo
 
 target_column = 'target'
 ################################################################################################
-# df1 = load_data_pirates().assign(target='pirate').sample(100, replace=True)
-# df2 = load_data_king_arthur().assign(target='arthur').sample(100, replace=True)
-# df3 = load_data_chat_logs().assign(target='chat').sample(100, replace=True)
-# df = pd.concat([df1, df2
-# , df3
-# ])
+df1 = load_data_pirates().assign(target='pirate').sample(100, replace=True)
+df2 = load_data_king_arthur().assign(target='arthur').sample(100, replace=True)
+df3 = load_data_chat_logs().assign(target='chat').sample(100, replace=True)
+df = pd.concat([df1, df2
+                # , df3
+                ])
 # df['text_trimmed'] = df['text'].apply(lambda x: x[:100])
-# df.rename(columns={'text': 'text_a'}, inplace=True)
+df.rename(columns={'text': 'text_a'}, inplace=True)
+
+
 ################################################################################################
 
 
@@ -112,26 +114,26 @@ def generate_data(n_features, n_rows, target_type='binary'):
 
 
 # df = generate_data(20, 1000, target_type='binary')
-df = generate_data(5, 1000, target_type='multiclass')
+# df = generate_data(5, 1000, target_type='multiclass')
 ###############################################################################################
 
-### vlad
-# df = pd.read_csv("chester/model_training/models/chester_models/data.csv")
-# df.rename(columns={'TOTAL_BET_AMOUNT': 'target'}, inplace=True)
-# df['target'] = 1 * (df['REVENUE'] > 0.00001)
-# df.drop(columns=['REVENUE', 'Unnamed: 0', 'PLAYER_ID', 'MEDIAN_BET', 'SESSION_MINS', 'SPINS_COMPLETED', 'SPINS_STARTED',
-#                  'TOTAL_SPIN_LENGTH'], inplace=True)
-#
-# ## sample
-# class_0 = df[df['target'] == 0].sample(2500)
-# class_1 = df[df['target'] == 1]
-# df = pd.concat([class_0, class_1])
+## vlad
+def load_vlad():
+    df = pd.read_csv("chester/model_training/models/chester_models/data.csv")
+    df.rename(columns={'TOTAL_BET_AMOUNT': 'target'}, inplace=True)
+    df['target'] = 1 * (df['REVENUE'] > 0.00001)
+    df.drop(
+        columns=['REVENUE', 'Unnamed: 0', 'PLAYER_ID', 'MEDIAN_BET', 'SESSION_MINS', 'SPINS_COMPLETED', 'SPINS_STARTED',
+                 'TOTAL_SPIN_LENGTH'], inplace=True)
 
-# fill na for numerics
-# columns = ['END_LEVEL', 'ENDING_BANKROLL', 'LEVEL_UPS', 'MAX_BETS', 'SESSIONS',
-#            'SLOT_WIN_COINS', 'START_LEVEL', 'STARTING_BANKROLL', 'TOTAL_FREE_COINS',
-#            'TOTAL_OOC', 'TOTAL_WIN_AMOUNT']
-# df[columns] = df[columns].fillna(0.0)
+    ## sample
+    class_0 = df[df['target'] == 0].sample(2500)
+    class_1 = df[df['target'] == 1]
+    df = pd.concat([class_0, class_1])
+    return df
+
+
+df = load_vlad()
 
 # # calc data into
 print("XXXXXXXXXXXXXXXXXXXXXXXXData infoXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
@@ -172,13 +174,13 @@ feature_types, final_df = feat_hand.transform()
 final_df[target_column] = data_info.data[data_info.target]
 
 #### stats: start
-print("XXXXXXXXXXXXXXXXXXXXXXXXFeature StatsXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+# print("XXXXXXXXXXXXXXXXXXXXXXXXFeature StatsXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
 data_info_num_stats = DataInfo(data=final_df, target=target_column)
 data_info_num_stats.calculate()
 # print("Numerical Feature statistics")
 # NumericStats(data_info_num_stats).run()
-print("Categorical Feature statistics")
-CategoricalStats(data_info).run()
+# print("Categorical Feature statistics")
+# CategoricalStats(data_info).run()
 # print("Text Feature statistics")
 # data_info.data = clean_text_df
 # TextStats(data_info).run()
@@ -189,8 +191,8 @@ CategoricalStats(data_info).run()
 # # pma
 print("XXXXXXXXXXXXXXXXXXXXXXXXPre model analysisXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
 # NumericPreModelAnalysis(data_info_num_stats).run()
-# data_info.data = df
-# CategoricalPreModelAnalysis(data_info).run()
+data_info.data = df
+CategoricalPreModelAnalysis(data_info).run()
 # # ########## code for stats ################
 #
 # # #################################### model####################################
