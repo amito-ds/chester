@@ -27,8 +27,10 @@ class NumericStats:
         sorted_variances = sorted(variances, key=lambda x: x[1], reverse=True)
         return [x[0] for x in sorted_variances]
 
-    def plot_correlation(self, n=25):
+    def plot_correlation(self, n=25, plot=True):
         if not self.any_numeric():
+            return None
+        if not plot:
             return None
         top_n = self.cols_sorted[:min(len(self.cols_sorted), 3 * n)]
         top_n_sampled = top_n[:min(len(top_n), n)]
@@ -86,13 +88,13 @@ class NumericStats:
             print(format_df(results_df))
         return results_df
 
-    def run(self):
+    def run(self, plot=True):
         self.calculate_stats()
-        self.plot_correlation()
+        self.plot_correlation(plot=plot)
         return None
 
 
-def format_df(df, max_value_width=12, col_max_value_width=20, ci_max_value_width=15,
+def format_df(df, max_value_width=12, col_max_value_width=25, ci_max_value_width=15,
               ci_col="CI", col_col="col"):
     pd.options.display.max_columns = None
 

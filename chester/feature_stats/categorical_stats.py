@@ -33,8 +33,10 @@ class CategoricalStats:
 
     import math
 
-    def plot_value_counts(self, n=25, norm=True):
+    def plot_value_counts(self, n=25, norm=True, plot=True):
         if not self.any_categorical():
+            return None
+        if not plot:
             return None
         top_n = self.cols_sorted[:min(len(self.cols_sorted), n)]
         num_plots = len(top_n)
@@ -76,7 +78,6 @@ class CategoricalStats:
             return None
         result_dicts = []
         for col in self.cols:
-            print("now in col", col)
             data = self.data[col]
             unique_values = data.nunique()
             missing_values = data.isnull().sum()
@@ -91,7 +92,7 @@ class CategoricalStats:
             values_to_sample = 3
             if col_len < values_to_sample:
                 values_to_sample = col_len
-            sample_values = data_unique_values.sample(min(col_len, values_to_sample)).values
+            sample_values = [str(value) for value in data_unique_values.sample(min(col_len, values_to_sample)).values]
             result_dicts[-1]['Sample'] = ', '.join(sample_values)
 
             # add more columns
@@ -105,10 +106,10 @@ class CategoricalStats:
             print(format_df(results_df))
         return results_df
 
-    def run(self):
+    def run(self, plot=True):
         self.calculate_stats()
-        self.plot_value_counts(norm=True)
-        self.plot_value_counts(norm=False)
+        self.plot_value_counts(norm=True, plot=plot)
+        self.plot_value_counts(norm=False, plot=plot)
         return None
 
 

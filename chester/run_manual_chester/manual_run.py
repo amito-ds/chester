@@ -1,6 +1,8 @@
+from collections import Counter
+
 import pandas as pd
 from flatbuffers.builder import np
-from sklearn.datasets import fetch_openml
+from sklearn.datasets import fetch_openml, fetch_20newsgroups
 from sklearn.preprocessing import LabelEncoder
 
 from chester.cleaning.cleaner_handler import CleanerHandler
@@ -19,6 +21,7 @@ from chester.model_training.models.chester_models.best_model import BestModel
 from chester.post_model_analysis.post_model_analysis_class import PostModelAnalysis
 from chester.pre_model_analysis.categorical import CategoricalPreModelAnalysis
 from chester.pre_model_analysis.numerics import NumericPreModelAnalysis
+from chester.pre_model_analysis.target import TargetPreModelAnalysis
 from chester.preprocessing.preprocessor_handler import PreprocessHandler
 from chester.zero_break.problem_specification import DataInfo
 
@@ -70,7 +73,7 @@ target_column = 'target'
 # df = pd.DataFrame(X)
 # df.rename(columns={col: "feat_" + str(col) for col in df.columns}, inplace=True)
 # df['target'] = digits.target
-# df['target'] = "category: " + df['target'].astype(str)
+# df['target'] = "c_ " + df['target'].astype(str)
 ################################################################################################
 
 
@@ -136,7 +139,59 @@ def load_vlad():
     return df
 
 
-df = load_vlad()
+def load_ex1():
+    data = pd.read_csv("chester/model_training/models/chester_models/lead_df_2023-01-23.csv")
+    data.rename(columns={'lawer_conversion_label': target_column}, inplace=True)
+    data.drop(columns=["LEAD_ID"], inplace=True)
+    return data
+
+
+def load_ex2():
+    newsgroups_train = fetch_20newsgroups(subset='train')
+    df = pd.DataFrame(newsgroups_train.data, columns=['text'])
+    y = newsgroups_train.target
+    df['target'] = y
+    category_counts = Counter(y)
+    top_3_categories = category_counts.most_common(4)
+    top_3_categories = [cat for cat, count in top_3_categories]
+    df = df[df.target.isin(top_3_categories)].sample(1500)
+    df['target'] = "c_ " + df['target'].astype(str)
+    return df
+
+
+import ml_datasets
+
+
+def load_ex3():
+    train_data, _ = ml_datasets.dbpedia()
+    train_data = pd.DataFrame(train_data, columns=["text", "target"])
+    train_data['target'] = "c_: " + train_data['target'].astype(str)
+    return train_data
+
+
+def load_ex4():
+    train_data, _ = ml_datasets.cmu()
+    train_data = pd.DataFrame(train_data, columns=["text", "target"])
+    train_data['target'] = "category: " + train_data['target'].astype(str)
+    train_data = train_data[train_data['target'].isin(train_data['target'].value_counts()[:5].index)]
+    return train_data
+
+
+
+def load_ex5():
+    train_data, _ = ml_datasets.quora_questions()
+    train_data = [(a, b, c) for ((a, b), c) in train_data]
+    train_data = pd.DataFrame(train_data, columns=["text1", "text2", "target"])
+    return train_data
+
+
+# load data
+# df = load_vlad()
+# df = load_ex1()
+# df = load_ex2()
+# df = load_ex3().sample(1000)
+# df = load_ex4().sample(1000)
+# df = load_ex5().sample(900)
 
 # # calc data into
 print("XXXXXXXXXXXXXXXXXXXXXXXXData infoXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
@@ -180,7 +235,7 @@ final_df[target_column] = data_info.data[data_info.target]
 print("XXXXXXXXXXXXXXXXXXXXXXXXFeature StatsXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
 data_info_num_stats = DataInfo(data=final_df, target=target_column)
 data_info_num_stats.calculate()
-
+TargetPreModelAnalysis(data_info).run()
 print("Numerical Feature statistics")
 NumericStats(data_info_num_stats).run()
 print("Categorical Feature statistics")
@@ -189,7 +244,6 @@ print("Text Feature statistics")
 data_info.data = clean_text_df
 TextStats(data_info).run()
 ### stats: end
-
 
 ########## code for stats and PMA ################
 # pma
