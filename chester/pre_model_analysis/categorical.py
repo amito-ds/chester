@@ -106,7 +106,7 @@ class CategoricalPreModelAnalysis:
             if self.n_cols > 50:
                 print("plotting!")
                 self.plot_histogram_pvalues(self.cols_sorted_with_pvalue)
-        print("Pvalues for top features:")
+        print("Pvalues for top categorical features:")
         print(pd.DataFrame(self.cols_sorted_with_pvalue[0:top_features], columns=["feature", "pvalue"]))
 
     def partial_plot(self, classification_row_percent=True):

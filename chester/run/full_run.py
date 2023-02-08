@@ -1,13 +1,10 @@
 import warnings
 
-from chester.chapter_messages import chapter_message
 from chester.cleaning.cleaner_handler import CleanerHandler
 from chester.feature_stats.categorical_stats import CategoricalStats
-from chester.feature_stats.feature_stats import FeatureStatistics
 from chester.feature_stats.numeric_stats import NumericStats
 from chester.feature_stats.text_stats import TextStats
 from chester.features_engineering.features_handler import FeaturesHandler
-from chester.model_analyzer.model_analysis import analyze_model
 from chester.model_monitor.mm_bootstrap import ModelBootstrap
 from chester.model_monitor.mm_weaknesses import ModelWeaknesses
 from chester.model_training.models.chester_models.best_model import BestModel
@@ -16,9 +13,8 @@ from chester.pre_model_analysis.categorical import CategoricalPreModelAnalysis
 from chester.pre_model_analysis.numerics import NumericPreModelAnalysis
 from chester.pre_model_analysis.target import TargetPreModelAnalysis
 from chester.preprocessing.preprocessor_handler import PreprocessHandler
-from chester.run.user_classes import *
-from chester.text_stats_analysis.data_quality import TextAnalyzer
-from chester.text_stats_analysis.smart_text_analyzer import analyze_text_df
+from chester.run.user_classes import Data, TextHandler, TextAnalyze, FeatureStats, PreModel, ModelRun, PostModel, \
+    ModelWeakness
 from chester.zero_break.problem_specification import DataInfo
 
 warnings.filterwarnings("ignore", category=UserWarning, module="lightgbm")
@@ -29,13 +25,6 @@ logging.basicConfig(level=logging.WARNING)
 from chester.model_training.data_preparation import CVData
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
-from chester.cleaning import cleaning_func as cln
-from chester.preprocessing import preprocessing_func as pp
-from chester.features_engineering import fe_nlp as fe_main
-from chester.feature_analyzing import feature_correlation
-from chester.model_training import data_preparation
-from chester.model_training import best_model as bm
-from chester.model_training.model_utils import analyze_results
 
 
 def run_chester(
@@ -50,6 +39,7 @@ def run_chester(
         model_weaknesses: ModelWeakness = None,
         # special params
         plot=None,
+        max_stats_show = None,
         # text_cleaner: cln.TextCleaner = None, is_text_cleaner: bool = True,
         # text_preprocesser: pp.TextPreprocessor = None, is_text_preprocesser: bool = True,
         # text_analyzer: TextAnalyzer = None, is_text_stats: bool = True,
@@ -113,15 +103,19 @@ def run_chester(
     data_info_num_stats = DataInfo(data=final_df, target=target_column)
     data_info_num_stats.calculate()
 
-    ## extract num, cat, text cols
-    # TO DO print only if columns exists
-    print("Numerical Feature statistics")
-    NumericStats(data_info_num_stats).run()
+    num_cols = data_info_num_stats.feature_types_val["numeric"]
+    cat_cols = data_info.feature_types_val["categorical"]
+    text_cols = data_info.feature_types_val["text"]
+
+    if len(num_cols) > 0:
+        print("Numerical Feature statistics")
+        NumericStats(data_info_num_stats).run()
     print("Categorical Feature statistics")
     CategoricalStats(data_info).run()
-    print("Text Feature statistics")
-    data_info.data = clean_text_df
-    TextStats(data_info).run()
+    if len(text_cols) > 0:
+        print("Text Feature statistics")
+        data_info.data = clean_text_df
+        TextStats(data_info).run()
     ####################################################
 
     #################################################### Pre model

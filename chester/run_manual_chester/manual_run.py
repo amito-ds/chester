@@ -23,6 +23,8 @@ from chester.pre_model_analysis.categorical import CategoricalPreModelAnalysis
 from chester.pre_model_analysis.numerics import NumericPreModelAnalysis
 from chester.pre_model_analysis.target import TargetPreModelAnalysis
 from chester.preprocessing.preprocessor_handler import PreprocessHandler
+from chester.run.full_run import run_chester
+from chester.run.user_classes import Data
 from chester.zero_break.problem_specification import DataInfo
 
 import matplotlib
@@ -177,7 +179,6 @@ def load_ex4():
     return train_data
 
 
-
 def load_ex5():
     train_data, _ = ml_datasets.quora_questions()
     train_data = [(a, b, c) for ((a, b), c) in train_data]
@@ -190,97 +191,101 @@ def load_ex5():
 # df = load_ex1()
 # df = load_ex2()
 # df = load_ex3().sample(1000)
-# df = load_ex4().sample(1000)
+df = load_ex4().sample(1000)
 # df = load_ex5().sample(900)
 
-# # calc data into
-print("XXXXXXXXXXXXXXXXXXXXXXXXData infoXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-df = df.sample(frac=1).reset_index(drop=True)
-data_info = DataInfo(data=df, target='target')
-data_info.calculate()
-print(data_info)
 
-# clean
-print("XXXXXXXXXXXXXXXXXXXXXXXXCleanXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-cleaner = CleanerHandler(data_info)
-cleaner.transform()
-data_info = cleaner.data_info
+run_chester(Data(df=df, target_column='target'))
 
-# keep a copy of all text after cleaning
-text_cols = data_info.feature_types_val["text"]
-clean_text_df = pd.DataFrame()
-if len(text_cols) > 0:
-    pd.options.mode.chained_assignment = None
-    clean_text_df = data_info.data[text_cols]
-    clean_text_df.rename(columns={col: "clean_" + col for col in clean_text_df.columns}, inplace=True)
-
-# PP
-print("XXXXXXXXXXXXXXXXXXXXXXXXPPXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-pp = PreprocessHandler(data_info)
-pp.transform()
-data_info_original = data_info
-data_info = pp.data_info
-
-# data_info_text_cleaning
-if len(text_cols) > 0:
-    clean_text_df = pd.concat([df, clean_text_df], axis=1)
-
-# # extract features
-print("XXXXXXXXXXXXXXXXXXXXXXXXExtract featuresXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-feat_hand = FeaturesHandler(data_info)
-feature_types, final_df = feat_hand.transform()
-final_df[target_column] = data_info.data[data_info.target]
-
-#### stats: start
-print("XXXXXXXXXXXXXXXXXXXXXXXXFeature StatsXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-data_info_num_stats = DataInfo(data=final_df, target=target_column)
-data_info_num_stats.calculate()
-TargetPreModelAnalysis(data_info).run()
-print("Numerical Feature statistics")
-NumericStats(data_info_num_stats).run()
-print("Categorical Feature statistics")
-CategoricalStats(data_info).run()
-print("Text Feature statistics")
-data_info.data = clean_text_df
-TextStats(data_info).run()
-### stats: end
-
-########## code for stats and PMA ################
-# pma
-print("XXXXXXXXXXXXXXXXXXXXXXXXPre model analysisXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-NumericPreModelAnalysis(data_info_num_stats).run()
-data_info.data = df
-CategoricalPreModelAnalysis(data_info).run()
-# ########## code for stats ################
-
-# #################################### model####################################
-# encode labels if needed (for classification problem only)
-print("XXXXXXXXXXXXXXXXXXXXXXXXModel runXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-if data_info.problem_type_val in ["Binary classification", "Multiclass classification"]:
-    print("Encoding target")
-    label_encoder = LabelEncoder()
-    final_df[target_column] = label_encoder.fit_transform(final_df[target_column])
 #
-# # Run the model
-cv_data = CVData(train_data=final_df, test_data=None, target_column='target', split_data=True)
-data_info.feature_types_val = feature_types
-model = BestModel(data_info=data_info, cv_data=cv_data, num_models_to_compare=3)
-model_results = model.get_best_model()  # returns resultf of the best baseline model
-params = model_results[1].get_params()
-print(f"Best model: {type(model_results[1])}, with parameters:")
-for p in params:
-    print(p.name, ":", p.value)
-################################### model####################################
-
-#################################### PMA####################################
-print("XXXXXXXXXXXXXXXXXXXXXXXXPost model analysisXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-PostModelAnalysis(cv_data, data_info, model=model_results[1]).analyze()
-ModelBootstrap(cv_data, data_info, model=model_results[1]).plot()
-#################################### PMA ####################################
-
-
-#################################### monitor ####################################
-print("XXXXXXXXXXXXXXXXXXXXXXXXMoitorXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-model_weaknesses = ModelWeaknesses(cv_data, data_info, model=model_results[1])
-model_weaknesses.run()
-#################################### monitor####################################
+# # # calc data into
+# print("XXXXXXXXXXXXXXXXXXXXXXXXData infoXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+# df = df.sample(frac=1).reset_index(drop=True)
+# data_info = DataInfo(data=df, target='target')
+# data_info.calculate()
+# print(data_info)
+#
+# # clean
+# print("XXXXXXXXXXXXXXXXXXXXXXXXCleanXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+# cleaner = CleanerHandler(data_info)
+# cleaner.transform()
+# data_info = cleaner.data_info
+#
+# # keep a copy of all text after cleaning
+# text_cols = data_info.feature_types_val["text"]
+# clean_text_df = pd.DataFrame()
+# if len(text_cols) > 0:
+#     pd.options.mode.chained_assignment = None
+#     clean_text_df = data_info.data[text_cols]
+#     clean_text_df.rename(columns={col: "clean_" + col for col in clean_text_df.columns}, inplace=True)
+#
+# # PP
+# print("XXXXXXXXXXXXXXXXXXXXXXXXPPXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+# pp = PreprocessHandler(data_info)
+# pp.transform()
+# data_info_original = data_info
+# data_info = pp.data_info
+#
+# # data_info_text_cleaning
+# if len(text_cols) > 0:
+#     clean_text_df = pd.concat([df, clean_text_df], axis=1)
+#
+# # # extract features
+# print("XXXXXXXXXXXXXXXXXXXXXXXXExtract featuresXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+# feat_hand = FeaturesHandler(data_info)
+# feature_types, final_df = feat_hand.transform()
+# final_df[target_column] = data_info.data[data_info.target]
+#
+# #### stats: start
+# print("XXXXXXXXXXXXXXXXXXXXXXXXFeature StatsXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+# data_info_num_stats = DataInfo(data=final_df, target=target_column)
+# data_info_num_stats.calculate()
+# TargetPreModelAnalysis(data_info).run()
+# print("Numerical Feature statistics")
+# NumericStats(data_info_num_stats).run()
+# print("Categorical Feature statistics")
+# CategoricalStats(data_info).run()
+# print("Text Feature statistics")
+# data_info.data = clean_text_df
+# TextStats(data_info).run()
+# ### stats: end
+#
+# ########## code for stats and PMA ################
+# # pma
+# print("XXXXXXXXXXXXXXXXXXXXXXXXPre model analysisXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+# NumericPreModelAnalysis(data_info_num_stats).run()
+# data_info.data = df
+# CategoricalPreModelAnalysis(data_info).run()
+# # ########## code for stats ################
+#
+# # #################################### model####################################
+# # encode labels if needed (for classification problem only)
+# print("XXXXXXXXXXXXXXXXXXXXXXXXModel runXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+# if data_info.problem_type_val in ["Binary classification", "Multiclass classification"]:
+#     print("Encoding target")
+#     label_encoder = LabelEncoder()
+#     final_df[target_column] = label_encoder.fit_transform(final_df[target_column])
+# #
+# # # Run the model
+# cv_data = CVData(train_data=final_df, test_data=None, target_column='target', split_data=True)
+# data_info.feature_types_val = feature_types
+# model = BestModel(data_info=data_info, cv_data=cv_data, num_models_to_compare=3)
+# model_results = model.get_best_model()  # returns resultf of the best baseline model
+# params = model_results[1].get_params()
+# print(f"Best model: {type(model_results[1])}, with parameters:")
+# for p in params:
+#     print(p.name, ":", p.value)
+# ################################### model####################################
+#
+# #################################### PMA####################################
+# print("XXXXXXXXXXXXXXXXXXXXXXXXPost model analysisXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+# PostModelAnalysis(cv_data, data_info, model=model_results[1]).analyze()
+# ModelBootstrap(cv_data, data_info, model=model_results[1]).plot()
+# #################################### PMA ####################################
+#
+#
+# #################################### monitor ####################################
+# print("XXXXXXXXXXXXXXXXXXXXXXXXMoitorXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+# model_weaknesses = ModelWeaknesses(cv_data, data_info, model=model_results[1])
+# model_weaknesses.run()
+# #################################### monitor####################################
