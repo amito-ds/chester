@@ -255,22 +255,23 @@ class NumericPreModelAnalysis:
             plt.show()
             return None
 
-    def run(self):
+    def run(self, plot=True):
         if self.n_cols > 1:
-            self.analyze_pvalue()
-            if 'classification' in self.data_info.problem_type_val.lower():
+            self.analyze_pvalue(is_plot=plot)
+            if ('classification' in self.data_info.problem_type_val.lower()) and plot:
                 self.partial_plot(classification_row_percent=True)
-                # self.partial_plot(classification_row_percent=False)
+                self.partial_plot(classification_row_percent=False)
             else:
                 self.partial_plot()
             self.tsne()
         elif self.n_cols == 1:
             self.analyze_pvalue()
-            if 'classification' in self.data_info.problem_type_val.lower():
+            if ('classification' in self.data_info.problem_type_val.lower()) and plot:
                 self.partial_plot(classification_row_percent=True)
                 self.partial_plot(classification_row_percent=False)
             else:
-                self.partial_plot()
+                if plot:
+                    self.partial_plot()
         return None
 
 

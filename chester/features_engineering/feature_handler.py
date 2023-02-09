@@ -1,16 +1,17 @@
 import pandas as pd
 
-import pandas as pd
-
-from chester.data_loader.webtext_data import load_data_pirates, load_data_king_arthur
-from chester.features_engineering.fe_nlp import get_embeddings
+from chester.features_engineering.fe_nlp import get_embeddings, TextFeatureExtraction
+from chester.run.user_classes import TextFeatureSpec
 
 
 class FeatureHandler:
-    def __init__(self, column, col_name, feature_type=None):
+    def __init__(self, column, col_name,
+                 feature_type=None,
+                 text_feature_extraction: TextFeatureSpec = None):
         self.column = column
         self.feature_type = feature_type
         self.col_name = col_name
+        self.text_feature_extraction = text_feature_extraction
 
     def handle_numerical(self):
         self.column.name = "num_" + self.column.name
@@ -49,9 +50,24 @@ class FeatureHandler:
         print(f"Feature: {self.col_name} calculating {embedding_size} dim embedding")
         embedding_size_method = int(embedding_size / 3)
         data = pd.DataFrame({self.col_name: self.column})
-        embedding, _ = get_embeddings(training_data=data, split_data=False, text_column=self.col_name,
-                                      corex_dim=embedding_size_method, bow_dim=embedding_size_method,
-                                      tfidf_dim=embedding_size_method)
+
+        if self.text_feature_extraction is not None:
+            feat_ext = self.text_feature_extraction
+            embedding, _ = get_embeddings(
+                training_data=data,
+                test_data=None,
+                split_data=False,
+                text_column=self.col_name,
+                corex_dim=feat_ext.corex_dim, corex=feat_ext.corex,
+                bow_dim=feat_ext.bow_dim, bow=feat_ext.bow,
+                tfidf_dim=feat_ext.tfidf_dim, tfidf=feat_ext.tfidf,
+                ngram_range=feat_ext.ngram_range
+            )
+
+        else:
+            embedding, _ = get_embeddings(training_data=data, split_data=False, text_column=self.col_name,
+                                          corex_dim=embedding_size_method, bow_dim=embedding_size_method,
+                                          tfidf_dim=embedding_size_method)
 
         new_col_name_list = [self.col_name + "_" + col for col in embedding.columns]
         new_col_name_dict = dict(zip(embedding.columns, new_col_name_list))

@@ -9,8 +9,11 @@ from chester.preprocessing import preprocessing_func as pp
 
 
 class PreprocessHandler:
-    def __init__(self, data_info: DataInfo):
+    def __init__(self, data_info: DataInfo, text_pre_process: pp.TextPreprocessor = None):
         self.data_info = data_info
+        self.text_pre_process = text_pre_process
+        if self.text_pre_process is not None:
+            self.text_pre_process.df = self.data_info.data
         self.target = data_info.target
         self.problem_type_val = data_info.problem_type_val
         self.feature_types_val = data_info.feature_types_val
@@ -22,11 +25,15 @@ class PreprocessHandler:
     def transform(self):
         text_columns = self.feature_types_val.get("text")
         for col in text_columns:
-            text_reprocess = pp.TextPreprocessor(self.data_info.data, text_column=col)
+            if self.text_pre_process is not None:
+                curr_text_pre_processor = self.text_pre_process
+                curr_text_pre_processor.text_column = col
+                text_reprocess = curr_text_pre_processor
+            else:
+                text_reprocess = pp.TextPreprocessor(self.data_info.data, text_column=col)
             print(f"{col} text preprocessing")
             text_reprocess.generate_report()
             self.data_info.data = pp.preprocess_text_df(text_reprocess)
-
 
 # import numpy as np
 #

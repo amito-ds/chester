@@ -77,7 +77,7 @@ def get_embeddings(training_data: pd.DataFrame,
     return embeddings, test_embeddings
 
 
-class FeatureExtraction:
+class TextFeatureExtraction:
     def __init__(self, training_data: pd.DataFrame = None,
                  test_data: pd.DataFrame = None,
                  split_data: bool = True, split_prop: float = 0.3, split_random_state=42,
@@ -100,7 +100,7 @@ class FeatureExtraction:
         self.ngram_range = ngram_range
 
 
-def extract_features(feature_extractor: FeatureExtraction):
+def extract_features(feature_extractor: TextFeatureExtraction):
     training_data = feature_extractor.training_data
     test_data = feature_extractor.test_data
     split_data = feature_extractor.split_data

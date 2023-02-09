@@ -8,8 +8,9 @@ from matplotlib import pyplot as plt
 
 
 class NumericStats:
-    def __init__(self, data_info: DataInfo):
+    def __init__(self, data_info: DataInfo, max_print=None):
         self.data_info = data_info
+        self.max_print = max_print
         self.cols = self.data_info.feature_types_val["numeric"]
         self.data = self.data_info.data[self.cols]
         self.cols_sorted = self.sort_by_variance()
@@ -85,7 +86,13 @@ class NumericStats:
                                  'top_vals': top_vals, 'bottom_vals': bottom_vals})
         results_df = pd.DataFrame(result_dicts)
         if is_print:
-            print(format_df(results_df))
+            if self.max_print is not None:
+                print(format_df(df=results_df,
+                                max_value_width=self.max_print,
+                                ci_max_value_width=self.max_print,
+                                col_max_value_width=self.max_print))
+            else:
+                print(format_df(results_df))
         return results_df
 
     def run(self, plot=True):
@@ -94,7 +101,9 @@ class NumericStats:
         return None
 
 
-def format_df(df, max_value_width=12, col_max_value_width=25, ci_max_value_width=15,
+def format_df(df, max_value_width=25,
+              col_max_value_width=25,
+              ci_max_value_width=25,
               ci_col="CI", col_col="col"):
     pd.options.display.max_columns = None
 

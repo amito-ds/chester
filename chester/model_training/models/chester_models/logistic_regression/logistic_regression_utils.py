@@ -1,12 +1,15 @@
+import random
 from collections import defaultdict
 from typing import List
 
+import numpy as np
 import pandas as pd
 
 from chester.model_training.data_preparation import CVData
 from chester.model_training.data_preparation import Parameter
 from chester.model_training.models.chester_models.base_model_utils import calculate_metrics_scores
 from chester.model_training.models.chester_models.base_model_utils import is_metric_higher_is_better
+from chester.model_training.models.chester_models.hp_generator import HPGenerator
 from chester.model_training.models.chester_models.logistic_regression.logistic_regression_model import \
     LogisticRegressionModel
 from chester.zero_break.problem_specification import DataInfo
@@ -39,7 +42,7 @@ def logistic_regression_with_outputs(cv_data: CVData,
                                      metrics: list,
                                      target_col: str,
                                      parameters: list,
-                                     data_info:DataInfo,
+                                     data_info: DataInfo,
                                      problem_type=None,
                                      ):
     results = []
@@ -89,27 +92,68 @@ logistic_regression_default_parameters = [
 ]
 
 
-def generate_logistic_regression_configs(k: int) -> List[List[Parameter]]:
-    # List of additional configurations to test
-    additional_confs = [
-        {'penalty': 'l1', 'C': 0.1, 'solver': 'saga'},
-        {'penalty': 'l2', 'C': 0.1, 'solver': 'newton-cg'},
-        {'penalty': 'elasticnet', 'C': 0.1, 'solver': 'saga', 'l1_ratio': 0.5},
-        {'penalty': 'l2', 'C': 0.01, 'solver': 'lbfgs'},
-        {'penalty': 'l1', 'C': 0.5, 'solver': 'saga'},
-        {'penalty': 'l2', 'C': 0.5, 'solver': 'newton-cg'},
-        {'penalty': 'elasticnet', 'C': 0.5, 'solver': 'saga', 'l1_ratio': 0.5},
-        {'penalty': 'l2', 'C': 0.001, 'solver': 'lbfgs'},
-        {'penalty': 'l1', 'C': 1, 'solver': 'saga'},
-        {'penalty': 'l2', 'C': 1, 'solver': 'newton-cg'},
-    ]
-    # List to store the final configurations
-    logistic_regression_parameters = []
-    for conf in additional_confs[:k]:
-        # Create a dictionary to store the final configuration
-        final_conf = defaultdict(lambda: None, default_parameters)
-        final_conf.update(conf)
-        # Convert the dictionary to a list of Parameter objects
-        final_conf = [Parameter(key, value) for key, value in final_conf.items()]
-        logistic_regression_parameters.append(final_conf)
-    return logistic_regression_parameters
+def generate_logistic_regression_configs(k: int = 10, best_practice_prob=0.33) -> List[List[Parameter]]:
+    hp_generator = HPGeneratorLR(n_models=k, best_practice_prob=best_practice_prob)
+    parameter_format = hp_generator.hp_format(hp_generator.generate_configs())
+    return parameter_format
+
+
+class HPGeneratorLR(HPGenerator):
+    def __init__(self, best_practice_configs: list = None,
+                 categorical_sample_configs: list = None,
+                 n_models=9,
+                 best_practice_prob=0.33):
+        super().__init__(best_practice_configs, categorical_sample_configs, n_models, best_practice_prob)
+        self.best_practice_configs = self.load_best_practice_configs()
+
+    @staticmethod
+    def load_best_practice_configs():
+        return [
+            {'penalty': 'l1', 'C': 0.1, 'solver': 'saga'},
+            {'penalty': 'l2', 'C': 0.1, 'solver': 'newton-cg'},
+            {'penalty': 'elasticnet', 'C': 0.1, 'solver': 'saga', 'l1_ratio': 0.5},
+            {'penalty': 'l2', 'C': 0.01, 'solver': 'lbfgs'},
+            {'penalty': 'l1', 'C': 0.5, 'solver': 'saga'},
+            {'penalty': 'l2', 'C': 0.5, 'solver': 'newton-cg'},
+            {'penalty': 'elasticnet', 'C': 0.5, 'solver': 'saga', 'l1_ratio': 0.5},
+            {'penalty': 'l2', 'C': 0.001, 'solver': 'lbfgs'},
+            {'penalty': 'l1', 'C': 1, 'solver': 'saga'},
+            {'penalty': 'l2', 'C': 1, 'solver': 'newton-cg'},
+            {'penalty': 'elasticnet', 'C': 1, 'solver': 'saga', 'l1_ratio': 0.5},
+        ]
+
+    def generate_random_config(self) -> dict:
+        cat_configs = [
+            {'penalty': 'l1', 'solver': 'saga'},
+            {'penalty': 'l2', 'solver': 'newton-cg'},
+            {'penalty': 'elasticnet', 'solver': 'saga', 'l1_ratio': 0.5},
+            {'penalty': 'l2', 'solver': 'lbfgs'},
+            {'penalty': 'l1', 'solver': 'saga'},
+            {'penalty': 'l2', 'solver': 'newton-cg'},
+            {'penalty': 'elasticnet', 'solver': 'saga', 'l1_ratio': 0.5},
+            {'penalty': 'l2', 'solver': 'lbfgs'},
+            {'penalty': 'l1', 'solver': 'saga'},
+            {'penalty': 'l2', 'solver': 'newton-cg'},
+            {'penalty': 'elasticnet', 'solver': 'saga', 'l1_ratio': 0.5},
+        ]
+
+        cat_config = random.choice(cat_configs)
+        config = cat_config.copy()
+        config['C'] = self.generate_c_value()
+        if 'l1_ratio' in cat_config:
+            config['l1_ratio'] = self.generate_l1_ratio_random_configs()
+
+        return config
+
+    @staticmethod
+    def generate_l1_ratio_random_configs() -> float:
+        l1_ratio_values = [0.01, 0.1, 0.3, 0.5, 0.7, 0.9, 0.99]
+        return random.choice(l1_ratio_values)
+
+    @staticmethod
+    def generate_c_value():
+        choice = random.choice([0, 1])
+        if choice == 0:
+            return np.random.uniform(0.0001, 100)
+        else:
+            return np.random.uniform(np.log10(1.001), np.log10(100))

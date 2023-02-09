@@ -2,13 +2,15 @@ import pandas as pd
 
 from chester.data_loader.webtext_data import load_data_pirates, load_data_king_arthur
 from chester.features_engineering.feature_handler import FeatureHandler
+from chester.run.user_classes import TextFeatureSpec
 from chester.zero_break.problem_specification import DataInfo
 
 
 class FeaturesHandler:
-    def __init__(self, data_info: DataInfo):
+    def __init__(self, data_info: DataInfo, text_feature_extraction: TextFeatureSpec = None):
         self.data = data_info.data
         self.target = data_info.target
+        self.text_feature_extraction = text_feature_extraction
         self.problem_type_val = data_info.problem_type_val
         self.feature_types_val = data_info.feature_types_val
         self.loss_detector_val = data_info.loss_detector_val
@@ -27,7 +29,11 @@ class FeaturesHandler:
                     feature_type = key
                     break
                 # Prepare an instance of FeatureHandler
-            feature_handler = FeatureHandler(column=data[col], feature_type=feature_type, col_name=col)
+            feature_handler = FeatureHandler(
+                column=data[col],
+                feature_type=feature_type,
+                col_name=col,
+                text_feature_extraction=self.text_feature_extraction)
             feature_handlers.append(feature_handler)
         return feature_handlers
 
@@ -54,6 +60,7 @@ class FeaturesHandler:
                     feat_names.append(names)
                     feature_types['categorical'].extend(names)
             except:
+                print("Could not extract features")
                 pass
         final_df = pd.DataFrame()
         for value in feat_values:
@@ -63,31 +70,3 @@ class FeaturesHandler:
                 value = value.to_frame().reset_index(drop=True)
                 final_df = pd.concat([final_df, value], axis=1)
         return feature_types, final_df
-
-
-import numpy as np
-
-df1 = load_data_pirates().assign(target='chat_logs')
-df2 = load_data_king_arthur().assign(target='pirates')
-df = pd.concat([df1, df2])
-
-# Add numerical column
-df["number"] = np.random.uniform(0, 1, df.shape[0])
-
-# Add categorical column
-df["categ"] = 'aaa'
-
-# Add boolean column
-df["booly"] = True
-
-df.drop(columns='text', inplace=True)
-
-# calc data into
-# data_info = DataInfo(data=df, target='target')
-# data_info.calculate()
-# print(data_info)
-# # extract features
-# feat_hand = FeaturesHandler(data_info)
-# feature_types, final_df = feat_hand.transform()
-# print(feature_types)
-# print(final_df)

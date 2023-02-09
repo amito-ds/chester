@@ -8,8 +8,9 @@ from chester.zero_break.problem_specification import DataInfo
 
 
 class CategoricalStats:
-    def __init__(self, data_info: DataInfo):
+    def __init__(self, data_info: DataInfo, max_print=None):
         self.data_info = data_info
+        self.max_print = max_print
         self.cols = self.data_info.feature_types_val["categorical"]
         self.data = self.data_info.data[self.cols]
         self.cols_sorted = self.sort_by_cardinality()
@@ -103,7 +104,13 @@ class CategoricalStats:
         results_df = pd.DataFrame(result_dicts)
 
         if is_print:
-            print(format_df(results_df))
+            if self.max_print is not None:
+                print(format_df(df=results_df,
+                                max_value_width=self.max_print,
+                                distribution_col=self.max_print,
+                                ))
+            else:
+                print(format_df(results_df))
         return results_df
 
     def run(self, plot=True):
@@ -113,7 +120,7 @@ class CategoricalStats:
         return None
 
 
-def format_df(df, max_value_width=20, distribution_max_value_width=25, distribution_col="Distribution"):
+def format_df(df, max_value_width=25, distribution_max_value_width=30, distribution_col="Distribution"):
     pd.options.display.max_columns = None
 
     def trim_value(val):

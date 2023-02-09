@@ -19,7 +19,7 @@ class BestModel(BaseModel):
             if 'baseline' in model_type:
                 base_res, model = BaselineModel(data_info=self.data_info,
                                                 cv_data=self.cv_data,
-                                                num_models_to_compare=self.num_models_to_compare
+                                                num_models_to_compare=3
                                                 ).get_best_model()
                 models.append((base_res, model))
             elif 'logistic' in model_type:

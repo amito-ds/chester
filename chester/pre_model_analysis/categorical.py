@@ -244,18 +244,20 @@ class CategoricalPreModelAnalysis:
         plt.show()
         return None
 
-    def run(self):
+    def run(self, is_plot=True):
         if self.n_cols > 1:
-            self.analyze_pvalue()
-            if 'classification' or 'binary regression' in self.data_info.problem_type_val.lower():
-                self.partial_plot(classification_row_percent=False)
-                self.partial_plot(classification_row_percent=True)
-            else:
-                self.partial_plot()
-            self.tsne()
+            self.analyze_pvalue(is_plot=is_plot)
+            if is_plot:
+                if 'classification' or 'binary regression' in self.data_info.problem_type_val.lower():
+                    self.partial_plot(classification_row_percent=False)
+                    self.partial_plot(classification_row_percent=True)
+                else:
+                    self.partial_plot()
+                self.tsne()
         elif self.n_cols == 1:
-            self.analyze_pvalue(is_plot=False)
-            self.partial_plot()
+            self.analyze_pvalue(is_plot=is_plot)
+            if is_plot:
+                self.partial_plot()
         return None
 
 
