@@ -1,3 +1,4 @@
+import random
 from collections import defaultdict
 from typing import List
 
@@ -7,6 +8,7 @@ from sklearn.exceptions import UndefinedMetricWarning
 from chester.model_training.data_preparation import CVData
 from chester.model_training.data_preparation import Parameter
 from chester.model_training.models.chester_models.base_model_utils import is_metric_higher_is_better
+from chester.model_training.models.chester_models.hp_generator import HPGenerator
 from chester.model_training.models.chester_models.linear_regression.linear_regression import LinearRegressionModel
 from chester.zero_break.problem_specification import DataInfo
 
@@ -80,39 +82,56 @@ default_parameters = {
 }
 
 
-def generate_linear_regression_configs(k: int, problem_type: str) -> List[List[Parameter]]:
-    # List of additional configurations to test
-    additional_confs = [
-        {**default_parameters, 'alpha': 0, 'l1_ratio': 0},  # linear
-        {**default_parameters, 'alpha': 0.1, 'l1_ratio': 0},  # ridge
-        {**default_parameters, 'alpha': 0.1, 'l1_ratio': 1},  # lasso
-        {**default_parameters, 'alpha': 0.1, 'l1_ratio': 0.1},
-        {**default_parameters, 'alpha': 0.1, 'l1_ratio': 0.5},
-        {**default_parameters, 'alpha': 0.1, 'l1_ratio': 0.7},
-        {**default_parameters, 'alpha': 0.1, 'l1_ratio': 0.9},
-        {**default_parameters, 'alpha': 0.1, 'l1_ratio': 1.0},
-        {**default_parameters, 'alpha': 0.5, 'l1_ratio': 0.1},
-        {**default_parameters, 'alpha': 0.5, 'l1_ratio': 0.5},
-        {**default_parameters, 'alpha': 0.5, 'l1_ratio': 0.7},
-        {**default_parameters, 'alpha': 0.5, 'l1_ratio': 0.9},
-        {**default_parameters, 'alpha': 1, 'l1_ratio': 0},  # ridge
-        {**default_parameters, 'alpha': 1, 'l1_ratio': 1},  # lasso
-        {**default_parameters, 'alpha': 0.5, 'l1_ratio': 1.0},
-        {**default_parameters, 'alpha': 1.0, 'l1_ratio': 0.1},
-        {**default_parameters, 'alpha': 1.0, 'l1_ratio': 0.5},
-        {**default_parameters, 'alpha': 1.0, 'l1_ratio': 0.7},
-        {**default_parameters, 'alpha': 1.0, 'l1_ratio': 0.9}
-    ]
-    # List to store the final configurations
-    parameters = []
-    for conf in additional_confs[:k]:
-        # Create a dictionary to store the final configuration
-        final_conf = defaultdict()
-    final_conf.update(conf)
-    # Convert the dictionary to a list of Parameter objects
-    final_conf = [Parameter(key, value) for key, value in final_conf.items()]
-    parameters.append(final_conf)
-    return parameters
+def generate_linear_regression_configs(k: int = 10, best_practice_prob=0.33) -> List[List[Parameter]]:
+    hp_generator = HPGeneratoEN(n_models=k, best_practice_prob=best_practice_prob)
+    parameter_format = hp_generator.hp_format(hp_generator.generate_configs())
+    return parameter_format
+
+
+class HPGeneratoEN(HPGenerator):
+    def __init__(self, best_practice_configs: list = None,
+                 categorical_sample_configs: list = None,
+                 n_models=9,
+                 best_practice_prob=0.33):
+        super().__init__(best_practice_configs, categorical_sample_configs, n_models, best_practice_prob)
+        self.best_practice_configs = self.load_best_practice_configs()
+
+    @staticmethod
+    def load_best_practice_configs():
+        return [
+            {**default_parameters, 'alpha': 0, 'l1_ratio': 0},  # linear
+            {**default_parameters, 'alpha': 0.1, 'l1_ratio': 0},  # ridge
+            {**default_parameters, 'alpha': 0.1, 'l1_ratio': 1},  # lasso
+            {**default_parameters, 'alpha': 0.1, 'l1_ratio': 0.1},
+            {**default_parameters, 'alpha': 0.1, 'l1_ratio': 0.5},
+            {**default_parameters, 'alpha': 0.1, 'l1_ratio': 0.7},
+            {**default_parameters, 'alpha': 0.1, 'l1_ratio': 0.9},
+            {**default_parameters, 'alpha': 0.1, 'l1_ratio': 1.0},
+            {**default_parameters, 'alpha': 0.5, 'l1_ratio': 0.1},
+            {**default_parameters, 'alpha': 0.5, 'l1_ratio': 0.5},
+            {**default_parameters, 'alpha': 0.5, 'l1_ratio': 0.7},
+            {**default_parameters, 'alpha': 0.5, 'l1_ratio': 0.9},
+            {**default_parameters, 'alpha': 1, 'l1_ratio': 0},  # ridge
+            {**default_parameters, 'alpha': 1, 'l1_ratio': 1},  # lasso
+            {**default_parameters, 'alpha': 0.5, 'l1_ratio': 1.0},
+            {**default_parameters, 'alpha': 1.0, 'l1_ratio': 0.1},
+            {**default_parameters, 'alpha': 1.0, 'l1_ratio': 0.5},
+            {**default_parameters, 'alpha': 1.0, 'l1_ratio': 0.7},
+            {**default_parameters, 'alpha': 1.0, 'l1_ratio': 0.9}
+        ]
+
+    def generate_random_config(self) -> dict:
+        method = random.choices(['Elastic net', 'Lasso', 'Ridge'], weights=[0.5, 0.25, 0.25])[0]
+        if method == 'Elastic net':
+            alpha = random.uniform(0, 1)
+            l1_ratio = random.uniform(0, 1)
+        elif method == 'Lasso':
+            alpha = random.uniform(0, 1)
+            l1_ratio = 1
+        elif method == 'Ridge':
+            alpha = random.uniform(0, 1)
+            l1_ratio = 0
+        return {**default_parameters, 'alpha': alpha, 'l1_ratio': l1_ratio}
 
 
 def calculate_linear_regression_metric_score(y_true, y_pred, metric, problem_type_val):

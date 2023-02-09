@@ -6,9 +6,11 @@ from chester.zero_break.problem_specification import DataInfo
 
 
 class LogisticRegressionModel(BaseModel):
-    def __init__(self, data_info: DataInfo, cv_data: CVData, num_models_to_compare=10):
+    def __init__(self, data_info: DataInfo, cv_data: CVData, num_models_to_compare=9, best_practice_prop=0.33):
         super().__init__(data_info, cv_data, num_models_to_compare)
-        self.hp_list = generate_logistic_regression_configs(self.num_models_to_compare)
+        self.hp_list = generate_logistic_regression_configs(k=self.num_models_to_compare,
+                                                            best_practice_prob=best_practice_prop)
+        print(f"Running {self.num_models_to_compare} elastic net models")
 
     def get_best_model(self):
         models = self.data_info.model_selection_val

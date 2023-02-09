@@ -1,5 +1,7 @@
 from collections import defaultdict
 from typing import List
+
+import numpy as np
 import pandas as pd
 import seaborn as sns
 from sklearn.exceptions import UndefinedMetricWarning
@@ -10,6 +12,7 @@ from chester.model_training.data_preparation import CVData
 from chester.model_training.data_preparation import Parameter
 from chester.model_training.models.chester_models.base_model_utils import is_metric_higher_is_better
 from chester.model_training.models.chester_models.catboost.catboost_model import CatboostModel
+from chester.model_training.models.chester_models.hp_generator import HPGenerator
 from chester.zero_break.problem_specification import DataInfo
 
 
@@ -188,49 +191,42 @@ multiclass_classification_parameters = default_parameters.copy()
 multiclass_classification_parameters.update({'loss_function': 'MultiClass', 'eval_metric': 'Accuracy'})
 
 
-def generate_catboost_configs(k: int, problem_type: str) -> List[List[Parameter]]:
-    # default_parameters should be by problem type
-    catboost_default_parameters = default_parameters
-    if problem_type == "Binary regression" or problem_type == "Regression":
-        catboost_default_parameters = regression_parameters
-    elif problem_type == "Binary classification":
-        catboost_default_parameters = binary_classification_parameters
-    elif problem_type == "Multiclass classification":
-        catboost_default_parameters = multiclass_classification_parameters
+def generate_catboost_configs(k: int = 10) -> List[List[Parameter]]:
+    hp_generator = HPGeneratoCatboost(n_models=k)
+    parameter_format = hp_generator.hp_format(hp_generator.generate_configs())
+    return parameter_format
 
-    # List of additional configurations to test
-    additional_confs = [
-        {**catboost_default_parameters, 'iterations': 100, 'depth': 4},
-        {**catboost_default_parameters, 'iterations': 200, 'depth': 8},
-        {**catboost_default_parameters, 'iterations': 300, 'depth': 6},
-        {**catboost_default_parameters, 'iterations': 200, 'depth': 5},
-        {**catboost_default_parameters, 'iterations': 100, 'depth': 7},
-        {**catboost_default_parameters, 'iterations': 1000, 'depth': 4},
-        {**catboost_default_parameters, 'iterations': 200, 'depth': 8},
-        {**catboost_default_parameters, 'iterations': 300, 'depth': 5},
-        {**catboost_default_parameters, 'iterations': 200, 'depth': 7},
-        {**catboost_default_parameters, 'iterations': 100, 'depth': 6},
-        {**catboost_default_parameters, 'iterations': 50, 'depth': 5},
-        {**catboost_default_parameters, 'iterations': 50, 'depth': 7},
-        {**catboost_default_parameters, 'iterations': 100, 'depth': 6},
-        {**catboost_default_parameters, 'iterations': 200, 'depth': 8},
-        {**catboost_default_parameters, 'iterations': 400, 'depth': 5},
-        {**catboost_default_parameters, 'iterations': 600, 'depth': 7},
-        {**catboost_default_parameters, 'iterations': 450, 'depth': 6},
-        {**catboost_default_parameters, 'iterations': 200, 'depth': 8},
-        {**catboost_default_parameters, 'iterations': 100, 'depth': 5}
-    ]
 
-    # List to store the final configurations
-    catboost_parameters = []
-    for conf in additional_confs[:k]:
-        # Create a dictionary to store the final configuration
-        final_conf = defaultdict()
-        final_conf.update(conf)
-        # Convert the dictionary to a list of Parameter objects
-        final_conf = [Parameter(key, value) for key, value in final_conf.items()]
-        catboost_parameters.append(final_conf)
-    return catboost_parameters
+class HPGeneratoCatboost(HPGenerator):
+    def __init__(self, best_practice_configs: list = None,
+                 categorical_sample_configs: list = None,
+                 n_models=9,
+                 best_practice_prob=0):
+        super().__init__(best_practice_configs, categorical_sample_configs, n_models, best_practice_prob)
+        self.best_practice_configs = []
+
+    def generate_random_config(self) -> dict:
+        config = {}
+        # Sampling depth
+        depth = np.random.randint(2, 6)
+        config['depth'] = depth
+        # Sampling learning rate
+        learning_rate = np.random.uniform(0.01, 0.2)
+        config['learning_rate'] = learning_rate
+        # Sampling iterations
+        iterations = np.random.randint(100, 1000)
+        config['iterations'] = iterations
+        # Sampling l2 regularization
+        l2_reg = 10 ** np.random.uniform(-5, 5)
+        config['l2_leaf_reg'] = l2_reg
+        # Sampling random strength
+        random_strength = np.random.uniform(1, 100)
+        config['random_strength'] = random_strength
+        # Sampling bagging temperature
+        bagging_temp = np.random.uniform(0, 1)
+        config['bagging_temperature'] = bagging_temp
+        config['verbose'] = False
+        return config
 
 
 def calculate_catboost_metric_score(y_true, y_pred, metric, problem_type_val):

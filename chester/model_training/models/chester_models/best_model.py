@@ -9,8 +9,8 @@ from chester.zero_break.problem_specification import DataInfo
 
 
 class BestModel(BaseModel):
-    def __init__(self, data_info: DataInfo, cv_data: CVData, num_models_to_compare=15):
-        super().__init__(data_info, cv_data, num_models_to_compare)
+    def __init__(self, data_info: DataInfo, cv_data: CVData, num_models_to_compare=15, best_practice_prob=0.33):
+        super().__init__(data_info, cv_data, num_models_to_compare, best_practice_prob)
 
     def get_best_model(self):
         models_type = self.data_info.model_selection_val
@@ -26,7 +26,8 @@ class BestModel(BaseModel):
                 base_res, model = best_logistic_regression.LogisticRegressionModel(
                     data_info=self.data_info,
                     cv_data=self.cv_data,
-                    num_models_to_compare=self.num_models_to_compare
+                    num_models_to_compare=self.num_models_to_compare,
+                    best_practice_prop=self.best_practice_prop
                 ).get_best_model()
                 models.append((base_res, model))
             elif 'catboost' in model_type:
@@ -40,7 +41,8 @@ class BestModel(BaseModel):
                 base_res, model = LinearRegressionModel(
                     data_info=self.data_info,
                     cv_data=self.cv_data,
-                    num_models_to_compare=self.num_models_to_compare
+                    num_models_to_compare=self.num_models_to_compare,
+                    best_practice_prob=self.best_practice_prop
                 ).get_best_model()
                 models.append((base_res, model))
         if models is None:

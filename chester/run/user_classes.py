@@ -76,9 +76,8 @@ class PreModel:
 
 
 class ModelRun:
-    # TODO FIX for randomess inside the models configs???
-    def __init__(self, config_randomness=0.25, n_models=5):
-        self.config_randomness = config_randomness
+    def __init__(self, best_practice_prob=0.25, n_models=5):
+        self.best_practice_prob = best_practice_prob
         self.n_models = n_models
 
 

@@ -3,10 +3,11 @@ from chester.zero_break.problem_specification import DataInfo
 
 
 class BaseModel:
-    def __init__(self, data_info: DataInfo, cv_data: CVData, num_models_to_compare=10):
+    def __init__(self, data_info: DataInfo, cv_data: CVData, num_models_to_compare=10, best_practice_prop=0.33):
         self.data_info = data_info
         self.cv_data = cv_data
         self.num_models_to_compare = num_models_to_compare
+        self.best_practice_prop = best_practice_prop
         self.best_model = None
         self.best_metrics = {}
 

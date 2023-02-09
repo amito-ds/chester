@@ -7,18 +7,14 @@ from chester.feature_stats.text_stats import TextStats
 from chester.features_engineering.features_handler import FeaturesHandler
 from chester.model_monitor.mm_bootstrap import ModelBootstrap
 from chester.model_monitor.mm_weaknesses import ModelWeaknesses
-from chester.model_training.models.chester_models.best_logistic_regression import LogisticRegressionModel
 from chester.model_training.models.chester_models.best_model import BestModel
 from chester.post_model_analysis.post_model_analysis_class import PostModelAnalysis
 from chester.pre_model_analysis.categorical import CategoricalPreModelAnalysis
 from chester.pre_model_analysis.numerics import NumericPreModelAnalysis
 from chester.pre_model_analysis.target import TargetPreModelAnalysis
 from chester.preprocessing.preprocessor_handler import PreprocessHandler
-from chester.run.user_classes import Data, TextHandler, FeatureStats, PreModel, ModelRun, PostModel, \
-    ModelWeakness, TextFeatureSpec, FeatureTypes
+from chester.run.user_classes import Data, TextHandler, FeatureStats, ModelRun, TextFeatureSpec, FeatureTypes
 from chester.zero_break.problem_specification import DataInfo
-from chester.cleaning import cleaning_func as cln
-from chester.preprocessing import preprocessing_func as pp
 
 warnings.filterwarnings("ignore", category=UserWarning, module="lightgbm")
 import logging
@@ -175,10 +171,13 @@ def run_madcat(
     data_info.feature_types_val = feature_types
     # run the model
     if model_run is not None:
-        model = BestModel(data_info=data_info, cv_data=cv_data, num_models_to_compare=model_run.n_models)
+        model = BestModel(data_info=data_info,
+                          cv_data=cv_data,
+                          num_models_to_compare=model_run.n_models,
+                          best_practice_prob=model_run.best_practice_prob)
     else:
-        model = LogisticRegressionModel(data_info=data_info, cv_data=cv_data, num_models_to_compare=20)
-    model_results = model.get_best_model()  # returns resultf of the best baseline model
+        model = BestModel(data_info=data_info, cv_data=cv_data)
+    model_results = model.get_best_model()  # returns result of the best baseline model
     # print model metadata
     params = model_results[1].get_params()
     print(f"Best model: {type(model_results[1])}, with parameters:")
@@ -195,13 +194,21 @@ def run_madcat(
     #################################################### post model
     # TO DO: print message
     if is_post_model:
-        PostModelAnalysis(cv_data, data_info, model=model_results[1]).analyze()
-        ModelBootstrap(cv_data, data_info, model=model_results[1]).plot()
+        post_model_analysis = PostModelAnalysis(cv_data, data_info, model=model_results[1])
+        madcat_collector["post_model_analysis"] = post_model_analysis
+        post_model_analysis.analyze()
+
+        model_bootstrap = ModelBootstrap(cv_data, data_info, model=model_results[1])
+        madcat_collector["model_bootstrap"] = model_bootstrap
+        model_bootstrap.plot()
     ####################################################
 
     #################################################### model weaknesses
     # TO DO: print message
     if is_model_weaknesses:
         model_weaknesses = ModelWeaknesses(cv_data, data_info, model=model_results[1])
+        madcat_collector["model_weaknesses"] = model_weaknesses
         model_weaknesses.run()
     ####################################################
+
+    return madcat_collector

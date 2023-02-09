@@ -24,7 +24,7 @@ from chester.pre_model_analysis.numerics import NumericPreModelAnalysis
 from chester.pre_model_analysis.target import TargetPreModelAnalysis
 from chester.preprocessing.preprocessor_handler import PreprocessHandler
 from chester.run.full_run import run_madcat
-from chester.run.user_classes import Data
+from chester.run.user_classes import Data, ModelRun
 from chester.zero_break.problem_specification import DataInfo
 
 import matplotlib
@@ -34,16 +34,18 @@ import matplotlib
 matplotlib.use('TkAgg')
 target_column = 'target'
 
-
 ################################################################################################
-df1 = load_data_pirates().assign(target='pirate').sample(100, replace=True)
-df2 = load_data_king_arthur().assign(target='arthur').sample(100, replace=True)
-df3 = load_data_chat_logs().assign(target='chat').sample(100, replace=True)
+df1 = load_data_pirates().assign(target='pirate')  # .sample(100, replace=True)
+df2 = load_data_king_arthur().assign(target='arthur')  # .sample(100, replace=True)
+df3 = load_data_chat_logs().assign(target='chat')  # .sample(100, replace=True)
 df = pd.concat([df1, df2
                 # , df3
                 ])
 # df['text_trimmed'] = df['text'].apply(lambda x: x[:100])
 # df.rename(columns={'text': 'text_a'}, inplace=True)
+df['target'] = df['target'].apply(lambda x: 0 if "pirate" in x else 1)  # can do with or without
+
+
 ################################################################################################
 
 
@@ -195,9 +197,11 @@ def load_ex5():
 # df = load_ex5().sample(900)
 
 
-run_madcat(Data(df=df, target_column='target'),
-           is_feature_stats=False,
-           is_pre_model=False)
+madcat_collector = run_madcat(Data(df=df, target_column='target'),
+                              is_feature_stats=False,
+                              is_pre_model=False,
+                              model_run=ModelRun(n_models=2),
+                              is_post_model=True)
 
 #
 # # # calc data into

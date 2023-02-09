@@ -12,10 +12,10 @@ from chester.zero_break.problem_specification import DataInfo
 
 
 class LinearRegressionModel(BaseModel):
-    def __init__(self, data_info: DataInfo, cv_data: CVData, num_models_to_compare=15):
-        super().__init__(data_info, cv_data, num_models_to_compare)
-        self.hp_list = generate_linear_regression_configs(self.num_models_to_compare,
-                                                          problem_type=self.data_info.problem_type_val)
+    def __init__(self, data_info: DataInfo, cv_data: CVData, num_models_to_compare=15, best_practice_prob=0.33):
+        super().__init__(data_info, cv_data, num_models_to_compare, best_practice_prob)
+        self.hp_list = generate_linear_regression_configs(k=self.num_models_to_compare,
+                                                          best_practice_prob=self.best_practice_prop)
         print(f"Running {self.num_models_to_compare} linear models")
 
     def get_best_model(self):
