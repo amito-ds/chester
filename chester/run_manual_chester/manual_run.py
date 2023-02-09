@@ -1,49 +1,26 @@
 from collections import Counter
 
+import matplotlib
 import pandas as pd
 from flatbuffers.builder import np
-from sklearn.datasets import fetch_openml, fetch_20newsgroups
-from sklearn.preprocessing import LabelEncoder
+from sklearn.datasets import fetch_20newsgroups
 
-from chester.cleaning.cleaner_handler import CleanerHandler
-from chester.data_loader.webtext_data import load_data_pirates, load_data_king_arthur, load_data_chat_logs
-from chester.feature_stats.categorical_stats import CategoricalStats
-from chester.feature_stats.numeric_stats import NumericStats
-from chester.feature_stats.text_stats import TextStats
-from chester.features_engineering.features_handler import FeaturesHandler
-from chester.model_monitor.mm_bootstrap import ModelBootstrap
-from chester.model_monitor.mm_weaknesses import ModelWeaknesses
-from chester.model_training.data_preparation import CVData
-from chester.model_training.models.chester_models.best_catboost import CatboostModel
-from chester.model_training.models.chester_models.best_linear_regression import LinearRegressionModel
-from chester.model_training.models.chester_models.best_logistic_regression import LogisticRegressionModel
-from chester.model_training.models.chester_models.best_model import BestModel
-from chester.post_model_analysis.post_model_analysis_class import PostModelAnalysis
-from chester.pre_model_analysis.categorical import CategoricalPreModelAnalysis
-from chester.pre_model_analysis.numerics import NumericPreModelAnalysis
-from chester.pre_model_analysis.target import TargetPreModelAnalysis
-from chester.preprocessing.preprocessor_handler import PreprocessHandler
 from chester.run.full_run import run_madcat
 from chester.run.user_classes import Data, ModelRun
-from chester.zero_break.problem_specification import DataInfo
-
-import matplotlib
-
-# matplotlib.use("Agg")
 
 matplotlib.use('TkAgg')
 target_column = 'target'
 
 ################################################################################################
-df1 = load_data_pirates().assign(target='pirate')  # .sample(100, replace=True)
-df2 = load_data_king_arthur().assign(target='arthur')  # .sample(100, replace=True)
-df3 = load_data_chat_logs().assign(target='chat')  # .sample(100, replace=True)
-df = pd.concat([df1, df2
-                # , df3
-                ])
+# df1 = load_data_pirates().assign(target='pirate')  # .sample(100, replace=True)
+# df2 = load_data_king_arthur().assign(target='arthur')  # .sample(100, replace=True)
+# df3 = load_data_chat_logs().assign(target='chat')  # .sample(100, replace=True)
+# df = pd.concat([df1, df2
+#                 , df3
+#                 ])
 # df['text_trimmed'] = df['text'].apply(lambda x: x[:100])
 # df.rename(columns={'text': 'text_a'}, inplace=True)
-df['target'] = df['target'].apply(lambda x: 0 if "pirate" in x else 1)  # can do with or without
+# df['target'] = df['target'].apply(lambda x: 0 if "pirate" in x else 1)  # can do with or without
 
 
 ################################################################################################
@@ -71,13 +48,16 @@ df['target'] = df['target'].apply(lambda x: 0 if "pirate" in x else 1)  # can do
 ###############################################################################################
 
 ################################################################################################
-# from sklearn import datasets
-# digits = datasets.load_digits()
-# X = digits.images.reshape((len(digits.images), -1))
-# df = pd.DataFrame(X)
-# df.rename(columns={col: "feat_" + str(col) for col in df.columns}, inplace=True)
-# df['target'] = digits.target
-# df['target'] = "c_ " + df['target'].astype(str)
+from sklearn import datasets
+
+digits = datasets.load_digits()
+X = digits.images.reshape((len(digits.images), -1))
+df = pd.DataFrame(X)
+df.rename(columns={col: "feat_" + str(col) for col in df.columns}, inplace=True)
+df['target'] = digits.target
+df['target'] = "c_ " + df['target'].astype(str)
+
+
 ################################################################################################
 
 
@@ -198,100 +178,8 @@ def load_ex5():
 
 
 madcat_collector = run_madcat(Data(df=df, target_column='target'),
-                              is_feature_stats=False,
-                              is_pre_model=False,
-                              model_run=ModelRun(n_models=2),
-                              is_post_model=True)
-
-#
-# # # calc data into
-# print("XXXXXXXXXXXXXXXXXXXXXXXXData infoXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-# df = df.sample(frac=1).reset_index(drop=True)
-# data_info = DataInfo(data=df, target='target')
-# data_info.calculate()
-# print(data_info)
-#
-# # clean
-# print("XXXXXXXXXXXXXXXXXXXXXXXXCleanXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-# cleaner = CleanerHandler(data_info)
-# cleaner.transform()
-# data_info = cleaner.data_info
-#
-# # keep a copy of all text after cleaning
-# text_cols = data_info.feature_types_val["text"]
-# clean_text_df = pd.DataFrame()
-# if len(text_cols) > 0:
-#     pd.options.mode.chained_assignment = None
-#     clean_text_df = data_info.data[text_cols]
-#     clean_text_df.rename(columns={col: "clean_" + col for col in clean_text_df.columns}, inplace=True)
-#
-# # PP
-# print("XXXXXXXXXXXXXXXXXXXXXXXXPPXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-# pp = PreprocessHandler(data_info)
-# pp.transform()
-# data_info_original = data_info
-# data_info = pp.data_info
-#
-# # data_info_text_cleaning
-# if len(text_cols) > 0:
-#     clean_text_df = pd.concat([df, clean_text_df], axis=1)
-#
-# # # extract features
-# print("XXXXXXXXXXXXXXXXXXXXXXXXExtract featuresXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-# feat_hand = FeaturesHandler(data_info)
-# feature_types, final_df = feat_hand.transform()
-# final_df[target_column] = data_info.data[data_info.target]
-#
-# #### stats: start
-# print("XXXXXXXXXXXXXXXXXXXXXXXXFeature StatsXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-# data_info_num_stats = DataInfo(data=final_df, target=target_column)
-# data_info_num_stats.calculate()
-# TargetPreModelAnalysis(data_info).run()
-# print("Numerical Feature statistics")
-# NumericStats(data_info_num_stats).run()
-# print("Categorical Feature statistics")
-# CategoricalStats(data_info).run()
-# print("Text Feature statistics")
-# data_info.data = clean_text_df
-# TextStats(data_info).run()
-# ### stats: end
-#
-# ########## code for stats and PMA ################
-# # pma
-# print("XXXXXXXXXXXXXXXXXXXXXXXXPre model analysisXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-# NumericPreModelAnalysis(data_info_num_stats).run()
-# data_info.data = df
-# CategoricalPreModelAnalysis(data_info).run()
-# # ########## code for stats ################
-#
-# # #################################### model####################################
-# # encode labels if needed (for classification problem only)
-# print("XXXXXXXXXXXXXXXXXXXXXXXXModel runXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-# if data_info.problem_type_val in ["Binary classification", "Multiclass classification"]:
-#     print("Encoding target")
-#     label_encoder = LabelEncoder()
-#     final_df[target_column] = label_encoder.fit_transform(final_df[target_column])
-# #
-# # # Run the model
-# cv_data = CVData(train_data=final_df, test_data=None, target_column='target', split_data=True)
-# data_info.feature_types_val = feature_types
-# model = BestModel(data_info=data_info, cv_data=cv_data, num_models_to_compare=3)
-# model_results = model.get_best_model()  # returns resultf of the best baseline model
-# params = model_results[1].get_params()
-# print(f"Best model: {type(model_results[1])}, with parameters:")
-# for p in params:
-#     print(p.name, ":", p.value)
-# ################################### model####################################
-#
-# #################################### PMA####################################
-# print("XXXXXXXXXXXXXXXXXXXXXXXXPost model analysisXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-# PostModelAnalysis(cv_data, data_info, model=model_results[1]).analyze()
-# ModelBootstrap(cv_data, data_info, model=model_results[1]).plot()
-# #################################### PMA ####################################
-#
-#
-# #################################### monitor ####################################
-# print("XXXXXXXXXXXXXXXXXXXXXXXXMoitorXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-# model_weaknesses = ModelWeaknesses(cv_data, data_info, model=model_results[1])
-# model_weaknesses.run()
-# #################################### monitor####################################
+                              is_feature_stats=True,
+                              is_pre_model=True,
+                              model_run=ModelRun(n_models=3),
+                              is_post_model=True, is_model_weaknesses=True
+                              )

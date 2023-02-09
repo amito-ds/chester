@@ -43,7 +43,7 @@ class NumericStats:
             plot_title = f"Pearson Correlation Plot for {n} randomly sampled Features"
         sns.heatmap(corr, annot=False)
         plt.title(plot_title)
-        print("Plotting matrix correlation for numerical features")
+        print("Matrix correlation for numerical features")
         print("""\n
         Rule of thumbs:
         1. Strong positive correlation: >= 0.7

@@ -13,6 +13,7 @@ from chester.zero_break.problem_specification import DataInfo
 class BaselineModel(BaseModel):
     def __init__(self, data_info: DataInfo, cv_data: CVData, num_models_to_compare=10):
         super().__init__(data_info, cv_data, num_models_to_compare)
+        print()
         print(f"Running baseline model")
 
     def get_best_model(self):

@@ -5,7 +5,6 @@ from catboost import CatBoostRegressor
 from matplotlib import pyplot as plt
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
-from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.tree import DecisionTreeRegressor
 
@@ -114,5 +113,6 @@ class ModelWeaknesses:
         plt.show()
 
     def run(self):
+        print("Training model to predict the error")
         self.plot_catboost_error_regressor()
         self.plot_decision_tree_error_regressor()

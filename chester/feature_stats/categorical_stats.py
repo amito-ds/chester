@@ -107,7 +107,6 @@ class CategoricalStats:
             if self.max_print is not None:
                 print(format_df(df=results_df,
                                 max_value_width=self.max_print,
-                                distribution_col=self.max_print,
                                 ))
             else:
                 print(format_df(results_df))
@@ -120,7 +119,7 @@ class CategoricalStats:
         return None
 
 
-def format_df(df, max_value_width=25, distribution_max_value_width=30, distribution_col="Distribution"):
+def format_df(df, max_value_width=30):
     pd.options.display.max_columns = None
 
     def trim_value(val):
@@ -128,14 +127,6 @@ def format_df(df, max_value_width=25, distribution_max_value_width=30, distribut
             return str(val)[:max_value_width] + "..."
         return str(val)
 
-    def trim_distribution_value(val):
-        if len(str(val)) > distribution_max_value_width:
-            return str(val)[:distribution_max_value_width] + "..."
-        return str(val)
-
-    df_subset = df.drop(distribution_col, axis=1)
-    df_subset = df_subset.applymap(trim_value)
-    df[df_subset.columns] = df_subset
-    df[distribution_col] = df[distribution_col].apply(trim_distribution_value)
+    df = df.applymap(trim_value)
 
     return df

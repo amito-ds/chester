@@ -47,6 +47,8 @@ class FeaturesHandler:
             try:
                 values, names = feature_handler.handle_feature()
                 feat_values.append(values)
+                if feature_handler.feature_type is None:
+                    pass
                 if feature_handler.feature_type == 'numeric':
                     feature_types['numeric'].extend(names)
                     feat_names.append(names)
@@ -60,7 +62,6 @@ class FeaturesHandler:
                     feat_names.append(names)
                     feature_types['categorical'].extend(names)
             except:
-                print("Could not extract features")
                 pass
         final_df = pd.DataFrame()
         for value in feat_values:

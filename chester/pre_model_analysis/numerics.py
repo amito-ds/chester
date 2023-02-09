@@ -132,7 +132,7 @@ class NumericPreModelAnalysis:
         self.plot_wordcloud_pvalues(self.cols_sorted_with_pvalue)
         if is_plot:
             if self.n_cols > 50:
-                print("Numerical Pvalues plot")
+                print("Numerical Pvalues plot:")
                 self.plot_histogram_pvalues(self.cols_sorted_with_pvalue)
         print("Pvalues for top numerical features for chi square test:")
         print(pd.DataFrame(self.cols_sorted_with_pvalue[0:top_features], columns=["feature", "pvalue"]))

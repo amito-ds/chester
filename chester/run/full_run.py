@@ -13,6 +13,7 @@ from chester.pre_model_analysis.categorical import CategoricalPreModelAnalysis
 from chester.pre_model_analysis.numerics import NumericPreModelAnalysis
 from chester.pre_model_analysis.target import TargetPreModelAnalysis
 from chester.preprocessing.preprocessor_handler import PreprocessHandler
+from chester.run.chapter_titles import chapter_title
 from chester.run.user_classes import Data, TextHandler, FeatureStats, ModelRun, TextFeatureSpec, FeatureTypes
 from chester.zero_break.problem_specification import DataInfo
 
@@ -25,11 +26,9 @@ from chester.model_training.data_preparation import CVData
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 
-madcat_collector = {}
-
 
 def run_madcat(
-        data_spec: Data = None,
+        data_spec: Data,
         feature_types: dict = None,
         text_handler: TextHandler = None, is_text_handler=True,
         feature_stats: FeatureStats = None, is_feature_stats=True,
@@ -38,17 +37,41 @@ def run_madcat(
         model_run: ModelRun = None,
         is_post_model=True,
         is_model_weaknesses=True,
-        # special params
-        plot=None,
-        max_stats_show=None,
-        # model_cycle: bm.ModelCycle = None, model_compare: bm.CompareModels = None,
-        # is_train_model: bool = True,
-        # is_model_analysis: bool = True
+        plot=True,
+        max_stats_col_width=30,
 ):
-    # chapters: ZB, Text stats, Feature stats, pre model, model, post model, model weaknesses (7 chapters)
+    """
+        Perform end-to-end machine learning modeling on the provided data.
+
+        This function takes in a data set and performs a comprehensive machine learning modeling process.
+        It first identifies the problem type (either regression or classification) and the feature types
+        (numeric, categorical, boolean, or text) based on metadata provided.
+        Then, it selects the appropriate machine learning models to run, performs cross-validation (CV),
+        and returns the best model based on comparison of the results.
+        In addition, the function also provides feature statistics, pre-model analysis, post-model analysis,
+        and identifies any weaknesses in the model.
+        """
+    #################################################### story
+    story = "Thank you for using the MadCat. The MadCat is a module to solve end to end ml and data analysis tasks.\n"
+    if is_feature_stats:
+        story += "The feature stats will be calculated to understand the data better.\n"
+    if is_pre_model:
+        story += "The pre model process will be performed to prepare the data for the model.\n"
+    if data_spec.target_column is not None:
+        story += "A model will be trained and tested using the given data.\n"
+    if is_post_model:
+        story += "Post model analysis will be performed to evaluate the model performance.\n"
+    if is_model_weaknesses:
+        story += "The weaknesses of the model will be analyzed to understand how to improve it.\n"
+    if plot:
+        story += "The results will be plotted for visualization.\n"
+    story += "The maximum column width for stats display is set to {}.\n".format(max_stats_col_width)
+    print(story)
+
+    run_metadata_collector = {}
+    ####################################################
 
     #################################################### meta learn
-    # TO DO: print meta learn message + shuffle message
     df = data_spec.df.sample(frac=1).reset_index(drop=True)
     data_info = DataInfo(data=df, target='target')
     data_info.calculate()
@@ -56,8 +79,10 @@ def run_madcat(
     if feature_types is not None:
         data_info = FeatureTypes(feature_types).update_data_info(data_info=data_info)
     target_column = data_info.target
+
+    print(chapter_title("meta learn"))
     print(data_info)
-    madcat_collector["data info"] = data_info
+    run_metadata_collector["data info"] = data_info
     ####################################################
 
     #################################################### Text handling
@@ -91,11 +116,11 @@ def run_madcat(
         # data_info_text_cleaning for later text analysis
         if len(text_cols) > 0:
             clean_text_df = pd.concat([df, clean_text_df], axis=1)
-        madcat_collector["data info"] = data_info
+        run_metadata_collector["data info"] = data_info
     ####################################################
 
     #################################################### Feat extract
-    # TO DO: print message
+    print(chapter_title('feature engineering'))
     if text_feature_extraction is not None:
         feat_hand = FeaturesHandler(data_info=data_info, text_feature_extraction=text_feature_extraction)
     else:
@@ -103,14 +128,14 @@ def run_madcat(
     feature_types, final_df = feat_hand.transform()
     final_df[target_column] = data_info.data[data_info.target]
 
-    madcat_collector["data info"] = data_info
-    madcat_collector["features data"] = final_df
+    run_metadata_collector["data info"] = data_info
+    run_metadata_collector["features data"] = final_df
     ####################################################
 
     #################################################### Feat Stats
-    # TO DO: print message
     data_info_num_stats = None
     if is_feature_stats:
+        print(chapter_title('feature statistics'))
         data_info_num_stats = DataInfo(data=final_df, target=target_column)
         data_info_num_stats.calculate()
 
@@ -129,11 +154,12 @@ def run_madcat(
             else:
                 plot_stats = True
 
+        max_stats_col_width = max_stats_col_width or 30
         if len(num_cols) > 0:
             print("Numerical Feature statistics")
-            NumericStats(data_info_num_stats).run(plot=plot_stats)
+            NumericStats(data_info_num_stats, max_print=max_stats_col_width).run(plot=plot_stats)
         print("Categorical Feature statistics")
-        CategoricalStats(data_info).run(plot=plot_stats)
+        CategoricalStats(data_info, max_print=max_stats_col_width).run(plot=plot_stats)
         if len(text_cols) > 0:
             print("Text Feature statistics")
             data_info.data = clean_text_df
@@ -142,11 +168,11 @@ def run_madcat(
 
     # No target => no model!
     if data_info.problem_type_val == "No target variable":
-        return madcat_collector
+        return run_metadata_collector
 
     #################################################### Pre model
-    # TO DO: print message
     if is_pre_model:
+        print(chapter_title('model pre analysis'))
         # label stats
         TargetPreModelAnalysis(data_info).run(plot)
         # num, cat pre model
@@ -180,35 +206,35 @@ def run_madcat(
     model_results = model.get_best_model()  # returns result of the best baseline model
     # print model metadata
     params = model_results[1].get_params()
-    print(f"Best model: {type(model_results[1])}, with parameters:")
+    print(f"Best model: {type(model_results[1].model)}, with parameters:")
     for p in params:
         print(p.name, ":", p.value)
 
-    madcat_collector["data info"] = data_info
-    madcat_collector["features data"] = final_df
-    madcat_collector["model"] = model
-    madcat_collector["parameters"] = model_results[1]
-    madcat_collector["model_results"] = model_results[0]
+    run_metadata_collector["data info"] = data_info
+    run_metadata_collector["features data"] = final_df
+    run_metadata_collector["model"] = model
+    run_metadata_collector["parameters"] = model_results[1]
+    run_metadata_collector["model_results"] = model_results[0]
     ####################################################
 
     #################################################### post model
-    # TO DO: print message
     if is_post_model:
+        print(chapter_title('post model analysis'))
         post_model_analysis = PostModelAnalysis(cv_data, data_info, model=model_results[1])
-        madcat_collector["post_model_analysis"] = post_model_analysis
+        run_metadata_collector["post_model_analysis"] = post_model_analysis
         post_model_analysis.analyze()
 
         model_bootstrap = ModelBootstrap(cv_data, data_info, model=model_results[1])
-        madcat_collector["model_bootstrap"] = model_bootstrap
+        run_metadata_collector["model_bootstrap"] = model_bootstrap
         model_bootstrap.plot()
     ####################################################
 
     #################################################### model weaknesses
-    # TO DO: print message
     if is_model_weaknesses:
+        print(chapter_title('model weaknesses'))
         model_weaknesses = ModelWeaknesses(cv_data, data_info, model=model_results[1])
-        madcat_collector["model_weaknesses"] = model_weaknesses
+        run_metadata_collector["model_weaknesses"] = model_weaknesses
         model_weaknesses.run()
     ####################################################
 
-    return madcat_collector
+    return run_metadata_collector

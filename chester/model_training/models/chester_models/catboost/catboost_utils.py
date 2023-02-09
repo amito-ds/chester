@@ -1,12 +1,8 @@
-from collections import defaultdict
 from typing import List
 
 import numpy as np
-import pandas as pd
-import seaborn as sns
 from sklearn.exceptions import UndefinedMetricWarning
 
-from chester.model_analyzer.model_analysis import get_traffic_light
 # from chester.model_compare.compare_messages import get_model_name
 from chester.model_training.data_preparation import CVData
 from chester.model_training.data_preparation import Parameter
