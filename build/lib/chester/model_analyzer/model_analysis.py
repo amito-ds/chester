@@ -20,13 +20,17 @@ class ModelAnalyzer:
         print(AnalyzeMessages().shap_values_message())
         shap.summary_plot(shap_values, X_train)
 
-    def coefficients(self) -> None:
+    def coefficients(self, X_train: pd.DataFrame) -> None:
         coef = self.model.coef_[0]
+        feature_names = X_train.columns
         if len(coef) < 10:
             plt.bar(np.arange(len(coef)), coef)
-            plt.title("Coefficients for logistic regression model")
+            plt.xticks(np.arange(len(coef)), feature_names, rotation=90)
+            plt.title("Coefficients for Logistic Regression Model")
             plt.xlabel("Features")
             plt.ylabel("Values")
+            plt.show()
+
         else:
             sns.violinplot(coef, inner="stick")
             plt.title("Coefficients distribution for logistic regression model")
@@ -57,7 +61,7 @@ class ModelAnalyzer:
                     pass
         if coefficients:
             try:
-                self.coefficients()
+                self.coefficients(X_train)
             except:
                 pass
         if confusion_matrix:

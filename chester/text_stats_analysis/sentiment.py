@@ -39,6 +39,6 @@ def plot_sentiment_scores(sentiment_df):
     # Create a histogram of the sentiment scores using Seaborn
     ax = sns.histplot(data=sentiment_df, x='sentiment', kde=False)
     ax.set(xlabel='Sentiment Score', ylabel='Count', title='Sentiment Scores')
-    plt.figure(figsize=(10, 10))
-    plt.rcParams.update({'font.size': 12})
+    plt.figure(figsize=(12, 12))
+    plt.rcParams.update({'font.size': 14})
     plt.show()

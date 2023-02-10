@@ -41,7 +41,7 @@ class NumericStats:
             plot_title = f"Pearson Correlation Plot"
         else:
             plot_title = f"Pearson Correlation Plot for {n} randomly sampled Features"
-        plt.figure(figsize=(15, 15))
+        plt.figure(figsize=(13, 13))
         plt.rcParams.update({'font.size': 18})
         sns.heatmap(corr, annot=False)
         plt.title(plot_title)

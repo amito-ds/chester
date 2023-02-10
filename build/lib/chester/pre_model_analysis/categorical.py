@@ -29,7 +29,7 @@ class CategoricalPreModelAnalysis:
         X_tsne_3d = TSNE(n_components=3).fit_transform(pd.get_dummies(self.data))
         X_tsne_2d = X_tsne_3d[:, :2]
 
-        fig = plt.figure(figsize=(16, 8))
+        fig = plt.figure(figsize=(16, 10))
         ax1 = plt
         # ax2 = fig.add_subplot(122, projection='3d')
         if self.data_info.problem_type_val in ["Regression"]:

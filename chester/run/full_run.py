@@ -52,8 +52,14 @@ def run_madcat(
         and identifies any weaknesses in the model.
         """
     # Tell a story
-    story = "Welcome to the MadCat!\nThe MadCat is a module to solve end to end ml and data analysis tasks.\n" \
-            "For more info visit https://github.com/amito-ds/chester\n"
+    story = """Welcome to MadCat, the comprehensive machine learning and data analysis solution!\n
+    This module is designed to streamline the entire process of data analysis and machine learning modeling,\n 
+    from start to finish.
+    \nTo learn more about MadCat, visit https://github.com/amito-ds/chester.
+    \nMadCat performs all necessary pre-processing steps to get your data ready for modeling.
+    \nIt then trains and tests multiple models, selecting the best one based on results.
+    \nThe results are visually displayed for easy interpretation."""
+
     if is_feature_stats:
         story += "The feature stats will be calculated to understand the data better.\n"
     if is_pre_model:

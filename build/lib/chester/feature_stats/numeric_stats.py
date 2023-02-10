@@ -41,16 +41,17 @@ class NumericStats:
             plot_title = f"Pearson Correlation Plot"
         else:
             plot_title = f"Pearson Correlation Plot for {n} randomly sampled Features"
-        plt.figure(figsize=(30, 30))
+        plt.figure(figsize=(15, 15))
+        plt.rcParams.update({'font.size': 18})
         sns.heatmap(corr, annot=False)
         plt.title(plot_title)
         print("Matrix correlation for numerical features")
         print("""\n
-        Rule of thumbs:
-        1. Strong positive correlation: >= 0.7
-        2. Moderate positive correlation: between 0.5 and 0.7
-        3. Weak positive correlation: between 0.3 and 0.5
-        4. No/Negligible correlation: < 0.3
+        💡 Rule of thumb:
+        👍 Strong positive correlation: >= 0.7
+        🤔 Moderate positive correlation: between 0.5 and 0.7
+        🤨 Weak positive correlation: between 0.3 and 0.5
+        🤷‍♀️ No/Negligible correlation: < 0.3
         """)
         plt.show()
 

@@ -19,6 +19,8 @@ def plot_corex_wordcloud(df, top_words=20, n_topics=10, plot=True, text_column='
         fig.suptitle("Word Clouds for Top Word for Corex Topics", fontsize=16)
 
         for i in range(n_topics):
+            if i + 1 >= 10:
+                pass
             topic_words = top_words_list[top_words_list["topic_index"] == i]
             topic_words = dict(zip(topic_words["term"], topic_words["weight"]))
             wordcloud = WordCloud(width=800, height=800, background_color='black',
