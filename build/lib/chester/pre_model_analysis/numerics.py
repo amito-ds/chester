@@ -148,7 +148,7 @@ class NumericPreModelAnalysis:
         """
         pvalues = [pvalue for _, pvalue in features_pvalues]
         fig, ax = plt.subplots()
-        plt.figure(figsize=(15, 15))
+        plt.figure(figsize=(12, 12))
         ax.hist(pvalues, bins=50, edgecolor='k', color='#2ecc71')
         ax.set_title("Histogram of P-values for Numerical Features", fontsize=18)
         ax.set_xlabel("P-value", fontsize=17)
@@ -254,7 +254,7 @@ class NumericPreModelAnalysis:
                     else:
                         contingency_table_pct = contingency_table.div(contingency_table.sum(0), axis=1)
                     sns.heatmap(contingency_table_pct, annot=False, cmap='Blues')
-                    plt.ylabel(col, fontsize=12, fontweight='bold')
+                    plt.ylabel(col, fontsize=8, fontweight='bold')
                     plt.xlabel(None)
             plt.show()
             return None

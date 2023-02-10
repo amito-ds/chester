@@ -50,7 +50,6 @@ class TargetPreModelAnalysis:
         ax1.set_xlabel('Values')
         plt.title(f'Bar Plot of {self.target.name}')
         plt.show()
-        plt.close()
 
     def run(self, plot=True):
         if self.target_type == "numeric":
@@ -63,4 +62,3 @@ class TargetPreModelAnalysis:
             CategoricalStats(self.data_info).run(plot=False)
             if plot:
                 self.plot_barplot()
-        plt.close()
