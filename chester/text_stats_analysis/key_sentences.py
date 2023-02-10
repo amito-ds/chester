@@ -7,19 +7,6 @@ from sklearn.decomposition import TruncatedSVD
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 
-# from summa import summarizer
-
-
-# def extract_key_sentences_summarization(text, ratio=0.2):
-#     """
-#     Extract summary from text using the Summa library's summarize function.
-#     :param text: the text to extract the summary from
-#     :param ratio: the ratio of the summary to the text  (default: 0.2)
-#     :return: the summary
-#     """
-#     return summarizer.summarize(text, ratio=ratio)
-
-
 def extract_key_sentences_lsa(text, k=10):
     """
     Extract k most important sentences from text using LSA algorithm.

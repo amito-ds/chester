@@ -122,5 +122,3 @@ def remove_numbers(text):
     """Remove numbers from the given text."""
     text = ''.join([c for c in text if not c.isdigit()])
     return text
-
-

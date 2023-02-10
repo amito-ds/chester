@@ -1,5 +1,5 @@
-from wordcloud import WordCloud
 import matplotlib.pyplot as plt
+from wordcloud import WordCloud
 
 
 # define a function that takes a dataframe and creates a word cloud from the 'text' column

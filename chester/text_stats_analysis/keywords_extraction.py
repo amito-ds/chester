@@ -1,4 +1,3 @@
-# Adapted from: github.com/aneesha/RAKE/rake.py
 from __future__ import division
 
 import operator

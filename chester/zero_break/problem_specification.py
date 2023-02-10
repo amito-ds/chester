@@ -4,26 +4,13 @@ from dateutil.parser import parse
 from chester.zero_break.text_detector import determine_if_text_or_categorical_column
 
 
+# need an extension for ts module
 def is_date(string):
     try:
         parse(string)
         return True
     except ValueError:
         return False
-
-    # import requests
-    # from bs4 import BeautifulSoup
-    #
-    # url = "https://github.com/amito-ds/TCAP/blob/main/entities2vec.ipynb"
-    #
-    # page = requests.get(url)
-    #
-    # soup = BeautifulSoup(page.content, "html.parser")
-    # soup
-
-    # print all the job titles in the page
-    # for job_title in soup.find_all("span", class_="job-title-text"):
-    #     print(job_title.text)
 
 
 class DataInfo:
