@@ -34,6 +34,7 @@ class PostModelAnalysis:
         print(AnalyzeMessages().feature_importance_message())
         df.sort_values(by='feature_importance', ascending=False, inplace=True)
         sns.barplot(x='feature_importance', y='feature_names', data=df[0:top_feat])
+        plt.figure(figsize=(15, 13))
         plt.title(f'Feature Importance (top {top_feat} features)')
         self.plot_wordcloud_importance(df=df)
         plt.show()

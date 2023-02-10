@@ -148,10 +148,11 @@ class NumericPreModelAnalysis:
         """
         pvalues = [pvalue for _, pvalue in features_pvalues]
         fig, ax = plt.subplots()
+        plt.figure(figsize=(12, 12))
         ax.hist(pvalues, bins=50, edgecolor='k', color='#2ecc71')
-        ax.set_title("Histogram of P-values for Numerical Features", fontsize=16)
-        ax.set_xlabel("P-value", fontsize=14)
-        ax.set_ylabel("Frequency", fontsize=14)
+        ax.set_title("Histogram of P-values for Numerical Features", fontsize=18)
+        ax.set_xlabel("P-value", fontsize=17)
+        ax.set_ylabel("Frequency", fontsize=17)
         ax.spines['right'].set_visible(False)
         ax.spines['top'].set_visible(False)
         ax.spines['left'].set_linewidth(0.5)
@@ -174,6 +175,7 @@ class NumericPreModelAnalysis:
             random_state=21,
             normalize_plurals=True).generate_from_frequencies(dict(features_pvalues))
         plt.imshow(wordcloud)
+        plt.figure(figsize=(12, 12))
         plt.title(title, fontsize=15)
         plt.show()
         return None
@@ -195,6 +197,7 @@ class NumericPreModelAnalysis:
         dim = math.ceil(math.sqrt(num_plots))
         num_rows = math.ceil(num_plots / dim)
         fig, ax = plt.subplots(num_rows, dim)
+        plt.figure(figsize=(15, 15))
         if self.data_info.problem_type_val in ["Binary regression"]:
             plt.suptitle("Partial Plot to Identify Patterns between Sampled Numeric Features and Target",
                          fontsize=16, fontweight='bold')

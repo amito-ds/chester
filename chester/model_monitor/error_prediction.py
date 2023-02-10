@@ -102,7 +102,7 @@ class ModelWeaknesses:
         plt.suptitle("Decision Tree Trained on Model Error")
         return None
 
-    def plot_catboost_error_regressor(self, iterations=100, depth=2, learning_rate=0.1):
+    def plot_catboost_error_regressor(self, iterations=100, depth=3, learning_rate=0.1):
         model = CatBoostRegressor(iterations=iterations, depth=depth, learning_rate=learning_rate)
         model.fit(self.X_test, self.error, verbose=False)
         plt.figure(figsize=(15, 15))

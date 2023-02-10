@@ -120,8 +120,6 @@ def visualize_performance(df, with_baseline=True):
         pivot = df[df['model'] != 'BaselineModel'].pivot(index="model", columns="type", values=metric_columns)
     # Plot bar chart to compare mean performance metric by model
     fig, axes = plt.subplots(nrows=len(metric_columns), ncols=1, figsize=(8, 8), sharex=True)
-    # plt.figure(figsize=(12, 16)) #TODO check if it casused an error
-    # plt.rcParams.update({'font.size': 20})
 
     for i, metric in enumerate(metric_columns):
         pivot[metric].plot.bar(ax=axes[i], rot=0)
@@ -145,7 +143,9 @@ def compare_best_models(results, plot_results=True):
         all_results.append(result_organized)
         all_results_with_models.append((result_organized, model))
     if plot_results:
+        print("Model results - comparing the best out of each type")
         visualize_performance(calculate_average(pd.concat(all_results)), with_baseline=True)
+        print("Model results - comparing the best out of each type, excluding baseline model")
         visualize_performance(calculate_average(pd.concat(all_results)), with_baseline=False)
 
     metric_name = [col for col in all_results[0].columns if col not in ['type', 'fold', 'model']][0]

@@ -129,6 +129,7 @@ class CategoricalPreModelAnalysis:
                 plt.suptitle("Partial Plot to Identify Patterns between Sampled Categorical Features and Target\n"
                              "Showing % from Target (column)",
                              fontsize=14, fontweight='bold')
+            plt.figure(figsize=(15, 15))
             for i, col in enumerate(top_feature_names):
                 if i >= num_rows * num_rows:
                     return None

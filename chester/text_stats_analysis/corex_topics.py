@@ -18,20 +18,20 @@ def plot_corex_wordcloud(df, top_words=20, n_topics=10, plot=True, text_column='
         fig, axs = plt.subplots(N, N, figsize=(N * 4, N * 4), dpi=100)
         fig.suptitle("Word Clouds for Top Word for Corex Topics", fontsize=16)
 
-        for i in range(n_topics):
-            if i + 1 >= 10:
-                pass
+        for i in range(n_topics - 1):
             topic_words = top_words_list[top_words_list["topic_index"] == i]
             topic_words = dict(zip(topic_words["term"], topic_words["weight"]))
             wordcloud = WordCloud(width=800, height=800, background_color='black',
                                   stopwords=None, min_font_size=10).generate_from_frequencies(topic_words)
 
             subplot_index = i + 1
-            ax = plt.subplot(N, N, subplot_index)
-            plt.imshow(wordcloud)
-            plt.axis("off")
-            plt.title("Topic {}".format(i), fontsize=14)
-
+            try:
+                ax = plt.subplot(N, N, subplot_index)
+                plt.imshow(wordcloud)
+                plt.axis("off")
+                plt.title("Topic {}".format(i), fontsize=14)
+            except:
+                pass
         plt.tight_layout()
         plt.show()
 

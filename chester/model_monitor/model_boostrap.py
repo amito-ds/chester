@@ -7,6 +7,15 @@ from chester.model_training.data_preparation import CVData
 from chester.model_training.models.chester_models.catboost.catboost_utils import calculate_catboost_metrics_scores
 from chester.zero_break.problem_specification import DataInfo
 
+boostrap_message = "The following plots display the distribution of the metrics, " \
+                   "\nusing a violin plot and histogram. " \
+                   "\n\tThe violin plot shows the median, " \
+                   "quartiles, and other important summary statistics of the data, " \
+                   "\n\twhile the histogram provides a visual representation of the frequency of values in the data. " \
+                   "\nThese plots give you a sense of how the metrics are distributed\n " \
+                   "and can be used to identify any " \
+                   "patterns or outliers in the data."
+
 
 class ModelBootstrap:
     def __init__(self, cv_data: CVData, data_info: DataInfo, model):
@@ -79,6 +88,7 @@ class ModelBootstrap:
         return bootstrap_metrics
 
     def plot(self):
+        print(boostrap_message)
         import seaborn as sns
         metrics = pd.DataFrame(self.bootstrap_metrics())
         for metric_name in metrics.columns:
@@ -87,10 +97,3 @@ class ModelBootstrap:
             ax1.set_title(metric_name)
             sns.histplot(x=metrics[metric_name], ax=ax2)
             plt.show()
-
-    # """
-    # In a violin plot, the left side of the plot represents a kernel density estimate (KDE)
-    # of the data's distribution, and it is symmetrical around the median.
-    # The right side of the plot (often referred to as the "stick plot")
-    # shows the actual observations in the data, which may not be symmetrical.
-    # """
