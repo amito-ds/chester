@@ -1,8 +1,6 @@
 import matplotlib.pyplot as plt
-
-
-import matplotlib.pyplot as plt
 import scipy.stats as stats
+
 
 class VisualizeRegressionResults:
     def __init__(self, y_true, y_pred):
@@ -42,4 +40,3 @@ class VisualizeRegressionResults:
         self.histogram_plot(axs[1, 0])
         self.qq_plot(axs[1, 1])
         plt.show()
-

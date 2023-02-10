@@ -1,4 +1,3 @@
-# exec(open("chester/model_training/models/chester_models/best_catboost.py").read())
 from chester.model_training.data_preparation import CVData
 from chester.model_training.models.chester_models.base_model import BaseModel
 from chester.model_training.models.chester_models.linear_regression.linear_regression_utils import \

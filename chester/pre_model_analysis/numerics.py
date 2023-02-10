@@ -1,9 +1,8 @@
 import math
 import random
-from math import floor, ceil
+from math import floor
 
 import matplotlib.pyplot as plt
-import matplotlib.pyplot as plt2
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -13,10 +12,10 @@ from scipy.stats import chi2_contingency
 from sklearn.cluster import KMeans
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
+from sklearn.manifold import TSNE
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from wordcloud import WordCloud
-from sklearn.manifold import TSNE
 
 from chester.zero_break.problem_specification import DataInfo
 
@@ -34,7 +33,6 @@ class NumericPreModelAnalysis:
         self.cols_sorted_with_pvalue = None
 
     def tsne(self):
-        from mpl_toolkits.mplot3d import Axes3D
 
         if self.n_cols in (1, 2):
             return None
@@ -51,7 +49,7 @@ class NumericPreModelAnalysis:
 
         X_tsne_3d = TSNE(n_components=3).fit_transform(X)
         X_tsne_2d = X_tsne_3d[:, :2]
-        fig = plt.figure(figsize=(16, 8))
+        fig = plt.figure(figsize=(12, 12))
         # ax1 = fig.add_subplot(121)
         ax1 = plt
         # ax2 = fig.gca(122, projection='3d')

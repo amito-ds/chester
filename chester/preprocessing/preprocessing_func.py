@@ -1,4 +1,5 @@
 import nltk
+import pandas as pd
 from nltk.corpus import wordnet
 from nltk.stem import PorterStemmer, SnowballStemmer, LancasterStemmer
 from nltk.stem import WordNetLemmatizer
@@ -97,9 +98,6 @@ def preprocess_text(text,
         lemmatized_words = stemmed_words
 
     return ' '.join(lemmatized_words)
-
-
-import pandas as pd
 
 
 class TextPreprocessor:

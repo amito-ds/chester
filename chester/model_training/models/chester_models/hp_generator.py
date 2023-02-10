@@ -7,7 +7,6 @@ class HPGenerator:
     def __init__(self,
                  best_practice_configs: list = None,
                  categorical_sample_configs: list = None,
-                 # list of categorical parameters - to use later for sampling from space
                  n_models=9,
                  best_practice_prob=0.33):
         self.n_models = n_models

@@ -19,7 +19,6 @@ class LogisticRegressionModel(BaseModel):
             return None
         else:
             models = [model for model in models if "logistic" in model]
-            # print("lr_models", lr_models)
             if len(models) == 0:
                 return None
             else:

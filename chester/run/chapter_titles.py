@@ -25,6 +25,8 @@ def chapter_title(chapter_name: str, prefix=" Chapter: "):
         emoji = random.choice(POST_MODEL_ANALYSIS_EMOJIS)
     elif chapter_name == 'model weaknesses':
         emoji = random.choice(MODEL_WEAKNESSES_EMOJIS)
+    elif chapter_name == 'model weaknesses':
+        emoji = random.choice(MODEL_WEAKNESSES_EMOJIS)
     else:
         emoji = '🍵'
     message = f'{stars}\n***{prefix} {chapter_name} {emoji} ***\n{stars}'

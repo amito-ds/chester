@@ -1,10 +1,10 @@
+import matplotlib.pyplot as plt
+import numpy as np
 from pandas.errors import SettingWithCopyWarning
 
 from chester.feature_stats.categorical_stats import CategoricalStats
 from chester.feature_stats.numeric_stats import NumericStats
 from chester.zero_break.problem_specification import DataInfo
-import matplotlib.pyplot as plt
-import numpy as np
 
 
 class TargetPreModelAnalysis:

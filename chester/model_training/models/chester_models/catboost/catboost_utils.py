@@ -3,7 +3,6 @@ from typing import List
 import numpy as np
 from sklearn.exceptions import UndefinedMetricWarning
 
-# from chester.model_compare.compare_messages import get_model_name
 from chester.model_training.data_preparation import CVData
 from chester.model_training.data_preparation import Parameter
 from chester.model_training.models.chester_models.base_model_utils import is_metric_higher_is_better
@@ -86,14 +85,12 @@ def get_model_name(model):
 
 def compare_models(results):
     all_results = [(pd.DataFrame(result), model) for result, model in results]
-    # print("all_results", all_results[0][0])
     metric_name = [col for col in all_results[0][0].columns if col not in ['type', 'fold']][0]
     sort_ascending = is_metric_higher_is_better(metric_name)
     best_result = None
     best_model = None
     best_value = None
     for (result, model) in all_results:
-        # print("this is the results!", result)
         test_result = result[result['type'] == 'test'].groupby('fold').mean(numeric_only=True).reset_index()
         mean_value = test_result[metric_name].mean()
         if best_value is None or \

@@ -46,8 +46,6 @@ def linear_regression_with_outputs(cv_data: CVData,
         model = train_linear_regression(X_train, y_train, parameters=parameters, data_info=data_info)
         prediction = predict_linear_regression(model, X_test)
         prediction_train = predict_linear_regression(model, X_train)
-        # print("prediction_train", prediction_train)
-        # print(metrics)
         scores = calculate_linear_regression_metrics_scores(y_test, prediction, metrics, data_info.problem_type_val)
         results.append({'type': 'test', 'fold': i, **scores})
         scores = calculate_linear_regression_metrics_scores(y_train, prediction_train, metrics,
@@ -58,14 +56,12 @@ def linear_regression_with_outputs(cv_data: CVData,
 
 def compare_models(results):
     all_results = [(pd.DataFrame(result), model) for result, model in results]
-    # print("all_results", all_results[0][0])
     metric_name = [col for col in all_results[0][0].columns if col not in ['type', 'fold']][0]
     sort_ascending = is_metric_higher_is_better(metric_name)
     best_result = None
     best_model = None
     best_value = None
     for (result, model) in all_results:
-        # print("this is the results!", result)
         test_result = result[result['type'] == 'test'].groupby('fold').mean(numeric_only=True).reset_index()
         mean_value = test_result[metric_name].mean()
         if best_value is None or \
@@ -77,8 +73,7 @@ def compare_models(results):
     return best_result, best_model
 
 
-default_parameters = {
-}
+default_parameters = {}
 
 
 def generate_linear_regression_configs(k: int = 10, best_practice_prob=0.33) -> List[List[Parameter]]:

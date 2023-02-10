@@ -30,4 +30,3 @@ class BaselineModel:
     def fit_transform(self, X, y):
         self.fit(y)
         return self.transform(X)
-

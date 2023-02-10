@@ -21,7 +21,7 @@ def calculate_score_model(y, prediction):
         scores['f1_score'] = f1_score(y, prediction)
     else:
         scores['accuracy_score'] = accuracy_score(y, prediction)
-        scores['precision_score'] = precision_score(y, prediction, average='micro',  zero_division=0)
+        scores['precision_score'] = precision_score(y, prediction, average='micro', zero_division=0)
         scores['recall_score'] = recall_score(y, prediction, average='micro')
         scores['f1_score'] = f1_score(y, prediction, average='micro')
     return scores

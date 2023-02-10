@@ -1,11 +1,5 @@
-import pandas as pd
-from chester.cleaning import cleaning_func as cln
-
-from chester.chapter_messages import chapter_message
-from chester.data_loader.webtext_data import load_data_pirates, load_data_king_arthur
-from chester.features_engineering.feature_handler import FeatureHandler
-from chester.zero_break.problem_specification import DataInfo
 from chester.preprocessing import preprocessing_func as pp
+from chester.zero_break.problem_specification import DataInfo
 
 
 class PreprocessHandler:
@@ -34,31 +28,3 @@ class PreprocessHandler:
             print(f"{col} text preprocessing")
             text_reprocess.generate_report()
             self.data_info.data = pp.preprocess_text_df(text_reprocess)
-
-# import numpy as np
-#
-# df1 = load_data_pirates().assign(target='chat_logs')
-# df2 = load_data_king_arthur().assign(target='pirates')
-# df = pd.concat([df1, df2])
-#
-# # Add numerical column
-# df["number"] = np.random.uniform(0, 1, df.shape[0])
-#
-# # Add categorical column
-# df["categ"] = 'aaa'
-#
-# # Add boolean column
-# df["booly"] = True
-#
-# # df.drop(columns='text', inplace=True)
-#
-# # calc data into
-# data_info = DataInfo(data=df, target='target')
-# data_info.calculate()
-# print(data_info)
-# # extract features
-# print(data_info.data[0:10])
-#
-# cleaner = PreprocessHandler(data_info)
-# cleaner.transform()
-# print(cleaner.data_info.data[0:10])

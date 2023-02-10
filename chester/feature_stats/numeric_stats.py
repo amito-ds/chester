@@ -1,10 +1,10 @@
 import numpy as np
-
-from chester.feature_stats.utils import round_value
-from chester.zero_break.problem_specification import DataInfo
 import pandas as pd
 import seaborn as sns
 from matplotlib import pyplot as plt
+
+from chester.feature_stats.utils import round_value
+from chester.zero_break.problem_specification import DataInfo
 
 
 class NumericStats:

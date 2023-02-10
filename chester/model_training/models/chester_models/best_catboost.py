@@ -18,7 +18,6 @@ class CatboostModel(BaseModel):
             return None
         else:
             models = [model for model in models if "catboost" in model]
-            # print("models", models)
             if len(models) == 0:
                 return None
             else:

@@ -1,4 +1,3 @@
-
 def calculate_metric_score(y_true, y_pred, metric, problem_type_val):
     metric_name = metric.__name__
     try:

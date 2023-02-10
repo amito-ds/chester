@@ -7,7 +7,6 @@ class CatboostModel:
     def __init__(self, parameters: list, data_info: DataInfo):
         self.parameters = parameters
         self.model_type = data_info.problem_type_val
-        # print("this is the model type")
         if "regression" in self.model_type.lower():
             # check categorical
             self.model = CatBoostRegressor(cat_features=data_info.feature_types_val["categorical"])
@@ -35,6 +34,4 @@ class CatboostModel:
         return self.transform(X)
 
     def get_params(self):
-        # return self.model.get_params()
-        # return params
         return self.parameters

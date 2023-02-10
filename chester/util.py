@@ -1,8 +1,5 @@
-import os
 import re
-import string
 import unicodedata
-from typing import List
 
 import nltk
 from nltk.corpus import stopwords

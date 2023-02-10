@@ -3,16 +3,6 @@ import seaborn as sns
 from matplotlib import pyplot as plt
 from scipy.stats import chi2_contingency
 
-# classification
-# buckets + chi square
-
-# regression
-# feautre corrleation to the label
-
-# both
-# feature matrix correlation
-# anomaly detection
-
 tsne_plot_message = """
 The t-SNE plot is a visualization tool that is used to reduce the dimensionality of the data 
 and visualize the relationships between the features and the target label in a 2D space. 

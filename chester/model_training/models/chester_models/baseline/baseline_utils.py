@@ -1,7 +1,7 @@
 from chester.model_training.data_preparation import CVData
 from chester.model_training.models.chester_models.base_model_utils import calculate_metrics_scores
-from chester.model_training.models.chester_models.baseline.baseline_model import BaselineModel
 from chester.model_training.models.chester_models.base_model_utils import is_metric_higher_is_better
+from chester.model_training.models.chester_models.baseline.baseline_model import BaselineModel
 
 
 def train_baseline(X_train, y_train,
@@ -20,7 +20,6 @@ def train_baseline(X_train, y_train,
     model = BaselineModel(baseline_value=baseline_value, mode_baseline=mode_baseline,
                           median_baseline=median_baseline, avg_baseline=avg_baseline)
     model.fit(y_train)
-    # print("baseline model predict", model.transform(X_train))
     return model
 
 
@@ -62,14 +61,12 @@ import pandas as pd
 
 def compare_models(results):
     all_results = [(pd.DataFrame(result), model) for result, model in results]
-    # print("all_results", all_results[0][0])
     metric_name = [col for col in all_results[0][0].columns if col not in ['type', 'fold']][0]
     sort_ascending = is_metric_higher_is_better(metric_name)
     best_result = None
     best_model = None
     best_value = None
     for (result, model) in all_results:
-        # print("this is the results!", result)
         test_result = result[result['type'] == 'test'].groupby('fold').mean(numeric_only=True).reset_index()
         mean_value = test_result[metric_name].mean()
         if best_value is None or \
@@ -79,19 +76,3 @@ def compare_models(results):
             best_result = result
             best_model = model
     return best_result, best_model
-
-#
-# def compare_models(results):
-#     all_results = [pd.DataFrame(result) for result in results]
-#     metric_name = [col for col in all_results[0].columns if col not in ['type', 'fold']][0]
-#     sort_ascending = is_metric_higher_is_better(metric_name)
-#     best_result = None
-#     best_value = None
-#     for result in all_results:
-#         test_result = result[result['type'] == 'test'].groupby('fold').mean(numeric_only=True).reset_index()
-#         mean_value = test_result[metric_name].mean()
-#         if best_value is None or (sort_ascending and mean_value > best_value) or (
-#                 not sort_ascending and mean_value < best_value):
-#             best_value = mean_value
-#             best_result = result
-#     return best_result

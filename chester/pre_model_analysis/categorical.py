@@ -7,7 +7,6 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from matplotlib.patches import Patch
-from pandas.errors import SettingWithCopyWarning
 from sklearn.manifold import TSNE
 from wordcloud import WordCloud
 

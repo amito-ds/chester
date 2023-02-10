@@ -1,6 +1,5 @@
 import pandas as pd
 
-from chester.data_loader.webtext_data import load_data_pirates, load_data_king_arthur
 from chester.features_engineering.feature_handler import FeatureHandler
 from chester.run.user_classes import TextFeatureSpec
 from chester.zero_break.problem_specification import DataInfo

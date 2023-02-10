@@ -5,8 +5,8 @@ from chester.feature_stats.categorical_stats import CategoricalStats
 from chester.feature_stats.numeric_stats import NumericStats
 from chester.feature_stats.text_stats import TextStats
 from chester.features_engineering.features_handler import FeaturesHandler
-from chester.model_monitor.mm_bootstrap import ModelBootstrap
-from chester.model_monitor.mm_weaknesses import ModelWeaknesses
+from chester.model_monitor.error_prediction import ModelWeaknesses
+from chester.model_monitor.model_boostrap import ModelBootstrap
 from chester.model_training.models.chester_models.best_model import BestModel
 from chester.post_model_analysis.post_model_analysis_class import PostModelAnalysis
 from chester.pre_model_analysis.categorical import CategoricalPreModelAnalysis
@@ -84,9 +84,8 @@ def run_madcat(
     print(data_info)
     run_metadata_collector["data info"] = data_info
     ####################################################
-
     # Text handling
-    # TO DO: print message
+    # TODO: print message
     # cleaning
     if is_text_handler:
         text_cleaner = None
@@ -183,9 +182,8 @@ def run_madcat(
         data_info.data = df
         CategoricalPreModelAnalysis(data_info).run(plot)
     ####################################################
-
     # model
-    # TO DO: print message
+    print(chapter_title("model training"))
     # encode if needed
     if data_info.problem_type_val in ["Binary classification", "Multiclass classification"]:
         # print("Encoding target")

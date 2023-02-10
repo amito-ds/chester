@@ -1,13 +1,11 @@
-from collections import defaultdict
-
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 
+from chester.model_monitor import calculate_scores_utils
 from chester.model_training.data_preparation import CVData
 from chester.model_training.models.chester_models.catboost.catboost_utils import calculate_catboost_metrics_scores
 from chester.zero_break.problem_specification import DataInfo
-from chester.model_monitor import calculate_scores_utils
 
 
 class ModelBootstrap:

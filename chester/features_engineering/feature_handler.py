@@ -1,6 +1,6 @@
 import pandas as pd
 
-from chester.features_engineering.fe_nlp import get_embeddings, TextFeatureExtraction
+from chester.features_engineering.fe_nlp import get_embeddings
 from chester.run.user_classes import TextFeatureSpec
 
 
@@ -90,35 +90,3 @@ class FeatureHandler:
                 print(
                     f"No appropriate feature handler found for feature {self.col_name}. This feature will be ignored.")
                 return None, None
-
-# Example usage:
-# df = pd.DataFrame({'age': [21, 22, 23], 'name': ['Alice', 'Bob', 'Charlie']})
-# col = df['age']
-# col_name = 'age'
-# feature_type = 'numerical'
-#
-# fh = FeatureHandler(col, feature_type, col_name)
-# print(fh.handle_numerical())
-
-# df = pd.DataFrame({'A': [1, 2, 3], 'B': [True, False, True], 'C': ['a', 'b', 'c'], 'D': ['apple', 'banana', 'orange']})
-# column = df['C']
-# feature_type = 'boolean'
-#
-# feature_handler = FeatureHandler(column, feature_type, 'D')
-# a, b = feature_handler.handle_categorical()
-# print(b)
-# print(a)
-#
-# df1 = load_data_pirates().assign(target='chat_logs')
-# df2 = load_data_king_arthur().assign(target='pirates')
-# df = pd.concat([df1, df2])
-# feature_handler = FeatureHandler(df['text'], feature_type='categorical', col_name='text')
-
-
-# df = pd.DataFrame({'A': [1, 2, 3], 'B': [True, False, True], 'C': ['a', 'b', 'c'], 'D': ['apple', 'banana', 'orange']})
-# column = df['B']
-# feature_type = 'boolean'
-# feature_handler = FeatureHandler(column, feature_type=feature_type, col_name='C')
-# a, b = feature_handler.handle_feature()
-# print(b)
-# print(a[0:3])

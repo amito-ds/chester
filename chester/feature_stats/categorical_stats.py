@@ -32,8 +32,6 @@ class CategoricalStats:
         top_features = self.cols_sorted[:3 * n]
         return top_features
 
-    import math
-
     def plot_value_counts(self, n=25, norm=True, plot=True):
         if not self.any_categorical():
             return None

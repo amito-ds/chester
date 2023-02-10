@@ -1,4 +1,3 @@
-import Levenshtein
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -7,7 +6,6 @@ import seaborn as sns
 from sklearn import metrics
 
 from chester.model_training.data_preparation import CVData
-from chester.model_training.models.scoring import calculate_score_model
 
 
 class ModelAnalyzer:
@@ -35,20 +33,6 @@ class ModelAnalyzer:
             plt.xlabel("Coefficients")
             print(AnalyzeMessages().coefficients_message())
         plt.show()
-
-    def performance_metrics(self, X_train: pd.DataFrame,
-                            y_train: pd.Series,
-                            X_test: pd.DataFrame,
-                            y_test: pd.Series):
-        train_pred = self.model.predict(X_train)
-        test_pred = self.model.predict(X_test)
-        train_scores = calculate_score_model(y_train, train_pred)
-        test_scores = calculate_score_model(y_test, test_pred)
-        results = []
-        results.append(
-            {'type': 'train', **train_scores})
-        results.append({'type': 'test', **test_scores})
-        return results
 
     def analyze(self, X_train: pd.DataFrame, y_train: pd.Series,
                 X_test: pd.DataFrame, y_test: pd.Series,

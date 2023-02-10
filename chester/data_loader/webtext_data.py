@@ -1,6 +1,6 @@
+import nltk
 import pandas as pd
 from nltk.corpus import webtext
-import nltk
 
 nltk.download('webtext', quiet=True)
 nltk.download('punkt', quiet=True)

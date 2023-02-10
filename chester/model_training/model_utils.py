@@ -2,13 +2,13 @@ import pandas as pd
 import seaborn as sns
 from matplotlib import pyplot as plt
 
-import chester.model_training.data_preparation as dp
 from chester.model_analyzer import model_analysis
 
 analysis_message = "The following graph displays boxplots of the calculated metrics for each fold\n, " \
                    "with the x-axis representing the fold number and the y-axis representing the metric value.\n " \
                    "The boxplot shows the median, interquartile range, and outliers of the metric values \n for both " \
-                   "train and test data. A large difference between the train and test boxplots may indicate overfitting."
+                   "train and test data\n. " \
+                   "A large difference between the train and test boxplots may indicate overfitting."
 
 
 def analyze_results(results: pd.DataFrame, parameters):
