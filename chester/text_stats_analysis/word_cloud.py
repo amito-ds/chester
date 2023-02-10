@@ -11,6 +11,7 @@ def create_word_cloud(data, text_column='text'):
     wordcloud = WordCloud().generate(text)
 
     # plot the word cloud
+    plt.figure(figsize=(12, 12))
     plt.imshow(wordcloud, interpolation='bilinear')
     plt.axis("off")
     plt.show()

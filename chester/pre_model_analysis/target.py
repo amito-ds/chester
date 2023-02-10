@@ -27,6 +27,8 @@ class TargetPreModelAnalysis:
     def plot_histogram(self):
         target = self.target
         plt.hist(target, bins=30, edgecolor='k')
+        plt.figure(figsize=(10, 10))
+        plt.rcParams.update({'font.size': 12})
         plt.xlabel('Values')
         plt.ylabel('Counts')
         plt.title(f'Histogram of {self.target.name}')
@@ -37,6 +39,8 @@ class TargetPreModelAnalysis:
         value_counts = target.value_counts()
         percentages = np.array(value_counts / target.size * 100)
         fig, ax1 = plt.subplots()
+        plt.figure(figsize=(10, 10))
+        plt.rcParams.update({'font.size': 12})
         ax2 = ax1.twinx()
         ax1.bar(value_counts.index, value_counts.values, color='gray')
         ax1.set_ylabel('Counts', color='gray')
