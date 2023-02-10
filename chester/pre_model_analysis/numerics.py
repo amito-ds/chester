@@ -34,6 +34,8 @@ class NumericPreModelAnalysis:
         self.cols_sorted_with_pvalue = None
 
     def tsne(self):
+        from mpl_toolkits.mplot3d import Axes3D
+
         if self.n_cols in (1, 2):
             return None
         X = self.data.copy()
@@ -50,36 +52,37 @@ class NumericPreModelAnalysis:
         X_tsne_3d = TSNE(n_components=3).fit_transform(X)
         X_tsne_2d = X_tsne_3d[:, :2]
         fig = plt.figure(figsize=(16, 8))
-        ax1 = fig.add_subplot(121)
-        ax2 = fig.add_subplot(122, projection='3d')
+        # ax1 = fig.add_subplot(121)
+        ax1 = plt
+        # ax2 = fig.gca(122, projection='3d')
 
         if self.data_info.problem_type_val in ["Regression"]:
             ax1.scatter(X_tsne_2d[:, 0], X_tsne_2d[:, 1], c=self.target, cmap='viridis')
-            ax2.scatter(X_tsne_3d[:, 0], X_tsne_3d[:, 1], X_tsne_3d[:, 2], c=self.target, cmap='viridis')
-            ax1.set_title("Visualizing Numerical Features and Target with t-SNE (2D)")
-            ax2.set_title("Visualizing Numerical Features and Target with t-SNE (3D)")
+            # ax2.scatter(X_tsne_3d[:, 0], X_tsne_3d[:, 1], X_tsne_3d[:, 2], c=self.target, cmap='viridis')
+            ax1.title("Visualizing Numerical Features and Target with t-SNE (2D)")
+            # ax2.set_title("Visualizing Numerical Features and Target with t-SNE (3D)")
         elif self.data_info.problem_type_val in ["Binary regression", "Binary classification"]:
             target_classes = self.target.unique()
             color_map = {target_class: color for target_class, color in zip(target_classes, ['red', 'blue'])}
             colors = self.target.apply(lambda x: color_map[x])
             ax1.scatter(X_tsne_2d[:, 0], X_tsne_2d[:, 1], c=colors)
-            ax2.scatter(X_tsne_3d[:, 0], X_tsne_3d[:, 1], X_tsne_3d[:, 2], c=colors)
+            # ax2.scatter(X_tsne_3d[:, 0], X_tsne_3d[:, 1], X_tsne_3d[:, 2], c=colors)
             legend_handles = [Patch(color=color_map[target_class], label=target_class) for target_class in
                               target_classes]
-            ax1.set_title("Visualizing Numerical Features and Target with t-SNE (2D)")
-            ax2.set_title("Visualizing Numerical Features and Target with t-SNE (3D)")
+            ax1.title("Visualizing Numerical Features and Target with t-SNE (2D)")
+            # ax2.set_title("Visualizing Numerical Features and Target with t-SNE (3D)")
             ax1.legend(handles=legend_handles)
         else:  # Multi-class classification
             target_classes = self.target.unique()
             color_map = {target_class: color for target_class, color in
                          zip(target_classes, plt.cm.rainbow(np.linspace(0, 1, len(target_classes))))}
             colors = self.target.apply(lambda x: color_map[x])
-            ax1.scatter(X_tsne_2d[:, 0], X_tsne_2d[:, 1], c=colors)
-            ax2.scatter(X_tsne_3d[:, 0], X_tsne_3d[:, 1], X_tsne_3d[:, 2], c=colors)
+            plt.scatter(X_tsne_2d[:, 0], X_tsne_2d[:, 1], c=colors)
+            # ax2.scatter(X_tsne_3d[:, 0], X_tsne_3d[:, 1], X_tsne_3d[:, 2], c=colors)
             legend_handles = [Patch(color=color_map[target_class], label=target_class) for target_class in
                               target_classes]
-            ax1.set_title("Visualizing Numerical Features and Target with t-SNE (2D)")
-            ax2.set_title("Visualizing Numerical Features and Target with t-SNE (3D)")
+            ax1.title("Visualizing Numerical Features and Target with t-SNE (2D)")
+            # ax2.set_title("Visualizing Numerical Features and Target with t-SNE (3D)")
             ax1.legend(handles=legend_handles)
 
     @staticmethod

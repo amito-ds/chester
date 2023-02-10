@@ -51,8 +51,9 @@ def run_madcat(
         In addition, the function also provides feature statistics, pre-model analysis, post-model analysis,
         and identifies any weaknesses in the model.
         """
-    #################################################### story
-    story = "Thank you for using the MadCat. The MadCat is a module to solve end to end ml and data analysis tasks.\n"
+    # Tell a story
+    story = "Thank you for using the MadCat. The MadCat is a module to solve end to end ml and data analysis tasks.\n" \
+            "For more info visit https://github.com/amito-ds/chester"
     if is_feature_stats:
         story += "The feature stats will be calculated to understand the data better.\n"
     if is_pre_model:
@@ -69,9 +70,8 @@ def run_madcat(
     print(story)
 
     run_metadata_collector = {}
-    ####################################################
 
-    #################################################### meta learn
+    # meta learn
     df = data_spec.df.sample(frac=1).reset_index(drop=True)
     data_info = DataInfo(data=df, target='target')
     data_info.calculate()
@@ -85,7 +85,7 @@ def run_madcat(
     run_metadata_collector["data info"] = data_info
     ####################################################
 
-    #################################################### Text handling
+    # Text handling
     # TO DO: print message
     # cleaning
     if is_text_handler:
@@ -99,7 +99,7 @@ def run_madcat(
         cleaner.transform()
         data_info = cleaner.data_info
 
-        ## keep a copy of all text after cleaning
+        # keep a copy of all text after cleaning
         text_cols = data_info.feature_types_val["text"]
         clean_text_df = pd.DataFrame()
         if len(text_cols) > 0:
@@ -107,7 +107,7 @@ def run_madcat(
             clean_text_df = data_info.data[text_cols]
             clean_text_df.rename(columns={col: "clean_" + col for col in clean_text_df.columns}, inplace=True)
 
-        ## preprocessing
+        # preprocessing
         pp = PreprocessHandler(data_info=data_info, text_pre_process=text_pre_process)
         pp.transform()
         data_info_original = data_info  # in case you need it
@@ -119,7 +119,7 @@ def run_madcat(
         run_metadata_collector["data info"] = data_info
     ####################################################
 
-    #################################################### Feat extract
+    # Feat extract
     print(chapter_title('feature engineering'))
     if text_feature_extraction is not None:
         feat_hand = FeaturesHandler(data_info=data_info, text_feature_extraction=text_feature_extraction)
@@ -132,7 +132,7 @@ def run_madcat(
     run_metadata_collector["features data"] = final_df
     ####################################################
 
-    #################################################### Feat Stats
+    # Feat Stats
     data_info_num_stats = None
     if is_feature_stats:
         print(chapter_title('feature statistics'))
@@ -170,7 +170,7 @@ def run_madcat(
     if data_info.problem_type_val == "No target variable":
         return run_metadata_collector
 
-    #################################################### Pre model
+    # Pre model
     if is_pre_model:
         print(chapter_title('model pre analysis'))
         # label stats
@@ -184,7 +184,7 @@ def run_madcat(
         CategoricalPreModelAnalysis(data_info).run(plot)
     ####################################################
 
-    #################################################### model
+    # model
     # TO DO: print message
     # encode if needed
     if data_info.problem_type_val in ["Binary classification", "Multiclass classification"]:
@@ -217,7 +217,7 @@ def run_madcat(
     run_metadata_collector["model_results"] = model_results[0]
     ####################################################
 
-    #################################################### post model
+    # post model
     if is_post_model:
         print(chapter_title('post model analysis'))
         post_model_analysis = PostModelAnalysis(cv_data, data_info, model=model_results[1])
@@ -229,7 +229,7 @@ def run_madcat(
         model_bootstrap.plot()
     ####################################################
 
-    #################################################### model weaknesses
+    #  model weaknesses
     if is_model_weaknesses:
         print(chapter_title('model weaknesses'))
         model_weaknesses = ModelWeaknesses(cv_data, data_info, model=model_results[1])

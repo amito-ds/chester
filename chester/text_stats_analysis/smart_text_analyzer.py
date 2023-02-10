@@ -17,7 +17,7 @@ common_words_message = "Count word frequency for basic text analysis.\n" \
 word_cloud_message = "A word cloud visualizes most common words in text. Size indicates frequency.\n" \
                      "It quickly identifies text data's main themes and topics.\n"
 
-sentiment_analysis_message = "Sentiment analysis determines emotional tone of text.\n" \
+sentiment_analysis_message = "\nSentiment analysis determines emotional tone of text.\n" \
                              "Report shows sentiment breakdown: positive, negative, neutral:"
 
 corex_topic_message = "Corex topic modeling identifies latent topics in text data.\n" \
@@ -139,6 +139,7 @@ def analyze_text(df: pd.DataFrame,
         else:
             df = analyze_sentiment(df, text_column=text_column)
         print(report_sentiment_stats(df), "\n")
+        print()
         plot_sentiment_scores(df)
 
     if corex_topics:

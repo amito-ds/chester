@@ -31,23 +31,23 @@ class CategoricalPreModelAnalysis:
         X_tsne_2d = X_tsne_3d[:, :2]
 
         fig = plt.figure(figsize=(16, 8))
-        ax1 = fig.add_subplot(121)
-        ax2 = fig.add_subplot(122, projection='3d')
+        ax1 = plt
+        # ax2 = fig.add_subplot(122, projection='3d')
         if self.data_info.problem_type_val in ["Regression"]:
             ax1.hexbin(X_tsne_2d[:, 0], X_tsne_2d[:, 1], C=self.target, gridsize=50, cmap='viridis', edgecolors='black')
-            ax2.scatter(X_tsne_3d[:, 0], X_tsne_3d[:, 1], X_tsne_3d[:, 2], c=self.target, cmap='viridis')
-            ax1.set_title("Visualizing Categorical Features and Target with t-SNE (2D)")
-            ax2.set_title("Visualizing Categorical Features and Target with t-SNE (3D)")
+            # ax2.scatter(X_tsne_3d[:, 0], X_tsne_3d[:, 1], X_tsne_3d[:, 2], c=self.target, cmap='viridis')
+            ax1.title("Visualizing Categorical Features and Target with t-SNE (2D)")
+            # ax2.set_title("Visualizing Categorical Features and Target with t-SNE (3D)")
         elif self.data_info.problem_type_val in ["Binary regression", "Binary classification"]:
             target_classes = self.target.unique()
             color_map = {target_class: color for target_class, color in zip(target_classes, ['red', 'blue'])}
             colors = self.target.apply(lambda x: color_map[x])
             ax1.scatter(X_tsne_2d[:, 0], X_tsne_2d[:, 1], c=colors)
-            ax2.scatter(X_tsne_3d[:, 0], X_tsne_3d[:, 1], X_tsne_3d[:, 2], c=colors)
+            # ax2.scatter(X_tsne_3d[:, 0], X_tsne_3d[:, 1], X_tsne_3d[:, 2], c=colors)
             legend_handles = [Patch(color=color_map[target_class], label=target_class) for target_class in
                               target_classes]
-            ax1.set_title("Visualizing Categorical Features and Target with t-SNE (2D)")
-            ax2.set_title("Visualizing Categorical Features and Target with t-SNE (3D)")
+            ax1.title("Visualizing Categorical Features and Target with t-SNE (2D)")
+            # ax2.set_title("Visualizing Categorical Features and Target with t-SNE (3D)")
             ax1.legend(handles=legend_handles)
         else:  # Multi-class classification
             target_classes = self.target.unique()
@@ -55,15 +55,8 @@ class CategoricalPreModelAnalysis:
                          zip(target_classes, plt.cm.rainbow(np.linspace(0, 1, len(target_classes))))}
             ax1.legend(
                 handles=[Patch(color=color_map[target_class], label=target_class) for target_class in target_classes])
-            ax2.legend(
-                handles=[Patch(color=color_map[target_class], label=target_class) for target_class in target_classes])
-
-    def mode_imputation(df, col):
-        import warnings
-        warnings.filterwarnings("ignore", category=SettingWithCopyWarning)
-        mode = df[col].mode().iloc[0]
-        df[col].fillna(mode, inplace=True)
-        return df
+            # ax2.legend(
+            #     handles=[Patch(color=color_map[target_class], label=target_class) for target_class in target_classes])
 
     def any_categorical(self):
         return True if len(self.cols) > 0 else False

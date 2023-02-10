@@ -65,6 +65,7 @@ chester/model_training/models/chester_models/best_catboost.py
 chester/model_training/models/chester_models/best_linear_regression.py
 chester/model_training/models/chester_models/best_logistic_regression.py
 chester/model_training/models/chester_models/best_model.py
+chester/model_training/models/chester_models/hp_generator.py
 chester/model_training/models/chester_models/baseline/__init__.py
 chester/model_training/models/chester_models/baseline/baseline_model.py
 chester/model_training/models/chester_models/baseline/baseline_utils.py
@@ -91,6 +92,8 @@ chester/preprocessing/__init__.py
 chester/preprocessing/preprocessing_func.py
 chester/preprocessing/preprocessor_handler.py
 chester/run/__init__.py
+chester/run/chapter_titles.py
+chester/run/feature_attention_utils.py
 chester/run/full_run.py
 chester/run/user_classes.py
 chester/run_manual_chester/__init__.py
