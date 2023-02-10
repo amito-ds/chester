@@ -20,8 +20,8 @@ def most_common_words(data, common_words=10, text_column='text'):
     sorted_word_counts = sorted(word_counts.items(), key=lambda x: x[1], reverse=True)
 
     # create a barplot using seaborn
-    plt.figure(figsize=(15, 15))
-    plt.rcParams.update({'font.size': 18})
+    plt.figure(figsize=(13, 13))
+    plt.rcParams.update({'font.size': 20})
     sns.barplot(x=[t[0] for t in sorted_word_counts[:common_words]],
                 y=[t[1] for t in sorted_word_counts[:common_words]])
     plt.xlabel('Word')
