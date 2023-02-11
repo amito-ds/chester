@@ -148,7 +148,7 @@ class NumericPreModelAnalysis:
         """
         pvalues = [pvalue for _, pvalue in features_pvalues]
         fig, ax = plt.subplots()
-        plt.figure(figsize=(16, 12))
+        plt.figure(figsize=(13, 10))
         ax.hist(pvalues, bins=50, edgecolor='k', color='#2ecc71')
         ax.set_title("Histogram of P-values for Numerical Features", fontsize=18)
         ax.set_xlabel("P-value", fontsize=17)
@@ -228,9 +228,10 @@ class NumericPreModelAnalysis:
                 plt.suptitle("Partial Plot to Identify Patterns between Sampled Numeric Features and Target\n"
                              "Showing % from Target (column)",
                              fontsize=14, fontweight='bold')
-            for i in range(len(top_feature_names)):
+
+            for i in range(min(len(top_feature_names), 9)):
                 if i < 9:
-                    plt.subplot(3, 3, i + 1)
+                    plt.subplot(dim, dim, i + 1)
                     col = top_feature_names[i]
                     data_col = self.data[[col]]
                     num_groups = min(floor(self.data_info.rows / 20), 10)

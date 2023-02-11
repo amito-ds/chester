@@ -51,7 +51,7 @@ class NumericStats:
         👍 Strong positive correlation: >= 0.7
         🤔 Moderate positive correlation: between 0.5 and 0.7
         🤨 Weak positive correlation: between 0.3 and 0.5
-        🤷‍♀️ No/Negligible correlation: < 0.3
+        🤷‍️ No/Negligible correlation: < 0.3
         """)
         plt.show()
         plt.close()

@@ -26,19 +26,21 @@ target_column = 'target'
 
 
 ################################################################################################
-# url = "https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data"
-# names = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
-# dataset = pd.read_csv(url, names=names)
-# dataset.rename(columns={'class': 'target'}, inplace=True)
-# df = dataset.sample(frac=1).reset_index(drop=True)
-# df['target'] = df['target'].apply(lambda x: 0 if "Iris-setos" in x else 1)  # can do with or without
+url = "https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data"
+names = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
+dataset = pd.read_csv(url, names=names)
+dataset.rename(columns={'class': 'target'}, inplace=True)
+df = dataset.sample(frac=1).reset_index(drop=True)
+df['target'] = df['target'].apply(lambda x: 0 if "Iris-setos" in x else 1)  # can do with or without
+
+
 ###############################################################################################
 
 ###############################################################################################
 # Load the Boston Housing dataset. categorical
-boston = fetch_openml(name='boston', version=1)
-df = pd.DataFrame(boston.data, columns=boston.feature_names)
-df['target'] = boston.target
+# boston = fetch_openml(name='boston', version=1)
+# df = pd.DataFrame(boston.data, columns=boston.feature_names)
+# df['target'] = boston.target
 ###############################################################################################
 
 ###############################################################################################
@@ -179,7 +181,7 @@ def load_ex5():
 madcat_collector = run_madcat(Data(df=df, target_column='target'),
                               is_feature_stats=True,
                               is_pre_model=True,
-                              is_model_training=False,
+                              is_model_training=True,
                               model_run=ModelRun(n_models=3),
                               is_post_model=False, is_model_weaknesses=False
                               )

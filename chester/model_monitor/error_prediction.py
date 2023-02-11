@@ -92,7 +92,7 @@ class ModelWeaknesses:
         # Concatenate the feature names of the categorical and numeric features
         feature_names = numeric_feature_names + categorical_feature_names
 
-        plt.figure(figsize=(10, 10))
+        plt.figure(figsize=(13, 13))
         tree.plot_tree(model,
                        feature_names=feature_names,
                        class_names=['error'],

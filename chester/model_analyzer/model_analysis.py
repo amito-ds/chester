@@ -31,7 +31,6 @@ class ModelAnalyzer:
             plt.ylabel("Values")
             plt.show()
             plt.close()
-
         else:
             sns.violinplot(coef, inner="stick")
             plt.title("Coefficients distribution for logistic regression model")

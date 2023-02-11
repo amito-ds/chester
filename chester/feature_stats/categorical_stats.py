@@ -32,7 +32,7 @@ class CategoricalStats:
         top_features = self.cols_sorted[:3 * n]
         return top_features
 
-    def plot_value_counts(self, n=25, norm=True, plot=True):
+    def plot_value_counts(self, n=25, plot=True):
         if not self.any_categorical():
             return None
         if not plot:
@@ -41,33 +41,37 @@ class CategoricalStats:
         num_plots = len(top_n)
         if num_plots == 1:
             col = top_n[0]
-            fig, ax = plt.subplots(1, 1, figsize=(20, 5))
+            fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
             cat_col = self.data[col].apply(lambda x: "cat " + str(x))
-            data = cat_col.value_counts(normalize=norm)
-            sns.barplot(x=data.index[:5], y=data.values[:5], ax=ax)
-            plot_title = f"{col}"
-            ax.set_title(plot_title)
-            ax.set_xlabel(None)
-            ax.set_ylim(0, 1)
+            count_data = cat_col.value_counts()
+            percent_data = count_data / count_data.sum() * 100
+            ax1.bar(count_data.index[:5], count_data.values[:5], color='gray')
+            ax2 = ax1.twinx()
+            ax2.plot(percent_data.index[:5], percent_data.values[:5], color='red', marker='o')
+            ax1.set_ylabel('Counts', color='gray')
+            ax2.set_ylabel('Percentages', color='red')
+            ax1.set_xlabel(None)
+            ax1.set_title(f"{col}")
             return None
         else:
             dim = math.ceil(math.sqrt(len(top_n)))
             num_rows = math.ceil(num_plots / dim)
             fig, ax = plt.subplots(num_rows, dim)
             fig.tight_layout()
-            if norm:
-                fig.suptitle("Top 5 Value % for Each Feature")
-            else:
-                fig.suptitle("Top 5 Value Counts for Each Feature")
+            fig.suptitle("Top 5 Value Counts and Percentages for Each Feature")
             for i, col in enumerate(top_n):
-                data = pd.DataFrame(self.data[col].value_counts(normalize=norm)[0:5]).reset_index(drop=False)
+                count_data = pd.DataFrame(self.data[col].value_counts()[0:5]).reset_index(drop=False)
+                percent_data = count_data / count_data[col].sum() * 100
                 plot_title = f"{col}"
                 ax_i = ax[i // dim, i % dim]
-                sns.barplot(x=data.iloc[:, 0], y=data.iloc[:, 1].to_list(), ax=ax_i)
-                ax_i.set_title(plot_title)
-                ax_i.set_xlabel(None)
-                if norm:
-                    ax_i.set_ylim(0, 1)
+                ax1_i = ax_i
+                ax1_i.bar(count_data.iloc[:, 0], count_data.iloc[:, 1].to_list(), color='gray')
+                ax2_i = ax1_i.twinx()
+                ax2_i.plot(percent_data.iloc[:, 0], percent_data.iloc[:, 1].to_list(), color='red', marker='o')
+                ax1_i.set_ylabel('Counts', color='gray')
+                ax2_i.set_ylabel('Percentages', color='red')
+                ax1_i.set_xlabel(None)
+                ax1_i.set_title(plot_title)
             plt.tight_layout()
             plt.show()
             plt.close()
@@ -112,8 +116,7 @@ class CategoricalStats:
 
     def run(self, plot=True):
         self.calculate_stats()
-        self.plot_value_counts(norm=True, plot=plot)
-        self.plot_value_counts(norm=False, plot=plot)
+        self.plot_value_counts(plot=plot)
         return None
 
 
