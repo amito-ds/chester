@@ -51,7 +51,8 @@ def create_report(df, num_unique_words):
 
 def plot_text_length_and_num_words(df):
     sns.set(style="darkgrid")
-    fig, ax = plt.subplots(1, 2, figsize=(15, 10))
+    fig, ax = plt.subplots(1, 2, figsize=(15, 15))
+    plt.rcParams.update({'font.size': 20})
     sns.histplot(data=df, x='text_length', ax=ax[0])
     sns.histplot(data=df, x='num_words', ax=ax[1])
     fig.suptitle('Text Statistics')

@@ -7,14 +7,14 @@ from chester.model_training.data_preparation import CVData
 from chester.model_training.models.chester_models.catboost.catboost_utils import calculate_catboost_metrics_scores
 from chester.zero_break.problem_specification import DataInfo
 
-boostrap_message = "The following plots display the distribution of the metrics, " \
-                   "\nusing a violin plot and histogram. " \
-                   "\n\tThe violin plot shows the median, " \
+boostrap_message = "The following plots display the bootstrap distribution of the metrics, " \
+                   "\nUsing a violin plot and histogram: " \
+                   "\n\tℹ️ The violin plot shows the median, " \
                    "quartiles, and other important summary statistics of the data, " \
-                   "\n\twhile the histogram provides a visual representation of the frequency of values in the data. " \
-                   "\nThese plots give you a sense of how the metrics are distributed\n " \
-                   "and can be used to identify any " \
-                   "patterns or outliers in the data."
+                   "\n\tℹ️ While the histogram provides a visual representation of the " \
+                   "frequency of values in the data. " \
+                   "\nThese plots give you a sense of how the metrics are distributed " \
+                   "\nand can be used to identify any patterns or outliers in the data."
 
 
 class ModelBootstrap:

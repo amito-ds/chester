@@ -156,7 +156,7 @@ class CategoricalPreModelAnalysis:
             kmeans = KMeans(n_clusters=10)
             kmeans.fit(self.target_df)
             target_labels = kmeans.labels_
-            plt.figure(figsize=(12, 12))
+            plt.figure(figsize=(15, 15))
             plt.suptitle("Partial Plot to Identify Patterns between Categorical Sampled Features and Target",
                          fontsize=16,
                          fontweight='bold')
@@ -195,7 +195,7 @@ class CategoricalPreModelAnalysis:
                 sns.heatmap(crosstab, annot=False, cmap="YlGnBu", fmt='g')
                 plt.title(col, fontsize=12, fontweight='bold')
             plt.show()
-            return None
+            plt.close()
 
     @staticmethod
     def plot_histogram_pvalues(features_pvalues):
@@ -206,6 +206,7 @@ class CategoricalPreModelAnalysis:
         """
         pvalues = [pvalue for _, pvalue in features_pvalues]
         fig, ax = plt.subplots()
+        plt.figure(figsize=(15, 15))
         ax.hist(pvalues, bins=50, edgecolor='k', color='#2ecc71')
         ax.set_title("Histogram of P-values for Categorical Features", fontsize=16)
         ax.set_xlabel("P-value", fontsize=14)
@@ -216,7 +217,7 @@ class CategoricalPreModelAnalysis:
         ax.spines['bottom'].set_linewidth(0.5)
         ax.tick_params(axis='both', which='both', labelsize=12)
         plt.show()
-        return None
+        plt.close()
 
     @staticmethod
     def plot_wordcloud_pvalues(features_pvalues,
@@ -235,7 +236,7 @@ class CategoricalPreModelAnalysis:
         plt.axis("off")
         plt.title(title, fontsize=15)
         plt.show()
-        return None
+        plt.close()
 
     def run(self, is_plot=True):
         if self.n_cols > 1:
@@ -251,7 +252,7 @@ class CategoricalPreModelAnalysis:
             self.analyze_pvalue(is_plot=is_plot)
             if is_plot:
                 self.partial_plot()
-        return None
+        plt.show()
 
 
 def format_df(df, max_value_width=10, ci_max_value_width=15, ci_col="CI"):

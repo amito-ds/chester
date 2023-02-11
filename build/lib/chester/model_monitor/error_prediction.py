@@ -58,7 +58,7 @@ class ModelWeaknesses:
             smape = smape.dropna()
             return pd.Series(smape, name='error')
 
-    def plot_decision_tree_error_regressor(self, min_samples_leaf=0.2, max_depth=2):
+    def plot_decision_tree_error_regressor(self, min_samples_leaf=0.2, max_depth=3):
         from sklearn import tree
         from matplotlib import pyplot as plt
 
@@ -92,7 +92,7 @@ class ModelWeaknesses:
         # Concatenate the feature names of the categorical and numeric features
         feature_names = numeric_feature_names + categorical_feature_names
 
-        plt.figure()
+        plt.figure(figsize=(12, 12))
         tree.plot_tree(model,
                        feature_names=feature_names,
                        class_names=['error'],
