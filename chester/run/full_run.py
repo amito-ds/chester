@@ -1,5 +1,7 @@
 import warnings
 
+from matplotlib import pyplot as plt
+
 from chester.cleaning.cleaner_handler import CleanerHandler
 from chester.feature_stats.categorical_stats import CategoricalStats
 from chester.feature_stats.numeric_stats import NumericStats
@@ -184,7 +186,8 @@ def run_madcat(
             data_info_num_stats = DataInfo(data=final_df, target=target_column)
             data_info_num_stats.calculate()
         NumericPreModelAnalysis(data_info_num_stats).run(plot)
-        data_info.data = df
+        plt.close()
+        # data_info.data = df
         CategoricalPreModelAnalysis(data_info).run(plot)
     ####################################################
     # model

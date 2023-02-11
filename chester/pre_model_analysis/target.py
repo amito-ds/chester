@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-# from IPython import display
+import seaborn as sns
 from pandas.errors import SettingWithCopyWarning
 
 from chester.feature_stats.categorical_stats import CategoricalStats
@@ -27,12 +27,16 @@ class TargetPreModelAnalysis:
 
     def plot_histogram(self):
         target = self.target
-        plt.hist(target, bins=30, edgecolor='k')
-        plt.figure(figsize=(7, 7))
-        # plt.rcParams.update({'font.size': 12})
-        plt.xlabel('Values')
-        plt.ylabel('Counts')
-        plt.title(f'Histogram of {self.target.name}')
+        fig, ax = plt.subplots(figsize=(7, 7))
+        ax.hist(target, bins=30, edgecolor='k', alpha=0.5, label='Histogram')
+        ax.legend(loc='upper left')
+        ax.set_xlabel('Values')
+        ax.set_ylabel('Counts')
+        ax.set_title(f'Histogram of {self.target.name}')
+        ax2 = ax.twinx()
+        sns.kdeplot(target, ax=ax2, label='Density')
+        ax2.legend(loc='upper right')
+        ax2.set_ylabel('Density')
         plt.show()
         plt.close()
 
@@ -62,4 +66,3 @@ class TargetPreModelAnalysis:
             CategoricalStats(self.data_info).run(plot=False)
             if plot:
                 self.plot_barplot()
-        # display.clear_output()

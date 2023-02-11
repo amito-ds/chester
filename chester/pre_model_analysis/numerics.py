@@ -169,7 +169,7 @@ class NumericPreModelAnalysis:
         :return: None.
         """
         features_pvalues = [(feature, 1 - pvalue) for feature, pvalue in features_pvalues]
-        wordcloud = WordCloud(width=700, height=400). \
+        wordcloud = WordCloud(width=900, height=500). \
             generate_from_frequencies(dict(features_pvalues))
         plt.title(title, fontsize=15)
         plt.imshow(wordcloud)

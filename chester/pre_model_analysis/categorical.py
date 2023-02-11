@@ -93,10 +93,9 @@ class CategoricalPreModelAnalysis:
         self.sort_by_pvalue()
         if len(self.cols) == 0:
             return None
-        self.plot_wordcloud_pvalues(self.cols_sorted_with_pvalue)
         if is_plot:
+            self.plot_wordcloud_pvalues(self.cols_sorted_with_pvalue)
             if self.n_cols > 50:
-                print("plotting!")
                 self.plot_histogram_pvalues(self.cols_sorted_with_pvalue)
         print("Pvalues for top categorical features:")
         print(pd.DataFrame(self.cols_sorted_with_pvalue[0:top_features], columns=["feature", "pvalue"]))
@@ -232,14 +231,16 @@ class CategoricalPreModelAnalysis:
         :return: None.
         """
         features_pvalues = [(feature, 1 - pvalue) for feature, pvalue in features_pvalues]
-        wordcloud = WordCloud(
-            random_state=21,
-            normalize_plurals=True).generate_from_frequencies(dict(features_pvalues))
+
+        n_features = len(features_pvalues)
+        width = min(int(900 * n_features/4), 900)
+        height = min(int(500 * n_features/4), 500)
+        wordcloud = WordCloud(width=width, height=height).generate_from_frequencies(dict(features_pvalues))
         plt.imshow(wordcloud)
         plt.axis("off")
         plt.title(title, fontsize=15)
         plt.show()
-        # plt.close()
+        plt.close()
 
     def run(self, is_plot=True):
         if self.n_cols > 1:
