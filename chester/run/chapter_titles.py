@@ -1,12 +1,13 @@
 import random
 
-META_LEARN_EMOJIS = ["🤖", "📊", "🔬", "🚀"]
-FEATURE_STATS_EMOJIS = ["📈", "📉", "📊", "🔍"]
-FEATURE_ENGINEERING_EMOJIS = ["🔧", "🔬", "🔍", "🧰"]
-MODEL_PRE_ANALYSIS_EMOJIS = ["📊", "📈", "🔬", "🧰"]
-MODEL_RUN_EMOJIS = ["🤖", "🔥", "🧠", "🚀"]
-POST_MODEL_ANALYSIS_EMOJIS = ["📊", "📉", "🔬", "📚"]
-MODEL_WEAKNESSES_EMOJIS = ["🔬", "📉", "💥", "❌"]
+META_LEARN_EMOJIS = ["🤖", "📊", "🔬", "🚀", "🔍", "📉", "📈"]
+FEATURE_STATS_EMOJIS = ["📈", "📉", "📊", "🔍", "💡", "📚", "🔧"]
+FEATURE_ENGINEERING_EMOJIS = ["🔧", "🔬", "🔍", "🧰", "💡", "📚", "📊"]
+MODEL_PRE_ANALYSIS_EMOJIS = ["📊", "📈", "🔬", "🧰", "💡", "📚", "🔧"]
+MODEL_RUN_EMOJIS = ["🤖", "🔥", "🧠", "🚀", "💻", "💡", "🔬"]
+POST_MODEL_ANALYSIS_EMOJIS = ["📊", "📉", "🔬", "📚", "💡", "📈", "📉"]
+MODEL_WEAKNESSES_EMOJIS = ["🔬", "📉", "💥", "❌", "🔍", "📈", "💡"]
+CLEAN_TEXT_EMOJIS = ["🧼", "🧹", "💧", "🧹", "📚", "💡", "🔍"]
 
 
 def chapter_title(chapter_name: str, prefix=" Chapter: "):
@@ -27,6 +28,8 @@ def chapter_title(chapter_name: str, prefix=" Chapter: "):
         emoji = random.choice(MODEL_WEAKNESSES_EMOJIS)
     elif chapter_name == 'model weaknesses':
         emoji = random.choice(MODEL_WEAKNESSES_EMOJIS)
+    elif chapter_name == 'text cleaning':
+        emoji = random.choice(CLEAN_TEXT_EMOJIS)
     else:
         emoji = '🍵'
     message = f'{stars}\n***{prefix} {chapter_name} {emoji} ***\n{stars}'

@@ -119,7 +119,7 @@ class CategoricalPreModelAnalysis:
             top_n = self.data[:top_features].columns
             dim = math.ceil(math.sqrt(len(top_n)))
             num_rows = math.ceil(max_plots / dim)
-            fig, ax = plt.subplots(dim, dim)
+            fig, ax = plt.subplots(num_rows, dim, figsize=(20, 20))
             fig.tight_layout()
             if classification_row_percent:
                 plt.suptitle("Partial Plot to Identify Patterns between Sampled Categorical Features and Target\n"
@@ -150,7 +150,7 @@ class CategoricalPreModelAnalysis:
                 ax_i.set_title(col, fontsize=12, fontweight='bold')
             plt.tight_layout()
             plt.show()
-            plt.close()
+            # plt.close()
         if self.data_info.problem_type_val in ["Regression"]:
             from sklearn.cluster import KMeans
             target = self.target
@@ -158,10 +158,11 @@ class CategoricalPreModelAnalysis:
             kmeans.fit(self.target_df)
             target_labels = kmeans.labels_
             plt.figure(figsize=(15, 15))
-            plt.suptitle("Partial Plot to Identify Patterns between Categorical Sampled Features and Target",
-                         fontsize=16,
-                         fontweight='bold')
-            grid_size = 4
+            plt.suptitle(
+                "Partial Plot to Identify Patterns between Categorical Sampled Features and Target (grouped by kmeans)",
+                fontsize=16,
+                fontweight='bold')
+            grid_size = math.ceil(math.sqrt(top_features))
             num_features = min(grid_size * grid_size, top_features)
             num_rows = int(np.ceil(num_features / grid_size))
             for i, col in enumerate(top_feature_names[:num_features]):
@@ -170,9 +171,10 @@ class CategoricalPreModelAnalysis:
                 if column.dtype == "object":
                     column = column.astype("category").cat.codes
                     column = column[column < 5]
-                crosstab = pd.crosstab(target_labels, column, normalize='index')
-                sns.heatmap(crosstab, annot=False, cmap='Greens', cbar=True)
-                plt.ylabel("Clusters")
+                    column_name = self.data[col].astype("category").cat.categories[:5]
+                    data_filtered = self.target_df[column.isin(column_name)]
+                    sns.boxplot(x=column, y=target, data=data_filtered)
+                plt.ylabel("Target")
                 plt.xlabel("{} Value".format(col))
                 plt.subplots_adjust(hspace=0.5, wspace=0.5)
         elif self.data_info.problem_type_val in ["Multiclass classification"]:
@@ -196,7 +198,7 @@ class CategoricalPreModelAnalysis:
                 sns.heatmap(crosstab, annot=False, cmap="YlGnBu", fmt='g')
                 plt.title(col, fontsize=12, fontweight='bold')
             plt.show()
-            plt.close()
+            # plt.close()
 
     @staticmethod
     def plot_histogram_pvalues(features_pvalues):
@@ -218,7 +220,7 @@ class CategoricalPreModelAnalysis:
         ax.spines['bottom'].set_linewidth(0.5)
         ax.tick_params(axis='both', which='both', labelsize=12)
         plt.show()
-        plt.close()
+        # plt.close()
 
     @staticmethod
     def plot_wordcloud_pvalues(features_pvalues,
@@ -237,7 +239,7 @@ class CategoricalPreModelAnalysis:
         plt.axis("off")
         plt.title(title, fontsize=15)
         plt.show()
-        plt.close()
+        # plt.close()
 
     def run(self, is_plot=True):
         if self.n_cols > 1:
@@ -254,7 +256,6 @@ class CategoricalPreModelAnalysis:
             if is_plot:
                 self.partial_plot()
         plt.show()
-        plt.close()
 
 
 def format_df(df, max_value_width=10, ci_max_value_width=15, ci_col="CI"):

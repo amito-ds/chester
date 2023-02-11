@@ -147,7 +147,7 @@ class NumericPreModelAnalysis:
         """
         pvalues = [pvalue for _, pvalue in features_pvalues]
         fig, ax = plt.subplots()
-        plt.figure(figsize=(17, 17))
+        plt.figure(figsize=(16, 12))
         ax.hist(pvalues, bins=50, edgecolor='k', color='#2ecc71')
         ax.set_title("Histogram of P-values for Numerical Features", fontsize=18)
         ax.set_xlabel("P-value", fontsize=17)
@@ -169,7 +169,7 @@ class NumericPreModelAnalysis:
         :return: None.
         """
         features_pvalues = [(feature, 1 - pvalue) for feature, pvalue in features_pvalues]
-        wordcloud = WordCloud(width=600, height=600).\
+        wordcloud = WordCloud(width=700, height=400). \
             generate_from_frequencies(dict(features_pvalues))
         plt.title(title, fontsize=15)
         plt.imshow(wordcloud)
@@ -251,6 +251,7 @@ class NumericPreModelAnalysis:
                     plt.ylabel(col, fontsize=12, fontweight='bold')
                     plt.xlabel(None)
             plt.show()
+            plt.close()
 
     def run(self, plot=True):
         if self.n_cols > 1:

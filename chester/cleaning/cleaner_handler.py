@@ -1,4 +1,5 @@
 from chester.cleaning import cleaning_func as cln
+from chester.run.chapter_titles import chapter_title
 
 from chester.zero_break.problem_specification import DataInfo
 
@@ -19,6 +20,8 @@ class CleanerHandler:
 
     def transform(self):
         text_columns = self.feature_types_val.get("text")
+        if len(text_columns) > 0:
+            print(chapter_title("meta learn"))
         for col in text_columns:
             if self.text_cleaner is not None:
                 curr_text_cleaner = self.text_cleaner
@@ -26,6 +29,6 @@ class CleanerHandler:
                 text_cleaner = curr_text_cleaner
             else:
                 text_cleaner = cln.TextCleaner(self.data_info.data, text_column=col)
-            print(f"{col} text cleaning")
+            print(f"Cleaning and preprocessing {col} column")
             text_cleaner.generate_report()
             self.data_info.data = cln.clean_text_df(text_cleaner)
