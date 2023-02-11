@@ -28,19 +28,19 @@ class TargetPreModelAnalysis:
     def plot_histogram(self):
         target = self.target
         plt.hist(target, bins=30, edgecolor='k')
-        plt.figure(figsize=(10, 10))
+        plt.figure(figsize=(7, 7))
         # plt.rcParams.update({'font.size': 12})
         plt.xlabel('Values')
         plt.ylabel('Counts')
         plt.title(f'Histogram of {self.target.name}')
         plt.show()
-        # display.clear_output()
+        plt.close()
 
     def plot_barplot(self):
         target = self.target
         value_counts = target.value_counts()
         percentages = np.array(value_counts / target.size * 100)
-        fig, ax1 = plt.subplots(figsize=(10, 10), dpi=100)
+        fig, ax1 = plt.subplots(figsize=(7, 7), dpi=100)
         ax2 = ax1.twinx()
         ax1.bar(value_counts.index, value_counts.values, color='gray')
         ax1.set_ylabel('Counts', color='gray')
@@ -49,7 +49,7 @@ class TargetPreModelAnalysis:
         ax1.set_xlabel('Values')
         plt.title(f'Bar Plot of {self.target.name}')
         plt.show()
-        # display.clear_output()
+        plt.close()
 
     def run(self, plot=True):
         if self.target_type == "numeric":

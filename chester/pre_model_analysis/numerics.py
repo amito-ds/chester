@@ -252,6 +252,7 @@ class NumericPreModelAnalysis:
                     plt.xlabel(None)
             plt.show()
             plt.close()
+        plt.close()
 
     def run(self, plot=True):
         if self.n_cols > 1:

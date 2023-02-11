@@ -178,12 +178,12 @@ def run_madcat(
     if is_pre_model:
         print(chapter_title('model pre analysis'))
         # label stats
-        # TargetPreModelAnalysis(data_info).run(plot)
+        TargetPreModelAnalysis(data_info).run(plot)
         # num, cat pre model
         if data_info_num_stats is None:
             data_info_num_stats = DataInfo(data=final_df, target=target_column)
             data_info_num_stats.calculate()
-        # NumericPreModelAnalysis(data_info_num_stats).run(plot)
+        NumericPreModelAnalysis(data_info_num_stats).run(plot)
         data_info.data = df
         CategoricalPreModelAnalysis(data_info).run(plot)
     ####################################################

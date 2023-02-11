@@ -104,11 +104,6 @@ class ModelWeaknesses:
 
     def plot_catboost_error_regressor(self, iterations=100, depth=3, learning_rate=0.1):
         model = CatBoostRegressor(iterations=iterations, depth=depth, learning_rate=learning_rate)
-
-        if np.unique(self.error).size == 1:
-            print("🎉 No weaknesses found! All errors on the test set are 0.")
-            return None
-
         model.fit(self.X_test, self.error, verbose=False)
         plt.figure(figsize=(15, 15))
         feature_imp = pd.DataFrame({'Feature': self.X_test.columns, 'Importance': model.feature_importances_})
@@ -119,5 +114,8 @@ class ModelWeaknesses:
 
     def run(self):
         print("Training model to predict the error")
+        if np.unique(self.error).size == 1:
+            print("🎉 No weaknesses found! All errors on the test set are 0.")
+            return None
         self.plot_catboost_error_regressor()
         self.plot_decision_tree_error_regressor()
