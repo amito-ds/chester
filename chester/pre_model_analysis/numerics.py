@@ -135,9 +135,8 @@ class NumericPreModelAnalysis:
             if self.n_cols > 50:
                 print("Numerical Pvalues plot:")
                 self.plot_histogram_pvalues(self.cols_sorted_with_pvalue)
-        print("Pvalues for top numerical features for chi square test:")
+        print("Pvalues for Top Numerical Features for Chi Square test:")
         print(pd.DataFrame(self.cols_sorted_with_pvalue[0:top_features], columns=["feature", "pvalue"]))
-        return None
 
     @staticmethod
     def plot_histogram_pvalues(features_pvalues):
@@ -159,11 +158,10 @@ class NumericPreModelAnalysis:
         ax.spines['bottom'].set_linewidth(0.5)
         ax.tick_params(axis='both', which='both', labelsize=12)
         plt.show()
-        plt.close()
 
     @staticmethod
     def plot_wordcloud_pvalues(features_pvalues,
-                               title="Numeric Features Pvalues Based on Partial Plot"):
+                               title="Numeric Features Pvalues Word Cloud Based on Partial Plot"):
         """
         Plot word cloud of features weighted by their p-value.
         :param features_pvalues: List of tuples (column name, pvalue).
@@ -171,14 +169,11 @@ class NumericPreModelAnalysis:
         :return: None.
         """
         features_pvalues = [(feature, 1 - pvalue) for feature, pvalue in features_pvalues]
-        wordcloud = WordCloud(
-            random_state=21,
-            normalize_plurals=True).generate_from_frequencies(dict(features_pvalues))
-        plt.imshow(wordcloud)
-        plt.figure(figsize=(12, 12))
+        wordcloud = WordCloud(width=600, height=600).\
+            generate_from_frequencies(dict(features_pvalues))
         plt.title(title, fontsize=15)
+        plt.imshow(wordcloud)
         plt.show()
-        plt.close()
 
     def partial_plot(self, classification_row_percent=True):
         import warnings
@@ -197,7 +192,6 @@ class NumericPreModelAnalysis:
         dim = math.ceil(math.sqrt(num_plots))
         num_rows = math.ceil(num_plots / dim)
         fig, ax = plt.subplots(num_rows, dim)
-        plt.figure(figsize=(15, 17))
         if self.data_info.problem_type_val in ["Binary regression"]:
             plt.suptitle("Partial Plot to Identify Patterns between Sampled Numeric Features and Target",
                          fontsize=16, fontweight='bold')
@@ -211,7 +205,6 @@ class NumericPreModelAnalysis:
                 ax_i.set_ylabel("")
                 ax_i.set_title(col, fontweight='bold', transform=ax_i.transAxes, y=0.5)
             plt.show()
-            plt.close()
         if self.data_info.problem_type_val in ["Regression"]:
             plt.suptitle("Partial Plot to Identify Patterns between Sampled Numeric Features and Target", fontsize=16,
                          fontweight='bold')
@@ -226,7 +219,6 @@ class NumericPreModelAnalysis:
                 plt.xlabel(col)
                 plt.ylabel(self.data_info.target)
             plt.show()
-            plt.close()
         elif self.data_info.problem_type_val in ["Multiclass classification", "Binary classification"]:
             if classification_row_percent:
                 plt.suptitle("Partial Plot to Identify Patterns between Sampled Numeric Features and Target\n"
@@ -259,7 +251,6 @@ class NumericPreModelAnalysis:
                     plt.ylabel(col, fontsize=12, fontweight='bold')
                     plt.xlabel(None)
             plt.show()
-            plt.close()
 
     def run(self, plot=True):
         if self.n_cols > 1:
@@ -278,7 +269,6 @@ class NumericPreModelAnalysis:
             else:
                 if plot:
                     self.partial_plot()
-        return None
 
 
 def format_df(df, max_value_width=10, ci_max_value_width=15, ci_col="CI"):

@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from IPython import display
 from pandas.errors import SettingWithCopyWarning
 
 from chester.feature_stats.categorical_stats import CategoricalStats
@@ -33,15 +34,14 @@ class TargetPreModelAnalysis:
         plt.ylabel('Counts')
         plt.title(f'Histogram of {self.target.name}')
         plt.show()
-        plt.close()
+        display.clear_output()
+
 
     def plot_barplot(self):
         target = self.target
         value_counts = target.value_counts()
         percentages = np.array(value_counts / target.size * 100)
-        fig, ax1 = plt.subplots()
-        # plt.figure(figsize=(10, 10))
-        # plt.rcParams.update({'font.size': 12})
+        fig, ax1 = plt.subplots(figsize=(10, 10), dpi=100)
         ax2 = ax1.twinx()
         ax1.bar(value_counts.index, value_counts.values, color='gray')
         ax1.set_ylabel('Counts', color='gray')
@@ -50,7 +50,7 @@ class TargetPreModelAnalysis:
         ax1.set_xlabel('Values')
         plt.title(f'Bar Plot of {self.target.name}')
         plt.show()
-        plt.close()
+        display.clear_output()
 
     def run(self, plot=True):
         if self.target_type == "numeric":
@@ -63,4 +63,5 @@ class TargetPreModelAnalysis:
             CategoricalStats(self.data_info).run(plot=False)
             if plot:
                 self.plot_barplot()
-        plt.close()
+        display.clear_output()
+

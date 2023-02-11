@@ -13,13 +13,15 @@ matplotlib.use('TkAgg')
 target_column = 'target'
 
 ################################################################################################
-df1 = load_data_pirates().assign(target='pirate').sample(200, replace=True)
-df2 = load_data_king_arthur().assign(target='arthur').sample(200, replace=True)
-df3 = load_data_chat_logs().assign(target='chat').sample(100, replace=True)
+df1 = load_data_pirates().assign(target='pirate').sample(300, replace=True)
+df2 = load_data_king_arthur().assign(target='arthur').sample(300, replace=True)
+df3 = load_data_chat_logs().assign(target='chat').sample(300, replace=True)
 df = pd.concat([df1, df2
-                   # , df3
+                # , df3
                 ])
-df['target'] = df['target'].apply(lambda x: 0 if "pirate" in x else 1)  # can do with or without
+
+
+# df['target'] = df['target'].apply(lambda x: 0 if "pirate" in x else 1)  # can do with or without
 ################################################################################################
 
 
@@ -175,8 +177,9 @@ def load_ex5():
 
 
 madcat_collector = run_madcat(Data(df=df, target_column='target'),
-                              is_feature_stats=False,
-                              is_pre_model=False,
+                              is_feature_stats=True,
+                              is_pre_model=True,
+                              is_model_training=True,
                               model_run=ModelRun(n_models=3),
                               is_post_model=True, is_model_weaknesses=True
                               )

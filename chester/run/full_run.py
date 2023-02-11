@@ -34,7 +34,7 @@ def run_madcat(
         feature_stats: FeatureStats = None, is_feature_stats=True,
         text_feature_extraction: TextFeatureSpec = None,
         is_pre_model=True,
-        model_run: ModelRun = None,
+        is_model_training=True, model_run: ModelRun = None,
         is_post_model=True,
         is_model_weaknesses=True,
         plot=True,
@@ -91,7 +91,6 @@ def run_madcat(
     run_metadata_collector["data info"] = data_info
     ####################################################
     # Text handling
-    # TODO: print message
     # cleaning
     if is_text_handler:
         text_cleaner = None
@@ -171,7 +170,7 @@ def run_madcat(
             TextStats(data_info).run()
     ####################################################
 
-    # No target => no model!
+    # No target => no model! The story ends here
     if data_info.problem_type_val == "No target variable":
         return run_metadata_collector
 
@@ -189,40 +188,41 @@ def run_madcat(
         CategoricalPreModelAnalysis(data_info).run(plot)
     ####################################################
     # model
-    print(chapter_title("model training"))
-    # encode if needed
-    if data_info.problem_type_val in ["Binary classification", "Multiclass classification"]:
-        # print("Encoding target")
-        label_encoder = LabelEncoder()
-        final_df[target_column] = label_encoder.fit_transform(final_df[target_column])
+    if is_model_training:
+        print(chapter_title("model training"))
+        # encode if needed
+        if data_info.problem_type_val in ["Binary classification", "Multiclass classification"]:
+            # print("Encoding target")
+            label_encoder = LabelEncoder()
+            final_df[target_column] = label_encoder.fit_transform(final_df[target_column])
 
-    # cv data
-    cv_data = CVData(train_data=final_df, test_data=None, target_column='target', split_data=True)
-    data_info.feature_types_val = feature_types
-    # run the model
-    if model_run is not None:
-        model = BestModel(data_info=data_info,
-                          cv_data=cv_data,
-                          num_models_to_compare=model_run.n_models,
-                          best_practice_prob=model_run.best_practice_prob)
-    else:
-        model = BestModel(data_info=data_info, cv_data=cv_data)
-    model_results = model.get_best_model()  # returns result of the best baseline model
-    # print model metadata
-    params = model_results[1].get_params()
-    print(f"Best model: {type(model_results[1].model)}, with parameters:")
-    for p in params:
-        print(p.name, ":", p.value)
+        # cv data
+        cv_data = CVData(train_data=final_df, test_data=None, target_column='target', split_data=True)
+        data_info.feature_types_val = feature_types
+        # run the model
+        if model_run is not None:
+            model = BestModel(data_info=data_info,
+                              cv_data=cv_data,
+                              num_models_to_compare=model_run.n_models,
+                              best_practice_prob=model_run.best_practice_prob)
+        else:
+            model = BestModel(data_info=data_info, cv_data=cv_data)
+        model_results = model.get_best_model()  # returns result of the best baseline model
+        # print model metadata
+        params = model_results[1].get_params()
+        print(f"Best model: {type(model_results[1].model)}, with parameters:")
+        for p in params:
+            print(p.name, ":", p.value)
 
-    run_metadata_collector["data info"] = data_info
-    run_metadata_collector["features data"] = final_df
-    run_metadata_collector["model"] = model
-    run_metadata_collector["parameters"] = model_results[1]
-    run_metadata_collector["model_results"] = model_results[0]
+        run_metadata_collector["data info"] = data_info
+        run_metadata_collector["features data"] = final_df
+        run_metadata_collector["model"] = model
+        run_metadata_collector["parameters"] = model_results[1]
+        run_metadata_collector["model_results"] = model_results[0]
     ####################################################
 
     # post model
-    if is_post_model:
+    if is_post_model and is_model_training:
         print(chapter_title('post model analysis'))
         post_model_analysis = PostModelAnalysis(cv_data, data_info, model=model_results[1])
         run_metadata_collector["post_model_analysis"] = post_model_analysis
@@ -234,7 +234,7 @@ def run_madcat(
     ####################################################
 
     #  model weaknesses
-    if is_model_weaknesses:
+    if is_model_weaknesses and is_model_training:
         print(chapter_title('model weaknesses'))
         model_weaknesses = ModelWeaknesses(cv_data, data_info, model=model_results[1])
         run_metadata_collector["model_weaknesses"] = model_weaknesses
