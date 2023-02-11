@@ -148,7 +148,7 @@ class NumericPreModelAnalysis:
         """
         pvalues = [pvalue for _, pvalue in features_pvalues]
         fig, ax = plt.subplots()
-        plt.figure(figsize=(15, 15))
+        plt.figure(figsize=(17, 17))
         ax.hist(pvalues, bins=50, edgecolor='k', color='#2ecc71')
         ax.set_title("Histogram of P-values for Numerical Features", fontsize=18)
         ax.set_xlabel("P-value", fontsize=17)
@@ -159,7 +159,7 @@ class NumericPreModelAnalysis:
         ax.spines['bottom'].set_linewidth(0.5)
         ax.tick_params(axis='both', which='both', labelsize=12)
         plt.show()
-        return None
+        plt.close()
 
     @staticmethod
     def plot_wordcloud_pvalues(features_pvalues,
@@ -178,7 +178,7 @@ class NumericPreModelAnalysis:
         plt.figure(figsize=(12, 12))
         plt.title(title, fontsize=15)
         plt.show()
-        return None
+        plt.close()
 
     def partial_plot(self, classification_row_percent=True):
         import warnings
@@ -211,6 +211,7 @@ class NumericPreModelAnalysis:
                 ax_i.set_ylabel("")
                 ax_i.set_title(col, fontweight='bold', transform=ax_i.transAxes, y=0.5)
             plt.show()
+            plt.close()
         if self.data_info.problem_type_val in ["Regression"]:
             plt.suptitle("Partial Plot to Identify Patterns between Sampled Numeric Features and Target", fontsize=16,
                          fontweight='bold')
@@ -225,6 +226,7 @@ class NumericPreModelAnalysis:
                 plt.xlabel(col)
                 plt.ylabel(self.data_info.target)
             plt.show()
+            plt.close()
         elif self.data_info.problem_type_val in ["Multiclass classification", "Binary classification"]:
             if classification_row_percent:
                 plt.suptitle("Partial Plot to Identify Patterns between Sampled Numeric Features and Target\n"
@@ -257,7 +259,7 @@ class NumericPreModelAnalysis:
                     plt.ylabel(col, fontsize=12, fontweight='bold')
                     plt.xlabel(None)
             plt.show()
-            return None
+            plt.close()
 
     def run(self, plot=True):
         if self.n_cols > 1:

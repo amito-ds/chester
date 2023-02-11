@@ -222,9 +222,10 @@ class PostModelAnalysis:
     def coefficients(self) -> None:
         try:
             coef = self.model.model.coef_[0]
-            print(coef)
             if len(coef) < 10:
+                feature_names = self.model.feature_names
                 plt.bar(np.arange(len(coef)), coef)
+                plt.xticks(np.arange(len(coef)), feature_names, rotation=90)
                 plt.title("Coefficients for logistic regression model")
                 plt.xlabel("Features")
                 plt.ylabel("Values")

@@ -10,6 +10,10 @@ class BaseModel:
         self.best_practice_prop = best_practice_prop
         self.best_model = None
         self.best_metrics = {}
+        try:
+            self.feature_names = self.cv_data.train_data.columns
+        except:
+            pass
 
     def get_metric_function(self, metric):
         from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score

@@ -150,6 +150,7 @@ class CategoricalPreModelAnalysis:
                 ax_i.set_title(col, fontsize=12, fontweight='bold')
             plt.tight_layout()
             plt.show()
+            plt.close()
         if self.data_info.problem_type_val in ["Regression"]:
             from sklearn.cluster import KMeans
             target = self.target
@@ -253,6 +254,7 @@ class CategoricalPreModelAnalysis:
             if is_plot:
                 self.partial_plot()
         plt.show()
+        plt.close()
 
 
 def format_df(df, max_value_width=10, ci_max_value_width=15, ci_col="CI"):
