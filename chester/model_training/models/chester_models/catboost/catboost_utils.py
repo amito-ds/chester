@@ -113,11 +113,14 @@ import matplotlib.pyplot as plt
 
 def visualize_performance(df, with_baseline=True):
     addition = 'excluding baseline model' if not with_baseline else ''
+
     # Create pivot table to summarize mean performance metric by type and model
     metric_columns = [col for col in df.columns if col not in ["type", "model"]]
     pivot = df.pivot(index="model", columns="type", values=metric_columns)
+
     if not with_baseline:
         pivot = df[df['model'] != 'BaselineModel'].pivot(index="model", columns="type", values=metric_columns)
+
     # Plot bar chart to compare mean performance metric by model
     fig, axes = plt.subplots(nrows=len(metric_columns), ncols=1, figsize=(8, 8), sharex=True)
 
@@ -126,10 +129,12 @@ def visualize_performance(df, with_baseline=True):
         axes[i].set_ylabel(metric)
         axes[i].set_title("Comparison of {} by Model {}".format(metric, addition))
 
-    plt.xlabel("Model")
+    plt.xlabel(None)
+    plt.ylabel(None)
     plt.tight_layout()
     plt.show()
     plt.close()
+
     return pivot
 
 

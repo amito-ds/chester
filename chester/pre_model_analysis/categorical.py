@@ -150,12 +150,18 @@ class CategoricalPreModelAnalysis:
             plt.show()
             plt.close()
         if self.data_info.problem_type_val in ["Regression"]:
+            max_plots = 9
+            top_n = self.data[:top_features].columns
+            dim = math.ceil(math.sqrt(len(top_n)))
+            num_rows = math.ceil(max_plots / dim)
+            fig, ax = plt.subplots(num_rows, dim, figsize=(20, 20))
+            fig.tight_layout()
+
             from sklearn.cluster import KMeans
             target = self.target
             kmeans = KMeans(n_clusters=10)
             kmeans.fit(self.target_df)
             target_labels = kmeans.labels_
-            plt.figure(figsize=(15, 15))
             plt.suptitle(
                 "Partial Plot to Identify Patterns between Categorical Sampled Features and Target (grouped by kmeans)",
                 fontsize=16,
@@ -176,19 +182,20 @@ class CategoricalPreModelAnalysis:
                 plt.xlabel("{} Value".format(col))
                 plt.subplots_adjust(hspace=0.5, wspace=0.5)
         elif self.data_info.problem_type_val in ["Multiclass classification"]:
-            plt.figure(figsize=(16, 16))
+            max_plots = 16
+            top_n = self.data[:top_features].columns
+            dim = math.ceil(math.sqrt(len(top_n)))
+            num_rows = math.ceil(max_plots / dim)
+            fig, ax = plt.subplots(num_rows, dim, figsize=(20, 20))
+            fig.tight_layout()
             plt.suptitle(
                 "Heatmap to Show Correlation between Sampled Categorical Features (top 5 categories) and Target",
                 fontsize=16,
                 fontweight='bold')
-            top_features = 16
-            top_feature_names = self.data[:top_features].columns
-            rows = 4
-            cols = 4
             for i, col in enumerate(top_feature_names):
                 if i > 15:
                     return None
-                plt.subplot(rows, cols, i + 1)
+                plt.subplot(num_rows, dim, i + 1)
                 crosstab = pd.crosstab(self.data[col], self.target, normalize='index') * 100
                 crosstab = crosstab[(crosstab.T != 0).any()]
                 crosstab = crosstab.loc[:, (crosstab != 0).any(axis=0)]
@@ -232,8 +239,8 @@ class CategoricalPreModelAnalysis:
         features_pvalues = [(feature, 1 - pvalue) for feature, pvalue in features_pvalues]
 
         n_features = len(features_pvalues)
-        width = min(int(900 * n_features/4), 900)
-        height = min(int(500 * n_features/4), 500)
+        width = min(int(900 * n_features / 4), 900)
+        height = min(int(500 * n_features / 4), 500)
         wordcloud = WordCloud(width=width, height=height).generate_from_frequencies(dict(features_pvalues))
         plt.imshow(wordcloud)
         plt.axis("off")
