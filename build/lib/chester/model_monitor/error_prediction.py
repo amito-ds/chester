@@ -105,7 +105,7 @@ class ModelWeaknesses:
     def plot_catboost_error_regressor(self, iterations=100, depth=3, learning_rate=0.1):
         model = CatBoostRegressor(iterations=iterations, depth=depth, learning_rate=learning_rate)
 
-        if np.unique(self.error).size == 1:
+        if np.unqique(self.error).size == 1:
             print("🎉 No weaknesses found! All errors on the test set are 0.")
             return None
 
