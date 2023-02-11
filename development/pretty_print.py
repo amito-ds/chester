@@ -70,6 +70,7 @@ def plot_words(df_formatted: pd.DataFrame, font_size=None):
     plt.ylim(0, len(df_formatted) + 1)
     ax.set_frame_on(False)
     plt.show()
+    plt.close()
 
 
 def calculate_font_size(df_formatted: pd.DataFrame):

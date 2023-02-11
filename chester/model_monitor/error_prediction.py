@@ -92,7 +92,7 @@ class ModelWeaknesses:
         # Concatenate the feature names of the categorical and numeric features
         feature_names = numeric_feature_names + categorical_feature_names
 
-        plt.figure()
+        plt.figure(figsize=(10, 10))
         tree.plot_tree(model,
                        feature_names=feature_names,
                        class_names=['error'],
@@ -100,7 +100,6 @@ class ModelWeaknesses:
                        filled=True,
                        )
         plt.suptitle("Decision Tree Trained on Model Error")
-        return None
 
     def plot_catboost_error_regressor(self, iterations=100, depth=3, learning_rate=0.1):
         model = CatBoostRegressor(iterations=iterations, depth=depth, learning_rate=learning_rate)
@@ -111,6 +110,7 @@ class ModelWeaknesses:
         sns.barplot(x=feature_imp['Importance'], y=feature_imp['Feature'])
         plt.title('CatBoost Feature Importance to Detect Segments with High Error')
         plt.show()
+        plt.close()
 
     def run(self):
         print("Training model to predict the error")

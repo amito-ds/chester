@@ -38,3 +38,4 @@ def analyze_results(results: pd.DataFrame, parameters):
     sns.boxplot(x='fold', y='value', hue='variable', data=results_melt, palette="Set3")
     print(analysis_message)
     plt.show()
+    plt.close()

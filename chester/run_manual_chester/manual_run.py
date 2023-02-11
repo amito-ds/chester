@@ -177,7 +177,7 @@ def load_ex5():
 
 
 madcat_collector = run_madcat(Data(df=df, target_column='target'),
-                              is_feature_stats=False,
+                              is_feature_stats=True,
                               is_pre_model=True,
                               is_model_training=False,
                               model_run=ModelRun(n_models=3),

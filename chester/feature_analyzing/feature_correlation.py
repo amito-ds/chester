@@ -83,6 +83,7 @@ class PreModelAnalysis:
         plt.title("Feature correlation matrix")
         sns.heatmap(corr, annot=True)
         plt.show()
+        plt.close()
         return corr
 
     def tsne_plot(self, n_components=2, perplexity=30.0, n_iter=1000):
@@ -95,6 +96,7 @@ class PreModelAnalysis:
         plt.scatter(X_tsne[:, 0], X_tsne[:, 1], c=y)
         plt.title("t-SNE Plot of Features and Target Label")
         plt.show()
+        plt.close()
 
     def top_n_pairplot(self, N=4, trimming_left=0.05, trimming_right=0.05):
         if trimming_left > 0:
@@ -110,6 +112,7 @@ class PreModelAnalysis:
         X = X[(X > X.quantile(trimming_left)) & (X < X.quantile(1 - trimming_right))]
         sns.pairplot(X)
         plt.show()
+        plt.close()
 
     def chi_square_test(self, feature):
         from scipy.stats import chi2_contingency
@@ -150,6 +153,7 @@ class PreModelAnalysis:
         plt.ylabel("Frequency")
         plt.title("Histogram of p-values")
         plt.show()
+        plt.close()
 
     def run(self):
         if self.top_n_features:

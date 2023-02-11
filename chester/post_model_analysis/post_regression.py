@@ -40,3 +40,4 @@ class VisualizeRegressionResults:
         self.histogram_plot(axs[1, 0])
         self.qq_plot(axs[1, 1])
         plt.show()
+        plt.close()

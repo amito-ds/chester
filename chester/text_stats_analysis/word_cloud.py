@@ -15,3 +15,4 @@ def create_word_cloud(data, text_column='text'):
     plt.imshow(wordcloud, interpolation='bilinear')
     plt.axis("off")
     plt.show()
+    plt.close()

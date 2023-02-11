@@ -82,6 +82,7 @@ class NumericPreModelAnalysis:
             ax1.title("Visualizing Numerical Features and Target with t-SNE (2D)")
             # ax2.set_title("Visualizing Numerical Features and Target with t-SNE (3D)")
             ax1.legend(handles=legend_handles)
+        plt.close()
 
     @staticmethod
     def median_imputation(df):
@@ -158,6 +159,7 @@ class NumericPreModelAnalysis:
         ax.spines['bottom'].set_linewidth(0.5)
         ax.tick_params(axis='both', which='both', labelsize=12)
         plt.show()
+        plt.close()
 
     @staticmethod
     def plot_wordcloud_pvalues(features_pvalues,
@@ -174,23 +176,22 @@ class NumericPreModelAnalysis:
         plt.title(title, fontsize=15)
         plt.imshow(wordcloud)
         plt.show()
+        plt.close()
 
     def partial_plot(self, classification_row_percent=True):
         import warnings
         warnings.simplefilter("ignore")
-        top_features = 25
+        top_features = min(self.n_cols, 25)
         if self.n_cols <= 25:
             sample_features = self.n_cols
-            top_features = self.n_cols
         else:
             sample_features = min(2 * 25, int(self.n_cols / 2))
         top_feature_names = random.sample(self.cols_sorted[0:sample_features], top_features)
         feature_index = {feature: index for index, feature in enumerate(self.cols_sorted)}
         top_feature_names.sort(key=lambda x: feature_index[x])
 
-        num_plots = len(top_feature_names)
-        dim = math.ceil(math.sqrt(num_plots))
-        num_rows = math.ceil(num_plots / dim)
+        dim = math.ceil(math.sqrt(top_features))
+        num_rows = math.ceil(top_features / dim)
         fig, ax = plt.subplots(num_rows, dim)
         if self.data_info.problem_type_val in ["Binary regression"]:
             plt.suptitle("Partial Plot to Identify Patterns between Sampled Numeric Features and Target",
@@ -205,20 +206,19 @@ class NumericPreModelAnalysis:
                 ax_i.set_ylabel("")
                 ax_i.set_title(col, fontweight='bold', transform=ax_i.transAxes, y=0.5)
             plt.show()
+            plt.close()
         if self.data_info.problem_type_val in ["Regression"]:
             plt.suptitle("Partial Plot to Identify Patterns between Sampled Numeric Features and Target", fontsize=16,
                          fontweight='bold')
-            grid_size = 4
-            num_features = min(grid_size * grid_size, top_features)
-            num_rows = int(np.ceil(num_features / grid_size))
-            for i, col in enumerate(top_feature_names[:num_features]):
-                plt.subplot(num_rows, grid_size, i + 1)
+            for i, col in enumerate(top_feature_names[:top_features]):
+                plt.subplot(num_rows, dim, i + 1)
                 column = self.data[col]
                 target = self.target
                 plt.scatter(column, target)
                 plt.xlabel(col)
                 plt.ylabel(self.data_info.target)
             plt.show()
+            plt.close()
         elif self.data_info.problem_type_val in ["Multiclass classification", "Binary classification"]:
             if classification_row_percent:
                 plt.suptitle("Partial Plot to Identify Patterns between Sampled Numeric Features and Target\n"
@@ -271,6 +271,7 @@ class NumericPreModelAnalysis:
             else:
                 if plot:
                     self.partial_plot()
+        plt.close()
 
 
 def format_df(df, max_value_width=10, ci_max_value_width=15, ci_col="CI"):

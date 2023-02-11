@@ -70,7 +70,7 @@ class CategoricalStats:
                     ax_i.set_ylim(0, 1)
             plt.tight_layout()
             plt.show()
-            return None
+            plt.close()
 
     def calculate_stats(self, is_print=True):
         if not self.any_categorical():

@@ -104,7 +104,6 @@ class CategoricalPreModelAnalysis:
         import warnings
         warnings.simplefilter("ignore")
         top_features = 25
-
         if self.n_cols <= 25:
             sample_features = self.n_cols
             top_features = self.n_cols
@@ -149,7 +148,7 @@ class CategoricalPreModelAnalysis:
                 ax_i.set_title(col, fontsize=12, fontweight='bold')
             plt.tight_layout()
             plt.show()
-            # plt.close()
+            plt.close()
         if self.data_info.problem_type_val in ["Regression"]:
             from sklearn.cluster import KMeans
             target = self.target
@@ -197,7 +196,7 @@ class CategoricalPreModelAnalysis:
                 sns.heatmap(crosstab, annot=False, cmap="YlGnBu", fmt='g')
                 plt.title(col, fontsize=12, fontweight='bold')
             plt.show()
-            # plt.close()
+            plt.close()
 
     @staticmethod
     def plot_histogram_pvalues(features_pvalues):
@@ -219,7 +218,7 @@ class CategoricalPreModelAnalysis:
         ax.spines['bottom'].set_linewidth(0.5)
         ax.tick_params(axis='both', which='both', labelsize=12)
         plt.show()
-        # plt.close()
+        plt.close()
 
     @staticmethod
     def plot_wordcloud_pvalues(features_pvalues,
@@ -257,6 +256,7 @@ class CategoricalPreModelAnalysis:
             if is_plot:
                 self.partial_plot()
         plt.show()
+        plt.close()
 
 
 def format_df(df, max_value_width=10, ci_max_value_width=15, ci_col="CI"):

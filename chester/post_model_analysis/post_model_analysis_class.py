@@ -57,8 +57,8 @@ class PostModelAnalysis:
         plt.figure(figsize=(10, 10))
         plt.imshow(wordcloud)
         plt.axis("off")
-        plt.title(title, fontsize=15)
         plt.show()
+        plt.title(title, fontsize=15)
 
     def shap_values(self, X_train: pd.DataFrame, shap):
         explainer = shap.Explainer(self.model, X_train, check_additivity=False)
@@ -109,7 +109,7 @@ class PostModelAnalysis:
                 try:
                     self.roc_curve_multiclass(self.X_test, self.y_test)
                 except:
-                    pass
+                    return None
 
     def confusion_matrix(self, X_test: pd.DataFrame, y_test: pd.Series) -> None:
         from sklearn.metrics import confusion_matrix
@@ -123,6 +123,7 @@ class PostModelAnalysis:
         plt.xlabel('Predicted')
         plt.ylabel('Actual')
         plt.show()
+        plt.close()
 
     def roc_curve(self, X_test: pd.DataFrame, y_test: pd.Series) -> None:
         from sklearn.metrics import roc_curve, auc
@@ -141,8 +142,9 @@ class PostModelAnalysis:
             plt.legend(loc="lower right")
             print(AnalyzeMessages().roc_curve_message())
             plt.show()
+            plt.close()
         except:
-            pass
+            return None
 
     def roc_curve_multiclass(self, X_test: pd.DataFrame, y_test: pd.Series) -> None:
         from sklearn.metrics import roc_auc_score, roc_curve
@@ -187,6 +189,7 @@ class PostModelAnalysis:
         plt.legend(loc="lower right")
         print(AnalyzeMessages().roc_curve_message())
         plt.show()
+        plt.close()
 
     def learning_curve(self, X: pd.DataFrame, y: pd.Series) -> None:
         import os
@@ -214,8 +217,9 @@ class PostModelAnalysis:
             plt.legend(loc="best")
             print(AnalyzeMessages().learning_curve_message())
             plt.show()
+            plt.close()
         except:
-            pass
+            return None
         finally:
             sys.stderr = original_stderr
 
@@ -235,5 +239,7 @@ class PostModelAnalysis:
                 plt.xlabel("Coefficients")
                 print(AnalyzeMessages().coefficients_message())
             plt.show()
+            plt.close()
         except:
-            pass
+            plt.close()
+            return None

@@ -30,6 +30,7 @@ class ModelAnalyzer:
             plt.xlabel("Features")
             plt.ylabel("Values")
             plt.show()
+            plt.close()
 
         else:
             sns.violinplot(coef, inner="stick")
@@ -37,6 +38,7 @@ class ModelAnalyzer:
             plt.xlabel("Coefficients")
             print(AnalyzeMessages().coefficients_message())
         plt.show()
+        plt.close()
 
     def analyze(self, X_train: pd.DataFrame, y_train: pd.Series,
                 X_test: pd.DataFrame, y_test: pd.Series,
@@ -87,6 +89,7 @@ class ModelAnalyzer:
         plt.xlabel('Predicted')
         plt.ylabel('Actual')
         plt.show()
+        plt.close()
 
     def roc_curve(self, X_test: pd.DataFrame, y_test: pd.Series) -> None:
         from sklearn.metrics import roc_curve, auc
@@ -105,8 +108,9 @@ class ModelAnalyzer:
             plt.legend(loc="lower right")
             print(AnalyzeMessages().roc_curve_message())
             plt.show()
+            plt.close()
         except:
-            pass
+            return None
 
     def learning_curve(self, X: pd.DataFrame, y: pd.Series) -> None:
         try:
@@ -129,8 +133,9 @@ class ModelAnalyzer:
             plt.legend(loc="best")
             print(AnalyzeMessages().learning_curve_message())
             plt.show()
+            plt.close()
         except:
-            pass
+            return None
 
     def plot_simple_feature_importance(self, X_train: pd.DataFrame):
         feature_importance = self.model.feature_importances_
@@ -142,6 +147,7 @@ class ModelAnalyzer:
         sns.barplot(y='feature_names', x='feature_importance', data=df)
         plt.xlabel("Feature importance")
         plt.show()
+        plt.close()
 
     def plot_feature_importance(self, X_train: pd.DataFrame):
         feature_importance = self.model.feature_importances_
@@ -153,6 +159,7 @@ class ModelAnalyzer:
         print(AnalyzeMessages().feature_importance_message())
         fig = px.bar(df, x='feature_importance', y='feature_names', orientation='h', text='feature_importance')
         fig.show()
+        plt.close()
 
 
 class AnalyzeMessages:

@@ -97,3 +97,4 @@ class ModelBootstrap:
             ax1.set_title(metric_name)
             sns.histplot(x=metrics[metric_name], ax=ax2)
             plt.show()
+            plt.close()

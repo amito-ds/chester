@@ -129,7 +129,7 @@ def visualize_performance(df, with_baseline=True):
     plt.xlabel("Model")
     plt.tight_layout()
     plt.show()
-
+    plt.close()
     return pivot
 
 

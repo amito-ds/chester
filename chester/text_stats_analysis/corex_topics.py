@@ -34,6 +34,7 @@ def plot_corex_wordcloud(df, top_words=20, n_topics=10, plot=True, text_column='
                 pass
         plt.tight_layout()
         plt.show()
+        plt.close()
 
 
 def get_top_words(df: pd.DataFrame,

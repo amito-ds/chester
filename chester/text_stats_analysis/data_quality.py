@@ -57,6 +57,7 @@ def plot_text_length_and_num_words(df):
     sns.histplot(data=df, x='num_words', ax=ax[1])
     fig.suptitle('Text Statistics')
     plt.show()
+    plt.close()
 
 
 def analyze_text_stats(df, text_column='text'):

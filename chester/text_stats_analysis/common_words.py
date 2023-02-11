@@ -28,6 +28,7 @@ def most_common_words(data, common_words=10, text_column='text'):
     plt.ylabel('Count')
     plt.title('Most Common Words')
     plt.show()
+    plt.close()
 
     # return the sorted list of tuples (word, count)
     return sorted_word_counts[:common_words]

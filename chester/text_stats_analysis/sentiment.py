@@ -42,3 +42,4 @@ def plot_sentiment_scores(sentiment_df):
     plt.rcParams.update({'font.size': 14})
     ax.set(xlabel='Sentiment Score', ylabel='Count', title='Sentiment Scores')
     plt.show()
+    plt.close()
