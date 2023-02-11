@@ -54,6 +54,7 @@ class NumericStats:
         🤷‍♀️ No/Negligible correlation: < 0.3
         """)
         plt.show()
+        plt.close()
 
     def calculate_stats(self, is_print=True):
         if not self.any_numeric():

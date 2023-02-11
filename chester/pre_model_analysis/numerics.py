@@ -197,7 +197,7 @@ class NumericPreModelAnalysis:
         dim = math.ceil(math.sqrt(num_plots))
         num_rows = math.ceil(num_plots / dim)
         fig, ax = plt.subplots(num_rows, dim)
-        plt.figure(figsize=(15, 15))
+        plt.figure(figsize=(15, 17))
         if self.data_info.problem_type_val in ["Binary regression"]:
             plt.suptitle("Partial Plot to Identify Patterns between Sampled Numeric Features and Target",
                          fontsize=16, fontweight='bold')
