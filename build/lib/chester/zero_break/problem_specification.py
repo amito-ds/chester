@@ -83,10 +83,24 @@ class DataInfo:
                 boolean_cols.append(col)
         return boolean_cols
 
+    def _determine_id_cols(self):
+        id_cols = []
+        for col in self.data.columns:
+            if col.startswith("ID_") or col.endswith("_id") or col.endswith("_ID"):
+                id_cols.append(col)
+        return id_cols
+
+    @staticmethod
+    def remove_common_elements(l1, l2):
+        return [x for x in l1 if x not in l2]
+
     def feature_types(self):
+        # get basic
         numerical_cols = self._determine_numerical_cols()
         boolean_cols = self._determine_boolean_cols()
         time_cols = self._determine_time_cols()
+        id_cols = self._determine_id_cols()
+
         text_cols = []
         categorical_cols = []
         for col in self.data.columns:
@@ -96,6 +110,7 @@ class DataInfo:
                     text_cols.append(col)
                 elif is_categorical:
                     categorical_cols.append(col)
+        # remove target
         if self.target in numerical_cols:
             numerical_cols.remove(self.target)
         if self.target in boolean_cols:
@@ -105,16 +120,13 @@ class DataInfo:
         if self.target in categorical_cols:
             categorical_cols.remove(self.target)
 
-        for numeric_col in numerical_cols:
-            if numeric_col in time_cols:
-                time_cols.remove(numeric_col)
-        for time_col in time_cols:
-            if time_col in text_cols:
-                text_cols.remove(time_col)
-            elif time_col in categorical_cols:
-                categorical_cols.remove(time_col)
+        # hirerchy
+        numerical_cols = list(self.remove_common_elements(numerical_cols, time_cols + id_cols))
+        time_cols = list(self.remove_common_elements(time_cols, id_cols))
+        text_cols = list(self.remove_common_elements(text_cols, time_cols + id_cols))
+        categorical_cols = list(self.remove_common_elements(categorical_cols, time_cols + id_cols))
         return {'numeric': numerical_cols, 'boolean': boolean_cols, 'text': text_cols,
-                'categorical': categorical_cols, 'time': time_cols}
+                'categorical': categorical_cols, 'time': time_cols, 'id': id_cols}
 
     def loss_detector(self):
         problem_type = self.problem_type()
