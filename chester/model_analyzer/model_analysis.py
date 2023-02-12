@@ -193,9 +193,7 @@ class AnalyzeMessages:
     def learning_curve_message(self):
         return "The learning curve displays model performance as training samples increase.\n" \
                "High training and low validation suggest overfitting,\n" \
-               "low training and high validation suggest underfitting.\n" \
-               "To improve performance, consider adding more data or using regularization techniques\n" \
-               "if the evaluation score plateaus.\n"
+               "low training and high validation suggest underfitting.\n"
 
     def feature_importance_message(self):
         return "The feature importance plot shows the relative importance of each feature in the model's predictions.\n" \

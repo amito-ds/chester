@@ -54,11 +54,12 @@ class PostModelAnalysis:
             random_state=21,
             normalize_plurals=True,
             max_words=100).generate_from_frequencies(dict(features_importance))
-        plt.figure(figsize=(10, 10))
+        plt.figure(figsize=(12, 8))
+        plt.title(title, fontsize=15)
         plt.imshow(wordcloud)
         plt.axis("off")
         plt.show()
-        plt.title(title, fontsize=15)
+        plt.close()
 
     def shap_values(self, X_train: pd.DataFrame, shap):
         explainer = shap.Explainer(self.model, X_train, check_additivity=False)
@@ -204,6 +205,9 @@ class PostModelAnalysis:
             train_scores_std = np.std(train_scores, axis=1)
             test_scores_mean = np.mean(test_scores, axis=1)
             test_scores_std = np.std(test_scores, axis=1)
+            if len(test_scores_std) == 0:
+                plt.close()
+                return None
             plt.plot(train_sizes, train_scores_mean, 'o-', color="r", label="Training score")
             plt.plot(train_sizes, test_scores_mean, 'o-', color="g", label="Cross-validation score")
             plt.fill_between(train_sizes, train_scores_mean - train_scores_std,
@@ -219,8 +223,10 @@ class PostModelAnalysis:
             plt.show()
             plt.close()
         except:
+            plt.close()
             return None
         finally:
+            plt.close()
             sys.stderr = original_stderr
 
     def coefficients(self) -> None:

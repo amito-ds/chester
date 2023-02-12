@@ -209,7 +209,7 @@ class NumericPreModelAnalysis:
                 ax_i.set_title(col, fontweight='bold', transform=ax_i.transAxes, y=0.5)
             plt.show()
             plt.close()
-        if self.data_info.problem_type_val in ["Regression"]:
+        elif self.data_info.problem_type_val in ["Regression"]:
             plt.suptitle("Partial Plot to Identify Patterns between Sampled Numeric Features and Target", fontsize=16,
                          fontweight='bold')
             for i, col in enumerate(top_feature_names[:top_features]):
@@ -255,7 +255,6 @@ class NumericPreModelAnalysis:
                     plt.xlabel(None)
             plt.show()
             plt.close()
-        plt.close()
 
     def run(self, plot=True):
         if self.n_cols > 1:

@@ -186,5 +186,5 @@ madcat_collector = run_madcat(Data(df=df, target_column='target'),
                               is_pre_model=True,
                               is_model_training=True,
                               model_run=ModelRun(n_models=3),
-                              is_post_model=False, is_model_weaknesses=False
+                              is_post_model=True, is_model_weaknesses=True
                               )
