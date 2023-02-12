@@ -121,7 +121,7 @@ class CategoricalPreModelAnalysis:
             max_plots = min(9, top_features)
             dim = math.ceil(math.sqrt(max_plots))
             num_rows = math.ceil(max_plots / dim)
-            fig, ax = plt.subplots(num_rows, dim, figsize=(18, 15))
+            fig, ax = plt.subplots(num_rows, dim, figsize=(18, 16))
             fig.tight_layout()
             if classification_row_percent:
                 plt.suptitle("Partial Plot to Identify Patterns between Sampled Categorical Features and Target\n"
@@ -131,6 +131,7 @@ class CategoricalPreModelAnalysis:
                 plt.suptitle("Partial Plot to Identify Patterns between Sampled Categorical Features and Target\n"
                              "Showing % from Target (column)",
                              fontsize=14, fontweight='bold')
+            # plt.figure(figsize=(15, 15))
             for i, col in enumerate(top_feature_names):
                 if i >= num_rows * num_rows:
                     return None

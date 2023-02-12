@@ -82,6 +82,7 @@ df.rename(columns={'tip': target_column}, inplace=True)
 # df.rename(columns={'Attrition': 'target'}, inplace=True)
 ###############################################################################################
 
+
 ###############################################################################################
 # df = pd.read_csv("chester/run_manual_chester/flipkart_product.csv", encoding="ISO-8859-1")
 # df = df[['Review', 'Summary', 'Rate']]
@@ -93,31 +94,19 @@ df.rename(columns={'tip': target_column}, inplace=True)
 
 
 ###############################################################################################
-# df1 = pd.read_csv("chester/run_manual_chester/Bank_Personal_Loan_Modelling.csv")
-# df = df1.copy(deep=False)
-# df.rename(columns={'Personal Loan': 'target'}, inplace=True)
-#
-# feature_types = {'numeric':
-#                      ['ID', 'Age', 'Experience', 'Income', 'Family',
-#                       'CCAvg', 'Education', 'Mortgage', 'Securities Account',
-#                       'CD Account', 'Online', 'CreditCard'], 'boolean': [],
-#                  'text': [], 'categorical': ['Education'], 'time': []}
-###############################################################################################
-
-
-###############################################################################################
-df1 = pd.read_csv("chester/run_manual_chester/Hotel Reservations.csv")
+df1 = pd.read_csv("chester/run_manual_chester/Bank_Personal_Loan_Modelling.csv")
 df = df1.copy(deep=False)
-df.rename(columns={'booking_status': 'target'}, inplace=True)
-feature_types = {'numeric': ['no_of_adults', 'no_of_children', 'no_of_weekend_nights', 'no_of_week_nights',
-                             'required_car_parking_space', 'lead_time', 'arrival_year', 'arrival_month',
-                             'arrival_date', 'repeated_guest', 'no_of_previous_cancellations',
-                             'no_of_previous_bookings_not_canceled', 'avg_price_per_room',
-                             'no_of_special_requests'],
-                 'boolean': [],
-                 'text': [],
-                 'categorical': ['type_of_meal_plan', 'room_type_reserved', 'market_segment_type'], 'time': []}
+df.rename(columns={'Personal Loan': 'target'}, inplace=True)
+
+feature_types = {'numeric':
+                     ['ID', 'Age', 'Experience', 'Income', 'Family',
+                      'CCAvg', 'Education', 'Mortgage', 'Securities Account',
+                      'CD Account', 'Online', 'CreditCard'], 'boolean': [],
+                 'text': [], 'categorical': ['Education'], 'time': []}
+
+
 ###############################################################################################
+
 
 def generate_data(n_features, n_rows, target_type='binary'):
     if target_type == 'binary':
