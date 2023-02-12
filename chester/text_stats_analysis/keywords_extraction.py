@@ -14,7 +14,7 @@ def isNumeric(word):
     try:
         float(word) if '.' in word else int(word)
         return True
-    except ValueError:
+    except:
         return False
 
 

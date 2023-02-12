@@ -10,7 +10,7 @@ from chester.util import get_stopwords
 
 def remove_punctuation(text: str) -> str:
     """Remove all punctuation from the given text."""
-    return text.translate(text.maketrans("", "", string.punctuation))
+    return str(text).translate(str(text).maketrans("", "", string.punctuation))
 
 
 def remove_numbers(text: str) -> str:
@@ -20,12 +20,12 @@ def remove_numbers(text: str) -> str:
 
 def remove_whitespace(text: str) -> str:
     """Remove excess whitespace from the given text."""
-    return ' '.join(text.split())
+    return ' '.join(str(text).split())
 
 
 def remove_empty_lines(text: str):
     """Remove excess empty lines from the given text."""
-    lines = text.splitlines()
+    lines = str(text).splitlines()
     cleaned_text = '\n'.join([line for line in lines if line.strip()])
     return cleaned_text
 
@@ -119,6 +119,7 @@ def clean_text(text: str,
     remove_html_tags_flag: a flag indicating whether to remove HTML tags from the text.
     """
 
+    text = str(text)
     if remove_punctuation_flag:
         text = remove_punctuation(text)
     if remove_numbers_flag:
