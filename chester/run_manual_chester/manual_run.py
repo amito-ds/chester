@@ -61,6 +61,7 @@ target_column = 'target'
 ################################################################################################
 # categorical features
 import seaborn as sns
+
 df = sns.load_dataset("tips")
 df.rename(columns={'tip': target_column}, inplace=True)
 ################################################################################################
@@ -89,6 +90,21 @@ df.rename(columns={'tip': target_column}, inplace=True)
 # df.rename(columns={'Rate': 'target'}, inplace=True)
 # df.dropna(subset=['target'], inplace=True)
 # df = df.sample(5000)
+###############################################################################################
+
+
+###############################################################################################
+df1 = pd.read_csv("chester/run_manual_chester/Bank_Personal_Loan_Modelling.csv")
+df = df1.copy(deep=False)
+df.rename(columns={'Personal Loan': 'target'}, inplace=True)
+
+feature_types = {'numeric':
+                     ['ID', 'Age', 'Experience', 'Income', 'Family',
+                      'CCAvg', 'Education', 'Mortgage', 'Securities Account',
+                      'CD Account', 'Online', 'CreditCard'], 'boolean': [],
+                 'text': [], 'categorical': ['Education'], 'time': []}
+
+
 ###############################################################################################
 
 
@@ -191,10 +207,18 @@ def load_ex5():
 # df = load_ex5().sample(900)
 
 #
-madcat_collector = run_madcat(Data(df=df, target_column='target'),
-                              is_feature_stats=True,
-                              is_pre_model=True,
-                              is_model_training=True,
-                              model_run=ModelRun(n_models=3),
-                              is_post_model=True, is_model_weaknesses=True
-                              )
+# madcat_collector = run_madcat(Data(df=df, target_column='target'),
+#                               is_feature_stats=True,
+#                               is_pre_model=True,
+#                               is_model_training=True,
+#                               model_run=ModelRun(n_models=3),
+#                               is_post_model=True, is_model_weaknesses=True
+#                               )
+
+output_collector = run_madcat(
+    Data(df=df, target_column='target'),
+    model_run=ModelRun(n_models=3),
+    is_feature_stats=True,
+    feature_types=feature_types,
+    is_model_training=True, is_post_model=True, is_model_weaknesses=True
+)

@@ -187,7 +187,7 @@ def run_madcat(
             data_info_num_stats.calculate()
         NumericPreModelAnalysis(data_info_num_stats).run(plot)
         plt.close()
-        # data_info.data = df
+        data_info.data = df
         CategoricalPreModelAnalysis(data_info).run(plot)
     ####################################################
     # model

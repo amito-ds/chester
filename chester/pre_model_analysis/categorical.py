@@ -117,11 +117,11 @@ class CategoricalPreModelAnalysis:
         feature_index = {feature: index for index, feature in enumerate(self.cols_sorted[0:top_features])}
         top_feature_names.sort(key=lambda x: feature_index[x])
         if self.data_info.problem_type_val in ["Binary regression", "Binary classification"]:
-            max_plots = 9
-            top_n = self.data[:top_features].columns
-            dim = math.ceil(math.sqrt(len(top_n)))
+            plt.close()
+            max_plots = min(9, top_features)
+            dim = math.ceil(math.sqrt(max_plots))
             num_rows = math.ceil(max_plots / dim)
-            fig, ax = plt.subplots(num_rows, dim, figsize=(20, 20))
+            fig, ax = plt.subplots(num_rows, dim, figsize=(18, 16))
             fig.tight_layout()
             if classification_row_percent:
                 plt.suptitle("Partial Plot to Identify Patterns between Sampled Categorical Features and Target\n"
@@ -131,11 +131,11 @@ class CategoricalPreModelAnalysis:
                 plt.suptitle("Partial Plot to Identify Patterns between Sampled Categorical Features and Target\n"
                              "Showing % from Target (column)",
                              fontsize=14, fontweight='bold')
-            plt.figure(figsize=(15, 15))
+            # plt.figure(figsize=(15, 15))
             for i, col in enumerate(top_feature_names):
                 if i >= num_rows * num_rows:
                     return None
-                if top_feature_names == 1:
+                if dim == 1:
                     ax_i = ax
                 else:
                     ax_i = ax[i // dim, i % dim]
