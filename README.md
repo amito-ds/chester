@@ -1,31 +1,45 @@
-# TCAP
-TCAP is a Python package for natural language processing tasks, including text cleaning, pre-processing, text stats, feature extraction, feature analysis, model training, and post-model analysis. All in 1 line of code, given the data.
+# MadCat
 
-## Installation
-You can install TCAP using pip:
+MadCat is a Python package for end-to-end machine learning, including all necessary steps and plots.
+Given the data, it creates a comprehensive report that includes feature statistics, pre-model analysis,
+model training, and post-model analysis.
 
-pip install TCAP
+# Installation
 
+You can install MadCat using pip:
 
-## Usage
-To use TCAP, you'll need a dataframe containing a text column (named 'text') and a target column (named 'target').
+```
+pip install MadCat
+```
+
+# Usage
+
+To use MadCat, you'll need a dataframe containing your features and a target column.
+Here's an example using the Iris dataset:
+
+```
+url = "https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data"
+names = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
+dataset = pd.read_csv(url, names=names)
+dataset.rename(columns={'class': 'target'}, inplace=True)
+df = dataset.sample(frac=1).reset_index(drop=True)
+
+run_metadata_collector = full_run.run_madcat(
+    user_classes.Data(df=df, target_column='target'), 
+)
+```
 
 ## Contributing
-If you are interested in contributing to TCAP, please see our CONTRIBUTING guidelines.
+
+If you are interested in contributing to MadCat, please see our CONTRIBUTING guidelines.
 
 ## License
+
 TCAP is released under the MIT License.
 
 ## Acknowledgements
-The TCAP package was developed by Amit Osi. TCAP makes use of the following open-source libraries: NLTK, spaCy, Gensim, Sklearn.
-# Chester
-Chester is a package for end-to-end machine learning models, including all necessary steps and plots. It creates a report.
 
-## Contributing
-If you are interested in contributing to Chester, please see our CONTRIBUTING guidelines.
+The MadCat package was developed by Amit Osi. MadCat makes use of the following open-source libraries: NLTK, spaCy,
+Gensim,
+Sklearn.
 
-## License
-Chester is released under the MIT License.
-
-## Acknowledgements
-The Chester package was developed by Amit Osi.

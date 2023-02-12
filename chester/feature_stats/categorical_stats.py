@@ -61,12 +61,17 @@ class CategoricalStats:
             fig.suptitle("Top 5 Value Counts and Percentages for Each Feature")
             for i, col in enumerate(top_n):
                 count_data = pd.DataFrame(self.data[col].value_counts()[0:5]).reset_index(drop=False)
-                percent_data = count_data / count_data[col].sum() * 100
+                total_count = self.data[col].count()
+                percent_data = count_data.copy()
+                percent_data[col] = percent_data[col] / total_count * 100
+                percent_data.rename(columns={col: 'percentage', 'index': col}, inplace=True)
+
                 plot_title = f"{col}"
                 ax_i = ax[i // dim, i % dim]
                 ax1_i = ax_i
                 ax1_i.bar(count_data.iloc[:, 0], count_data.iloc[:, 1].to_list(), color='gray')
                 ax2_i = ax1_i.twinx()
+                print(percent_data)
                 ax2_i.plot(percent_data.iloc[:, 0], percent_data.iloc[:, 1].to_list(), color='red', marker='o')
                 ax1_i.set_ylabel('Counts', color='gray')
                 ax2_i.set_ylabel('Percentages', color='red')

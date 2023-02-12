@@ -186,7 +186,9 @@ class NumericPreModelAnalysis:
             sample_features = self.n_cols
         else:
             sample_features = min(2 * 25, int(self.n_cols / 2))
-        top_feature_names = random.sample(self.cols_sorted[0:sample_features], top_features)
+        print("top_features", top_features)
+        print("sample_features", len(self.cols_sorted[0:sample_features]))
+        top_feature_names = random.sample(self.cols_sorted[0:top_features], sample_features)
         feature_index = {feature: index for index, feature in enumerate(self.cols_sorted)}
         top_feature_names.sort(key=lambda x: feature_index[x])
 

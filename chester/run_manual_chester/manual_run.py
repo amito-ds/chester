@@ -26,14 +26,12 @@ target_column = 'target'
 
 
 ################################################################################################
-url = "https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data"
-names = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
-dataset = pd.read_csv(url, names=names)
-dataset.rename(columns={'class': 'target'}, inplace=True)
-df = dataset.sample(frac=1).reset_index(drop=True)
-df['target'] = df['target'].apply(lambda x: 0 if "Iris-setos" in x else 1)  # can do with or without
-
-
+# url = "https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data"
+# names = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
+# dataset = pd.read_csv(url, names=names)
+# dataset.rename(columns={'class': 'target'}, inplace=True)
+# df = dataset.sample(frac=1).reset_index(drop=True)
+# df['target'] = df['target'].apply(lambda x: 0 if "Iris-setos" in x else 1)  # can do with or without
 ###############################################################################################
 
 ###############################################################################################
@@ -57,8 +55,6 @@ df['target'] = df['target'].apply(lambda x: 0 if "Iris-setos" in x else 1)  # ca
 # df.rename(columns={col: "feat_" + str(col) for col in df.columns}, inplace=True)
 # df['target'] = digits.target
 # df['target'] = "c_ " + df['target'].astype(str)
-
-
 ################################################################################################
 
 
@@ -78,6 +74,13 @@ df['target'] = df['target'].apply(lambda x: 0 if "Iris-setos" in x else 1)  # ca
 ###############################################################################################
 
 ###############################################################################################
+
+
+################################################################################################
+df = pd.read_csv("chester/run_manual_chester/HR_Analytics.csv.csv")
+df.rename(columns={'Attrition': 'target'}, inplace=True)
+###############################################################################################
+
 
 def generate_data(n_features, n_rows, target_type='binary'):
     if target_type == 'binary':
