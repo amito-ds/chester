@@ -30,3 +30,6 @@ class BaselineModel:
     def fit_transform(self, X, y):
         self.fit(y)
         return self.transform(X)
+
+    def get_params(self):
+        return {"model": "Baseline"}

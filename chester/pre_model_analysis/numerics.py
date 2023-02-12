@@ -210,7 +210,8 @@ class NumericPreModelAnalysis:
             plt.show()
             plt.close()
         elif self.data_info.problem_type_val in ["Regression"]:
-            fig, ax = plt.subplots(num_rows, dim)
+            # fig, ax = plt.subplots(num_rows, dim)
+            plt.close()
             plt.suptitle("Partial Plot to Identify Patterns between Sampled Numeric Features and Target", fontsize=16,
                          fontweight='bold')
             for i, col in enumerate(top_feature_names[:top_features]):
@@ -223,6 +224,8 @@ class NumericPreModelAnalysis:
             plt.show()
             plt.close()
         elif self.data_info.problem_type_val in ["Multiclass classification", "Binary classification"]:
+            dim = min(dim, 3)
+            fig, axs = plt.subplots(nrows=dim, ncols=dim, figsize=(16, 14))
             if classification_row_percent:
                 plt.suptitle("Partial Plot to Identify Patterns between Sampled Numeric Features and Target\n"
                              "Showing % from cluster (row)",
@@ -231,9 +234,6 @@ class NumericPreModelAnalysis:
                 plt.suptitle("Partial Plot to Identify Patterns between Sampled Numeric Features and Target\n"
                              "Showing % from Target (column)",
                              fontsize=14, fontweight='bold')
-
-            dim = min(dim, 3)
-            fig, axs = plt.subplots(nrows=dim, ncols=dim, figsize=(14, 12))
             for i in range(min(len(top_feature_names), dim * dim)):
                 if i < dim * dim:
                     row = i // dim

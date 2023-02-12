@@ -42,3 +42,5 @@ class BaselineModel(BaseModel):
     def calc_model_score(self, model):
         # calculate the score of a given baseline model
         pass
+
+

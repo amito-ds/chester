@@ -46,12 +46,30 @@ class TargetPreModelAnalysis:
         percentages = np.array(value_counts / target.size * 100)
         fig, ax1 = plt.subplots(figsize=(7, 7), dpi=100)
         ax2 = ax1.twinx()
-        ax1.bar(value_counts.index, value_counts.values, color='gray')
-        ax1.set_ylabel('Counts', color='gray')
+
+        # Create a color map that shows the percentage of each target value
+        cmap = sns.light_palette("green", as_cmap=True)
+        heatmap = np.array([percentages, ] * len(value_counts))
+
+        # Create a bar plot with a heatmap color scheme
+        ax1.barh(value_counts.index, value_counts.values, color=cmap(heatmap))
+        ax1.set_xlabel('Counts')
+        ax1.set_ylabel('Values')
+        ax1.invert_yaxis()
+
+        # Set the y-axis tick labels to the target values
+        ax1.set_yticklabels(value_counts.index)
+
+        # Add a colorbar for the heatmap
+        sm = plt.cm.ScalarMappable(cmap=cmap, norm=plt.Normalize(vmin=percentages.min(), vmax=percentages.max()))
+        sm._A = []
+        cbar = fig.colorbar(sm, ax=ax1)
+        cbar.ax.set_ylabel('Percentages')
+
+        ax2.set_ylim([0, 100])
         ax2.plot(value_counts.index, percentages, color='red', marker='o')
         ax2.set_ylabel('Percentages', color='red')
-        ax1.set_xlabel('Values')
-        plt.title(f'Bar Plot of {self.target.name}')
+        ax1.set_title(f'Bar Plot of {self.target.name}')
         plt.show()
         plt.close()
 

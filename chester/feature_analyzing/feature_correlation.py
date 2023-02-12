@@ -156,12 +156,16 @@ class PreModelAnalysis:
         plt.close()
 
     def run(self):
+        import subprocess
         if self.top_n_features:
             self.df = self.df[self.select_top_variance_features(self.top_n_features)]
         if self.correlation_matrix_bool:
             self.correlation_matrix()
         if self.tsne_plot_bool:
-            self.tsne_plot()
+            try:
+                subprocess.run(["python", "tsne_plot.py"], timeout=120)
+            except subprocess.TimeoutExpired:
+                print("t-SNE plot did not complete within 2 minutes.")
         if self.top_n_pairplot_bool:
             self.top_n_pairplot()
         if self.chi_square_test_all_features_bool:
