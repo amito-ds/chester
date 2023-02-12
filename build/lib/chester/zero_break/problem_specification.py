@@ -9,7 +9,7 @@ def is_date(string):
     try:
         parse(string)
         return True
-    except:
+    except ValueError:
         return False
 
 
