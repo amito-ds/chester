@@ -60,10 +60,9 @@ target_column = 'target'
 
 ################################################################################################
 # categorical features
-import seaborn as sns
-
-df = sns.load_dataset("tips")
-df.rename(columns={'tip': target_column}, inplace=True)
+# import seaborn as sns
+# df = sns.load_dataset("tips")
+# df.rename(columns={'tip': target_column}, inplace=True)
 ################################################################################################
 
 ################################################################################################
@@ -106,18 +105,32 @@ df.rename(columns={'tip': target_column}, inplace=True)
 
 
 ###############################################################################################
-df1 = pd.read_csv("chester/run_manual_chester/Hotel Reservations.csv")
-df = df1.copy(deep=False)
-df.rename(columns={'booking_status': 'target'}, inplace=True)
-feature_types = {'numeric': ['no_of_adults', 'no_of_children', 'no_of_weekend_nights', 'no_of_week_nights',
-                             'required_car_parking_space', 'lead_time', 'arrival_year', 'arrival_month',
-                             'arrival_date', 'repeated_guest', 'no_of_previous_cancellations',
-                             'no_of_previous_bookings_not_canceled', 'avg_price_per_room',
-                             'no_of_special_requests'],
-                 'boolean': [],
-                 'text': [],
-                 'categorical': ['type_of_meal_plan', 'room_type_reserved', 'market_segment_type'], 'time': []}
+# df1 = pd.read_csv("chester/run_manual_chester/Hotel Reservations.csv")
+# df = df1.copy(deep=False)
+# df.rename(columns={'booking_status': 'target'}, inplace=True)
+# feature_types = {'numeric': ['no_of_adults', 'no_of_children', 'no_of_weekend_nights', 'no_of_week_nights',
+#                              'required_car_parking_space', 'lead_time', 'arrival_year', 'arrival_month',
+#                              'arrival_date', 'repeated_guest', 'no_of_previous_cancellations',
+#                              'no_of_previous_bookings_not_canceled', 'avg_price_per_room',
+#                              'no_of_special_requests'],
+#                  'boolean': [],
+#                  'text': [],
+#                  'categorical': ['type_of_meal_plan', 'room_type_reserved', 'market_segment_type'], 'time': []}
 ###############################################################################################
+df1 = pd.read_csv("chester/run_manual_chester/loans_1.csv")
+df = df1.copy(deep=False)
+df.rename(columns={'Loan_Status': 'target'}, inplace=True)
+feature_types = {
+    'numeric': ['ApplicantIncome', 'CoapplicantIncome', 'LoanAmount', 'Credit_History'],
+    'boolean': [], 'text': [],
+    'categorical': ['Gender', 'Married', 'Dependents', 'Education', 'Self_Employed', 'property_Area'], 'time': []}
+df.dropna(subset=['target'], inplace=True)
+
+
+###############################################################################################
+
+###############################################################################################
+
 
 def generate_data(n_features, n_rows, target_type='binary'):
     if target_type == 'binary':
@@ -167,7 +180,7 @@ def load_vlad():
 def load_ex1():
     data = pd.read_csv("chester/model_training/models/chester_models/lead_df_2023-01-23.csv")
     data.rename(columns={'lawer_conversion_label': target_column}, inplace=True)
-    data.drop(columns=["LEAD_ID"], inplace=True)
+    # data.drop(columns=["LEAD_ID"], inplace=True)
     return data
 
 
@@ -211,7 +224,7 @@ def load_ex5():
 
 # load data
 # df = load_vlad()
-# df = load_ex1()
+df = load_ex1()
 # df = load_ex2()
 # df = load_ex3().sample(1000)
 # df = load_ex4().sample(1000)
@@ -228,8 +241,9 @@ def load_ex5():
 
 output_collector = run_madcat(
     Data(df=df, target_column='target'),
-    model_run=ModelRun(n_models=3),
+    model_run=ModelRun(n_models=10),
     is_feature_stats=True,
-    feature_types=feature_types,
+    is_pre_model=True,
+    # feature_types=feature_types,
     is_model_training=True, is_post_model=True, is_model_weaknesses=True
 )
