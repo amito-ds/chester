@@ -36,9 +36,9 @@ target_column = 'target'
 
 ###############################################################################################
 # Load the Boston Housing dataset. categorical
-boston = fetch_openml(name='boston', version=1)
-df = pd.DataFrame(boston.data, columns=boston.feature_names)
-df['target'] = boston.target
+# boston = fetch_openml(name='boston', version=1)
+# df = pd.DataFrame(boston.data, columns=boston.feature_names)
+# df['target'] = boston.target
 ###############################################################################################
 
 ###############################################################################################
@@ -79,6 +79,18 @@ df['target'] = boston.target
 ################################################################################################
 # df = pd.read_csv("chester/run_manual_chester/HR_Analytics.csv.csv")
 # df.rename(columns={'Attrition': 'target'}, inplace=True)
+###############################################################################################
+
+
+###############################################################################################
+df = pd.read_csv("chester/run_manual_chester/flipkart_product.csv", encoding="ISO-8859-1")
+df = df[['Review', 'Summary', 'Rate']]
+df['Rate'] = "category: " + df['Rate'].astype(str)
+df.rename(columns={'Rate': 'target'}, inplace=True)
+df.dropna(subset=['target'], inplace=True)
+df = df.sample(5000)
+
+
 ###############################################################################################
 
 
@@ -180,11 +192,18 @@ def load_ex5():
 # df = load_ex4().sample(1000)
 # df = load_ex5().sample(900)
 
-
-madcat_collector = run_madcat(Data(df=df, target_column='target'),
-                              is_feature_stats=True,
-                              is_pre_model=True,
-                              is_model_training=True,
-                              model_run=ModelRun(n_models=3),
-                              is_post_model=True, is_model_weaknesses=True
-                              )
+#
+# madcat_collector = run_madcat(Data(df=df, target_column='target'),
+#                               is_feature_stats=True,
+#                               is_pre_model=True,
+#                               is_model_training=True,
+#                               model_run=ModelRun(n_models=3),
+#                               is_post_model=True, is_model_weaknesses=True
+#                               )
+feature_types = {'numeric': [], 'boolean': [], 'text': ['Summary', 'Review'],
+                 'categorical': [], 'time': []}
+output_collector = run_madcat(
+    Data(df=df.sample(1000), target_column='target'),
+    model_run=ModelRun(n_models=3),
+    feature_types=feature_types
+)

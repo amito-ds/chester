@@ -21,6 +21,8 @@ def plot_corex_wordcloud(df, top_words=20, n_topics=10, plot=True, text_column='
         for i in range(n_topics - 1):
             topic_words = top_words_list[top_words_list["topic_index"] == i]
             topic_words = dict(zip(topic_words["term"], topic_words["weight"]))
+            if len(topic_words) == 0:
+                break
             wordcloud = WordCloud(width=800, height=800, background_color='black',
                                   stopwords=None, min_font_size=10).generate_from_frequencies(topic_words)
 
@@ -64,6 +66,8 @@ def get_top_words(df: pd.DataFrame,
 
     top_words_list = []
     for i, topic in enumerate(topics):
+        if len(topic) == 0:
+            break
         topic_words, weights, _ = zip(*topic)
         num_words = min(top_words, len(topic_words))  # Use smaller of n and num words in topic
         top_words_list += [(i, topic_words[j], weights[j]) for j in range(num_words)]
