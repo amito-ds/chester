@@ -186,16 +186,16 @@ class NumericPreModelAnalysis:
             sample_features = self.n_cols
         else:
             sample_features = min(2 * 25, int(self.n_cols / 2))
-        print("top_features", top_features)
-        print("sample_features", len(self.cols_sorted[0:sample_features]))
-        top_feature_names = random.sample(self.cols_sorted[0:top_features], sample_features)
+        A = max(top_features, sample_features)
+        B = min(top_features, sample_features)
+        top_feature_names = random.sample(self.cols_sorted[0:A], B)
         feature_index = {feature: index for index, feature in enumerate(self.cols_sorted)}
         top_feature_names.sort(key=lambda x: feature_index[x])
 
         dim = math.ceil(math.sqrt(top_features))
         num_rows = math.ceil(top_features / dim)
-        fig, ax = plt.subplots(num_rows, dim)
         if self.data_info.problem_type_val in ["Binary regression"]:
+            fig, ax = plt.subplots(num_rows, dim)
             plt.suptitle("Partial Plot to Identify Patterns between Sampled Numeric Features and Target",
                          fontsize=16, fontweight='bold')
             for i in range(len(top_feature_names)):
@@ -210,6 +210,7 @@ class NumericPreModelAnalysis:
             plt.show()
             plt.close()
         elif self.data_info.problem_type_val in ["Regression"]:
+            fig, ax = plt.subplots(num_rows, dim)
             plt.suptitle("Partial Plot to Identify Patterns between Sampled Numeric Features and Target", fontsize=16,
                          fontweight='bold')
             for i, col in enumerate(top_feature_names[:top_features]):
@@ -231,9 +232,14 @@ class NumericPreModelAnalysis:
                              "Showing % from Target (column)",
                              fontsize=14, fontweight='bold')
 
-            for i in range(min(len(top_feature_names), 9)):
-                if i < 9:
-                    plt.subplot(dim, dim, i + 1)
+            dim = min(dim, 3)
+            fig, axs = plt.subplots(nrows=dim, ncols=dim, figsize=(14, 12))
+            for i in range(min(len(top_feature_names), dim * dim)):
+                if i < dim * dim:
+                    row = i // dim
+                    col = i % dim
+                    ax = axs[row, col]
+
                     col = top_feature_names[i]
                     data_col = self.data[[col]]
                     num_groups = min(floor(self.data_info.rows / 20), 10)
@@ -250,9 +256,10 @@ class NumericPreModelAnalysis:
                         contingency_table_pct = contingency_table.div(contingency_table.sum(1), axis=0)
                     else:
                         contingency_table_pct = contingency_table.div(contingency_table.sum(0), axis=1)
-                    sns.heatmap(contingency_table_pct, annot=False, cmap='Blues')
-                    plt.ylabel(col, fontsize=12, fontweight='bold')
-                    plt.xlabel(None)
+                    sns.heatmap(contingency_table_pct, annot=False, cmap='Blues', ax=ax)
+                    ax.set_ylabel(col, fontsize=12, fontweight='bold')
+                    ax.set_xlabel(None)
+
             plt.show()
             plt.close()
 
