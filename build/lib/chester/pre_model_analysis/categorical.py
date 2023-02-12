@@ -135,10 +135,9 @@ class CategoricalPreModelAnalysis:
             for i, col in enumerate(top_feature_names):
                 if i >= num_rows * num_rows:
                     return None
+                ax_i = ax[i // dim, i % dim]
                 if top_feature_names == 1:
                     ax_i = ax
-                else:
-                    ax_i = ax[i // dim, i % dim]
                 if classification_row_percent:
                     crosstab = pd.crosstab(self.data[col], self.target, normalize='index') * 100
                     crosstab = crosstab[(crosstab.T != 0).any()]

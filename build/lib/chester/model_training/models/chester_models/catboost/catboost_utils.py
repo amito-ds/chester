@@ -46,6 +46,8 @@ def catboost_with_outputs(cv_data: CVData,
         model = train_catboost(X_train, y_train, parameters=parameters, data_info=data_info)
         prediction = predict_catboost(model, X_test)
         prediction_train = predict_catboost(model, X_train)
+        # print("prediction_train", prediction_train)
+        # print(metrics)
         scores = calculate_catboost_metrics_scores(y_test, prediction, metrics, problem_type)
         results.append({'type': 'test', 'fold': i, **scores})
         scores = calculate_catboost_metrics_scores(y_train, prediction_train, metrics, problem_type)

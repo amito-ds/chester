@@ -14,7 +14,7 @@ class LinearRegressionModel:
         self.data_info = data_info
         self.model_type = self.data_info.problem_type_val
         if "regression" in self.model_type.lower():
-            self.model = ElasticNet()
+            self.en_model = ElasticNet()
         self.categorical_features = self.data_info.feature_types_val["categorical"]
         self.numeric_features = self.data_info.feature_types_val["numeric"]
         self.transformer = None
@@ -35,11 +35,11 @@ class LinearRegressionModel:
             ])
         # Prepare the pipeline
         self.pipeline = Pipeline(steps=[('preprocessor', self.transformer),
-                                        ('regressor', self.model)
+                                        ('regressor', self.en_model)
                                         ])
         # Fit the pipeline with the training data
         hyperparams = {param.name: param.value for param in self.parameters}
-        self.model.set_params(**hyperparams)
+        self.en_model.set_params(**hyperparams)
         self.pipeline.fit(X, y)
 
     def retrain(self, X, y):
