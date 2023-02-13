@@ -120,6 +120,7 @@ def visualize_performance(df, with_baseline=True):
         pivot = df[df['model'] != 'BaselineModel'].pivot(index="model", columns="type", values=metric_columns)
 
     # Plot bar chart to compare mean performance metric by model
+    # fig, axes = plt.subplots(nrows=len(metric_columns), ncols=1, figsize=(12, 10), sharex=True)
     fig, axes = plt.subplots(nrows=len(metric_columns), ncols=1, figsize=(12, 10), sharex=True)
 
     for i, metric in enumerate(metric_columns):

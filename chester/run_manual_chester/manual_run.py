@@ -2,6 +2,7 @@ from collections import Counter
 
 import matplotlib
 import pandas as pd
+from chester.data_loader.webtext_data import load_data_pirates, load_data_king_arthur, load_data_chat_logs
 from flatbuffers.builder import np
 from sklearn.datasets import fetch_20newsgroups
 
@@ -12,13 +13,12 @@ matplotlib.use('TkAgg')
 target_column = 'target'
 
 ################################################################################################
-# df1 = load_data_pirates().assign(target='pirate')  # .sample(300, replace=True)
-# df2 = load_data_king_arthur().assign(target='arthur')  # .sample(300, replace=True)
-# df3 = load_data_chat_logs().assign(target='chat')  # .sample(300, replace=True)
-# df = pd.concat([df1, df2
-#                    , df3
-#                 ])
-
+df1 = load_data_pirates().assign(target='pirate')  # .sample(300, replace=True)
+df2 = load_data_king_arthur().assign(target='arthur')  # .sample(300, replace=True)
+df3 = load_data_chat_logs().assign(target='chat')  # .sample(300, replace=True)
+df = pd.concat([df1, df2
+                   , df3
+                ])
 
 # df['target'] = df['target'].apply(lambda x: 0 if "pirate" in x else 1)  # can do with or without
 ################################################################################################
@@ -116,16 +116,14 @@ target_column = 'target'
 #                  'text': [],
 #                  'categorical': ['type_of_meal_plan', 'room_type_reserved', 'market_segment_type'], 'time': []}
 ###############################################################################################
-df1 = pd.read_csv("chester/run_manual_chester/loans_1.csv")
-df = df1.copy(deep=False)
-df.rename(columns={'Loan_Status': 'target'}, inplace=True)
-feature_types = {
-    'numeric': ['ApplicantIncome', 'CoapplicantIncome', 'LoanAmount', 'Credit_History'],
-    'boolean': [], 'text': [],
-    'categorical': ['Gender', 'Married', 'Dependents', 'Education', 'Self_Employed', 'property_Area'], 'time': []}
-df.dropna(subset=['target'], inplace=True)
-
-
+# df1 = pd.read_csv("chester/run_manual_chester/loans_1.csv")
+# df = df1.copy(deep=False)
+# df.rename(columns={'Loan_Status': 'target'}, inplace=True)
+# feature_types = {
+#     'numeric': ['ApplicantIncome', 'CoapplicantIncome', 'LoanAmount', 'Credit_History'],
+#     'boolean': [], 'text': [],
+#     'categorical': ['Gender', 'Married', 'Dependents', 'Education', 'Self_Employed', 'property_Area'], 'time': []}
+# df.dropna(subset=['target'], inplace=True)
 ###############################################################################################
 
 ###############################################################################################
@@ -208,7 +206,7 @@ def load_ex5():
 
 # load data
 # df = load_vlad()
-df = load_ex1()
+# df = load_ex1()
 # df = load_ex2()
 # df = load_ex3().sample(1000)
 # df = load_ex4().sample(1000)
@@ -219,15 +217,15 @@ madcat_collector = run_madcat(Data(df=df, target_column='target'),
                               is_feature_stats=True,
                               is_pre_model=True,
                               is_model_training=True,
-                              model_run=ModelRun(n_models=3),
+                              model_run=ModelRun(n_models=1),
                               is_post_model=True, is_model_weaknesses=True
                               )
 
-output_collector = run_madcat(
-    Data(df=df, target_column='target'),
-    model_run=ModelRun(n_models=10),
-    is_feature_stats=True,
-    is_pre_model=True,
-    # feature_types=feature_types,
-    is_model_training=True, is_post_model=True, is_model_weaknesses=True
-)
+# output_collector = run_madcat(
+#     Data(df=df, target_column='target'),
+#     model_run=ModelRun(n_models=10),
+#     is_feature_stats=True,
+#     is_pre_model=True,
+#     # feature_types=feature_types,
+#     is_model_training=True, is_post_model=True, is_model_weaknesses=True
+# )
