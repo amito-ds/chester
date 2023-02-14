@@ -13,14 +13,13 @@ matplotlib.use('TkAgg')
 target_column = 'target'
 
 ################################################################################################
-df1 = load_data_pirates().assign(target='pirate').sample(300, replace=True)
-df2 = load_data_king_arthur().assign(target='arthur').sample(300, replace=True)
-df3 = load_data_chat_logs().assign(target='chat').sample(300, replace=True)
-df = pd.concat([
-    df1, df2,
-    df3
-])
-
+# df1 = load_data_pirates().assign(target='pirate').sample(300, replace=True)
+# df2 = load_data_king_arthur().assign(target='arthur').sample(300, replace=True)
+# df3 = load_data_chat_logs().assign(target='chat').sample(300, replace=True)
+# df = pd.concat([
+#     df1, df2,
+#     df3
+# ])
 
 # df['target'] = df['target'].apply(lambda x: 0 if "pirate" in x else 1)  # can do with or without
 ################################################################################################
@@ -68,10 +67,10 @@ df = pd.concat([
 
 ################################################################################################
 # categorical
-# import seaborn as sns
-# df = sns.load_dataset("titanic")
-# df.rename(columns={'survived': target_column}, inplace=True)
-# df.drop(columns=['alive'], inplace=True)
+import seaborn as sns
+df = sns.load_dataset("titanic")
+df.rename(columns={'survived': target_column}, inplace=True)
+df.drop(columns=['alive'], inplace=True)
 ###############################################################################################
 
 ###############################################################################################

@@ -142,7 +142,7 @@ class DataInfo:
         if problem_type == "No target variable":
             return None
         elif problem_type == "Binary regression":
-            return ["ROC", "MSE", "MAE", "MAPE"]
+            return ["MSE", "ROC", "MAE", "MAPE"]
         elif problem_type == "Binary classification":
             return ["Accuracy", "Precision", "Recall", "F1"]
         elif problem_type == "Regression":

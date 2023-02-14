@@ -215,8 +215,9 @@ class PostModelAnalysis:
         try:
             from sklearn.model_selection import learning_curve
             metric_name = self.data_info.metrics_detector_val[0].lower()
+            metric_name = 'roc_auc' if metric_name == 'roc' else metric_name
+            metric_name = 'neg_mean_squared_error' if metric_name == 'mse' else metric_name
             train_sizes, train_scores, test_scores = learning_curve(self.model.model, X, y, cv=5, scoring=metric_name)
-
             train_scores_mean = np.mean(train_scores, axis=1)
             train_scores_std = np.std(train_scores, axis=1)
             test_scores_mean = np.mean(test_scores, axis=1)
@@ -238,8 +239,8 @@ class PostModelAnalysis:
                 return None
             plt.plot(train_sizes, train_scores_mean, 'o-', color="r", label="Training score")
             plt.plot(train_sizes, test_scores_mean, 'o-', color="g", label="Cross-validation score")
-            plt.fill_between(train_sizes, train_scores_mean - train_scores_std,
-                             train_scores_mean + train_scores_std, alpha=0.1, color="r")
+            plt.fill_between(train_sizes, train_scores_mean - train_scores_std, train_scores_mean + train_scores_std,
+                             alpha=0.1, color="r")
             plt.fill_between(train_sizes, test_scores_mean - test_scores_std,
                              test_scores_mean + test_scores_std, alpha=0.1, color="g")
             plt.grid()

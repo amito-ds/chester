@@ -1,242 +1,158 @@
 The report shows run of an ml model or analysis or both
 Data information:
 Data Information Report
-Problem Type: Multiclass classification
+Problem Type: Binary regression
 Target Variable: target
-Feature Types: {'numeric': [], 'boolean': [], 'text': ['text'], 'categorical': [], 'time': [], 'id': []}
+Feature Types: {'numeric': ['pclass', 'age', 'sibsp', 'parch', 'fare'], 'boolean': ['adult_male', 'alone'], 'text': [], 'categorical': ['sex', 'embarked', 'class', 'who', 'deck', 'embark_town'], 'time': [], 'id': []}
 Loss Function: Cross entropy
-Evaluation Metrics: ['Accuracy', 'Precision', 'Recall', 'F1']
-Optional Models: {'logistic', 'baseline-mode', 'catboost'}
+Evaluation Metrics: ['MSE', 'ROC', 'MAE', 'MAPE']
+Optional Models: {'logistic', 'catboost', 'baseline-median', 'baseline-average', 'linear'}
 
 
-Cleaning and preprocessing text column
-The following cleaning steps will be applied to clean column 'text': Removing punctuation, Removing numbers, Removing whitespaces, Removing empty lines, Lowercasing text, Removing stopwords, Removing accented characters, Removing special characters, Removing html tags.
-text column preprocessing
-The following preprocessing steps will be applied to the column 'text': Stemming text, Tokenizing text.
 features engineering process for the data:
-Extracting embedding
-First, Extracting Corex topic model embeddings with dimension 30
-Next, Extracting TF-IDF embeddings with dimension 30
-Then, Extracting bag-of-words embeddings with dimension 30
-Lastly, All embeddings have been concatenated
 features statistics for the data. Analyzed by groups (text, numeric, categorical) if exists:
 
 Numerical Feature statistics:
 Feature stats:
-                    col # unique # missing   max  min   avg   std  \
-2    text_corex_topic_3      623         0  0.47  0.0  0.03  0.08   
-84     text_bow_sparrow       17         0   1.0  0.0  0.08  0.19   
-70        text_bow_look       14         0  0.58  0.0  0.02  0.08   
-32      text_tfidf_seek       25         0  0.95  0.0  0.02  0.11   
-35     text_tfidf_rship       19         0  0.84  0.0  0.02  0.09   
-59      text_tfidf_life       40         0  0.87  0.0  0.04  0.13   
-34      text_tfidf_ladi       17         0   1.0  0.0  0.02  0.12   
-22  text_corex_topic_23      623         0   0.9  0.0  0.03  0.14   
-49      text_tfidf_well       19         0   1.0  0.0  0.03  0.11   
-42      text_tfidf_slim       74         0   1.0  0.0  0.06  0.14   
+             col # unique # missing     max   min   avg    std            CI  \
+5  is_adult_male        2         0     1.0   0.0   0.6   0.49  (0.58, 0.63)   
+4       num_fare      248         0  512.33   0.0  32.2  49.69  (29.5, 34.9)   
+2      num_sibsp        7         0     8.0   0.0  0.52    1.1  (0.46, 0.58)   
+0     num_pclass        3         0     3.0   1.0  2.31   0.84  (2.26, 2.35)   
+6       is_alone        2         0     1.0   0.0   0.6   0.49  (0.58, 0.63)   
+3      num_parch        7         0     6.0   0.0  0.38   0.81  (0.34, 0.43)   
+1        num_age       88       177    80.0  0.42  29.7  14.53  (28.9, 30.5)   
 
-              CI median        top_vals    bottom_vals  
-2   (0.02, 0.03)    0.0  0.47,0.47,0.44    0.0,0.0,0.0  
-84  (0.07, 0.09)    0.0   1.0,0.71,0.58  0.0,0.22,0.26  
-70  (0.01, 0.02)    0.0   0.58,0.53,0.5  0.0,0.22,0.24  
-32  (0.02, 0.03)    0.0  0.95,0.61,0.61  0.0,0.22,0.25  
-35  (0.01, 0.02)    0.0  0.84,0.65,0.65  0.0,0.24,0.27  
-59  (0.03, 0.05)    0.0  0.87,0.83,0.73  0.0,0.18,0.19  
-34  (0.02, 0.03)    0.0   1.0,0.82,0.76  0.0,0.22,0.27  
-22  (0.02, 0.03)    0.0   0.9,0.89,0.89    0.0,0.0,0.0  
-49  (0.02, 0.03)    0.0   1.0,0.82,0.52  0.0,0.29,0.29  
-42  (0.06, 0.07)    0.0   1.0,0.71,0.59  0.0,0.16,0.17  
+  median        top_vals     bottom_vals  
+5    1.0             1,0             0,1  
+4  14.45     512,263,262    0.0,4.01,5.0  
+2    0.0           8,5,4           0,1,2  
+0    3.0           3,2,1           1,2,3  
+6    1.0             1,0             0,1  
+3    0.0           6,5,4           0,1,2  
+1   28.0  80.0,74.0,71.0  0.42,0.67,0.75  
 
 
 Categorical Feature statistics:
-Text statistics:
-Extracting embedding
-** Analayzing text column
-Data quality stats:
-Number of rows with missing data: 0.0
-Number of unique words: 1879
-Average type-token ratio: 0.96
-Median type-token ratio: 1.00
-Average number of words per text: 9.11
-Median number of words per text: 7.00
-Average number of sentences per text: 0.99
-Median number of sentences per text: 1.00
-Average length of text: 56.88
-Median length of text: 41.00
+Feature stats:
+           col # unique # missing                       Distribution  \
+4         deck        7       688  C: 29%, B: 23%, D: 16%, E: 16%...   
+5  embark_town        3         2  Southampton: 72%, Cherbourg: 1...   
+1     embarked        3         2              S: 72%, C: 19%, Q: 9%   
+3          who        3         0  man: 60%, woman: 30%, child: 9...   
+0          sex        2         0             male: 65%, female: 35%   
+2        class        3         0  Third: 55%, First: 24%, Second...   
 
-Count word frequency for basic text analysis.
-Report shows most common words, giving insight into text topic and content:
-[('lady', 166), ('seeks', 131), ('yo', 111), ('jack', 97), ('looking', 71), ('arthur', 68), ('male', 63), ('slim', 58), ('fun', 55), ('relationship', 54), ('married', 51), ('caring', 51), ('rship', 50), ('build', 48), ('attractive', 48), ('good', 48), ('like', 47), ('honest', 46), ('fship', 45), ('open', 44), ('sparrow', 44), ('age', 44), ('well', 43), ('single', 42), ('guy', 41), ('life', 41), ('ns', 40), ('non', 40), ('man', 40), ('meet', 40), ('must', 39), ('seeking', 36), ('turner', 35), ('likes', 35), ('enjoy', 34), ('sd', 34), ('movies', 34), ('elizabeth', 34), ('would', 33), ('tall', 32), ('ft', 32), ('music', 31), ('dining', 29), ('oh', 28), ('woman', 28), ('father', 28), ('ni', 26), ('gsoh', 26), ('smoker', 25), ('genuine', 25), ('country', 25), ('hello', 25), ('friendship', 24), ('employed', 24), ('fit', 23), ('right', 23), ('dont', 23), ('galahad', 23), ('mum', 22), ('beach', 22), ('female', 21), ('im', 21), ('head', 21), ('back', 21), ('going', 21), ('gen', 21), ('asian', 20), ('long', 20), ('times', 20), ('photo', 20), ('working', 20), ('launcelot', 20), ('knight', 20), ('scene', 20), ('fishing', 20), ('robin', 20), ('gent', 19), ('drinker', 19), ('ss', 19), ('norrington', 19), ('casual', 19), ('nights', 19), ('sir', 19), ('gibbs', 18), ('sexy', 18), ('thats', 18), ('interests', 18), ('black', 18), ('medium', 17), ('wltm', 17), ('love', 17), ('old', 17), ('knights', 17), ('quiet', 17), ('poss', 17), ('late', 17), ('social', 17), ('yes', 16), ('please', 16), ('secure', 16)]
-Sentiment Statistics
-+--------------------------------+
-|      Sentiment Statistics      |
-+-----------+-------+------------+
-| Sentiment | Count | Percentage |
-+-----------+-------+------------+
-|  Positive |  315  |   35.0%    |
-|  Negative |  136  |   15.1%    |
-|  Neutral  |  449  |   49.9%    |
-+-----------+-------+------------+
-
-
-Corex topic analysis:
-	Topic 1: fun ft, sparrow, adelaide, farmerland, lady ns age, ns age open, sorry, kissing cuddling, owner, home kissing
-	Topic 2: naughty lady, financially secure, wild, elizabeth swann, golf, woman relationship, emotionally healthy man, tv, dvds, secure seeks
-	Topic 3: person life, hand seeks, seeks female, good fun possible, hair blue eyes, married asian, enchanter, callers welcome, hand, caring fishing
-	Topic 4: gen honest caring, honest strong family, farmerland owner, genuine, looks, caring likes fishing, genuine good, outings companionship callers, enjoys simple, cooking house
-	Topic 5: minstrel singing, swm, guy, theres, prof guy, yo enjoy danc, pistol, meal fun, seeks, prof
-	Topic 6: emotionally, seeking female, got, strong, galahad, knights, lady long term, holy grail, male seeks, man like meet
-	Topic 7: normal, romantic, yrs long, older, nights, lady casual, yo ties secure, brunette living adelaide, int, intelligent
-	Topic 8: lady, looking, clean shaven non, good looking yo, rship, blue, norrington, fun loving, fun ft enjoy, gym beach
-	Topic 9: mum looking meet, female, discreet, drinker looking fship, harley, fship rship nat, rship nat open, rider, yo enjoy, lord cutler beckett
-	Topic 10: ha, indian lady years, tia dalma, gardening, ss sgl mum, dalma, dont want, smoker, person, possible rship
-	Key sentences out of based on LSA algorithm: ['soldier pull one.', 'slim attractive looking fun pref asian.', 'jack moves mouth jaw tongue around revulsion watching.', 'robin mangy scots git.', 'longboat arrives beach jack disembarks begins walk.'] 
-
-popular terms extraction:
-[('active years ft slim build nonsmoker social', 54.0), ('clunk bang rewr squeak rrrr drilllll sawwwww', 54.0), ('prof kind generous great listener enjoys fun', 48.0), ('brother saint attila raised hand grenade high', 48.0), ('early outgoing intelligent independant fitness outdoor activites', 46.0), ('supporting happy nat fun loving likes cooking', 44.0), ('greekaust male early slim build nonsmoker enjoys', 44.0), ('male late aust single tall prof interests', 40.0), ('ties secure ft slim build enjoy outdoors', 38.0), ('early honest caring likes fishing animals golf', 38.0)]
+                              Sample Top 5 values coverage  
+4                            C, B, G                   92%  
+5  Southampton, Queenstown, Cherb...                  100%  
+1                            Q, C, S                  100%  
+3                  woman, child, man                  100%  
+0                       female, male                  100%  
+2               First, Third, Second                  100%  
 
 ** model pre analysis report:
 Feature stats:
-            col # unique # missing                       Distribution  \
-0  target_label        3         0  pirate: 33%, chat: 33%, arthur...   
+            col # unique # missing max min   avg   std            CI median  \
+0  target_label        2         0   1   0  0.38  0.49  (0.36, 0.41)    0.0   
 
-                 Sample Top 5 values coverage  
-0  chat, arthur, pirate                  100%  
-
-values counts for categorical target to predict:
-pirate    300
-chat      300
-arthur    300
-Name: target, dtype: int64
+  top_vals bottom_vals  
+0      1,0         0,1  
 
 top 50 with lowest partial pvalue for numerical feat, based on chi square:
-[('text_corex_topic_2', 7.163243765946252e-119), ('text_corex_topic_28', 7.016676256316616e-100), ('text_corex_topic_1', 1.5852644325845783e-96), ('text_tfidf_slim', 1.2889482251980009e-74), ('text_bow_slim', 1.2889482251980009e-74), ('text_tfidf_sparrow', 3.709122879550965e-71), ('text_bow_sparrow', 3.722174286025273e-71), ('text_corex_topic_27', 1.8520261088783139e-69), ('text_corex_topic_30', 6.422965515128521e-54), ('text_corex_topic_22', 5.678135948171315e-47), ('text_bow_fship', 3.679430232025797e-41), ('text_corex_topic_3', 1.6008598430285332e-39), ('text_corex_topic_16', 5.441276213717595e-37), ('text_tfidf_fship', 3.179805203555348e-36), ('text_tfidf_life', 9.656488067949565e-32), ('text_bow_life', 9.656488067949704e-32), ('text_bow_male', 7.35127152783254e-27), ('text_corex_topic_17', 6.383587942868733e-24), ('text_corex_topic_25', 1.846643835329792e-23), ('text_tfidf_male', 2.389815101910106e-22), ('text_corex_topic_26', 3.7416607955035866e-20), ('text_tfidf_care', 4.731863825062584e-20), ('text_bow_care', 4.7318638250626217e-20), ('text_tfidf_yo', 1.1976719054310515e-19), ('text_bow_yo', 1.5063672987361828e-19), ('text_bow_good', 1.1286987828388233e-18), ('text_tfidf_singl', 3.50875776190702e-18), ('text_bow_jack', 1.9962778560412082e-17), ('text_tfidf_jack', 1.9962778560412372e-17), ('text_tfidf_good', 2.6061198446336048e-17), ('text_bow_singl', 2.0020092789642337e-16), ('text_tfidf_guy', 3.8330603442563465e-16), ('text_bow_guy', 3.833060344256373e-16), ('text_corex_topic_8', 8.468695508396886e-16), ('text_corex_topic_29', 1.1659981356680686e-14), ('text_bow_well', 1.7276553555918814e-14), ('text_tfidf_well', 1.7276553555918817e-14), ('text_bow_relationship', 1.829290062010685e-14), ('text_tfidf_relationship', 1.829290062010712e-14), ('text_bow_ladi', 1.6067623414470242e-13), ('text_tfidf_ladi', 1.6067623414470363e-13), ('text_bow_like', 3.1303361051569705e-13), ('text_bow_man', 3.1303361051569943e-13), ('text_tfidf_like', 3.130336105157016e-13), ('text_tfidf_man', 3.130336105157016e-13), ('text_bow_fun', 3.325312087949753e-13), ('text_tfidf_attract', 1.989176296504075e-12), ('text_tfidf_fun', 2.017325432328443e-12), ('text_tfidf_non', 2.017325432328443e-12), ('text_bow_non', 2.0173254323284434e-12)]
+[('is_adult_male', 1.3961564139018578e-61), ('num_pclass', 4.5492517112987287e-23), ('num_fare', 4.6558557424690705e-18), ('is_alone', 1.9726543846517183e-09), ('num_sibsp', 1.5585810465902116e-06), ('num_parch', 9.703526421039997e-05), ('num_age', 0.00011174173926716125)]
+
+top 50 with lowest partial pvalue for categorical feat based on chi square:
+[('who', 2.2227620817798914e-62), ('sex', 1.1973570627755645e-58), ('class', 4.549251711298793e-23), ('embarked', 1.769922284120912e-06), ('embark_town', 1.769922284120912e-06), ('deck', 0.21476470552598992)]
 
 Training models and choosing the best one
 Model results compared - showing the best out of each type after CV & HP tuning: 
-+-------+-------------------------+---------------------+--------------------+--------------------+--------------------+
-|  type |          model          |    accuracy_score   |  precision_score   |    recall_score    |      f1_score      |
-+-------+-------------------------+---------------------+--------------------+--------------------+--------------------+
-|  test |      BaselineModel      |  0.3111111111111111 |        nan         |        nan         |        nan         |
-|  test |      CatboostModel      |  0.9152777777777779 | 0.9156071444244201 | 0.9152846919554412 | 0.9145233348906675 |
-|  test | LogisticRegressionModel |  0.8708333333333333 | 0.876046423503887  | 0.8735424090977462 | 0.8711486114749707 |
-| train |      BaselineModel      | 0.33958333333333335 |        nan         |        nan         |        nan         |
-| train |      CatboostModel      |  0.9958333333333333 | 0.9958242427243246 | 0.9958386804185274 | 0.9958224527529653 |
-| train | LogisticRegressionModel |  0.9038194444444445 | 0.9055533525111883 | 0.903392539701154  | 0.9040141315491127 |
-+-------+-------------------------+---------------------+--------------------+--------------------+--------------------+
++-------+-------------------------+---------------------+--------------------+---------------------+--------------------------------+
+|  type |          model          |  mean_squared_error |   roc_auc_score    | mean_absolute_error | mean_absolute_percentage_error |
++-------+-------------------------+---------------------+--------------------+---------------------+--------------------------------+
+|  test |      BaselineModel      | 0.23505398575472772 |        0.5         | 0.46973878805146124 |       1057889697377105.2       |
+|  test |      CatboostModel      | 0.12915432345831346 | 0.8670152488704084 | 0.26487562738098075 |       614634751474744.2        |
+|  test |  LinearRegressionModel  |  0.2217768529577607 | 0.6827501136355785 |  0.4491138910026088 |       1004577148976117.4       |
+|  test | LogisticRegressionModel |  0.1331816995791773 | 0.8605418127837547 | 0.26062022121504214 |       586840720227691.2        |
+| train |      BaselineModel      | 0.23468480229673347 |        0.5         | 0.46936960459346694 |       1056926388173087.8       |
+| train |      CatboostModel      | 0.11241608502047755 | 0.8995660854369893 |  0.2443909090508894 |       566355224026632.5        |
+| train |  LinearRegressionModel  | 0.22105630494490983 | 0.6857375750637993 | 0.44846480072846984 |       1003250462580042.0       |
+| train | LogisticRegressionModel | 0.12312157139254494 | 0.8748246661389778 | 0.25050036985297164 |       564076674222855.9        |
++-------+-------------------------+---------------------+--------------------+---------------------+--------------------------------+
 
 
 Post model analysis - analyzing results of the chosen model: 
 Top 100 Feature importance (in %, 100 = the most important one):
-{'text_corex_topic_2': 100, 'text_corex_topic_29': 79, 'text_corex_topic_30': 63, 'text_corex_topic_22': 57, 'text_corex_topic_28': 55, 'text_corex_topic_14': 42, 'text_corex_topic_9': 40, 'text_corex_topic_1': 36, 'text_corex_topic_24': 32, 'text_corex_topic_18': 28, 'text_corex_topic_23': 26, 'text_corex_topic_6': 25, 'text_corex_topic_20': 23, 'text_corex_topic_7': 22, 'text_corex_topic_19': 21, 'text_corex_topic_27': 18, 'text_corex_topic_5': 18, 'text_corex_topic_25': 17, 'text_corex_topic_17': 14, 'text_corex_topic_13': 13, 'text_bow_slim': 12, 'text_corex_topic_10': 12, 'text_corex_topic_3': 11, 'text_corex_topic_16': 10, 'text_corex_topic_11': 10, 'text_corex_topic_4': 9, 'text_corex_topic_12': 9, 'text_corex_topic_26': 8, 'text_corex_topic_15': 7, 'text_bow_fship': 7, 'text_bow_male': 5, 'text_bow_sparrow': 4, 'text_tfidf_sparrow': 4, 'text_tfidf_life': 4, 'text_tfidf_slim': 3, 'text_corex_topic_21': 3, 'text_tfidf_meet': 3, 'text_bow_like': 3, 'text_corex_topic_8': 3, 'text_bow_well': 2, 'text_tfidf_jack': 2, 'text_bow_jack': 2, 'text_bow_non': 1, 'text_bow_care': 1, 'text_tfidf_fship': 1, 'text_tfidf_man': 1, 'text_bow_yo': 1, 'text_tfidf_care': 1, 'text_tfidf_enjoy': 1, 'text_tfidf_well': 1, 'text_tfidf_like': 1, 'text_bow_singl': 1, 'text_bow_relationship': 1, 'text_tfidf_rship': 1, 'text_tfidf_male': 1, 'text_bow_attract': 1, 'text_bow_meet': 1, 'text_tfidf_singl': 1, 'text_bow_guy': 1, 'text_tfidf_relationship': 1, 'text_bow_marri': 0, 'text_bow_build': 0, 'text_bow_honest': 0, 'text_tfidf_attract': 0, 'text_tfidf_guy': 0, 'text_tfidf_yo': 0, 'text_tfidf_open': 0, 'text_tfidf_fun': 0, 'text_bow_seek': 0, 'text_bow_look': 0, 'text_bow_enjoy': 0, 'text_bow_arthur': 0, 'text_bow_life': 0, 'text_bow_open': 0, 'text_tfidf_honest': 0, 'text_tfidf_look': 0, 'text_bow_rship': 0, 'text_tfidf_arthur': 0, 'text_bow_age': 0, 'text_tfidf_ladi': 0, 'text_tfidf_build': 0, 'text_bow_man': 0, 'text_tfidf_good': 0, 'text_tfidf_age': 0, 'text_bow_fun': 0, 'text_bow_ladi': 0, 'text_bow_good': 0, 'text_tfidf_non': 0, 'text_tfidf_marri': 0, 'text_tfidf_seek': 0}
-
-confusion matrix on the test set
-[[48  0 11]
- [ 0 59  0]
- [ 6  0 56]]
+{'index_who': 100, 'index_class': 44, 'is_adult_male': 27, 'num_fare': 21, 'index_sex': 19, 'num_pclass': 18, 'index_embarked': 15, 'index_deck': 10, 'num_sibsp': 10, 'num_age': 9, 'index_embark_town': 8, 'num_parch': 6, 'is_alone': 2}
 
 Learning curve by training examples
-+-------------+--------------------+-----------------------+--------------------+----------------------+
-| train_sizes | train_scores_mean  |    train_scores_std   |  test_scores_mean  |   test_scores_std    |
-+-------------+--------------------+-----------------------+--------------------+----------------------+
-|      57     |        1.0         |          0.0          | 0.7597222222222222 | 0.025077041785094147 |
-|     187     | 0.9957219251336898 | 0.0021390374331550885 | 0.8722222222222221 | 0.02222222222222225  |
-|     316     | 0.9962025316455696 | 0.0012658227848101333 | 0.8791666666666667 | 0.02620550314460165  |
-|     446     | 0.9955156950672646 | 0.0014180617310172146 | 0.9013888888888889 | 0.01723565784165397  |
-|     576     | 0.9958333333333333 | 0.0008505172717997388 | 0.9097222222222221 | 0.02777777777777776  |
-+-------------+--------------------+-----------------------+--------------------+----------------------+
++-------------+----------------------+-----------------------+----------------------+----------------------+
+| train_sizes |  train_scores_mean   |    train_scores_std   |   test_scores_mean   |   test_scores_std    |
++-------------+----------------------+-----------------------+----------------------+----------------------+
+|      56     | -0.09071767147496843 |  0.017253370810482106 | -0.1587054636315432  | 0.017459866991501947 |
+|     184     | -0.10555776736099318 |  0.005590539602081954 | -0.13738639491275087 | 0.016124039111934583 |
+|     312     | -0.11221426280050213 | 0.0063455474975481875 |  -0.129834341447649  | 0.015342957457774547 |
+|     440     | -0.11463190582932994 | 0.0019658461300998188 | -0.13094910026163795 | 0.010681457535548253 |
+|     569     | -0.11293804395607623 |  0.003375733208515742 | -0.1286680882352976  | 0.010195440809982725 |
++-------------+----------------------+-----------------------+----------------------+----------------------+
 
 
 Boostrap metrics, sample 20 results:
-+----------------+--------------------+--------------------+--------------------+
-| accuracy_score |  precision_score   |    recall_score    |      f1_score      |
-+----------------+--------------------+--------------------+--------------------+
-|      0.92      |  0.9159678546471   | 0.9121087031303748 | 0.9134199134199134 |
-|      0.9       | 0.9092753623188404 | 0.8957307060755336 | 0.9003928170594838 |
-|     0.915      | 0.920725320764598  | 0.9203267973856208 | 0.9204970975390401 |
-|     0.875      |      0.884375      |  0.88272921108742  | 0.8833082121845676 |
-|      0.89      | 0.8844246031746031 |  0.88474913065077  | 0.8844499586435072 |
-|      0.89      | 0.8949858757062147 | 0.891743247006405  | 0.8928821633739666 |
-|      0.9       | 0.9014652014652015 | 0.9011559847819726 | 0.9011857707509883 |
-|      0.85      | 0.8693528693528694 | 0.8660660660660661 | 0.8652802893309222 |
-|     0.885      | 0.9017991004497752 | 0.892285560151052  | 0.8948571428571429 |
-|      0.92      | 0.9259259259259259 | 0.9233857249778866 | 0.9235599235599236 |
-|     0.925      | 0.9241306638566913 | 0.9176510871426126 | 0.9189837319333721 |
-|      0.9       | 0.9087301587301587 | 0.8925925925925927 | 0.8955365622032289 |
-|      0.88      | 0.8897659603932974 | 0.8836363636363637 | 0.8848509595753368 |
-|     0.925      | 0.9280888030888031 | 0.923076923076923  | 0.9227064629288305 |
-|      0.87      | 0.8751322751322751 | 0.8737299418400953 | 0.873972602739726  |
-|     0.915      | 0.9192834138486313 | 0.9202020202020202 | 0.9194759385235577 |
-|     0.895      | 0.8874269005847953 | 0.8806803082646825 | 0.8830740216878832 |
-|     0.895      | 0.9035414082954388 | 0.8981818181818181 | 0.8994140127388534 |
-|      0.9       | 0.9102538343044672 | 0.9073522599430879 | 0.9059353471118178 |
-|      0.89      | 0.8917009157112985 | 0.8940619307832423 | 0.8917824074074074 |
-+----------------+--------------------+--------------------+--------------------+
++---------------------+--------------------+---------------------+--------------------------------+
+|  mean_squared_error |   roc_auc_score    | mean_absolute_error | mean_absolute_percentage_error |
++---------------------+--------------------+---------------------+--------------------------------+
+| 0.14362513222575968 | 0.8673501412281619 |  0.2952910000698505 |       689473805129912.8        |
+|  0.1619025035820888 | 0.8292533659730722 | 0.30519435359229197 |       654796989799436.5        |
+| 0.13485821786206156 | 0.8857621090072183 |  0.2800681559540972 |       638743857525462.6        |
+| 0.13615073226680005 | 0.8737171592775039 | 0.27397123948036833 |       537646804387633.94       |
+| 0.14904630083947537 | 0.8509852216748768 | 0.29966399878337796 |       648239343060222.5        |
+| 0.14105929593985864 | 0.8667507356031947 |  0.2856530012642682 |       586850238238587.0        |
+| 0.13438551926075273 | 0.8676562499999999 |  0.2742397889504219 |       634875886563193.0        |
+| 0.16169200530041383 |     0.8296875      |  0.3055934937162618 |       686104710814490.4        |
+|  0.175698696417439  | 0.8296868727418707 | 0.32825321304048094 |       626656744879678.4        |
+| 0.17387078165541575 | 0.8023375553496035 |  0.325578206116341  |       700923862108156.0        |
+| 0.12899106378601874 | 0.9003033790145413 |  0.2792691455392235 |       647611223300196.8        |
+| 0.11695000898011468 | 0.9191213685595708 |  0.2576184370744132 |       559411732501308.06       |
+|  0.1333631774263777 | 0.8809523809523809 |  0.262567714386943  |       525168855789516.6        |
+| 0.17168102798813742 | 0.8130557589706037 |  0.3118419531618853 |       717873073109796.0        |
+|  0.1410461834512675 | 0.8834889643463497 |  0.2808392256074584 |       594734654708239.0        |
+|  0.1378580413447617 | 0.8885799608691175 | 0.28622652986782066 |       606638759586590.5        |
+| 0.16721080625904386 | 0.833198051948052  |  0.3156574796943293 |       629715799153367.2        |
+| 0.13172627413585156 | 0.8893308853529172 |  0.2737093883969611 |       551807370774391.06       |
+| 0.12508569217791143 | 0.9028241724870939 | 0.26458471266837885 |       552124853802961.6        |
+| 0.13394790838035442 | 0.8867952969550799 |  0.282831450186464  |       564591031120559.6        |
++---------------------+--------------------+---------------------+--------------------------------+
 
 Trying to find weaknesses in the model by training models on the error:
 Most important features by catboost:
-+---------------------+------------+
-|       Feature       | Importance |
-+---------------------+------------+
-|  text_corex_topic_9 |    15.0    |
-|  text_corex_topic_2 |    12.0    |
-| text_corex_topic_19 |    9.0     |
-| text_corex_topic_20 |    7.0     |
-|  text_corex_topic_6 |    7.0     |
-|  text_corex_topic_7 |    7.0     |
-| text_corex_topic_18 |    6.0     |
-| text_corex_topic_30 |    6.0     |
-| text_corex_topic_14 |    5.0     |
-| text_corex_topic_24 |    3.0     |
-| text_corex_topic_26 |    3.0     |
-| text_corex_topic_13 |    3.0     |
-| text_corex_topic_27 |    2.0     |
-|  text_corex_topic_1 |    2.0     |
-|  text_corex_topic_4 |    2.0     |
-| text_corex_topic_22 |    1.0     |
-|    text_bow_enjoy   |    1.0     |
-|   text_tfidf_slim   |    1.0     |
-|    text_bow_male    |    1.0     |
-|   text_tfidf_enjoy  |    1.0     |
-| text_corex_topic_28 |    1.0     |
-| text_corex_topic_10 |    1.0     |
-|  text_corex_topic_5 |    1.0     |
-|   text_bow_attract  |    0.0     |
-|    text_bow_ladi    |    0.0     |
-|    text_bow_like    |    0.0     |
-|    text_bow_good    |    0.0     |
-|     text_bow_fun    |    0.0     |
-|    text_bow_rship   |    0.0     |
-|    text_bow_marri   |    0.0     |
-|   text_bow_arthur   |    0.0     |
-|    text_bow_seek    |    0.0     |
-|    text_bow_meet    |    0.0     |
-|    text_bow_jack    |    0.0     |
-|   text_tfidf_life   |    0.0     |
-|   text_tfidf_meet   |    0.0     |
-|   text_tfidf_good   |    0.0     |
-|     text_bow_non    |    0.0     |
-|     text_bow_man    |    0.0     |
-|    text_bow_look    |    0.0     |
-|    text_bow_fship   |    0.0     |
-|    text_bow_slim    |    0.0     |
-|    text_bow_build   |    0.0     |
-|    text_bow_singl   |    0.0     |
-|     text_bow_yo     |    0.0     |
-|    text_bow_care    |    0.0     |
-|   text_bow_honest   |    0.0     |
-|     text_bow_age    |    0.0     |
-|    text_bow_open    |    0.0     |
-|    text_tfidf_age   |    0.0     |
-+---------------------+------------+
++-------------------+------------+
+|      Feature      | Importance |
++-------------------+------------+
+|   is_adult_male   |    34.0    |
+|     index_who     |    21.0    |
+|    index_class    |    12.0    |
+|     num_pclass    |    8.0     |
+|     num_sibsp     |    5.0     |
+|      num_fare     |    5.0     |
+|     index_sex     |    4.0     |
+|      num_age      |    4.0     |
+|     index_deck    |    4.0     |
+|     num_parch     |    1.0     |
+| index_embark_town |    1.0     |
+|   index_embarked  |    0.0     |
+|      is_alone     |    0.0     |
++-------------------+------------+
 
 Print of tree to look for potential segments with high error (use with caution)
-|--- text_corex_topic_24 <= 0.00
-|   |--- value: [0.00]
-|--- text_corex_topic_24 >  0.00
-|   |--- text_corex_topic_2 <= 0.01
-|   |   |--- value: [0.25]
-|   |--- text_corex_topic_2 >  0.01
-|   |   |--- value: [0.06]
+|--- index_embark_town_1 <= 0.50
+|   |--- index_sex_0 <= 0.50
+|   |   |--- value: [0.19]
+|   |--- index_sex_0 >  0.50
+|   |   |--- value: [1.28]
+|--- index_embark_town_1 >  0.50
+|   |--- index_embark_town_0 <= 25.79
+|   |   |--- value: [1.96]
+|   |--- index_embark_town_0 >  25.79
+|   |   |--- value: [1.62]
 
 
