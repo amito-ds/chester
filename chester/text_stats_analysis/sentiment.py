@@ -6,8 +6,11 @@ import seaborn as sns
 from prettytable import PrettyTable
 from textblob import TextBlob
 
+from chester.util import ReportCollector, REPORT_PATH
+
 
 def report_sentiment_stats(sentiment_df: pd.DataFrame) -> Dict[str, Union[int, float]]:
+    rc = ReportCollector(REPORT_PATH)
     # count number of positive, negative and neutral sentiments
     pos_count = len(sentiment_df[sentiment_df['sentiment'] > 0])
     neg_count = len(sentiment_df[sentiment_df['sentiment'] < 0])
@@ -25,6 +28,7 @@ def report_sentiment_stats(sentiment_df: pd.DataFrame) -> Dict[str, Union[int, f
     table.add_row(["Negative", neg_count, f"{neg_percent:.1f}%"])
     table.add_row(["Neutral", neutral_count, f"{neutral_percent:.1f}%"])
 
+    rc.save_object(obj=table.get_string(title="Sentiment Statistics"), text="Sentiment Statistics")
     return table.get_string(title="Sentiment Statistics")
 
 

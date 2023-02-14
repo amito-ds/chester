@@ -57,6 +57,9 @@ class NumericStats:
         plt.close()
 
     def calculate_stats(self, is_print=True):
+        from chester.util import ReportCollector, REPORT_PATH
+        rc = ReportCollector(REPORT_PATH)
+
         if not self.any_numeric():
             return None
         result_dicts = []
@@ -90,12 +93,16 @@ class NumericStats:
         results_df = pd.DataFrame(result_dicts)
         if is_print:
             if self.max_print is not None:
-                print(format_df(df=results_df,
-                                max_value_width=self.max_print,
-                                ci_max_value_width=self.max_print,
-                                col_max_value_width=self.max_print))
+                formatted_df = format_df(df=results_df,
+                                         max_value_width=self.max_print,
+                                         ci_max_value_width=self.max_print,
+                                         col_max_value_width=self.max_print)
+                print(formatted_df)
             else:
-                print(format_df(results_df))
+                formatted_df = format_df(results_df)
+                print(formatted_df)
+            len_df = len(formatted_df)
+            rc.save_object(obj=formatted_df.sample(min(len_df, 10)), text="Feature stats:")
         return results_df
 
     def run(self, plot=True):

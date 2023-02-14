@@ -41,10 +41,19 @@ class TargetPreModelAnalysis:
         plt.close()
 
     def plot_barplot(self):
+        from chester.util import ReportCollector, REPORT_PATH
+        rc = ReportCollector(REPORT_PATH)
+
         target = self.target
         value_counts = target.value_counts()
+        print("Wow!!!")
+        print(value_counts)
+
+        # df_to_save = value_counts.to_dict(orient='records')[0]
+        rc.save_object(obj=value_counts[0:10], text="values counts for categorical target to predict:")
+
         percentages = np.array(value_counts / target.size * 100)
-        fig, ax1 = plt.subplots(figsize=(8, 8), dpi=100)
+        fig, ax1 = plt.subplots(figsize=(9, 9), dpi=100)
         ax2 = ax1.twinx()
 
         # Create a color map that shows the percentage of each target value
@@ -52,7 +61,7 @@ class TargetPreModelAnalysis:
         heatmap = np.array([percentages, ] * len(value_counts))
 
         # Create a bar plot with a heatmap color scheme
-        ax1.barh(value_counts.index, value_counts.values)#??
+        ax1.barh(value_counts.index, value_counts.values)
         ax1.set_xlabel('Counts')
         ax1.set_ylabel('Values')
         ax1.invert_yaxis()

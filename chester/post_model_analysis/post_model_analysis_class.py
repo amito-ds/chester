@@ -4,6 +4,7 @@ import pandas as pd
 import seaborn as sns
 from wordcloud import WordCloud
 
+from chester.feature_stats.utils import create_pretty_table
 from chester.model_analyzer.model_analysis import AnalyzeMessages
 from chester.model_training.data_preparation import CVData
 from chester.post_model_analysis.post_regression import VisualizeRegressionResults
@@ -22,6 +23,8 @@ class PostModelAnalysis:
         # retrain the model
         self.model.retrain(self.X_train, self.y_train)
         self.predict_test = self.model.predict(self.X_test)
+        from chester.util import ReportCollector, REPORT_PATH
+        self.rc = ReportCollector(REPORT_PATH)
 
     def plot_feature_importance(self, X_train: pd.DataFrame, top_feat=30):
         feature_importance = self.model.model.feature_importances_
@@ -35,6 +38,15 @@ class PostModelAnalysis:
         df.sort_values(by='feature_importance', ascending=False, inplace=True)
         plt.figure(figsize=(15, 13))
         plt.title(f'Feature Importance (top {top_feat} features)')
+
+        feature_importance = {}
+        # Iterate over the rows of the DataFrame and add each feature and its importance to the dictionary
+        for i, row in df[0:100].iterrows():
+            feature = row['feature_names']
+            importance = int(round(row['feature_importance']))
+            feature_importance[feature] = importance
+        self.rc.save_object(feature_importance,
+                            text="Top 100 Feature importance (in %, 100 = the most important one):")
         sns.barplot(x='feature_importance', y='feature_names', data=df[0:top_feat])
         self.plot_wordcloud_importance(df=df)
         plt.show()
@@ -119,6 +131,8 @@ class PostModelAnalysis:
 
         y_pred = self.model.predict(X_test)
         cm = confusion_matrix(y_test, y_pred)
+        self.rc.save_object(cm, text="confusion matrix on the test set")
+
         sns.heatmap(cm, annot=True, cmap='Blues', fmt='g')
         plt.title('Confusion Matrix')
         plt.xlabel('Predicted')
@@ -200,11 +214,25 @@ class PostModelAnalysis:
         sys.stderr = open(os.devnull, 'w')
         try:
             from sklearn.model_selection import learning_curve
-            train_sizes, train_scores, test_scores = learning_curve(self.model.model, X, y, cv=5, scoring='accuracy')
+            metric_name = self.data_info.metrics_detector_val[0].lower()
+            train_sizes, train_scores, test_scores = learning_curve(self.model.model, X, y, cv=5, scoring=metric_name)
+
             train_scores_mean = np.mean(train_scores, axis=1)
             train_scores_std = np.std(train_scores, axis=1)
             test_scores_mean = np.mean(test_scores, axis=1)
             test_scores_std = np.std(test_scores, axis=1)
+
+            # create the pandas DataFrame
+            learning_curve_df = pd.DataFrame({
+                'train_sizes': train_sizes,
+                'train_scores_mean': train_scores_mean,
+                'train_scores_std': train_scores_std,
+                'test_scores_mean': test_scores_mean,
+                'test_scores_std': test_scores_std
+            })
+            self.rc.save_object(obj=create_pretty_table(learning_curve_df),
+                                text="Learning curve by training examples")
+
             if len(test_scores_std) == 0:
                 plt.close()
                 return None
@@ -231,9 +259,13 @@ class PostModelAnalysis:
 
     def coefficients(self) -> None:
         try:
-            coef = self.model.model.coef_[0]
+            coef = self.model.coef_[0]
+            abs_coef = np.abs(self.model.coef_[0])
+            top_100_coef_idx = np.argsort(abs_coef)[::-1][:100]
+            top_100_coef_values = [self.model.coef_[0][i] for i in top_100_coef_idx]
+            self.rc.save_object(top_100_coef_values, text="First 100 model coefficients: ")
+            feature_names = self.model.feature_names
             if len(coef) < 10:
-                feature_names = self.model.feature_names
                 plt.bar(np.arange(len(coef)), coef)
                 plt.xticks(np.arange(len(coef)), feature_names, rotation=90)
                 plt.title("Coefficients for logistic regression model")
@@ -246,6 +278,13 @@ class PostModelAnalysis:
                 print(AnalyzeMessages().coefficients_message())
             plt.show()
             plt.close()
+
+            coef_dict = {}
+            for i in range(len(feature_names)):
+                coef_dict[feature_names[i]] = abs(coef[i])
+            sorted_coef_dict = dict(sorted(coef_dict.items(), key=lambda x: x[1], reverse=True)[:100])
+            self.rc.save_object(obj=sorted_coef_dict,
+                                text="Top 100 feature with highest abs(coef): ")
         except:
             plt.close()
             return None

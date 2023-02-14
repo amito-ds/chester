@@ -4,6 +4,8 @@ from nltk.corpus import wordnet
 from nltk.stem import PorterStemmer, SnowballStemmer, LancasterStemmer
 from nltk.stem import WordNetLemmatizer
 
+from chester.util import ReportCollector, REPORT_PATH
+
 
 def get_stemmer(name=None):
     if name == "porter":
@@ -136,8 +138,10 @@ class TextPreprocessor:
             report_str += "Tokenizing text, "
         if report_str:
             report_str = report_str[:-2]
-            print(
-                f"The following preprocessing steps will be applied to the column '{self.text_column}': {report_str}.")
+            title_to_print = f"The following preprocessing steps will be applied to the column '{self.text_column}': {report_str}."
+            print(title_to_print)
+            rc = ReportCollector(REPORT_PATH)
+            rc.save_text(title_to_print)
         else:
             print("No preprocessing steps selected.")
 

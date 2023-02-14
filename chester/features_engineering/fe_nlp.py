@@ -4,6 +4,7 @@ from sklearn.model_selection import train_test_split
 from chester.features_engineering.bag_of_words import get_bow_embedding
 from chester.features_engineering.corex import get_corex_embedding
 from chester.features_engineering.tfidf import get_tfidf_embedding
+from chester.util import ReportCollector, REPORT_PATH
 
 
 def get_embeddings(training_data: pd.DataFrame,
@@ -14,6 +15,8 @@ def get_embeddings(training_data: pd.DataFrame,
                    corex=True, corex_dim=50, tfidf=True,
                    tfidf_dim=100, bow=True, bow_dim=100,
                    ngram_range=(1, 1)):
+    rc = ReportCollector(REPORT_PATH)
+    rc.save_text("Extracting embedding")
     if split_data:
         if not test_data:
             training_data, test_data = train_test_split(training_data, test_size=split_prop,
@@ -33,7 +36,10 @@ def get_embeddings(training_data: pd.DataFrame,
     i = 0
     # Extract Corex topic model embeddings if requested
     if corex:
-        print(f"{order_list[i]}, Extracting Corex topic model embeddings with dimension {corex_dim}")
+        title_to_print = f"{order_list[i]}, Extracting Corex topic model embeddings with dimension {corex_dim}"
+        print(title_to_print)
+        rc.save_text(title_to_print)
+
         corex_embedding, corex_test_embedding = get_corex_embedding(training_data=training_data, test_data=test_data,
                                                                     ngram_range=ngram_range,
                                                                     n_topics=corex_dim, text_column=text_column)
@@ -41,7 +47,9 @@ def get_embeddings(training_data: pd.DataFrame,
 
     # Extract TF-IDF embeddings if requested
     if tfidf:
-        print(f"{order_list[i]}, Extracting TF-IDF embeddings with dimension {tfidf_dim}")
+        title_to_print = f"{order_list[i]}, Extracting TF-IDF embeddings with dimension {tfidf_dim}"
+        print(title_to_print)
+        rc.save_text(title_to_print)
         tfidf_embedding, tfidf_test_embedding, _ = get_tfidf_embedding(training_data, test_df=test_data,
                                                                        ngram_range=ngram_range,
                                                                        embedding_size=tfidf_dim,
@@ -50,7 +58,9 @@ def get_embeddings(training_data: pd.DataFrame,
 
     # Extract bag-of-words embeddings if requested
     if bow:
-        print(f"{order_list[i]}, Extracting bag-of-words embeddings with dimension {bow_dim}")
+        title_to_print = f"{order_list[i]}, Extracting bag-of-words embeddings with dimension {bow_dim}"
+        print(title_to_print)
+        rc.save_text(title_to_print)
         bow_embedding, bow_test_embedding, _ = get_bow_embedding(training_data, test_data=test_data,
                                                                  ngram_range=ngram_range,
                                                                  embedding_size=bow_dim,
@@ -62,7 +72,10 @@ def get_embeddings(training_data: pd.DataFrame,
     test_embeddings = pd.concat(
         [corex_test_embedding, tfidf_test_embedding, ner_bow_test_embedding, bow_test_embedding], axis=1)
 
-    # # adding the label to train and test embedding
+    title_to_print = f"Lastly, All embeddings have been concatenated"
+    print(title_to_print)
+    rc.save_text(title_to_print)
+    # adding the label to train and test embedding
     try:
         training_data.reset_index(drop=True, inplace=True)
         embeddings.reset_index(drop=True, inplace=True)
@@ -71,7 +84,6 @@ def get_embeddings(training_data: pd.DataFrame,
         test_data.reset_index(drop=True, inplace=True)
         test_embeddings.reset_index(drop=True, inplace=True)
         test_embeddings = pd.concat([test_embeddings, test_data[target_column]], axis=1)
-        print(f"Lastly, All embeddings have been concatenated")
     except:
         pass
     return embeddings, test_embeddings

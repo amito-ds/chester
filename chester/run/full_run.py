@@ -1,5 +1,6 @@
 import warnings
 
+from chester.model_training.models.chester_models.best_logistic_regression import LogisticRegressionModel
 from matplotlib import pyplot as plt
 
 from chester.cleaning.cleaner_handler import CleanerHandler
@@ -17,6 +18,7 @@ from chester.pre_model_analysis.target import TargetPreModelAnalysis
 from chester.preprocessing.preprocessor_handler import PreprocessHandler
 from chester.run.chapter_titles import chapter_title
 from chester.run.user_classes import Data, TextHandler, FeatureStats, ModelRun, TextFeatureSpec, FeatureTypes
+from chester.util import REPORT_PATH, ReportCollector
 from chester.zero_break.problem_specification import DataInfo
 
 warnings.filterwarnings("ignore", category=UserWarning, module="lightgbm")
@@ -77,6 +79,11 @@ def run_madcat(
     story += "The maximum column width for stats display is set to {}.\n".format(max_stats_col_width)
     print(story)
 
+    # reset the file
+    rc = ReportCollector(REPORT_PATH)
+    with open(REPORT_PATH, 'w') as f:
+        pass
+
     run_metadata_collector = {}
 
     # meta learn
@@ -91,6 +98,9 @@ def run_madcat(
     print(chapter_title("meta learn"))
     print(data_info)
     run_metadata_collector["data info"] = data_info
+
+    rc.save_text(text="The report shows run of an ml model or analysis or both")
+    rc.save_object(obj=data_info, text="Data information:")
     ####################################################
     # Text handling
     # cleaning
@@ -127,6 +137,7 @@ def run_madcat(
 
     # Feat extract
     print(chapter_title('feature engineering'))
+    rc.save_text(text="features engineering process for the data:")
     if text_feature_extraction is not None:
         feat_hand = FeaturesHandler(data_info=data_info, text_feature_extraction=text_feature_extraction)
     else:
@@ -141,6 +152,8 @@ def run_madcat(
     # Feat Stats
     data_info_num_stats = None
     if is_feature_stats:
+        rc.save_text(
+            text="features statistics for the data. Analyzed by groups (text, numeric, categorical) if exists:")
         print(chapter_title('feature statistics'))
         data_info_num_stats = DataInfo(data=final_df, target=target_column)
         data_info_num_stats.calculate()
@@ -162,9 +175,13 @@ def run_madcat(
 
         max_stats_col_width = max_stats_col_width or 30
         if len(num_cols) > 0:
-            print("Numerical Feature statistics")
+            title = "\nNumerical Feature statistics:"
+            print(title)
+            rc.save_text(title)
             NumericStats(data_info_num_stats, max_print=max_stats_col_width).run(plot=plot_stats)
-        print("Categorical Feature statistics")
+        title = "\nCategorical Feature statistics:"
+        print(title)
+        rc.save_text(title)
         CategoricalStats(data_info, max_print=max_stats_col_width).run(plot=plot_stats)
         if len(text_cols) > 0:
             print("Text Feature statistics")
@@ -178,6 +195,7 @@ def run_madcat(
 
     # Pre model
     if is_pre_model:
+        rc.save_text("** model pre analysis report:")
         print(chapter_title('model pre analysis'))
         # label stats
         TargetPreModelAnalysis(data_info).run(plot)
@@ -193,6 +211,7 @@ def run_madcat(
     # model
     if is_model_training:
         print(chapter_title("model training"))
+        rc.save_text("Training models and choosing the best one")
         # encode if needed
         if data_info.problem_type_val in ["Binary classification", "Multiclass classification"]:
             # print("Encoding target")
@@ -219,13 +238,14 @@ def run_madcat(
 
         run_metadata_collector["data info"] = data_info
         run_metadata_collector["features data"] = final_df
-        run_metadata_collector["model"] = model
-        run_metadata_collector["parameters"] = model_results[1]
+        run_metadata_collector["model"] = model_results[1]
+        run_metadata_collector["parameters"] = params
         run_metadata_collector["model_results"] = model_results[0]
     ####################################################
 
     # post model
     if is_post_model and is_model_training:
+        rc.save_text("\nPost model analysis - analyzing results of the chosen model: ")
         print(chapter_title('post model analysis'))
         post_model_analysis = PostModelAnalysis(cv_data, data_info, model=model_results[1])
         run_metadata_collector["post_model_analysis"] = post_model_analysis
@@ -238,6 +258,7 @@ def run_madcat(
 
     #  model weaknesses
     if is_model_weaknesses and is_model_training:
+        rc.save_text("Trying to find weaknesses in the model by training models on the error:")
         print(chapter_title('model weaknesses'))
         model_weaknesses = ModelWeaknesses(cv_data, data_info, model=model_results[1])
         run_metadata_collector["model_weaknesses"] = model_weaknesses

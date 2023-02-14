@@ -8,6 +8,8 @@ from corextopic import corextopic as ct
 from sklearn.feature_extraction.text import CountVectorizer
 from wordcloud import WordCloud
 
+from chester.util import ReportCollector, REPORT_PATH
+
 
 def plot_corex_wordcloud(df, top_words=20, n_topics=10, plot=True, text_column='text'):
     top_words_list = get_top_words(df, top_words, n_topics, text_column=text_column)
@@ -45,6 +47,7 @@ def get_top_words(df: pd.DataFrame,
                   max_features=1000,
                   text_column: str = 'text',
                   ngram_range=(1, 3)):
+    rc = ReportCollector(REPORT_PATH)
     # Preprocess data
     vectorizer = CountVectorizer(stop_words='english',
                                  max_features=max_features,
@@ -65,13 +68,16 @@ def get_top_words(df: pd.DataFrame,
         return []
 
     top_words_list = []
+    rc.save_text("\nCorex topic analysis:")
     for i, topic in enumerate(topics):
         if len(topic) == 0:
             break
         topic_words, weights, _ = zip(*topic)
         num_words = min(top_words, len(topic_words))  # Use smaller of n and num words in topic
         top_words_list += [(i, topic_words[j], weights[j]) for j in range(num_words)]
-        print('\tTopic {}: '.format(i + 1) + ', '.join(topic_words))
+        title = '\tTopic {}: '.format(i + 1) + ', '.join(topic_words)
+        print(title)
+        rc.save_text(text=title)
     print("\n")
 
     return top_words_list

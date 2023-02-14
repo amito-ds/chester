@@ -3,8 +3,11 @@ from collections import Counter
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+from chester.util import ReportCollector, REPORT_PATH
+
 
 def most_common_words(data, common_words=10, text_column='text'):
+    rc = ReportCollector(REPORT_PATH)
     # create a Counter object to store the word counts
     word_counts = Counter()
 
@@ -22,6 +25,7 @@ def most_common_words(data, common_words=10, text_column='text'):
     # create a barplot using seaborn
     plt.figure(figsize=(11, 11))
     plt.rcParams.update({'font.size': 25})
+    rc.save_text(str(sorted_word_counts[:100]))  # save top 100 common words
     sns.barplot(x=[t[0] for t in sorted_word_counts[:common_words]],
                 y=[t[1] for t in sorted_word_counts[:common_words]])
     plt.xlabel('Word')

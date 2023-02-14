@@ -27,7 +27,7 @@ class BestModel(BaseModel):
                     data_info=self.data_info,
                     cv_data=self.cv_data,
                     num_models_to_compare=self.num_models_to_compare,
-                    best_practice_prop=self.best_practice_prop
+                    best_practice_prob=self.best_practice_prop
                 ).get_best_model()
                 models.append((base_res, model))
             elif 'catboost' in model_type:

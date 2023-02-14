@@ -5,7 +5,7 @@ with open('requirements.txt') as f:
 
 setuptools.setup(
     name="madcat",
-    version="0.28",
+    version="0.29",
     author="Amit Osi",
     author_email="amitosi6666@gmail.com",
     description=open('README.md').read(),

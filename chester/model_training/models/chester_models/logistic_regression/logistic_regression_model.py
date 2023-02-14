@@ -1,3 +1,4 @@
+import numpy as np
 from scipy.optimize._linesearch import LineSearchWarning
 from sklearn.compose import ColumnTransformer
 from sklearn.exceptions import ConvergenceWarning
@@ -18,6 +19,7 @@ class LogisticRegressionModel:
         self.numeric_features = self.data_info.feature_types_val["numeric"]
         self.transformer = None
         self.pipeline = None
+        self.feature_names = None
 
     def fit(self, X, y):
         import warnings
@@ -60,3 +62,6 @@ class LogisticRegressionModel:
 
     def get_params(self):
         return self.parameters
+
+    def coef_(self):
+        return self.model.coef_

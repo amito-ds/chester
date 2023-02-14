@@ -1,5 +1,6 @@
 from chester.cleaning import cleaning_func as cln
 from chester.run.chapter_titles import chapter_title
+from chester.util import ReportCollector, REPORT_PATH
 
 from chester.zero_break.problem_specification import DataInfo
 
@@ -29,6 +30,9 @@ class CleanerHandler:
                 text_cleaner = curr_text_cleaner
             else:
                 text_cleaner = cln.TextCleaner(self.data_info.data, text_column=col)
-            print(f"Cleaning and preprocessing {col} column")
+            title_to_print = f"Cleaning and preprocessing {col} column"
+            print(title_to_print)
+            rc = ReportCollector(REPORT_PATH)
+            rc.save_text(title_to_print)
             text_cleaner.generate_report()
             self.data_info.data = cln.clean_text_df(text_cleaner)

@@ -6,6 +6,8 @@ from nltk.tokenize import sent_tokenize
 from sklearn.decomposition import TruncatedSVD
 from sklearn.feature_extraction.text import TfidfVectorizer
 
+from chester.util import ReportCollector, REPORT_PATH
+
 
 def extract_key_sentences_lsa(text, k=10):
     """
@@ -31,7 +33,8 @@ def extract_key_sentences_lsa(text, k=10):
 
     # sort the sentences by importance
     sentence_scores_sorted = sentence_scores.argsort()[::-1]
-    return [sentences[i] for i in sentence_scores_sorted]
+    return_list = [sentences[i] for i in sentence_scores_sorted]
+    return return_list
 
 
 def key_sentences(df, text_column='text', common_sentences=10):
@@ -59,8 +62,9 @@ def extract_key_sentences(df: pd.DataFrame, text_column='text', algorithm='LSA',
     :param n_sentences: the number of sentences to extract (default: 10)
     :return: list of k most important sentences
     """
-    full_text = '. '.join(df[text_column])
+    rc = ReportCollector(REPORT_PATH)
 
+    full_text = '. '.join(df[text_column])
     if algorithm == 'LSA':
         sentences = list(set(extract_key_sentences_lsa(full_text, n_sentences)))[0:n_sentences]
     elif algorithm == 'common_sentences':
@@ -71,7 +75,9 @@ def extract_key_sentences(df: pd.DataFrame, text_column='text', algorithm='LSA',
     else:
         raise ValueError(f'Invalid algorithm: {algorithm}')
 
-    return f'\tKey sentences out of based on {algorithm} algorithm: {sentences} \n'
+    title = f'\tKey sentences out of based on {algorithm} algorithm: {sentences} \n'
+    rc.save_text(title)
+    return title
 
 
 def extract_first_k_words(text, k):

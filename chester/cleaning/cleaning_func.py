@@ -5,7 +5,7 @@ from typing import List
 
 import pandas as pd
 
-from chester.util import get_stopwords
+from chester.util import get_stopwords, ReportCollector, REPORT_PATH
 
 
 def remove_punctuation(text: str) -> str:
@@ -174,6 +174,7 @@ class TextCleaner:
         self.remove_html_tags_flag = remove_html_tags_flag
 
     def generate_report(self):
+        rc = ReportCollector(REPORT_PATH)
         report_str = ""
         if self.remove_punctuation_flag:
             report_str += "Removing punctuation, "
@@ -198,7 +199,9 @@ class TextCleaner:
             report_str += "Removing html tags, "
         if report_str:
             report_str = report_str[:-2]
-            print(f"The following cleaning steps will be applied to clean column '{self.text_column}': {report_str}.")
+            title_to_print = f"The following cleaning steps will be applied to clean column '{self.text_column}': {report_str}."
+            print(title_to_print)
+            rc.save_text(title_to_print)
         else:
             print("No cleaning steps selected.")
 

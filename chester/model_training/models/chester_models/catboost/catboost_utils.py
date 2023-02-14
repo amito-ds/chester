@@ -1,8 +1,10 @@
 from typing import List
 
 import numpy as np
+from prettytable import PrettyTable
 from sklearn.exceptions import UndefinedMetricWarning
 
+from chester.feature_stats.utils import create_pretty_table
 from chester.model_training.data_preparation import CVData
 from chester.model_training.data_preparation import Parameter
 from chester.model_training.models.chester_models.base_model_utils import is_metric_higher_is_better
@@ -138,6 +140,9 @@ def visualize_performance(df, with_baseline=True):
 
 
 def compare_best_models(results, plot_results=True):
+    from chester.util import ReportCollector, REPORT_PATH
+    rc = ReportCollector(REPORT_PATH)
+
     all_results = []
     all_results_with_models = []
     for res in results:
@@ -146,11 +151,16 @@ def compare_best_models(results, plot_results=True):
         result_organized['model'] = get_model_name(model)
         all_results.append(result_organized)
         all_results_with_models.append((result_organized, model))
+
+    metrics_results = calculate_average(pd.concat(all_results))
     if plot_results:
         print("Model results - comparing the best out of each type")
-        visualize_performance(calculate_average(pd.concat(all_results)), with_baseline=True)
+        visualize_performance(metrics_results, with_baseline=True)
         print("Model results - comparing the best out of each type, excluding baseline model")
-        visualize_performance(calculate_average(pd.concat(all_results)), with_baseline=False)
+        visualize_performance(metrics_results, with_baseline=False)
+
+    rc.save_object(create_pretty_table(metrics_results),
+                   text="Model results compared - showing the best out of each type after CV & HP tuning: ")
 
     metric_name = [col for col in all_results[0].columns if col not in ['type', 'fold', 'model']][0]
     sort_ascending = is_metric_higher_is_better(metric_name)

@@ -5,6 +5,7 @@ from chester.text_stats_analysis.data_quality import analyze_text_stats, TextAna
 from chester.text_stats_analysis.key_sentences import extract_key_sentences
 from chester.text_stats_analysis.sentiment import analyze_sentiment, report_sentiment_stats, plot_sentiment_scores
 from chester.text_stats_analysis.word_cloud import create_word_cloud
+from chester.util import ReportCollector, REPORT_PATH
 
 data_quality_message = "Before analyzing text, ensure data is clean and of good quality.\n" \
                        "Report provides key stats on data quality, incl. missing data,\n" \
@@ -100,6 +101,7 @@ def analyze_text(df: pd.DataFrame,
     :param n_sentences: number of sentences to return
     """
 
+    rc = ReportCollector(REPORT_PATH)
     is_clean_col_exists = True if f"clean_{text_column}" in df.columns else False
     if is_clean_col_exists:
         modified_df = df.drop(columns=[text_column], axis=1). \
@@ -108,11 +110,13 @@ def analyze_text(df: pd.DataFrame,
     print_analyze_message()
     if data_quality:
         print(data_quality_message)
+        rc.save_text("Data quality stats:")
         if is_clean_col_exists:
             print(analyze_text_stats(modified_df, text_column), "\n")
         else:
             print(analyze_text_stats(df, text_column), "\n")
     if common_words:
+        rc.save_text(common_words_message)
         print(common_words_message)
 
         if is_clean_col_exists:

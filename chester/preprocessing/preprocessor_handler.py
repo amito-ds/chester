@@ -1,4 +1,5 @@
 from chester.preprocessing import preprocessing_func as pp
+from chester.util import ReportCollector, REPORT_PATH
 from chester.zero_break.problem_specification import DataInfo
 
 
@@ -25,6 +26,9 @@ class PreprocessHandler:
                 text_reprocess = curr_text_pre_processor
             else:
                 text_reprocess = pp.TextPreprocessor(self.data_info.data, text_column=col)
-            print(f"{col} text preprocessing")
+            title_to_print = f"{col} column preprocessing"
+            print(title_to_print)
+            rc = ReportCollector(REPORT_PATH)
+            rc.save_text(title_to_print)
             text_reprocess.generate_report()
             self.data_info.data = pp.preprocess_text_df(text_reprocess)

@@ -5,6 +5,8 @@ import string
 
 import nltk
 
+from chester.util import ReportCollector, REPORT_PATH
+
 
 def isPunct(word):
     return len(word) == 1 and word in string.punctuation
@@ -66,6 +68,8 @@ class RakeKeywordExtractor:
         return phrase_scores
 
     def extract(self, text, max_words=7, top_words=10):
+        rc = ReportCollector(REPORT_PATH)
+
         sentences = nltk.sent_tokenize(text)
         phrase_list = self._generate_candidate_keywords(sentences)
         word_scores = self._calculate_word_scores(phrase_list)
@@ -73,7 +77,9 @@ class RakeKeywordExtractor:
             phrase_list, word_scores)
         sorted_phrase_scores = sorted(phrase_scores.items(), key=operator.itemgetter(1), reverse=True)
         n_phrases = len(sorted_phrase_scores)
-        return truncate_and_limit_keywords(sorted_phrase_scores, max_words, top_words)
+        return_list = truncate_and_limit_keywords(sorted_phrase_scores, max_words, top_words)
+        rc.save_object(obj=return_list, text="popular terms extraction:")
+        return return_list
 
 
 def truncate_and_limit_keywords(keywords_list, max_words, top_words):

@@ -3,6 +3,8 @@ import nltk
 import pandas as pd
 import seaborn as sns
 
+from chester.util import ReportCollector, REPORT_PATH
+
 
 def calculate_text_metrics(text):
     metrics = {'text_length': len(text), 'num_sentences': len(nltk.sent_tokenize(text))}
@@ -35,6 +37,7 @@ def calculate_text_column_metrics(df, text_column='text'):
 
 
 def create_report(df, num_unique_words):
+    rc = ReportCollector(REPORT_PATH)
     report = ""
     report += f"Number of rows with missing data: {df['num_missing'].sum()}\n"
     report += f"Number of unique words: {num_unique_words}\n"
@@ -46,6 +49,7 @@ def create_report(df, num_unique_words):
     report += f"Median number of sentences per text: {df['num_sentences'].median():.2f}\n"
     report += f"Average length of text: {df['text_length'].mean():.2f}\n"
     report += f"Median length of text: {df['text_length'].median():.2f}\n"
+    rc.save_text(text=report)
     return report
 
 

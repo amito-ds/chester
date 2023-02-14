@@ -6,8 +6,9 @@ from matplotlib import pyplot as plt
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import OneHotEncoder
-from sklearn.tree import DecisionTreeRegressor
+from sklearn.tree import DecisionTreeRegressor, export_text
 
+from chester.feature_stats.utils import create_pretty_table
 from chester.model_training.data_preparation import CVData
 from chester.zero_break.problem_specification import DataInfo
 
@@ -27,6 +28,8 @@ class ModelWeaknesses:
         self.predict_test = self.model.predict(self.X_test)
         self.predict_test = self.handle_predictions()
         self.error = self.calculate_error()
+        from chester.util import ReportCollector, REPORT_PATH
+        self.rc = ReportCollector(REPORT_PATH)
 
     def handle_predictions(self):
         y = self.predict_test
@@ -80,7 +83,6 @@ class ModelWeaknesses:
         model.fit(X_test_transformed, self.error)
 
         # Get the feature names of the numeric features
-        # Get the feature names of the numeric features
         numeric_feature_names = self.data_info.feature_types_val["numeric"]
         # Get the feature names of the categorical features
         categorical_transformer.fit(self.X_test[self.data_info.feature_types_val["categorical"]])
@@ -99,14 +101,20 @@ class ModelWeaknesses:
                        rounded=True,
                        filled=True,
                        )
+        # Get the tree structure as text
+        self.rc.save_object(obj=export_text(model, feature_names=feature_names),
+                            text="Print of tree to look for potential segments with high error (use with caution)")
         plt.suptitle("Decision Tree Trained on Model Error")
 
     def plot_catboost_error_regressor(self, iterations=100, depth=3, learning_rate=0.1):
         model = CatBoostRegressor(iterations=iterations, depth=depth, learning_rate=learning_rate)
         model.fit(self.X_test, self.error, verbose=False)
         plt.figure(figsize=(15, 15))
-        feature_imp = pd.DataFrame({'Feature': self.X_test.columns, 'Importance': model.feature_importances_})
-        feature_imp = feature_imp.sort_values(by='Importance', ascending=False)[0:30]
+        feature_importances = np.round(model.feature_importances_, decimals=0)
+        feature_imp = pd.DataFrame({'Feature': self.X_test.columns, 'Importance': feature_importances})
+        feature_imp = feature_imp.sort_values(by='Importance', ascending=False)
+        self.rc.save_object(create_pretty_table(feature_imp[0:50]), text="Most important features by catboost:")
+        feature_imp = feature_imp[0:30]
         sns.barplot(x=feature_imp['Importance'], y=feature_imp['Feature'])
         plt.title('CatBoost Feature Importance to Detect Segments with High Error')
         plt.show()
@@ -119,3 +127,6 @@ class ModelWeaknesses:
             return None
         self.plot_catboost_error_regressor()
         self.plot_decision_tree_error_regressor()
+
+
+

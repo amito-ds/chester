@@ -142,11 +142,11 @@ class DataInfo:
         if problem_type == "No target variable":
             return None
         elif problem_type == "Binary regression":
-            return ["MSE", "MAE", "MAPE", "ROC"]
+            return ["ROC", "MSE", "MAE", "MAPE"]
         elif problem_type == "Binary classification":
             return ["Accuracy", "Precision", "Recall", "F1"]
         elif problem_type == "Regression":
-            return ["MSE", "MAE", "MAPE"]
+            return ["R2", "MSE", "MAE", "MAPE"]
         elif problem_type == "Multiclass classification":
             return ["Accuracy", "Precision", "Recall", "F1"]
 
@@ -181,6 +181,6 @@ class DataInfo:
         if self.target:
             report += "Loss Function: " + self.loss_detector_val + "\n"
         report += "Evaluation Metrics: " + str(self.metrics_detector_val) + "\n"
-        report += "Model Selection: " + str(self.model_selection_val) + "\n"
+        report += "Optional Models: " + str(self.model_selection_val) + "\n"
         # report += "Label Transformation: " + str(self.label_transformation_val)
         return report

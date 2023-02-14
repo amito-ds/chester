@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 
+from chester.feature_stats.utils import create_pretty_table
 from chester.model_monitor import calculate_scores_utils
 from chester.model_training.data_preparation import CVData
 from chester.model_training.models.chester_models.catboost.catboost_utils import calculate_catboost_metrics_scores
@@ -30,6 +31,8 @@ class ModelBootstrap:
         self.model.retrain(self.X_train, self.y_train)
         self.predict_test = self.model.predict(self.X_test)
         self.metrics = self.get_metrics_functions()
+        from chester.util import ReportCollector, REPORT_PATH
+        self.rc = ReportCollector(REPORT_PATH)
 
     def get_metrics_functions(self):
         metric_functions = []
@@ -91,6 +94,7 @@ class ModelBootstrap:
         print(boostrap_message)
         import seaborn as sns
         metrics = pd.DataFrame(self.bootstrap_metrics())
+        self.rc.save_object(create_pretty_table(metrics.sample(20)), "\nBoostrap metrics, sample 20 results:")
         for metric_name in metrics.columns:
             fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
             sns.violinplot(x=metrics[metric_name], ax=ax1)

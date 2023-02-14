@@ -130,7 +130,11 @@ class NumericPreModelAnalysis:
         return [x[0] for x in sorted_list]
 
     def analyze_pvalue(self, is_plot=True, top_features=10):
+        from chester.util import ReportCollector, REPORT_PATH
+        rc = ReportCollector(REPORT_PATH)
         self.sort_by_pvalue()
+        rc.save_object(self.cols_sorted_with_pvalue[0:50],
+                       text="top 50 with lowest partial pvalue for numerical feat, based on chi square:")
         self.plot_wordcloud_pvalues(self.cols_sorted_with_pvalue)
         if is_plot:
             if self.n_cols > 50:

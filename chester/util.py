@@ -122,3 +122,45 @@ def remove_numbers(text):
     """Remove numbers from the given text."""
     text = ''.join([c for c in text if not c.isdigit()])
     return text
+
+
+REPORT_PATH = "report.txt"
+
+
+class ReportCollector:
+    def __init__(self, report_path=REPORT_PATH):
+        self.REPORT_PATH = report_path
+
+    def save_text(self, text):
+        text = str(text)
+        with open(self.REPORT_PATH, 'r') as f:
+            contents = f.read()
+        with open(self.REPORT_PATH, 'w') as f:
+            f.write(contents)
+            f.write(text + '\n')
+
+    def save_pandas(self, df, text):
+        text = str(text)
+        with open(self.REPORT_PATH, 'r') as f:
+            contents = f.read()
+        with open(self.REPORT_PATH, 'w') as f:
+            f.write(contents)
+            f.write(text + '\n')
+            f.write(df.to_string() + '\n\n')
+
+    def save_object(self, obj, text):
+        text = str(text)
+        with open(self.REPORT_PATH, 'r') as f:
+            contents = f.read()
+        with open(self.REPORT_PATH, 'w') as f:
+            f.write(contents)
+            f.write(text + '\n')
+            f.write(str(obj) + '\n\n')
+
+
+class RedirectedStdout:
+    def __init__(self, file):
+        self.file = file
+
+    def write(self, message):
+        self.file.write(message)
