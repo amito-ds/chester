@@ -40,6 +40,17 @@ class TextHandler:
         self.text_pre_process = text_pre_process
 
 
+class TimeSeriesHandler:
+    def __init__(self, time_frequency=None, n_series_features=3, feature_types=None, id_cols=None):
+        if feature_types is None:
+            self.feature_types = ['static', 'freq', 'count', 'lag', 'cyclic']
+        else:
+            self.feature_types = feature_types
+        self.time_frequency = time_frequency
+        self.n_series_features = n_series_features
+        self.id_cols = id_cols
+
+
 class FeatureStats:
     def __init__(self, plot=True):
         self.plot = plot

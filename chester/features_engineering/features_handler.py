@@ -1,15 +1,19 @@
 import pandas as pd
 
 from chester.features_engineering.feature_handler import FeatureHandler
-from chester.run.user_classes import TextFeatureSpec
+from chester.run.user_classes import TextFeatureSpec, TimeSeriesHandler
 from chester.zero_break.problem_specification import DataInfo
 
 
 class FeaturesHandler:
-    def __init__(self, data_info: DataInfo, text_feature_extraction: TextFeatureSpec = None):
+    def __init__(self,
+                 data_info: DataInfo,
+                 time_series_handler: TimeSeriesHandler = None,
+                 text_feature_extraction: TextFeatureSpec = None):
         self.data = data_info.data
         self.target = data_info.target
         self.text_feature_extraction = text_feature_extraction
+        self.time_series_handler = time_series_handler
         self.problem_type_val = data_info.problem_type_val
         self.feature_types_val = data_info.feature_types_val
         self.loss_detector_val = data_info.loss_detector_val
@@ -32,7 +36,8 @@ class FeaturesHandler:
                 column=data[col],
                 feature_type=feature_type,
                 col_name=col,
-                text_feature_extraction=self.text_feature_extraction)
+                text_feature_extraction=self.text_feature_extraction,
+            )
             feature_handlers.append(feature_handler)
         return feature_handlers
 
@@ -60,6 +65,9 @@ class FeaturesHandler:
                 elif feature_handler.feature_type == 'categorical':
                     feat_names.append(names)
                     feature_types['categorical'].extend(names)
+                elif feature_handler.feature_type == 'time':
+                    feat_names.append(names)
+                    feature_types['time'].extend(names)
             except:
                 pass
         final_df = pd.DataFrame()

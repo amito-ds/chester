@@ -17,7 +17,8 @@ from chester.pre_model_analysis.numerics import NumericPreModelAnalysis
 from chester.pre_model_analysis.target import TargetPreModelAnalysis
 from chester.preprocessing.preprocessor_handler import PreprocessHandler
 from chester.run.chapter_titles import chapter_title
-from chester.run.user_classes import Data, TextHandler, FeatureStats, ModelRun, TextFeatureSpec, FeatureTypes
+from chester.run.user_classes import Data, TextHandler, FeatureStats, ModelRun, TextFeatureSpec, FeatureTypes, \
+    TimeSeriesHandler
 from chester.util import REPORT_PATH, ReportCollector
 from chester.zero_break.problem_specification import DataInfo
 
@@ -35,6 +36,7 @@ def run_madcat(
         data_spec: Data,
         feature_types: dict = None,
         text_handler: TextHandler = None, is_text_handler=True,
+        time_series_handler: TimeSeriesHandler = None, is_time_series_handler=True,
         feature_stats: FeatureStats = None, is_feature_stats=True,
         text_feature_extraction: TextFeatureSpec = None,
         is_pre_model=True,
@@ -83,7 +85,6 @@ def run_madcat(
     rc = ReportCollector(REPORT_PATH)
     with open(REPORT_PATH, 'w') as f:
         pass
-
     run_metadata_collector = {}
 
     # meta learn
@@ -99,7 +100,7 @@ def run_madcat(
     print(data_info)
     run_metadata_collector["data info"] = data_info
 
-    rc.save_text(text="The report shows run of an ml model or analysis or both")
+    rc.save_text(text="Full report to analyze my data:\n")
     rc.save_object(obj=data_info, text="Data information:")
     ####################################################
     # Text handling
@@ -135,12 +136,19 @@ def run_madcat(
         run_metadata_collector["data info"] = data_info
     ####################################################
 
+    ####################################################
+    # Time series handling
+    # is_time_series_handler
+    ####################################################
+
     # Feat extract
     print(chapter_title('feature engineering'))
     rc.save_text(text="features engineering process for the data:")
+
+    feat_hand = FeaturesHandler(data_info=data_info)
     if text_feature_extraction is not None:
-        feat_hand = FeaturesHandler(data_info=data_info, text_feature_extraction=text_feature_extraction)
-    else:
+        feat_hand.text_feature_extraction = text_feature_extraction
+    if time_series_handler is not None:
         feat_hand = FeaturesHandler(data_info=data_info)
     feature_types, final_df = feat_hand.transform()
     final_df[target_column] = data_info.data[data_info.target]

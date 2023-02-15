@@ -1,15 +1,21 @@
 import pandas as pd
 
 from chester.features_engineering.fe_nlp import get_embeddings
-from chester.run.user_classes import TextFeatureSpec
+from chester.features_engineering.time_series.ts_feature_extraction import TimeSeriesFeatureExtraction
+from chester.run.user_classes import TextFeatureSpec, TimeSeriesHandler
+from chester.zero_break.problem_specification import DataInfo
 
 
 class FeatureHandler:
     def __init__(self, column, col_name,
                  feature_type=None,
-                 text_feature_extraction: TextFeatureSpec = None):
+                 time_series_handler: TimeSeriesHandler = None,
+                 text_feature_extraction: TextFeatureSpec = None,
+                 data_info: DataInfo = None):
         self.column = column
         self.feature_type = feature_type
+        self.data_info = data_info
+        self.time_series_handler = time_series_handler
         self.col_name = col_name
         self.text_feature_extraction = text_feature_extraction
 
@@ -73,6 +79,13 @@ class FeatureHandler:
         new_col_name_dict = dict(zip(embedding.columns, new_col_name_list))
         embedding.rename(columns=new_col_name_dict, inplace=True)
         return embedding, embedding.columns
+
+    def handle_time_series(self):
+        cols, names = TimeSeriesFeatureExtraction(
+            self.time_series_handler,
+            self.data_info
+        ).run()
+        return cols, names
 
     def handle_feature(self):
         if self.feature_type == 'numeric':
