@@ -14,6 +14,7 @@ class TSStaticFeatures:
         self.time_series_handler = time_series_handler
         self.data_info = data_info
         self.df = self.data_info.data
+        self.df[self.col_name] = pd.to_datetime(self.df[self.col_name])  # conver to datetime
 
     def extract_minute(self):
         """

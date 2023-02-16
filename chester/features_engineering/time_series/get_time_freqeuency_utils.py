@@ -12,12 +12,13 @@ class TimeFrequencyDecider:
                  col_name,
                  time_series_handler: TimeSeriesHandler = None,
                  data_info: DataInfo = None):
-        self.date_col = col_name  # the name of the date col
+        self.date_col_name = col_name  # the name of the date col
         self.column = column
         self.time_series_handler = time_series_handler or TimeSeriesHandler()
         self.data_info = data_info
         self.df = self.data_info.data
         self.id_cols = self.time_series_handler.id_cols or []
+        self.df[self.date_col_name] = pd.to_datetime(self.df[self.date_col_name])  # convert to datetime
         self.time_between_events = None
         self.calculate_time_between_events()
 
@@ -26,11 +27,11 @@ class TimeFrequencyDecider:
         id_cols = self.id_cols
 
         if id_cols:
-            self.df = self.df.sort_values(by=id_cols + [self.date_col], ascending=True)
+            self.df = self.df.sort_values(by=id_cols + [self.date_col_name], ascending=True)
             groups = self.df.groupby(id_cols)
-            time_between_events = groups[self.date_col].diff().dt.total_seconds()
+            time_between_events = groups[self.date_col_name].diff().dt.total_seconds()
         else:
-            date_col = self.df[self.date_col]
+            date_col = self.df[self.date_col_name]
             date_col = date_col.sort_values(ascending=True)
             time_between_events = date_col.diff().dt.total_seconds()
 

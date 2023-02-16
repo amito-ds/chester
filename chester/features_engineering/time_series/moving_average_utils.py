@@ -70,6 +70,7 @@ class MovingMetric:
         period_back, calculation_types = self.lag_values
         self.collect_last_values()
         self.calculate_ts_metrics()
+        return self.df
 
 
 def min_fix(l):
@@ -95,15 +96,14 @@ def median_fix(l):
         return None
     return np.median(l)
 
-
-df = pd.read_csv("/Users/amitosi/PycharmProjects/chester/chester/data/day.csv")
-df.rename(columns={'cnt': 'target'}, inplace=True)
-dat_info = DataInfo(data=df, target='target')
-dat_info.calculate()
-# print(dat_info)
-
-# ts_handler = TimeSeriesHandler()
-ts_handler = TimeSeriesHandler(id_cols=['workingday'])
-ma = MovingMetric(column=df['dteday'], col_name='dteday', data_info=dat_info, time_series_handler=ts_handler)
-ma.run()
-print(ma.df.columns)
+# df = pd.read_csv("/Users/amitosi/PycharmProjects/chester/chester/data/day.csv")
+# df.rename(columns={'cnt': 'target'}, inplace=True)
+# dat_info = DataInfo(data=df, target='target')
+# dat_info.calculate()
+# # print(dat_info)
+#
+# # ts_handler = TimeSeriesHandler()
+# ts_handler = TimeSeriesHandler(id_cols=['workingday'])
+# ma = MovingMetric(column=df['dteday'], col_name='dteday', data_info=dat_info, time_series_handler=ts_handler)
+# ma.run()
+# print(ma.df.columns)
