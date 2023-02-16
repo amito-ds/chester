@@ -41,7 +41,13 @@ class TextHandler:
 
 
 class TimeSeriesHandler:
-    def __init__(self, time_frequency=None, n_series_features=3, feature_types=None, id_cols=None):
+    def __init__(self,
+                 time_frequency=None,
+                 n_series_features=3,
+                 feature_types=None,
+                 id_cols=None,
+                 lag_values=None  # Dict of (events back, min/max/avg)
+                 ):
         if feature_types is None:
             self.feature_types = ['static', 'freq', 'count', 'lag', 'cyclic']
         else:
@@ -49,6 +55,12 @@ class TimeSeriesHandler:
         self.time_frequency = time_frequency
         self.n_series_features = n_series_features
         self.id_cols = id_cols
+        if lag_values is None:
+            period_back = [1, 2, 3, 5, 7, 14, 21, 360, 1000]
+            calc_type = ['min', 'max', 'mean', 'median']
+            self.lag_values = period_back, calc_type
+        else:
+            self.lag_values = lag_values
 
 
 class FeatureStats:
