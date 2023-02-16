@@ -26,7 +26,6 @@ class CyclicFeatures:
 
     def calculate_cyclic_features(self):
         cols = self.extract_relevant_date_cols()
-        print("using cols", cols)
         out_cols = []
         for col in cols:
             # Calculate the sine and cosine of the date column

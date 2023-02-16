@@ -108,41 +108,41 @@ class TimeFrequencyDecider:
 
 # dates = ["2022-02-15 " + str(i).zfill(2) + ":00:00" for i in range(24)] * 1
 
-import random
-
-dates = []
-for _ in range(100):
-    # Choose a random hour, minute, and second
-    hour = random.randint(0, 23)
-    minute = random.randint(0, 59)
-    second = random.randint(0, 59)
-
-    # Construct a string in ISO format with the chosen time
-    date_str = f"2022-02-15 {hour:02d}:{minute:02d}:{second:02d}"
-
-    # Add the string to the list of dates
-    dates.append(date_str)
-
-dates = [date if random.random() > 0.1 else None for date in dates]
-# Create a DataFrame with the dates
-data = pd.DataFrame({
-    "date": pd.to_datetime(dates),
-    "value": 1  # The value is not important and can be flat
-})
-data = data.assign(ID=["A"] * (len(data) // 1) + ["A"][:len(data) % 1])
-
-# Create a DataInfo object with the sample DataFrame
-data_info = DataInfo(data=data, target="value")
-
-# Create a TimeSeriesHandler object with the date column
-decider = TimeFrequencyDecider(
-    column=data.date,
-    col_name="date",
-    time_series_handler=TimeSeriesHandler(id_cols=["ID"]),
-    data_info=data_info
-)
-
-df = decider.calculate_time_between_events()
-# print(df)
-# Print the resulting DataFrame with the time between events
-print(decider.run())
+# import random
+#
+# dates = []
+# for _ in range(100):
+#     # Choose a random hour, minute, and second
+#     hour = random.randint(0, 23)
+#     minute = random.randint(0, 59)
+#     second = random.randint(0, 59)
+#
+#     # Construct a string in ISO format with the chosen time
+#     date_str = f"2022-02-15 {hour:02d}:{minute:02d}:{second:02d}"
+#
+#     # Add the string to the list of dates
+#     dates.append(date_str)
+#
+# dates = [date if random.random() > 0.1 else None for date in dates]
+# # Create a DataFrame with the dates
+# data = pd.DataFrame({
+#     "date": pd.to_datetime(dates),
+#     "value": 1  # The value is not important and can be flat
+# })
+# data = data.assign(ID=["A"] * (len(data) // 1) + ["A"][:len(data) % 1])
+#
+# # Create a DataInfo object with the sample DataFrame
+# data_info = DataInfo(data=data, target="value")
+#
+# # Create a TimeSeriesHandler object with the date column
+# decider = TimeFrequencyDecider(
+#     column=data.date,
+#     col_name="date",
+#     time_series_handler=TimeSeriesHandler(id_cols=["ID"]),
+#     data_info=data_info
+# )
+#
+# df = decider.calculate_time_between_events()
+# # print(df)
+# # Print the resulting DataFrame with the time between events
+# print(decider.run())

@@ -10,6 +10,7 @@ class FeaturesHandler:
                  data_info: DataInfo,
                  time_series_handler: TimeSeriesHandler = None,
                  text_feature_extraction: TextFeatureSpec = None):
+        self.data_info = data_info
         self.data = data_info.data
         self.target = data_info.target
         self.text_feature_extraction = text_feature_extraction
@@ -37,6 +38,7 @@ class FeaturesHandler:
                 feature_type=feature_type,
                 col_name=col,
                 text_feature_extraction=self.text_feature_extraction,
+                data_info=self.data_info
             )
             feature_handlers.append(feature_handler)
         return feature_handlers
@@ -48,28 +50,25 @@ class FeaturesHandler:
         feat_values = []
         feat_names = []
         for feature_handler in feature_handlers:
-            try:
-                values, names = feature_handler.handle_feature()
-                feat_values.append(values)
-                if feature_handler.feature_type is None:
-                    pass
-                if feature_handler.feature_type == 'numeric':
-                    feature_types['numeric'].extend(names)
-                    feat_names.append(names)
-                elif feature_handler.feature_type == 'boolean':
-                    feature_types['numeric'].extend(names)
-                    feat_names.append(names)
-                elif feature_handler.feature_type == 'text':
-                    feature_types['numeric'].extend(names)
-                    feat_names.append(names)
-                elif feature_handler.feature_type == 'categorical':
-                    feat_names.append(names)
-                    feature_types['categorical'].extend(names)
-                elif feature_handler.feature_type == 'time':
-                    feat_names.append(names)
-                    feature_types['time'].extend(names)
-            except:
+            values, names = feature_handler.handle_feature()
+            # try:
+            feat_values.append(values)
+            if feature_handler.feature_type is None:
                 pass
+            if feature_handler.feature_type == 'numeric':
+                feature_types['numeric'].extend(names)
+                feat_names.append(names)
+            elif feature_handler.feature_type == 'boolean':
+                feature_types['numeric'].extend(names)
+                feat_names.append(names)
+            elif feature_handler.feature_type == 'text':
+                feature_types['numeric'].extend(names)
+                feat_names.append(names)
+            elif feature_handler.feature_type == 'categorical':
+                feat_names.append(names)
+                feature_types['categorical'].extend(names)
+        # except:
+        #     pass
         final_df = pd.DataFrame()
         for value in feat_values:
             if type(value) == pd.DataFrame:
@@ -77,4 +76,5 @@ class FeaturesHandler:
             elif type(value) == pd.Series:
                 value = value.to_frame().reset_index(drop=True)
                 final_df = pd.concat([final_df, value], axis=1)
+        print("WDUUU")
         return feature_types, final_df

@@ -151,6 +151,7 @@ def run_madcat(
     if time_series_handler is not None:
         feat_hand = FeaturesHandler(data_info=data_info)
     feature_types, final_df = feat_hand.transform()
+    # data_info = feat_hand.data
     final_df[target_column] = data_info.data[data_info.target]
 
     run_metadata_collector["data info"] = data_info

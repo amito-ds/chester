@@ -43,7 +43,8 @@ target_column = 'target'
 
 ###############################################################################################
 # df = pd.read_csv("chester/model_training/models/chester_models/day.csv")
-# df.rename(columns={'cnt': 'target'}, inplace=True)
+df = pd.read_csv("/Users/amitosi/PycharmProjects/chester/chester/data/day.csv")
+df.rename(columns={'cnt': 'target'}, inplace=True)
 ###############################################################################################
 
 ################################################################################################
@@ -67,10 +68,10 @@ target_column = 'target'
 
 ################################################################################################
 # categorical
-import seaborn as sns
-df = sns.load_dataset("titanic")
-df.rename(columns={'survived': target_column}, inplace=True)
-df.drop(columns=['alive'], inplace=True)
+# import seaborn as sns
+# df = sns.load_dataset("titanic")
+# df.rename(columns={'survived': target_column}, inplace=True)
+# df.drop(columns=['alive'], inplace=True)
 ###############################################################################################
 
 ###############################################################################################
@@ -215,12 +216,12 @@ def load_ex5():
 
 #
 madcat_collector = run_madcat(Data(df=df, target_column='target'),
-                              is_feature_stats=True,
-                              is_pre_model=True,
-                              is_model_training=True,
+                              is_feature_stats=False,
+                              is_pre_model=False,
+                              is_model_training=False,
                               model_run=ModelRun(n_models=2),
-                              is_post_model=True, is_model_weaknesses=True,
-                              plot=True
+                              is_post_model=False, is_model_weaknesses=False,
+                              plot=False
                               )
 
 # output_collector = run_madcat(

@@ -7,7 +7,7 @@ Target Variable: target
 Feature Types: {'numeric': ['instant', 'season', 'yr', 'mnth', 'holiday', 'weekday', 'workingday', 'weathersit', 'temp', 'atemp', 'hum', 'windspeed', 'casual', 'registered'], 'boolean': [], 'text': [], 'categorical': [], 'time': ['dteday'], 'id': []}
 Loss Function: R squared
 Evaluation Metrics: ['R2', 'MSE', 'MAE', 'MAPE']
-Optional Models: {'baseline-average', 'catboost', 'baseline-median', 'linear'}
+Optional Models: {'baseline-median', 'linear', 'baseline-average', 'catboost'}
 
 
 features engineering process for the data:

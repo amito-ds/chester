@@ -46,8 +46,6 @@ class TargetPreModelAnalysis:
 
         target = self.target
         value_counts = target.value_counts()
-        print("Wow!!!")
-        print(value_counts)
 
         # df_to_save = value_counts.to_dict(orient='records')[0]
         rc.save_object(obj=value_counts[0:10], text="values counts for categorical target to predict:")

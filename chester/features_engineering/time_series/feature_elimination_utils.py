@@ -14,6 +14,18 @@ class FeatureEliminationUtils:
             print(f"Features with a single value: {', '.join(single_value_features)}")
             self.df = self.df.drop(single_value_features, axis=1)
 
+    def eliminate_high_correlation_features(self, p=0.95):
+        # Find the features with at least p percent of the same values
+        high_correlation_features = []
+        for col in self.df.columns:
+            if self.df[col].value_counts(normalize=True).iloc[0] >= p:
+                high_correlation_features.append(col)
+
+        # Report the features and remove them from the DataFrame
+        if high_correlation_features:
+            print(f"Features with at least {p * 100}% of the same values: {', '.join(high_correlation_features)}")
+            self.df = self.df.drop(high_correlation_features, axis=1)
+
     def eliminate_duplicates_features(self):
         # Find duplicated features
         duplicates = []
@@ -30,9 +42,9 @@ class FeatureEliminationUtils:
     def run(self):
         self.eliminate_single_values_features()
         self.eliminate_duplicates_features()
+        self.eliminate_high_correlation_features()
         return self.df
-#
-#
+
 # import pandas as pd
 # import numpy as np
 #
