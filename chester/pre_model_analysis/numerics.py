@@ -23,7 +23,7 @@ from chester.zero_break.problem_specification import DataInfo
 class NumericPreModelAnalysis:
     def __init__(self, data_info: DataInfo):
         self.data_info = data_info
-        self.cols = self.data_info.feature_types_val["numeric"]
+        self.cols = list(set(self.data_info.feature_types_val["numeric"]))
         self.n_cols = len(self.cols)
         self.target = self.data_info.data[self.data_info.target]
         self.target_df = self.data_info.data[[self.data_info.target]]

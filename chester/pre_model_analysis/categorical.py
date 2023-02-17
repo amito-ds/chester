@@ -16,7 +16,12 @@ from chester.zero_break.problem_specification import DataInfo
 class CategoricalPreModelAnalysis:
     def __init__(self, data_info: DataInfo):
         self.data_info = data_info
-        self.cols = self.data_info.feature_types_val["categorical"]
+        self.cols = list(set(self.data_info.feature_types_val["categorical"]))
+        # drop dups
+        if self.data_info.data.columns.duplicated().any():
+            drop_dup_data = self.data_info.data.loc[:, ~ self.data_info.data.columns.duplicated()]
+            self.data = drop_dup_data
+            self.data_info.data = drop_dup_data
         self.n_cols = len(self.cols)
         self.target = self.data_info.data[self.data_info.target]
         self.target_df = self.data_info.data[[self.data_info.target]]
@@ -56,9 +61,6 @@ class CategoricalPreModelAnalysis:
                 handles=[Patch(color=color_map[target_class], label=target_class) for target_class in target_classes])
             # ax2.legend(
             #     handles=[Patch(color=color_map[target_class], label=target_class) for target_class in target_classes])
-
-    def any_categorical(self):
-        return True if len(self.cols) > 0 else False
 
     def sort_by_pvalue(self):
         from sklearn.cluster import KMeans

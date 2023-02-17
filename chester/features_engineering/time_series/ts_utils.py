@@ -1,5 +1,7 @@
 import numpy as np
 
+from chester.zero_break.problem_specification import DataInfo
+
 
 def min_fix(l):
     if not l:

@@ -76,7 +76,8 @@ class TimeSeriesFeatureExtraction:
     def run(self):
         self.static_features()  # return df, feature names
         self.cyclic_features()
-        self.target_lags()
+        if 'regression' in self.data_info.problem_type_val.lower():
+            self.target_lags()
         self.freq_features()
 
 #

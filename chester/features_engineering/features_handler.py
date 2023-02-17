@@ -1,20 +1,18 @@
 import pandas as pd
 
 from chester.features_engineering.feature_handler import FeatureHandler
-from chester.run.user_classes import TextFeatureSpec, TimeSeriesHandler
+from chester.run.user_classes import TextFeatureSpec
 from chester.zero_break.problem_specification import DataInfo
 
 
 class FeaturesHandler:
     def __init__(self,
                  data_info: DataInfo,
-                 time_series_handler: TimeSeriesHandler = None,
                  text_feature_extraction: TextFeatureSpec = None):
         self.data_info = data_info
         self.data = data_info.data
         self.target = data_info.target
         self.text_feature_extraction = text_feature_extraction
-        self.time_series_handler = time_series_handler
         self.problem_type_val = data_info.problem_type_val
         self.feature_types_val = data_info.feature_types_val
         self.loss_detector_val = data_info.loss_detector_val
@@ -46,29 +44,29 @@ class FeaturesHandler:
     def transform(self):
         feature_types = {'numeric': [], 'categorical': []}
         feature_handlers = self._get_features_handler(data=self.data)
-        print(f"Handling {len(feature_handlers)} raw features")
+        print(f"Handling {len(feature_handlers)} potential raw features")
         feat_values = []
         feat_names = []
         for feature_handler in feature_handlers:
-            values, names = feature_handler.handle_feature()
-            # try:
-            feat_values.append(values)
-            if feature_handler.feature_type is None:
+            try:
+                values, names = feature_handler.run()
+                feat_values.append(values)
+                if feature_handler.feature_type is None:
+                    pass
+                if feature_handler.feature_type == 'numeric':
+                    feature_types['numeric'].extend(names)
+                    feat_names.append(names)
+                elif feature_handler.feature_type == 'boolean':
+                    feature_types['numeric'].extend(names)
+                    feat_names.append(names)
+                elif feature_handler.feature_type == 'text':
+                    feature_types['numeric'].extend(names)
+                    feat_names.append(names)
+                elif feature_handler.feature_type == 'categorical':
+                    feat_names.append(names)
+                    feature_types['categorical'].extend(names)
+            except:
                 pass
-            if feature_handler.feature_type == 'numeric':
-                feature_types['numeric'].extend(names)
-                feat_names.append(names)
-            elif feature_handler.feature_type == 'boolean':
-                feature_types['numeric'].extend(names)
-                feat_names.append(names)
-            elif feature_handler.feature_type == 'text':
-                feature_types['numeric'].extend(names)
-                feat_names.append(names)
-            elif feature_handler.feature_type == 'categorical':
-                feat_names.append(names)
-                feature_types['categorical'].extend(names)
-        # except:
-        #     pass
         final_df = pd.DataFrame()
         for value in feat_values:
             if type(value) == pd.DataFrame:
@@ -76,5 +74,4 @@ class FeaturesHandler:
             elif type(value) == pd.Series:
                 value = value.to_frame().reset_index(drop=True)
                 final_df = pd.concat([final_df, value], axis=1)
-        print("WDUUU")
         return feature_types, final_df

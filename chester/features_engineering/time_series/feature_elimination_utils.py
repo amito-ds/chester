@@ -14,7 +14,7 @@ class FeatureEliminationUtils:
             print(f"Features with a single value: {', '.join(single_value_features)}")
             self.df = self.df.drop(single_value_features, axis=1)
 
-    def eliminate_high_correlation_features(self, p=0.95):
+    def eliminate_high_shared_features(self, p=0.7):
         # Find the features with at least p percent of the same values
         high_correlation_features = []
         for col in self.df.columns:
@@ -42,7 +42,7 @@ class FeatureEliminationUtils:
     def run(self):
         self.eliminate_single_values_features()
         self.eliminate_duplicates_features()
-        self.eliminate_high_correlation_features()
+        self.eliminate_high_shared_features()
         return self.df
 
 # import pandas as pd

@@ -81,20 +81,19 @@ class FeatureHandler:
         return embedding, embedding.columns
 
     def handle_time_series(self):
-        print("Wow! tryint to handle ts feat")
         ts_fe = TimeSeriesFeatureExtraction(
             time_series_handler=self.time_series_handler,
             data_info=self.data_info,
             col_name=self.col_name,
             column=self.column
         )
-        print("Wow! tryint to handle ts feat")
         ts_fe.run()
-        print("Wow! tryint to handle ts feat")
+        print("current columns wow", self.data_info.data.columns)
         self.data_info = ts_fe.data_info
-        print(self.data_info.feature_types_val)
 
-    def handle_feature(self):
+    def run(self):
+        if self.feature_type == 'time':
+            return self.handle_time_series()
         if self.feature_type == 'numeric':
             return self.handle_numerical()
         elif self.feature_type == 'categorical':
@@ -103,8 +102,6 @@ class FeatureHandler:
             return self.handle_boolean()
         elif self.feature_type == 'text':
             return self.handle_text()
-        elif self.feature_type == 'time':
-            return self.handle_time_series()
         else:
             if not (self.col_name == self.col_name):
                 print(

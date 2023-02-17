@@ -13,6 +13,8 @@ class CategoricalStats:
         self.max_print = max_print
         self.cols = self.data_info.feature_types_val["categorical"]
         self.data = self.data_info.data[self.cols]
+        if self.data.columns.duplicated().any():
+            self.data = self.data.loc[:, ~ self.data.columns.duplicated()]
         self.cols_sorted = self.sort_by_cardinality()
 
     def any_categorical(self):

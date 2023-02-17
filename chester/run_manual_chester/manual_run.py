@@ -1,17 +1,16 @@
+import random
 from collections import Counter
 
 import matplotlib
 import pandas as pd
-from chester.data_loader.webtext_data import load_data_pirates, load_data_king_arthur, load_data_chat_logs
 from flatbuffers.builder import np
-from sklearn.datasets import fetch_20newsgroups, fetch_openml
+from sklearn.datasets import fetch_20newsgroups
 
 from chester.run.full_run import run_madcat
-from chester.run.user_classes import Data, ModelRun
+from chester.run.user_classes import Data, ModelRun, TimeSeriesHandler
 
 matplotlib.use('TkAgg')
 target_column = 'target'
-
 ################################################################################################
 # df1 = load_data_pirates().assign(target='pirate').sample(300, replace=True)
 # df2 = load_data_king_arthur().assign(target='arthur').sample(300, replace=True)
@@ -45,6 +44,8 @@ target_column = 'target'
 # df = pd.read_csv("chester/model_training/models/chester_models/day.csv")
 df = pd.read_csv("/Users/amitosi/PycharmProjects/chester/chester/data/day.csv")
 df.rename(columns={'cnt': 'target'}, inplace=True)
+
+
 ###############################################################################################
 
 ################################################################################################
@@ -156,7 +157,7 @@ def generate_data(n_features, n_rows, target_type='binary'):
     return df
 
 
-# df = generate_data(20, 1000, target_type='binary')
+# df = generate_data(2, 100, target_type='binary')
 # df = generate_data(30, 100, target_type='multiclass')
 ###############################################################################################
 
@@ -207,21 +208,28 @@ def load_ex5():
 
 
 # load data
-# df = load_vlad()
 # df = load_ex1()
 # df = load_ex2()
 # df = load_ex3().sample(1000)
 # df = load_ex4().sample(1000)
 # df = load_ex5().sample(900)
 
-#
+import yfinance as yf
+
+df = yf.download("AAPL", start="2010-01-01", end="2022-02-16")
+df = df.reset_index()[['Date', 'Close']]
+df.rename(columns={'Close': 'target'}, inplace=True)
+random_ids = [random.choice(["a", "b"]) for i in range(len(df))]
+df["ID"] = random_ids
+
 madcat_collector = run_madcat(Data(df=df, target_column='target'),
-                              is_feature_stats=False,
-                              is_pre_model=False,
-                              is_model_training=False,
+                              is_feature_stats=True,
+                              time_series_handler=TimeSeriesHandler(id_cols=["ID"]),
+                              is_pre_model=True,
+                              is_model_training=True,
                               model_run=ModelRun(n_models=2),
-                              is_post_model=False, is_model_weaknesses=False,
-                              plot=False
+                              is_post_model=True, is_model_weaknesses=True,
+                              plot=True
                               )
 
 # output_collector = run_madcat(

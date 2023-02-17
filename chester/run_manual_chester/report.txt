@@ -4,10 +4,21 @@ Data information:
 Data Information Report
 Problem Type: Regression
 Target Variable: target
-Feature Types: {'numeric': ['instant', 'season', 'yr', 'mnth', 'holiday', 'weekday', 'workingday', 'weathersit', 'temp', 'atemp', 'hum', 'windspeed', 'casual', 'registered'], 'boolean': [], 'text': [], 'categorical': [], 'time': ['dteday'], 'id': []}
+Feature Types: {'numeric': [], 'boolean': [], 'text': [], 'categorical': [], 'time': ['Date'], 'id': []}
 Loss Function: R squared
 Evaluation Metrics: ['R2', 'MSE', 'MAE', 'MAPE']
-Optional Models: {'baseline-median', 'linear', 'baseline-average', 'catboost'}
+Optional Models: {'linear', 'baseline-average', 'baseline-median', 'catboost'}
 
 
 features engineering process for the data:
+** model pre analysis report:
+Feature stats:
+            col # unique # missing     max   min    avg    std            CI  \
+0  target_label     2931         0  182.01  6.86  44.02  40.02  (42.8, 45.2)   
+
+  median     top_vals     bottom_vals  
+0  28.44  182,180,180  6.86,6.86,6.93  
+
+top 50 with lowest partial pvalue for numerical feat, based on chi square:
+[('num_ts_year_Date_sin', 0.0), ('num_ts_year_Date_cos', 0.0), ('num_ts_mm_1_min_Date', 0.0), ('num_ts_mm_2_min_Date', 0.0), ('num_ts_mm_2_max_Date', 0.0), ('num_ts_mm_2_mean_Date', 0.0), ('num_ts_mm_3_min_Date', 0.0), ('num_ts_mm_3_max_Date', 0.0), ('num_ts_mm_3_mean_Date', 0.0), ('num_ts_mm_3_median_Date', 0.0), ('num_ts_mm_5_min_Date', 0.0), ('num_ts_mm_5_max_Date', 0.0), ('num_ts_mm_5_mean_Date', 0.0), ('num_ts_mm_5_median_Date', 0.0), ('num_ts_mm_7_min_Date', 0.0), ('num_ts_mm_7_max_Date', 0.0), ('num_ts_mm_7_mean_Date', 0.0), ('num_ts_mm_7_median_Date', 0.0), ('num_ts_mm_14_min_Date', 0.0), ('num_ts_mm_14_max_Date', 0.0), ('num_ts_mm_14_mean_Date', 0.0), ('num_ts_mm_14_median_Date', 0.0), ('num_ts_mm_21_min_Date', 0.0), ('num_ts_mm_21_max_Date', 0.0), ('num_ts_mm_21_mean_Date', 0.0), ('num_ts_mm_21_median_Date', 0.0), ('num_ts_mm_360_min_Date', 0.0), ('num_ts_mm_360_max_Date', 0.0), ('num_ts_mm_360_mean_Date', 0.0), ('num_ts_mm_360_median_Date', 0.0), ('num_ts_mm_1000_min_Date', 0.0), ('num_ts_mm_1000_max_Date', 0.0), ('num_ts_mm_1000_mean_Date', 0.0), ('num_ts_mm_1000_median_Date', 0.0), ('num_ts_freq_1000_max_Date', 0.0), ('num_ts_freq_1000_mean_Date', 0.0), ('num_ts_freq_360_mean_Date', 1.0998774752174601e-201), ('num_ts_month_Date_cos', 4.1270951685080354e-61), ('num_ts_month_Date_sin', 1.1794071368630398e-43), ('num_ts_quarter_Date_sin', 4.021421573609133e-40), ('num_ts_quarter_Date_cos', 7.482731650979882e-28), ('num_ts_freq_21_max_Date', 3.5785689998681676e-23), ('num_ts_freq_14_max_Date', 4.7210094913240627e-14), ('num_ts_freq_21_mean_Date', 7.626674952499381e-06), ('num_ts_freq_14_mean_Date', 1.8305298638831822e-05), ('num_ts_freq_2_max_Date', 0.24183090108501498), ('num_ts_freq_2_mean_Date', 0.25853785796211576), ('num_ts_freq_3_max_Date', 0.28570067410104605), ('num_ts_freq_7_mean_Date', 0.4176914965370761), ('num_ts_freq_3_mean_Date', 0.4989599597975032)]
+

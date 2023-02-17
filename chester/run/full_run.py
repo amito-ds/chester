@@ -1,5 +1,7 @@
 import warnings
 
+from chester.features_engineering.time_series.ts_feature_extraction import TimeSeriesFeatureExtraction
+from chester.features_engineering.time_series.ts_features_extraction import TimeSeriesFeaturesExtraction
 from chester.model_training.models.chester_models.best_logistic_regression import LogisticRegressionModel
 from matplotlib import pyplot as plt
 
@@ -140,30 +142,40 @@ def run_madcat(
     # Time series handling
     # is_time_series_handler
     ####################################################
-
     # Feat extract
     print(chapter_title('feature engineering'))
     rc.save_text(text="features engineering process for the data:")
+    # Handle TS
+    orig_di = data_info
+    if is_time_series_handler:
+        if time_series_handler is None:
+            time_series_handler = TimeSeriesHandler()
+        time_cols = data_info.feature_types_val["time"]
+        if len(time_cols) > 0:
+            ts_fe = TimeSeriesFeaturesExtraction(data_info=data_info, time_series_handler=time_series_handler)
+            ts_fe.run()
+            ts_fe.data_info.data = ts_fe.data_info.data. \
+                                       loc[:, ~ts_fe.data_info.data.columns.duplicated()]  # drop col dups
+            data_info = ts_fe.data_info
+            orig_di = data_info
 
+    # Continue the rest
     feat_hand = FeaturesHandler(data_info=data_info)
     if text_feature_extraction is not None:
         feat_hand.text_feature_extraction = text_feature_extraction
-    if time_series_handler is not None:
-        feat_hand = FeaturesHandler(data_info=data_info)
     feature_types, final_df = feat_hand.transform()
-    # data_info = feat_hand.data
     final_df[target_column] = data_info.data[data_info.target]
 
     run_metadata_collector["data info"] = data_info
     run_metadata_collector["features data"] = final_df
     ####################################################
-
     # Feat Stats
     data_info_num_stats = None
     if is_feature_stats:
         rc.save_text(
             text="features statistics for the data. Analyzed by groups (text, numeric, categorical) if exists:")
         print(chapter_title('feature statistics'))
+        final_df = final_df.loc[:, ~final_df.columns.duplicated()]
         data_info_num_stats = DataInfo(data=final_df, target=target_column)
         data_info_num_stats.calculate()
 
@@ -197,13 +209,13 @@ def run_madcat(
             data_info.data = clean_text_df
             TextStats(data_info).run()
     ####################################################
-
     # No target => no model! The story ends here
     if data_info.problem_type_val == "No target variable":
         return run_metadata_collector
 
     # Pre model
     if is_pre_model:
+        final_df = final_df.loc[:, ~final_df.columns.duplicated()]
         rc.save_text("** model pre analysis report:")
         print(chapter_title('model pre analysis'))
         # label stats
@@ -214,8 +226,12 @@ def run_madcat(
             data_info_num_stats.calculate()
         NumericPreModelAnalysis(data_info_num_stats).run(plot)
         plt.close()
-        data_info.data = df
-        CategoricalPreModelAnalysis(data_info).run(plot)
+        # data_info.data = df why?
+        # cat if found any
+        cat_not_ts = data_info.feature_types_val["categorical"]
+        # cat_not_ts = [col for col in cat_not_ts if not col.startswith('ts_')]
+        if len(cat_not_ts) > 0:
+            CategoricalPreModelAnalysis(data_info).run(plot)
     ####################################################
     # model
     if is_model_training:

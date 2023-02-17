@@ -28,6 +28,7 @@ class LinearRegressionModel:
         # Prepare the categorical features for processing
         categorical_transformer = OneHotEncoder(handle_unknown='ignore')
         # Use the ColumnTransformer to apply the transformations to the corresponding features
+
         self.transformer = ColumnTransformer(
             transformers=[
                 ('c', categorical_transformer, self.categorical_features),
