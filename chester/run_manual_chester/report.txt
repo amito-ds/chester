@@ -4,21 +4,91 @@ Data information:
 Data Information Report
 Problem Type: Regression
 Target Variable: target
-Feature Types: {'numeric': [], 'boolean': [], 'text': [], 'categorical': [], 'time': ['Date'], 'id': []}
+Feature Types: {'numeric': ['store_nbr'], 'boolean': [], 'text': [], 'categorical': ['family', 'ID'], 'time': ['date'], 'id': []}
 Loss Function: R squared
 Evaluation Metrics: ['R2', 'MSE', 'MAE', 'MAPE']
-Optional Models: {'linear', 'baseline-average', 'baseline-median', 'catboost'}
+Optional Models: {'baseline-median', 'catboost', 'linear', 'baseline-average'}
 
 
 features engineering process for the data:
+features statistics for the data. Analyzed by groups (text, numeric, categorical) if exists:
+
+Numerical Feature statistics:
+Feature stats:
+                           col # unique # missing          max        min  \
+1   num_ts_dayinmonth_date_sin       31         0          1.0       -1.0   
+16     num_ts_mm_3_median_date      125       760       5502.0        0.0   
+3        num_ts_month_date_sin       11         0          1.0       -1.0   
+9         num_ts_mm_1_min_date      125       760       5502.0        0.0   
+18      num_ts_freq_2_min_date       33       965  100137600.0  1036800.0   
+13        num_ts_mm_3_min_date      114       760       5502.0        0.0   
+7         num_ts_year_date_sin        5         0         -0.0      -0.01   
+11        num_ts_mm_2_max_date      117       760       5502.0        0.0   
+2   num_ts_dayinmonth_date_cos       27         0          1.0      -0.99   
+12       num_ts_mm_2_mean_date      127       760       5502.0        0.0   
+
+            avg         std                    CI      median  \
+1          -0.0        0.71         (-0.04, 0.04)        -0.0   
+16       311.77      752.97            (273, 351)        10.5   
+3          0.03         0.7         (-0.01, 0.07)         0.0   
+9         317.1       771.2            (277, 357)       12.43   
+18  39356434.29  29425103.6  (37825756, 40887113)  36028800.0   
+13       297.53      720.54            (260, 335)         9.0   
+7         -0.01         0.0        (-0.01, -0.01)       -0.01   
+11        326.1      792.74            (285, 367)       13.21   
+2         -0.03         0.7         (-0.07, 0.01)       -0.05   
+12       314.06      762.13            (274, 354)        10.5   
+
+                       top_vals              bottom_vals  
+1                 1.0,0.99,0.97         -1.0,-0.99,-0.97  
+16               5502,3759,3351              0.0,0.5,1.0  
+3                 1.0,0.87,0.87         -1.0,-0.87,-0.87  
+9                5502,4362,3759              0.0,1.0,2.0  
+18  100137600,95385600,92448000  1036800,1296000,1382400  
+13               5502,3759,3205              0.0,1.0,2.0  
+7               -0.0,-0.0,-0.01        -0.01,-0.01,-0.01  
+11               5502,4362,3759              0.0,1.0,2.0  
+2                 1.0,0.98,0.98        -0.99,-0.99,-0.95  
+12               5502,3856,3759              0.0,0.5,1.0  
+
+
+Categorical Feature statistics:
+Feature stats:
+                   col # unique # missing                       Distribution  \
+6         ts_year_date        5         0  2015.0: 22%, 2014.0: 22%, 2016...   
+2   ts_dayinmonth_date       31         0  23.0: 4%, 9.0: 4%, 24.0: 4%, 1...   
+10     ts_quarter_date        4         0  2.0: 27%, 1.0: 25%, 3.0: 25%, ...   
+5      ts_quarter_date        4         0  2.0: 27%, 1.0: 25%, 3.0: 25%, ...   
+8    ts_dayinweek_date        7         0  Sunday: 16%, Thursday: 16%, Tu...   
+0               family       33         0  PET SUPPLIES: 5%, POULTRY: 4%,...   
+9        ts_month_date       12         0  5.0: 10%, 7.0: 9%, 3.0: 9%, 12...   
+3    ts_dayinweek_date        7         0  Sunday: 16%, Thursday: 16%, Tu...   
+7   ts_dayinmonth_date       31         0  23.0: 4%, 9.0: 4%, 24.0: 4%, 1...   
+4        ts_month_date       12         0  5.0: 10%, 7.0: 9%, 3.0: 9%, 12...   
+
+                               Sample Top 5 values coverage  
+6                    2013, 2017, 2015                  100%  
+2                           16, 14, 5                   20%  
+10                            3, 1, 2                  100%  
+5                             1, 2, 4                  100%  
+8            Saturday, Friday, Monday                   74%  
+0   PERSONAL CARE, HOME APPLIANCES...                   20%  
+9                            10, 1, 9                   46%  
+3       Wednesday, Thursday, Saturday                   74%  
+7                          11, 13, 16                   20%  
+4                             5, 7, 1                   46%  
+
 ** model pre analysis report:
 Feature stats:
-            col # unique # missing     max   min    avg    std            CI  \
-0  target_label     2931         0  182.01  6.86  44.02  40.02  (42.8, 45.2)   
+            col # unique # missing     max  min     avg     std          CI  \
+0  target_label      420         0  9719.0  0.0  351.67  962.73  (302, 402)   
 
-  median     top_vals     bottom_vals  
-0  28.44  182,180,180  6.86,6.86,6.93  
+  median        top_vals   bottom_vals  
+0   11.0  9719,9062,8450  0.0,1.0,1.07  
 
 top 50 with lowest partial pvalue for numerical feat, based on chi square:
-[('num_ts_year_Date_sin', 0.0), ('num_ts_year_Date_cos', 0.0), ('num_ts_mm_1_min_Date', 0.0), ('num_ts_mm_2_min_Date', 0.0), ('num_ts_mm_2_max_Date', 0.0), ('num_ts_mm_2_mean_Date', 0.0), ('num_ts_mm_3_min_Date', 0.0), ('num_ts_mm_3_max_Date', 0.0), ('num_ts_mm_3_mean_Date', 0.0), ('num_ts_mm_3_median_Date', 0.0), ('num_ts_mm_5_min_Date', 0.0), ('num_ts_mm_5_max_Date', 0.0), ('num_ts_mm_5_mean_Date', 0.0), ('num_ts_mm_5_median_Date', 0.0), ('num_ts_mm_7_min_Date', 0.0), ('num_ts_mm_7_max_Date', 0.0), ('num_ts_mm_7_mean_Date', 0.0), ('num_ts_mm_7_median_Date', 0.0), ('num_ts_mm_14_min_Date', 0.0), ('num_ts_mm_14_max_Date', 0.0), ('num_ts_mm_14_mean_Date', 0.0), ('num_ts_mm_14_median_Date', 0.0), ('num_ts_mm_21_min_Date', 0.0), ('num_ts_mm_21_max_Date', 0.0), ('num_ts_mm_21_mean_Date', 0.0), ('num_ts_mm_21_median_Date', 0.0), ('num_ts_mm_360_min_Date', 0.0), ('num_ts_mm_360_max_Date', 0.0), ('num_ts_mm_360_mean_Date', 0.0), ('num_ts_mm_360_median_Date', 0.0), ('num_ts_mm_1000_min_Date', 0.0), ('num_ts_mm_1000_max_Date', 0.0), ('num_ts_mm_1000_mean_Date', 0.0), ('num_ts_mm_1000_median_Date', 0.0), ('num_ts_freq_1000_max_Date', 0.0), ('num_ts_freq_1000_mean_Date', 0.0), ('num_ts_freq_360_mean_Date', 1.0998774752174601e-201), ('num_ts_month_Date_cos', 4.1270951685080354e-61), ('num_ts_month_Date_sin', 1.1794071368630398e-43), ('num_ts_quarter_Date_sin', 4.021421573609133e-40), ('num_ts_quarter_Date_cos', 7.482731650979882e-28), ('num_ts_freq_21_max_Date', 3.5785689998681676e-23), ('num_ts_freq_14_max_Date', 4.7210094913240627e-14), ('num_ts_freq_21_mean_Date', 7.626674952499381e-06), ('num_ts_freq_14_mean_Date', 1.8305298638831822e-05), ('num_ts_freq_2_max_Date', 0.24183090108501498), ('num_ts_freq_2_mean_Date', 0.25853785796211576), ('num_ts_freq_3_max_Date', 0.28570067410104605), ('num_ts_freq_7_mean_Date', 0.4176914965370761), ('num_ts_freq_3_mean_Date', 0.4989599597975032)]
+[('num_ts_mm_2_max_date', 7.96187971821437e-236), ('num_ts_mm_3_max_date', 2.2835420943412866e-234), ('num_ts_mm_2_mean_date', 3.9305682553716963e-221), ('num_ts_mm_1_min_date', 1.55562260268586e-191), ('num_ts_mm_3_median_date', 2.802634122277539e-190), ('num_ts_mm_3_mean_date', 4.436246773833552e-190), ('num_ts_mm_2_min_date', 1.1717734595548888e-189), ('num_ts_mm_3_min_date', 7.921448268531432e-157), ('num_ts_freq_1_min_date', 2.694842259526626e-06), ('num_ts_freq_2_mean_date', 3.1916762751870692e-06), ('num_ts_freq_2_min_date', 0.005303415456955321), ('num_store_nbr', 0.006332761409501025), ('num_ts_freq_2_max_date', 0.02801033496399601), ('num_ts_year_date_sin', 0.03585029666039763), ('num_ts_year_date_cos', 0.03585029666039763), ('num_ts_month_date_sin', 0.4222442257529678), ('num_ts_month_date_cos', 0.4588805523524926), ('num_ts_dayinmonth_date_sin', 0.5487004604039939), ('num_ts_dayinmonth_date_cos', 0.6004338678401071), ('num_ts_quarter_date_cos', 0.7282024633241108), ('num_ts_quarter_date_sin', 0.8883567832562534)]
+
+top 50 with lowest partial pvalue for categorical feat based on chi square:
+[('family', 1.840836699617917e-198), ('ts_year_date', 0.03063612993573822), ('ts_dayinmonth_date', 0.3164898680358946), ('ID', 0.5445382313862952), ('ts_dayinweek_date', 0.6787233577203873), ('ts_month_date', 0.6799155727892167), ('ts_quarter_date', 0.9107913503985292)]
 

@@ -171,9 +171,6 @@ class CategoricalPreModelAnalysis:
 
             from sklearn.cluster import KMeans
             target = self.target
-            kmeans = KMeans(n_clusters=10)
-            kmeans.fit(self.target_df)
-            target_labels = kmeans.labels_
             plt.suptitle(
                 "Partial Plot to Identify Patterns between Categorical Sampled Features and Target (grouped by kmeans)",
                 fontsize=16,
@@ -187,8 +184,8 @@ class CategoricalPreModelAnalysis:
                 if column.dtype == "object":
                     column = column.astype("category").cat.codes
                     column = column[column < 5]
-                    column_name = self.data[col].astype("category").cat.categories[:5]
-                    data_filtered = self.target_df[column.isin(column_name)]
+                    top_values = list(self.data[col].astype("category").cat.categories[:5])
+                    data_filtered = self.data[self.data[col].isin(top_values)]
                     sns.boxplot(x=column, y=target, data=data_filtered)
                 plt.ylabel("Target")
                 plt.xlabel("{} Value".format(col))

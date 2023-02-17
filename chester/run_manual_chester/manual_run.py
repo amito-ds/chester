@@ -42,11 +42,18 @@ target_column = 'target'
 
 ###############################################################################################
 # df = pd.read_csv("chester/model_training/models/chester_models/day.csv")
-df = pd.read_csv("/Users/amitosi/PycharmProjects/chester/chester/data/day.csv")
-df.rename(columns={'cnt': 'target'}, inplace=True)
+# df = pd.read_csv("/Users/amitosi/PycharmProjects/chester/chester/data/day.csv")
+# df.rename(columns={'cnt': 'target'}, inplace=True)
+###############################################################################################
 
 
 ###############################################################################################
+# df = pd.read_csv("chester/model_training/models/chester_models/day.csv")
+df = pd.read_csv("/Users/amitosi/PycharmProjects/chester/chester/data/time_series_kaggle.csv")
+df = df[['date', 'store_nbr', 'family', 'sales']]
+df.rename(columns={'sales': 'target'}, inplace=True)
+###############################################################################################
+
 
 ################################################################################################
 # from sklearn import datasets
@@ -213,18 +220,18 @@ def load_ex5():
 # df = load_ex3().sample(1000)
 # df = load_ex4().sample(1000)
 # df = load_ex5().sample(900)
-
-import yfinance as yf
-
-df = yf.download("AAPL", start="2010-01-01", end="2022-02-16")
-df = df.reset_index()[['Date', 'Close']]
-df.rename(columns={'Close': 'target'}, inplace=True)
+#
+# import yfinance as yf
+#
+# df = yf.download("AAPL", start="2010-01-01", end="2022-02-16")
+# df = df.reset_index()[['Date', 'Close']]
+# df.rename(columns={'Close': 'target'}, inplace=True)
 random_ids = [random.choice(["a", "b"]) for i in range(len(df))]
 df["ID"] = random_ids
 
-madcat_collector = run_madcat(Data(df=df, target_column='target'),
+madcat_collector = run_madcat(Data(df=df.sample(1000), target_column='target'),
                               is_feature_stats=True,
-                              time_series_handler=TimeSeriesHandler(id_cols=["ID"]),
+                              time_series_handler=TimeSeriesHandler(id_cols=['store_nbr', 'family']),
                               is_pre_model=True,
                               is_model_training=True,
                               model_run=ModelRun(n_models=2),
