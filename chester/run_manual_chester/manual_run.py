@@ -229,12 +229,12 @@ def load_ex5():
 random_ids = [random.choice(["a", "b"]) for i in range(len(df))]
 df["ID"] = random_ids
 
-madcat_collector = run_madcat(Data(df=df.sample(1000), target_column='target'),
+madcat_collector = run_madcat(Data(df=df.sample(5000), target_column='target'),
                               is_feature_stats=True,
                               time_series_handler=TimeSeriesHandler(id_cols=['store_nbr', 'family']),
                               is_pre_model=True,
                               is_model_training=True,
-                              model_run=ModelRun(n_models=2),
+                              model_run=ModelRun(n_models=10),
                               is_post_model=True, is_model_weaknesses=True,
                               plot=True
                               )
