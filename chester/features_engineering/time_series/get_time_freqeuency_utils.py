@@ -84,6 +84,8 @@ class TimeFrequencyDecider:
                 break
 
         # Calculate the translated value of t
+        # ["second", "seconds","minute", "minutes" ,"hour", "hours","day", "days", "week",
+        # "weeks","month", "months", "year", "years"]
         if measurement in ("second", "seconds"):
             translated_t = t
         elif measurement in ("minute", "minutes"):
@@ -104,7 +106,6 @@ class TimeFrequencyDecider:
     def run(self):
         raw_freq = self._calculate_raw_frequency()
         return self.translate(raw_freq)
-
 
 # dates = ["2022-02-15 " + str(i).zfill(2) + ":00:00" for i in range(24)] * 1
 

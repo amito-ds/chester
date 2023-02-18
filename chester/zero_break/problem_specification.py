@@ -2,6 +2,7 @@ import pandas as pd
 from dateutil.parser import parse
 
 from chester.zero_break.text_detector import determine_if_text_or_categorical_column
+import itertools
 
 
 # need an extension for ts module
@@ -25,6 +26,10 @@ class DataInfo:
         self.model_selection_val = None
         self.label_transformation_val = None
         self.rows = self.data.shape[0]
+        self.feature_types_val_flatten = None
+
+    def get_all_features(self):
+        return list(set(itertools.chain(*self.feature_types_val.values())))
 
     def calculate(self):
         self.problem_type_val = self.problem_type()

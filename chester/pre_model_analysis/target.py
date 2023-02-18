@@ -65,7 +65,7 @@ class TargetPreModelAnalysis:
         ax1.invert_yaxis()
 
         # Set the y-axis tick labels to the target values
-        ax1.set_yticklabels(value_counts.index)
+        # ax1.set_yticklabels(value_counts.index)
 
         # Add a colorbar for the heatmap
         sm = plt.cm.ScalarMappable(cmap=cmap, norm=plt.Normalize(vmin=percentages.min(), vmax=percentages.max()))

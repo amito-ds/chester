@@ -1,9 +1,11 @@
 import warnings
 
+from chester.feature_stats.time_series_stats import TimeSeriesFeatureStatistics
 from chester.features_engineering.time_series.ts_feature_extraction import TimeSeriesFeatureExtraction
 from chester.features_engineering.time_series.ts_features_extraction import TimeSeriesFeaturesExtraction
 from chester.model_training.models.chester_models.best_logistic_regression import LogisticRegressionModel
 from matplotlib import pyplot as plt
+from itertools import chain
 
 from chester.cleaning.cleaner_handler import CleanerHandler
 from chester.feature_stats.categorical_stats import CategoricalStats
@@ -91,8 +93,9 @@ def run_madcat(
 
     # meta learn
     df = data_spec.df.sample(frac=1).reset_index(drop=True)
-    data_info = DataInfo(data=df, target='target')
+    data_info = DataInfo(data=df.sample(min(10000, len(df))), target='target')
     data_info.calculate()
+    data_info.data = df
 
     if feature_types is not None:
         data_info = FeatureTypes(feature_types).update_data_info(data_info=data_info)
@@ -157,7 +160,8 @@ def run_madcat(
             ts_fe.data_info.data = ts_fe.data_info.data. \
                                        loc[:, ~ts_fe.data_info.data.columns.duplicated()]  # drop col dups
             data_info = ts_fe.data_info
-            orig_di = data_info
+            time_series_handler = ts_fe.time_series_handler
+            # orig_di = data_info
 
     # Continue the rest
     feat_hand = FeaturesHandler(data_info=data_info)
@@ -176,7 +180,7 @@ def run_madcat(
             text="features statistics for the data. Analyzed by groups (text, numeric, categorical) if exists:")
         print(chapter_title('feature statistics'))
         final_df = final_df.loc[:, ~final_df.columns.duplicated()]
-        data_info_num_stats = DataInfo(data=final_df, target=target_column)
+        data_info_num_stats = DataInfo(data=final_df.sample(min(5000, len(final_df))), target=target_column)
         data_info_num_stats.calculate()
 
         num_cols = data_info_num_stats.feature_types_val["numeric"]
@@ -195,19 +199,25 @@ def run_madcat(
                 plot_stats = True
 
         max_stats_col_width = max_stats_col_width or 30
-        if len(num_cols) > 0:
-            title = "\nNumerical Feature statistics:"
-            print(title)
-            rc.save_text(title)
-            NumericStats(data_info_num_stats, max_print=max_stats_col_width).run(plot=plot_stats)
-        title = "\nCategorical Feature statistics:"
-        print(title)
-        rc.save_text(title)
-        CategoricalStats(data_info, max_print=max_stats_col_width).run(plot=plot_stats)
-        if len(text_cols) > 0:
-            print("Text Feature statistics")
-            data_info.data = clean_text_df
-            TextStats(data_info).run()
+        # if len(num_cols) > 0:
+        #     title = "\nNumerical Feature statistics:"
+        #     print(title)
+        #     rc.save_text(title)
+        #     NumericStats(data_info_num_stats, max_print=max_stats_col_width).run(plot=plot_stats)
+        # title = "\nCategorical Feature statistics:"
+        # print(title)
+        # rc.save_text(title)
+        # CategoricalStats(data_info, max_print=max_stats_col_width).run(plot=plot_stats)
+        # if len(text_cols) > 0:
+        #     print("Text Feature Statistics")
+        #     data_info.data = clean_text_df
+        #     TextStats(data_info).run()
+
+        all_features = chain.from_iterable(list(data_info.feature_types_val.values()))
+        ts_cols = [feat for feat in all_features if feat.startswith("ts_")]
+        if len(ts_cols) > 0:
+            TimeSeriesFeatureStatistics(data_info=data_info, ts_cols=ts_cols,
+                                        time_series_handler=time_series_handler).run(plot=True)
     ####################################################
     # No target => no model! The story ends here
     if data_info.problem_type_val == "No target variable":
@@ -234,6 +244,7 @@ def run_madcat(
             CategoricalPreModelAnalysis(data_info).run(plot)
     ####################################################
     # model
+    # TODO: drop duplicates in feature type vals
     if is_model_training:
         print(chapter_title("model training"))
         rc.save_text("Training models and choosing the best one")

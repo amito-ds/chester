@@ -33,10 +33,12 @@ class NumericPreModelAnalysis:
         self.cols_sorted_with_pvalue = None
 
     def tsne(self):
-
         if self.n_cols in (1, 2):
             return None
         X = self.data.copy()
+        X = X.sample(n=min(5000, len(X)))
+        target = self.target[X.index]
+
         numerical_transformer = SimpleImputer(strategy='median')
         transformer = ColumnTransformer(
             transformers=[
@@ -55,14 +57,14 @@ class NumericPreModelAnalysis:
         # ax2 = fig.gca(122, projection='3d')
 
         if self.data_info.problem_type_val in ["Regression"]:
-            ax1.scatter(X_tsne_2d[:, 0], X_tsne_2d[:, 1], c=self.target, cmap='viridis')
+            ax1.scatter(X_tsne_2d[:, 0], X_tsne_2d[:, 1], c=target, cmap='viridis')
             # ax2.scatter(X_tsne_3d[:, 0], X_tsne_3d[:, 1], X_tsne_3d[:, 2], c=self.target, cmap='viridis')
             ax1.title("Visualizing Numerical Features and Target with t-SNE (2D)")
             # ax2.set_title("Visualizing Numerical Features and Target with t-SNE (3D)")
         elif self.data_info.problem_type_val in ["Binary regression", "Binary classification"]:
-            target_classes = self.target.unique()
+            target_classes = target.unique()
             color_map = {target_class: color for target_class, color in zip(target_classes, ['red', 'blue'])}
-            colors = self.target.apply(lambda x: color_map[x])
+            colors = target.apply(lambda x: color_map[x])
             ax1.scatter(X_tsne_2d[:, 0], X_tsne_2d[:, 1], c=colors)
             # ax2.scatter(X_tsne_3d[:, 0], X_tsne_3d[:, 1], X_tsne_3d[:, 2], c=colors)
             legend_handles = [Patch(color=color_map[target_class], label=target_class) for target_class in
@@ -71,10 +73,10 @@ class NumericPreModelAnalysis:
             # ax2.set_title("Visualizing Numerical Features and Target with t-SNE (3D)")
             ax1.legend(handles=legend_handles)
         else:  # Multi-class classification
-            target_classes = self.target.unique()
+            target_classes = target.unique()
             color_map = {target_class: color for target_class, color in
                          zip(target_classes, plt.cm.rainbow(np.linspace(0, 1, len(target_classes))))}
-            colors = self.target.apply(lambda x: color_map[x])
+            colors = target.apply(lambda x: color_map[x])
             plt.scatter(X_tsne_2d[:, 0], X_tsne_2d[:, 1], c=colors)
             # ax2.scatter(X_tsne_3d[:, 0], X_tsne_3d[:, 1], X_tsne_3d[:, 2], c=colors)
             legend_handles = [Patch(color=color_map[target_class], label=target_class) for target_class in
@@ -82,6 +84,7 @@ class NumericPreModelAnalysis:
             ax1.title("Visualizing Numerical Features and Target with t-SNE (2D)")
             # ax2.set_title("Visualizing Numerical Features and Target with t-SNE (3D)")
             ax1.legend(handles=legend_handles)
+        plt.show()
         plt.close()
 
     @staticmethod

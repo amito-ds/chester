@@ -11,10 +11,11 @@ class CategoricalStats:
     def __init__(self, data_info: DataInfo, max_print=None):
         self.data_info = data_info
         self.max_print = max_print
-        self.cols = self.data_info.feature_types_val["categorical"]
+        self.cols = list(set(self.data_info.feature_types_val["categorical"]))
         self.data = self.data_info.data[self.cols]
         if self.data.columns.duplicated().any():
             self.data = self.data.loc[:, ~ self.data.columns.duplicated()]
+        self.data = self.data.sample(min(10000, len(self.data)))
         self.cols_sorted = self.sort_by_cardinality()
 
     def any_categorical(self):
@@ -79,7 +80,7 @@ class CategoricalStats:
                 ax2_i.set_ylabel('Percentages', color='red')
                 ax1_i.set_xlabel(None)
                 ax1_i.set_title(plot_title)
-            plt.tight_layout()
+            # plt.tight_layout()
             plt.show()
             plt.close()
 

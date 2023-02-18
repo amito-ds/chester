@@ -11,6 +11,8 @@ from chester.run.user_classes import Data, ModelRun, TimeSeriesHandler
 
 matplotlib.use('TkAgg')
 target_column = 'target'
+
+
 ################################################################################################
 # df1 = load_data_pirates().assign(target='pirate').sample(300, replace=True)
 # df2 = load_data_king_arthur().assign(target='arthur').sample(300, replace=True)
@@ -49,9 +51,9 @@ target_column = 'target'
 
 ###############################################################################################
 # df = pd.read_csv("chester/model_training/models/chester_models/day.csv")
-df = pd.read_csv("/Users/amitosi/PycharmProjects/chester/chester/data/time_series_kaggle.csv")
-df = df[['date', 'store_nbr', 'family', 'sales']]
-df.rename(columns={'sales': 'target'}, inplace=True)
+# df = pd.read_csv("/Users/amitosi/PycharmProjects/chester/chester/data/time_series_kaggle.csv")
+# df = df[['date', 'store_nbr', 'family', 'sales']]
+# df.rename(columns={'sales': 'target'}, inplace=True)
 ###############################################################################################
 
 
@@ -220,21 +222,43 @@ def load_ex5():
 # df = load_ex3().sample(1000)
 # df = load_ex4().sample(1000)
 # df = load_ex5().sample(900)
-#
-# import yfinance as yf
-#
-# df = yf.download("AAPL", start="2010-01-01", end="2022-02-16")
-# df = df.reset_index()[['Date', 'Close']]
-# df.rename(columns={'Close': 'target'}, inplace=True)
-random_ids = [random.choice(["a", "b"]) for i in range(len(df))]
-df["ID"] = random_ids
+import yfinance as yf
+import pandas as pd
 
-madcat_collector = run_madcat(Data(df=df.sample(5000), target_column='target'),
+
+def load_yaho(tickers=None, start_date='2005-01-01', end_date='2023-02-15'):
+    # Download stock data for all tickers and concatenate them into a single dataframe
+    if tickers is None:
+        tickers = ['AAPL', 'MSFT', 'GOOG']
+    df_list = []
+    for ticker in tickers:
+        ticker_df = yf.download(ticker, start=start_date, end=end_date)
+        ticker_df["id"] = ticker
+        df_list.append(ticker_df[['Close', 'id']])
+
+    # Combine all dataframes into one and reset the index
+    df = pd.concat(df_list).reset_index()
+
+    # Rename the columns to match the desired output
+    df = df.rename(columns={'Date': 'date', 'Close': 'value'})
+
+    # Rearrange the columns to match the desired output
+    df = df[['id', 'date', 'value']]
+    df.rename(columns={'value': 'target'}, inplace=True)
+
+    return df
+
+
+df = load_yaho()
+print("df shape", df.shape)
+print("df cols", df.columns)
+madcat_collector = run_madcat(Data(df=df, target_column='target'),
                               is_feature_stats=True,
-                              time_series_handler=TimeSeriesHandler(id_cols=['store_nbr', 'family']),
+                              # time_series_handler=TimeSeriesHandler(id_cols=['store_nbr', 'family']),
+                              time_series_handler=TimeSeriesHandler(id_cols=["id"]),
                               is_pre_model=True,
                               is_model_training=True,
-                              model_run=ModelRun(n_models=10),
+                              model_run=ModelRun(n_models=2),
                               is_post_model=True, is_model_weaknesses=True,
                               plot=True
                               )
