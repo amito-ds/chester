@@ -15,9 +15,9 @@ class TimeSeriesPreModelAnalysis:
         self.target_col = data_info.target
         self.target = self.data_info.data[self.target_col]
         self.date_cols = self.data_info.feature_types_val["time"]
-        relevant_cols = [self.target_col] + self.date_cols + [name for name in
-                                                              self.data_info.data.columns if
-                                                              name.startswith("ts_")]
+        relevant_cols = [self.target_col] + \
+                        list(self.data_info.feature_types_val["time"]) + \
+                        [name for name in self.data_info.data.columns if name.startswith("ts_")]
         self.data = self.data_info.data[relevant_cols]
 
     def analyze_single_moving_metric(self, date_col):
@@ -53,7 +53,7 @@ class TimeSeriesPreModelAnalysis:
 
         # Plot the partial dependence grid
         for i, moving_metric_col in enumerate(moving_metric_cols):
-            if i >= k*k:
+            if i >= k * k:
                 plt.close()
                 return None
             row = i // num_cols
@@ -78,5 +78,3 @@ class TimeSeriesPreModelAnalysis:
 
     def run(self):
         self.analyze_moving_metric()
-
-

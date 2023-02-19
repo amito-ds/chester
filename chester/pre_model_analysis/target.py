@@ -19,9 +19,9 @@ class TargetPreModelAnalysis:
         self.time_series_handler = time_series_handler
         self.target_col = self.data_info.target
         self.target = self.data_info.data[self.target_col]
-        relevant_cols = [self.target_col] + self.data_info.feature_types_val["time"] + [name for name in
-                                                                                        self.data_info.data.columns if
-                                                                                        name.startswith("ts_")]
+        relevant_cols = [self.target_col] + \
+                        list(self.data_info.feature_types_val["time"]) + \
+                        [name for name in self.data_info.data.columns if name.startswith("ts_")]
         relevant_cols = list(set(relevant_cols))
         print("Target relevant cols", relevant_cols)
         self.target_df = self.data_info.data[relevant_cols]  # select target, date and ts cols
