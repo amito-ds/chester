@@ -5,6 +5,7 @@ chester/util.py
 chester/cleaning/__init__.py
 chester/cleaning/cleaner_handler.py
 chester/cleaning/cleaning_func.py
+chester/data/__init__.py
 chester/data_loader/__init__.py
 chester/data_loader/webtext_data.py
 chester/feature_analyzing/__init__.py
@@ -14,6 +15,7 @@ chester/feature_stats/categorical_stats.py
 chester/feature_stats/feature_stats.py
 chester/feature_stats/numeric_stats.py
 chester/feature_stats/text_stats.py
+chester/feature_stats/time_series_stats.py
 chester/feature_stats/utils.py
 chester/features_engineering/__init__.py
 chester/features_engineering/bag_of_words.py
@@ -22,6 +24,17 @@ chester/features_engineering/fe_nlp.py
 chester/features_engineering/feature_handler.py
 chester/features_engineering/features_handler.py
 chester/features_engineering/tfidf.py
+chester/features_engineering/time_series/__init__.py
+chester/features_engineering/time_series/cyclic_features_utils.py
+chester/features_engineering/time_series/event_counter.py
+chester/features_engineering/time_series/feature_elimination_utils.py
+chester/features_engineering/time_series/frequencies_utils.py
+chester/features_engineering/time_series/get_time_freqeuency_utils.py
+chester/features_engineering/time_series/moving_metric_utils.py
+chester/features_engineering/time_series/static_features_utils.py
+chester/features_engineering/time_series/ts_feature_extraction.py
+chester/features_engineering/time_series/ts_features_extraction.py
+chester/features_engineering/time_series/ts_utils.py
 chester/model_analyzer/__init__.py
 chester/model_analyzer/model_analysis.py
 chester/model_monitor/__init__.py
@@ -63,6 +76,7 @@ chester/pre_model_analysis/__init__.py
 chester/pre_model_analysis/categorical.py
 chester/pre_model_analysis/numerics.py
 chester/pre_model_analysis/target.py
+chester/pre_model_analysis/time_series.py
 chester/preprocessing/__init__.py
 chester/preprocessing/preprocessing_func.py
 chester/preprocessing/preprocessor_handler.py

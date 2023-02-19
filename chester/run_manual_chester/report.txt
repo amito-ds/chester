@@ -2,244 +2,71 @@ Full report to analyze my data:
 
 Data information:
 Data Information Report
-Problem Type: Multiclass classification
+Problem Type: Regression
 Target Variable: target
-Feature Types: {'numeric': [], 'boolean': [], 'text': ['text'], 'categorical': [], 'time': [], 'id': []}
-Loss Function: Cross entropy
-Evaluation Metrics: ['Accuracy', 'Precision', 'Recall', 'F1']
-Optional Models: {'logistic', 'catboost', 'baseline-mode'}
+Feature Types: {'numeric': [], 'boolean': [], 'text': [], 'categorical': ['id'], 'time': ['date'], 'id': []}
+Loss Function: R squared
+Evaluation Metrics: ['R2', 'MSE', 'MAE', 'MAPE']
+Optional Models: {'baseline-median', 'catboost', 'baseline-average', 'linear'}
 
 
-Cleaning and preprocessing text column
-The following cleaning steps will be applied to clean column 'text': Removing punctuation, Removing numbers, Removing whitespaces, Removing empty lines, Lowercasing text, Removing stopwords, Removing accented characters, Removing special characters, Removing html tags.
-text column preprocessing
-The following preprocessing steps will be applied to the column 'text': Stemming text, Tokenizing text.
 features engineering process for the data:
-Extracting embedding
-First, Extracting Corex topic model embeddings with dimension 70
-Next, Extracting TF-IDF embeddings with dimension 70
-Then, Extracting bag-of-words embeddings with dimension 70
-Lastly, All embeddings have been concatenated
 features statistics for the data. Analyzed by groups (text, numeric, categorical) if exists:
 
 Numerical Feature statistics:
 Feature stats:
-                     col # unique # missing   max  min   avg   std  \
-175       text_bow_thing      195         0  0.88  0.0  0.05  0.12   
-176      text_bow_season      140         0   0.5  0.0  0.07  0.11   
-196        text_bow_give      267         0  0.64  0.0  0.07  0.11   
-159        text_bow_look      219         0  0.86  0.0  0.06  0.15   
-144       text_bow_organ      165         0  0.64  0.0  0.02  0.07   
-0     text_corex_topic_1     1499         0   0.9  0.0  0.03  0.09   
-177        text_bow_time      325         0  0.77  0.0   0.1  0.14   
-65   text_corex_topic_66     1499         0   0.8  0.0  0.02  0.06   
-16   text_corex_topic_17     1499         0  0.44  0.0  0.01  0.04   
-165          text_bow_im      179         0  0.56  0.0  0.04  0.09   
+                           col # unique # missing         max         min  \
+31       num_ts_mm_21_max_date       23         1      342.45        9.01   
+18        num_ts_mm_5_min_date       35         1      151.12        8.93   
+58   num_ts_freq_360_mean_date       96         2   8668800.0   2073600.0   
+22        num_ts_mm_7_min_date       30         1      143.64        8.93   
+50    num_ts_freq_14_mean_date       96         2   8668800.0  1734171.43   
+27       num_ts_mm_14_max_date       24         1      342.45        9.01   
+54    num_ts_freq_21_mean_date       95         2   8668800.0   2073600.0   
+1   num_ts_dayinmonth_date_cos       25         0         1.0       -0.99   
+34     num_ts_freq_1_mean_date       62         2  20908800.0     86400.0   
+39   num_ts_freq_3_median_date       43         2  16761600.0    259200.0   
 
-               CI median        top_vals    bottom_vals  
-175  (0.04, 0.05)    0.0   0.88,0.8,0.77  0.0,0.02,0.02  
-176  (0.07, 0.08)    0.0   0.5,0.45,0.41  0.0,0.03,0.04  
-196  (0.06, 0.07)    0.0   0.64,0.6,0.56  0.0,0.03,0.04  
-159  (0.05, 0.06)    0.0  0.86,0.85,0.84  0.0,0.01,0.03  
-144  (0.02, 0.03)    0.0  0.64,0.53,0.52  0.0,0.02,0.02  
-0    (0.03, 0.04)    0.0    0.9,0.9,0.88    0.0,0.0,0.0  
-177   (0.09, 0.1)    0.0  0.77,0.72,0.71  0.0,0.03,0.04  
-65   (0.02, 0.02)    0.0   0.8,0.56,0.44    0.0,0.0,0.0  
-16   (0.01, 0.01)    0.0   0.44,0.43,0.4    0.0,0.0,0.0  
-165  (0.03, 0.04)    0.0  0.56,0.54,0.52  0.0,0.01,0.02  
+           avg         std                  CI      median  \
+31      114.13      113.24         (95.5, 133)       52.95   
+18       49.84       43.61        (42.7, 57.0)       28.64   
+58   4159707.1   698167.45  (4044859, 4274556)  4094403.77   
+22       46.59       41.07        (39.8, 53.3)       28.64   
+50   4155765.3  1418016.61  (3922502, 4389029)  3925028.57   
+27      113.65      112.37         (95.2, 132)       52.95   
+54  4233929.85  1122649.29  (4049254, 4418606)  3990857.14   
+1        -0.02        0.74        (-0.15, 0.1)       -0.05   
+34  4075787.76  4448595.02  (3343994, 4807582)   2635200.0   
+39  3130236.73  2607748.87  (2701262, 3559211)   2505600.0   
+
+                      top_vals              bottom_vals  
+31                 342,282,246           9.01,9.05,14.2  
+18                 151,144,140           8.93,9.01,11.8  
+58     8668800,6868800,5823360  2073600,2548800,3422400  
+22                 144,140,138           8.93,9.01,11.8  
+50     8668800,7331657,7146514  1734171,1826743,1937829  
+27                 342,295,282           9.01,9.05,14.2  
+54     8668800,6868800,6422400  2073600,2546743,2548800  
+1                1.0,0.98,0.98        -0.99,-0.99,-0.95  
+34  20908800,20390400,17539200      86400,259200,345600  
+39   16761600,13564800,9763200     259200,345600,777600  
 
 
 Categorical Feature statistics:
-Text statistics:
-Extracting embedding
-** Analayzing text column
-Data quality stats:
-Number of rows with missing data: 0
-Number of unique words: 25009
-Average type-token ratio: 0.82
-Median type-token ratio: 0.83
-Average number of words per text: 142.30
-Median number of words per text: 102.00
-Average number of sentences per text: 1.00
-Median number of sentences per text: 1.00
-Average length of text: 1030.67
-Median length of text: 749.00
-
-Count word frequency for basic text analysis.
-Report shows most common words, giving insight into text topic and content:
-[('subject', 1582), ('lines', 1530), ('organization', 1492), ('would', 1186), ('one', 1136), ('writes', 1123), ('article', 931), ('god', 832), ('like', 807), ('university', 762), ('think', 757), ('dont', 735), ('know', 677), ('good', 654), ('people', 624), ('time', 575), ('get', 570), ('game', 563), ('go', 556), ('team', 553), ('nntppostinghost', 523), ('new', 502), ('well', 501), ('first', 492), ('also', 487), ('im', 479), ('year', 467), ('even', 462), ('see', 456), ('may', 448), ('way', 444), ('say', 443), ('last', 423), ('jesus', 422), ('much', 420), ('two', 404), ('could', 398), ('right', 379), ('make', 377), ('us', 367), ('believe', 367), ('really', 351), ('play', 351), ('bike', 351), ('many', 348), ('games', 347), ('back', 335), ('better', 335), ('season', 331), ('dod', 330), ('players', 325), ('best', 313), ('years', 298), ('hell', 297), ('going', 297), ('got', 292), ('said', 291), ('still', 290), ('never', 289), ('question', 289), ('world', 287), ('made', 286), ('win', 279), ('anyone', 276), ('something', 275), ('christians', 269), ('john', 269), ('take', 266), ('hockey', 265), ('didnt', 261), ('great', 261), ('day', 260), ('since', 255), ('distribution', 244), ('la', 244), ('point', 243), ('come', 243), ('need', 240), ('baseball', 240), ('another', 238), ('might', 238), ('want', 237), ('second', 234), ('things', 233), ('christ', 233), ('teams', 233), ('christian', 231), ('probably', 231), ('must', 229), ('church', 227), ('little', 223), ('ive', 222), ('st', 221), ('doesnt', 220), ('give', 220), ('find', 217), ('bible', 217), ('far', 216), ('lot', 214), ('faith', 212)]
-Sentiment Statistics
-+--------------------------------+
-|      Sentiment Statistics      |
-+-----------+-------+------------+
-| Sentiment | Count | Percentage |
-+-----------+-------+------------+
-|  Positive |  1086 |   72.4%    |
-|  Negative |  413  |   27.5%    |
-|  Neutral  |   1   |    0.1%    |
-+-----------+-------+------------+
-
-
-Corex topic analysis:
-	Topic 1: moment, nature, finally, taught, hi, angels, san, lines distribution, anybody, jack
-	Topic 2: add, number, order, john, provide, net, johnson, present, heres, deleted
-	Topic 3: hard, years ago, ive, working, told, help, need, paul, long, try
-	Topic 4: involved, response, carnegie mellon, carry, shall, minor, opinions, earth, soon, cup
-	Topic 5: sun, assuming, fast, straight, winnipeg, round, network, speaking, far, act
-	Topic 6: comes, folks, set, takes, performance, expected, lost, theyre, bikes, driving
-	Topic 7: los angeles, didnt, distribution usa, mr, experience, play, blue, shots, paper, university toronto
-	Topic 8: stay, certainly, reasons, individual, offensive, knowledge, expansion, pay, looks, steve
-	Topic 9: mail, aprgenevarutgersedu, pretty, defense, ny lines, possibly, results, mailing list, somebody, area
-	Topic 10: support, usually, thing, fact, jays, form, states, series, wont, meaning
-	Key sentences out of based on LSA algorithm: ['organization university notre dame office univ computing rvestermvmaccndedu subject juggling dodgers lines article msscmxvcnetcomcom mssnetcomcom mark singer says lasorda juggled lineup pirates friday night results one might conclude stick changes butler reclaimed leadoff spot probably whole season davis wants get speed play last night piazza kid everything well well strawberry primadonna insists batting cleanup know lasorda say game heres lineup im using im batting strawman fourth primadonna insists batting cleanup true note dont think lasorda fired least two reasons publicly humiliating players knuckling players wishes however think likely explanation lasorda wanted strawberry bat fourth hate strawberry bob vesterman.', 'brownliohsueduohsuedu liane brown subject christ advocate poem organization oregon health sciences university lines advocate sinned straightway posthaste satan flew presence high god made railing accusation said soul thing clay sod sinned tis true named thy name demand death thou hast said soul sinneth shall die shall thy sentence fulfilled justice dead send wretched sinner doom thing righteous ruler thus satan accuse day night every word spoke god true quickly one rose gods right hand whose glory angels veiled eyes spoke jot tittle law must fulfilled guilty sinner dies wait suppose guilt transferred paid penalty behold hands side feet one day made sin died might presented faultless thy throne satan flew away full well knew could prevail love every word dear lord spoke true martha snell nicholson heard poem read last night wanted share subscribers newsgroup wonderful blessing see secure salvation lord jesus paid owe debt capable pay thanks praise savior lord jesus christ seated right hand majesty high making intercession us liane brown internet brownliohsuedu.', 'jcjtellabscom jcj subject proof resurection organization huh whuzzat lines article aprgenevarutgersedu smayoworldstdcom scott mayo writes think christianity goes flames resurrection ever disproved didnt paul write resurrection true biggest fools however whether believe christ teachings eg love brotherman even followed secular level could great deal alleviate problems see today world even rabid atheist couldnt deny jeff johnson jcjtellabscom.', 'kkellermailsasupennedu keith keller subject playoff pool entry form organization university pennsylvania school arts sciences lines nntppostinghost mailsasupennedu well thanks everyone entered far least entries hopefully people enter deadline pm today sunday april interest fairness since win anyway feel right actually tell everyone picks wont cry rigged declare winner series pick games division semifinals pittsburghnew jersey pittsburgh washingtonny islanders ny islanders bostonbuffalo boston quebecmontreal quebec chicagost louis chicago detroittoronto detroit vancouverwinnipeg winnipeg calgarylos angeles calgary division finals patrick pittsburgh adams quebec norris chicago smythe calgary conference finals wales pittsburgh campbell chicago stanley cup winner pittsburgh keith keller lets go rangers lets go quakers kkellermailsasupennedu ivy league champs want opinion ill give.', 'sturgesoasysdtnavymil richard sturges subject dot tire date codes replyto sturgesoasysdtnavymil richard sturges distribution usa organization carderock division nswc bethesda md lines recmotorcycles cooksonmbunixmitreorg cookson writes nedod mailing list jack tavares suggested check old tire one tactic getting replaced anyone file read date codes handy quite simple code week year manufacture rich sturges h nswc carderock division w speak one else listen.'] 
-
-popular terms extraction:
-[('torcarter clebaerga detphillips oakmcgwire torwhite balanderson nyyowen', 312.0), ('gfga p canada czech republic russia finland', 216.0), ('gfga p sweden germany italy czech republic', 216.0), ('nmcglynnbuffaloaxionbtcouk neil mcglynn subject british championship playoffs', 172.0), ('back flyers team record watch eric lindros', 162.0), ('wing daniel larin oklahoma city tom mutch', 162.0), ('bearable flyers team record watch eric lindros', 162.0), ('mahavolich doug sheddan phone fire season tix', 156.0), ('f p cardiff devils murrayfield racers humberside', 156.0), ('pim avg attdnce cap oklahoma city blazers', 152.0)]
-
-** model pre analysis report:
 Feature stats:
-            col # unique # missing                       Distribution  \
-0  target_label        4         0  c_ 15: 26%, c_ 8: 25%, c_ 10: ...   
+                  col # unique # missing                       Distribution  \
+3       ts_month_date       12         0  3.0: 13%, 1.0: 12%, 4.0: 10%, ...   
+5        ts_year_date       14         0  2015.0: 13%, 2012.0: 11%, 2022...   
+2  ts_dayinmonth_date       29         0  18.0: 7%, 30.0: 7%, 28.0: 6%, ...   
+0     ts_quarter_date        4         0  1.0: 31%, 2.0: 26%, 3.0: 22%, ...   
+1                  id        3         0  MSFT: 35%, GOOG: 35%, AAPL: 30...   
+4   ts_dayinweek_date        5         0  Tuesday: 21%, Wednesday: 20%, ...   
 
-               Sample Top 5 values coverage  
-0  c_ 15, c_ 8, c_ 10                  100%  
-
-values counts for categorical target to predict:
-c_ 15    389
-c_ 8     377
-c_ 10    370
-c_ 9     364
-Name: target, dtype: int64
-
-top 50 with lowest partial pvalue for numerical feat, based on chi square:
-[('text_corex_topic_1', 1.7922512194646613e-247), ('text_corex_topic_2', 8.327335435916834e-216), ('text_corex_topic_11', 1.712544518375287e-140), ('text_corex_topic_7', 4.0350825579860974e-132), ('text_corex_topic_3', 4.996453209338185e-132), ('text_tfidf_get', 7.663818342628251e-131), ('text_bow_get', 5.242004580534952e-130), ('text_bow_line', 2.4278312969634273e-128), ('text_tfidf_line', 2.4278312969634273e-128), ('text_corex_topic_12', 7.620418795525892e-127), ('text_corex_topic_18', 4.337777142843827e-123), ('text_tfidf_articl', 1.7524397584487972e-120), ('text_bow_articl', 1.9629791007276916e-120), ('text_bow_look', 2.3894386505376977e-114), ('text_tfidf_look', 4.2498246461323005e-114), ('text_corex_topic_6', 1.2646012353862545e-85), ('text_corex_topic_22', 1.757920122180736e-76), ('text_tfidf_best', 2.8105427124641134e-75), ('text_bow_best', 1.2728225301537442e-74), ('text_tfidf_first', 3.000434636903116e-71), ('text_corex_topic_20', 4.2496475257063815e-71), ('text_bow_first', 5.6798611505274396e-68), ('text_corex_topic_10', 7.1013014469743466e-68), ('text_tfidf_last', 5.074605043813458e-65), ('text_bow_last', 5.864028079384768e-65), ('text_tfidf_season', 1.8418308449513116e-56), ('text_bow_season', 8.46895022176994e-56), ('text_corex_topic_9', 2.3173914876081747e-55), ('text_tfidf_know', 2.4516742548247475e-52), ('text_bow_know', 2.0953751549573343e-50), ('text_corex_topic_31', 1.9307487092300145e-46), ('text_corex_topic_37', 3.3904510206627015e-45), ('text_corex_topic_54', 4.200995634690899e-45), ('text_corex_topic_58', 6.96540835912947e-44), ('text_corex_topic_23', 1.0942116776862578e-43), ('text_bow_make', 2.2193303238842118e-41), ('text_tfidf_make', 3.94896872352385e-39), ('text_corex_topic_21', 4.488795458276546e-39), ('text_corex_topic_13', 4.8459718278209e-39), ('text_bow_better', 1.8607523622022114e-35), ('text_tfidf_better', 3.1501433391661e-35), ('text_corex_topic_15', 7.583782996898669e-34), ('text_tfidf_mani', 5.43851758475643e-32), ('text_corex_topic_66', 5.710998198699003e-32), ('text_bow_mani', 6.595757885616161e-31), ('text_corex_topic_41', 5.128399401910617e-30), ('text_corex_topic_39', 4.476729189261513e-29), ('text_bow_god', 4.8767825279050526e-29), ('text_bow_work', 5.920449883312088e-29), ('text_tfidf_christian', 6.740107733305556e-29)]
-
-Training models and choosing the best one
-Model results compared - showing the best out of each type after CV & HP tuning: 
-+-------+-------------------------+--------------------+--------------------+--------------------+--------------------+
-|  type |          model          |   accuracy_score   |  precision_score   |    recall_score    |      f1_score      |
-+-------+-------------------------+--------------------+--------------------+--------------------+--------------------+
-|  test |      BaselineModel      |        0.24        |        nan         |        nan         |        nan         |
-|  test |      CatboostModel      | 0.9433333333333334 | 0.9440611068398044 | 0.9429498046260131 | 0.9427323506231744 |
-|  test | LogisticRegressionModel | 0.9191666666666667 | 0.918088877415072  | 0.9175398400444097 | 0.9171010932125412 |
-| train |      BaselineModel      | 0.2627083333333333 |        nan         |        nan         |        nan         |
-| train |      CatboostModel      |      0.968125      | 0.9687532822916808 | 0.967879033719979  | 0.9680916977033567 |
-| train | LogisticRegressionModel | 0.9697916666666666 | 0.9695481608835552 | 0.9693102301045794 | 0.9693655982316687 |
-+-------+-------------------------+--------------------+--------------------+--------------------+--------------------+
-
-
-Post model analysis - analyzing results of the chosen model: 
-Top 100 Feature importance (in %, 100 = the most important one):
-{'text_corex_topic_2': 100, 'text_corex_topic_1': 87, 'text_corex_topic_11': 51, 'text_corex_topic_12': 32, 'text_corex_topic_18': 29, 'text_corex_topic_6': 21, 'text_corex_topic_10': 15, 'text_corex_topic_9': 14, 'text_corex_topic_7': 11, 'text_corex_topic_22': 6, 'text_corex_topic_66': 5, 'text_corex_topic_55': 4, 'text_corex_topic_3': 4, 'text_bow_first': 4, 'text_tfidf_look': 4, 'text_bow_look': 4, 'text_corex_topic_28': 4, 'text_corex_topic_32': 3, 'text_corex_topic_41': 3, 'text_corex_topic_39': 3, 'text_tfidf_line': 3, 'text_corex_topic_13': 3, 'text_bow_best': 2, 'text_bow_know': 2, 'text_tfidf_season': 2, 'text_bow_make': 2, 'text_corex_topic_54': 2, 'text_corex_topic_20': 2, 'text_bow_get': 2, 'text_bow_articl': 2, 'text_tfidf_first': 1, 'text_bow_season': 1, 'text_corex_topic_52': 1, 'text_bow_two': 1, 'text_corex_topic_23': 1, 'text_corex_topic_31': 1, 'text_bow_nntppostinghost': 1, 'text_tfidf_best': 1, 'text_corex_topic_4': 1, 'text_bow_dod': 1, 'text_tfidf_know': 1, 'text_tfidf_mani': 1, 'text_corex_topic_8': 1, 'text_tfidf_right': 1, 'text_tfidf_get': 1, 'text_tfidf_dod': 1, 'text_bow_better': 1, 'text_bow_time': 1, 'text_bow_last': 1, 'text_bow_right': 1, 'text_corex_topic_25': 1, 'text_tfidf_last': 1, 'text_bow_year': 1, 'text_tfidf_also': 1, 'text_tfidf_christian': 1, 'text_tfidf_work': 1, 'text_corex_topic_62': 1, 'text_bow_question': 1, 'text_bow_christian': 1, 'text_corex_topic_61': 1, 'text_corex_topic_45': 1, 'text_corex_topic_21': 1, 'text_bow_give': 1, 'text_bow_god': 1, 'text_corex_topic_35': 1, 'text_corex_topic_5': 1, 'text_bow_believ': 1, 'text_corex_topic_33': 1, 'text_tfidf_articl': 1, 'text_corex_topic_46': 1, 'text_corex_topic_60': 1, 'text_corex_topic_37': 1, 'text_bow_take': 1, 'text_bow_go': 1, 'text_tfidf_point': 1, 'text_bow_im': 0, 'text_tfidf_question': 0, 'text_corex_topic_15': 0, 'text_corex_topic_48': 0, 'text_corex_topic_43': 0, 'text_tfidf_think': 0, 'text_corex_topic_68': 0, 'text_tfidf_play': 0, 'text_tfidf_day': 0, 'text_tfidf_new': 0, 'text_tfidf_see': 0, 'text_bow_well': 0, 'text_corex_topic_67': 0, 'text_bow_univers': 0, 'text_tfidf_believ': 0, 'text_bow_one': 0, 'text_corex_topic_49': 0, 'text_tfidf_team': 0, 'text_bow_bike': 0, 'text_tfidf_better': 0, 'text_corex_topic_58': 0, 'text_bow_think': 0, 'text_bow_got': 0, 'text_tfidf_bike': 0, 'text_corex_topic_57': 0}
-
-confusion matrix on the test set
-[[70  0  0  5]
- [ 0 76  0  0]
- [ 0  0 80  2]
- [ 6  0  1 60]]
-
-Learning curve by training examples
-+-------------+--------------------+----------------------+--------------------+----------------------+
-| train_sizes | train_scores_mean  |   train_scores_std   |  test_scores_mean  |   test_scores_std    |
-+-------------+--------------------+----------------------+--------------------+----------------------+
-|      96     |      0.96875       |         0.0          | 0.8358333333333332 | 0.03068658773253662  |
-|     312     | 0.9634615384615385 | 0.007475579352365787 | 0.9174999999999999 | 0.010992421631894102 |
-|     528     | 0.9628787878787879 | 0.005303030303030304 | 0.9324999999999999 | 0.015229722402080901 |
-|     744     | 0.9690860215053764 | 0.004164498221728402 | 0.9416666666666667 | 0.013944333775567915 |
-|     960     | 0.9679166666666668 | 0.003047653924651643 | 0.9416666666666667 | 0.01419115530493867  |
-+-------------+--------------------+----------------------+--------------------+----------------------+
-
-
-Boostrap metrics, sample 20 results:
-+----------------+--------------------+--------------------+--------------------+
-| accuracy_score |  precision_score   |    recall_score    |      f1_score      |
-+----------------+--------------------+--------------------+--------------------+
-|     0.935      | 0.9230908826945412 | 0.9239661654135338 | 0.9234774703063788 |
-|     0.975      | 0.9729700854700856 | 0.9706847492864442 | 0.9717664990126715 |
-|      0.94      | 0.9372047908232118 | 0.9349231306778477 | 0.9357441064758137 |
-|     0.955      | 0.9560942825767623 | 0.9564436885865457 | 0.9562273507533856 |
-|     0.945      | 0.9408354803091645 | 0.9395955165692008 | 0.9401617066705784 |
-|     0.955      | 0.9483892076915332 | 0.9487527716186253 | 0.9485081391396306 |
-|     0.975      | 0.9744676227727076 | 0.9724780701754385 |  0.97334413615417  |
-|      0.95      | 0.9499589827727646 | 0.9490376418125779 | 0.9493204472424421 |
-|      0.97      | 0.9646198830409356 | 0.9633720930232558 | 0.9637237762237763 |
-|      0.97      | 0.9647297297297297 | 0.9647297297297297 | 0.9647297297297297 |
-|      0.93      | 0.9291280148423006 | 0.9296398046398047 | 0.9287814779177744 |
-|     0.965      | 0.9570791527313266 | 0.9597369976359338 | 0.9579066575154427 |
-|      0.97      | 0.9709767728262114 | 0.9690058479532163 | 0.9698327279849017 |
-|      0.95      | 0.9450573113363812 | 0.9490744277238816 | 0.9463461719559281 |
-|     0.965      | 0.9616477272727273 | 0.9546703296703297 | 0.9575254568280095 |
-|     0.965      | 0.9655701754385966 | 0.9616709732988802 | 0.9631498968848367 |
-|      0.98      | 0.9804748822605966 | 0.9802941176470588 | 0.9801960784313726 |
-|      0.98      | 0.9822115384615385 | 0.9771428571428571 | 0.9793741137125044 |
-|      0.95      | 0.9483282674772037 | 0.9490196078431372 | 0.9478940512375162 |
-|      0.97      | 0.9679353872486093 | 0.968776282590412  | 0.9683124993305269 |
-+----------------+--------------------+--------------------+--------------------+
-
-Trying to find weaknesses in the model by training models on the error:
-Most important features by catboost:
-+----------------------------+------------+
-|          Feature           | Importance |
-+----------------------------+------------+
-|       text_tfidf_run       |    10.0    |
-|  text_bow_nntppostinghost  |    8.0     |
-|      text_tfidf_seem       |    6.0     |
-|     text_tfidf_season      |    6.0     |
-| text_tfidf_nntppostinghost |    5.0     |
-|       text_bow_good        |    4.0     |
-|    text_corex_topic_68     |    4.0     |
-|      text_tfidf_thing      |    3.0     |
-|    text_corex_topic_24     |    3.0     |
-|    text_corex_topic_65     |    3.0     |
-|    text_corex_topic_56     |    3.0     |
-|        text_bow_im         |    2.0     |
-|        text_bow_new        |    2.0     |
-|      text_tfidf_right      |    2.0     |
-|      text_tfidf_jesu       |    2.0     |
-|      text_tfidf_game       |    2.0     |
-|       text_bow_right       |    2.0     |
-|       text_bow_best        |    1.0     |
-|      text_bow_subject      |    1.0     |
-|      text_tfidf_time       |    1.0     |
-|     text_corex_topic_2     |    1.0     |
-|    text_corex_topic_11     |    1.0     |
-|    text_corex_topic_13     |    1.0     |
-|    text_corex_topic_44     |    1.0     |
-|    text_corex_topic_45     |    1.0     |
-|        text_bow_run        |    1.0     |
-|    text_corex_topic_36     |    1.0     |
-|    text_corex_topic_49     |    1.0     |
-|      text_tfidf_good       |    1.0     |
-|      text_tfidf_also       |    1.0     |
-|       text_tfidf_im        |    1.0     |
-|       text_tfidf_win       |    1.0     |
-|       text_bow_organ       |    1.0     |
-|      text_bow_season       |    1.0     |
-|       text_bow_work        |    1.0     |
-|      text_tfidf_work       |    1.0     |
-|    text_corex_topic_19     |    1.0     |
-|      text_tfidf_organ      |    1.0     |
-|    text_corex_topic_25     |    1.0     |
-|     text_corex_topic_9     |    1.0     |
-|    text_corex_topic_27     |    1.0     |
-|    text_corex_topic_14     |    1.0     |
-|    text_corex_topic_66     |    1.0     |
-|        text_bow_say        |    0.0     |
-|        text_bow_one        |    0.0     |
-|        text_bow_get        |    0.0     |
-|       text_bow_like        |    0.0     |
-|      text_bow_articl       |    0.0     |
-|        text_bow_us         |    0.0     |
-|       text_bow_would       |    0.0     |
-+----------------------------+------------+
-
-Print of tree to look for potential segments with high error (use with caution)
-|--- text_corex_topic_5 <= 0.00
-|   |--- text_corex_topic_56 <= 0.00
-|   |   |--- value: [0.07]
-|   |--- text_corex_topic_56 >  0.00
-|   |   |--- value: [0.00]
-|--- text_corex_topic_5 >  0.00
-|   |--- value: [0.12]
-
+                         Sample Top 5 values coverage  
+3                     5, 12, 11                   53%  
+5              2020, 2012, 2018                   54%  
+2                     9, 31, 14                   30%  
+0                       2, 4, 3                  100%  
+1              MSFT, AAPL, GOOG                  100%  
+4  Wednesday, Thursday, Tuesday                  100%  
 
