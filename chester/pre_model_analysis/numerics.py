@@ -218,10 +218,9 @@ class NumericPreModelAnalysis:
             plt.show()
             plt.close()
         elif self.data_info.problem_type_val in ["Regression"]:
-            plt.close()
+            plt.figure(figsize=(18, 15))
             plt.suptitle("Partial Plot to Identify Patterns between Sampled Numeric Features and Target", fontsize=16,
                          fontweight='bold')
-            plt.figure(figsize=(18, 15))
             for i, col in enumerate(top_feature_names[:top_features]):
                 plt.subplot(num_rows, dim, i + 1)
                 column = self.data[col]

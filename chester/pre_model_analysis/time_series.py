@@ -27,7 +27,6 @@ class TimeSeriesPreModelAnalysis:
 
         relevant_cols = [name for name in ts_cols if
                          moving_metric_str in name and name.endswith(date_col) and metric_options[0] in name]
-        print("analyze_single_moving_metric")
         df = self.data[[self.target_col] + list(set(relevant_cols))]
         if len(relevant_cols) > 0:
             self.plot_correlation_and_partial_dependence(df)
@@ -44,7 +43,7 @@ class TimeSeriesPreModelAnalysis:
         num_rows = num_cols = k
 
         # Create a figure with two subplots
-        fig, axs = plt.subplots(nrows=2, figsize=(12, 8))
+        fig, axs = plt.subplots(nrows=2, figsize=(14, 10))
 
         # Plot the correlation heatmap
         corr_matrix = df.corr()[target_col][1:]

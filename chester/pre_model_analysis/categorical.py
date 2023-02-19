@@ -130,7 +130,7 @@ class CategoricalPreModelAnalysis:
         top_feature_names.sort(key=lambda x: feature_index[x])
         if self.data_info.problem_type_val in ["Binary regression", "Binary classification"]:
             if top_features == 1:
-                fig, ax = plt.subplots(figsize=(10, 8))
+                fig, ax = plt.subplots(figsize=(14, 10))
                 if classification_row_percent:
                     plt.suptitle("Partial Plot to Identify Patterns between Sampled Categorical Features and Target\n"
                                  "Showing % from Feature (row)",

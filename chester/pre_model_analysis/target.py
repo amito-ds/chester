@@ -26,8 +26,6 @@ class TargetPreModelAnalysis:
         print("Target relevant cols", relevant_cols)
         self.target_df = self.data_info.data[relevant_cols]  # select target, date and ts cols
         self.target_df.rename(columns={self.data_info.target: 'target_label'}, inplace=True)
-        print("self.target_df")
-        print(self.target_df.columns)
         self.target_data_info = DataInfo(data=self.target_df.sample(min(len(self.target_df), 10000)))
         self.target_data_info.calculate()
         self.target_type = None
@@ -157,7 +155,7 @@ class TargetPreModelAnalysis:
         # Create a subplot for each date part column and plot two rows: percentage of
         # occurrences and mean target variable
         num_plots = len(date_part_cols)
-        fig, axs = plt.subplots(num_plots * 2, 1, figsize=(6, 5 * num_plots), sharey=False)
+        fig, axs = plt.subplots(num_plots * 2, 1, figsize=(14, 3 * num_plots), sharey=False)
 
         for i, col in enumerate(date_part_cols):
             # Clean up the column name for plotting
@@ -204,7 +202,6 @@ class TargetPreModelAnalysis:
             NumericStats(self.target_data_info).run(plot=False)
             if plot:
                 self.plot_histogram()
-                print("current  self.data_info", self.data_info)
                 date_cols = self.data_info.feature_types_val["time"]
                 if len(date_cols) > 0:
                     time_frequency = self.time_series_handler.time_frequency

@@ -220,6 +220,7 @@ def run_madcat(
         all_features = list(set(chain.from_iterable(list(data_info.feature_types_val.values()))))
         ts_cols = [feat for feat in all_features if feat.startswith("ts_")]
         if len(ts_cols) > 0:
+            print("Time Series Feature Statistics")
             TimeSeriesFeatureStatistics(data_info=data_info, ts_cols=ts_cols,
                                         time_series_handler=time_series_handler).run(plot=True)
     ####################################################

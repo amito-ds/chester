@@ -51,7 +51,6 @@ class TimeSeriesFeatureStatistics:
         all_columns = [name for name in self.data_info.data.columns if name.startswith("ts_")]
 
         _, metric_options = self.time_series_handler.lag_values
-        print("all_columns", all_columns)
         freq_cols = [name for name in all_columns if
                      name.startswith("ts_freq_") and name.endswith(time_col) and metric_options[0] in name]
         freq_cols.sort()
@@ -60,7 +59,7 @@ class TimeSeriesFeatureStatistics:
             plt.close()
             return None
         # Create a subplot grid for the histograms
-        fig, axs = plt.subplots(dim_plots, dim_plots, figsize=(9, 6))
+        fig, axs = plt.subplots(dim_plots, dim_plots, figsize=(10, 7))
 
         # Plot a histogram for each column in freq_cols and add a title
         for i, col in enumerate(freq_cols):
@@ -129,7 +128,7 @@ class TimeSeriesFeatureStatistics:
 
         # Create a subplot for each date part column and plot a heatmap of the value counts
         num_plots = len(date_part_cols)
-        fig, axs = plt.subplots(num_plots, 1, figsize=(5, 5 * num_plots), sharey=False)
+        fig, axs = plt.subplots(num_plots, 1, figsize=(14, 3 * num_plots), sharey=False)
         for i, col in enumerate(date_part_cols):
             clean_col = remove_prefix_suffix(string=col, prefix="ts_", suffix=f"_{time_col}")
 
