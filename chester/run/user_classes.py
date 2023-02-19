@@ -57,7 +57,7 @@ class TimeSeriesHandler:
         self.id_cols = id_cols
         if lag_values is None:
             period_back = [1, 2, 3, 5, 7, 14, 21, 360, 1000]
-            calc_type = ['min', 'max', 'mean', 'median']
+            calc_type = ['mean', 'median', 'min', 'max']
             self.lag_values = period_back, calc_type
         else:
             self.lag_values = lag_values

@@ -165,5 +165,23 @@ class RedirectedStdout:
     def write(self, message):
         self.file.write(message)
 
+    # def drop_duplicates_columns()
 
-# def drop_duplicates_columns()
+
+def remove_prefix_suffix(string, prefix, suffix):
+    """
+    Remove prefix and suffix from string and return the resulting string.
+
+    Parameters:
+    string (str): The input string from which the prefix and suffix will be removed.
+    prefix (str): The prefix to be removed from the input string.
+    suffix (str): The suffix to be removed from the input string.
+
+    Returns:
+    str: The input string with the prefix and suffix removed.
+    """
+    if string.startswith(prefix):
+        string = string[len(prefix):]
+    if string.endswith(suffix):
+        string = string[:-len(suffix)]
+    return string

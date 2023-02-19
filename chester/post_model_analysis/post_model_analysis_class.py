@@ -159,6 +159,7 @@ class PostModelAnalysis:
             plt.show()
             plt.close()
         except:
+            plt.close()
             return None
 
     def roc_curve_multiclass(self, X_test: pd.DataFrame, y_test: pd.Series) -> None:

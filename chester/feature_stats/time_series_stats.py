@@ -6,6 +6,7 @@ import seaborn as sns
 from matplotlib import pyplot as plt
 
 from chester.run.user_classes import TimeSeriesHandler
+from chester.util import remove_prefix_suffix
 from chester.zero_break.problem_specification import DataInfo
 
 
@@ -22,8 +23,8 @@ class TimeSeriesFeatureStatistics:
 
         self.time_cols = self.data_info.feature_types_val["time"]
         self.data = self.data_info.data[list(set(self.ts_cols + self.time_cols))]
-        if self.data.columns.duplicated().any():
-            self.data = self.data.loc[:, ~ self.data.columns.duplicated()]
+        # if self.data.columns.duplicated().any():
+        #     self.data = self.data.loc[:, ~ self.data.columns.duplicated()]
         self.data = self.data.sample(min(10000, len(self.data)))
         self.time_frequency = time_series_handler.time_frequency
 
@@ -46,12 +47,18 @@ class TimeSeriesFeatureStatistics:
             return "seconds", 1
 
     def plot_time_between_events(self, time_col, plot=False):
-        all_columns = self.data_info.get_all_features()
+        # all_columns = self.data_info.get_all_features()
+        all_columns = [name for name in self.data_info.data.columns if name.startswith("ts_")]
+
+        _, metric_options = self.time_series_handler.lag_values
+        print("all_columns", all_columns)
         freq_cols = [name for name in all_columns if
-                     name.startswith("ts_freq_") and name.endswith(time_col) and "mean" in name]
+                     name.startswith("ts_freq_") and name.endswith(time_col) and metric_options[0] in name]
         freq_cols.sort()
         dim_plots = math.floor(math.sqrt(len(freq_cols)))  # plot dim*dim graphs, on the same plot
-
+        if dim_plots == 0:
+            plt.close()
+            return None
         # Create a subplot grid for the histograms
         fig, axs = plt.subplots(dim_plots, dim_plots, figsize=(9, 6))
 
@@ -62,9 +69,9 @@ class TimeSeriesFeatureStatistics:
             row_index = i // dim_plots
             col_index = i % dim_plots
 
-            clean_col = self.remove(string=col, prefix="ts_freq_", suffix=f"_{time_col}")
+            clean_col = remove_prefix_suffix(string=col, prefix="ts_freq_", suffix=f"_{time_col}")
             scale, scaler = self.discover_scale(self.data[col])
-            axs[row_index, col_index].hist(self.data[col]/scaler, bins=50)
+            axs[row_index, col_index].hist(self.data[col] / scaler, bins=50)
             axs[row_index, col_index].set_title(f"{clean_col} ({scale})")
 
         # Add a main title and adjust the subplot layout
@@ -102,7 +109,7 @@ class TimeSeriesFeatureStatistics:
         plt.ylabel("Count")
 
         # Set the x-axis tick locations and labels to show a sample of the dates
-        sample_size = min(10, len(counts))
+        sample_size = min(20, len(counts))
         xticks = range(0, len(counts), len(counts) // sample_size)
         xtick_labels = [counts.index[i] for i in xticks]
         plt.xticks(xticks, xtick_labels, rotation=45)
@@ -124,7 +131,7 @@ class TimeSeriesFeatureStatistics:
         num_plots = len(date_part_cols)
         fig, axs = plt.subplots(num_plots, 1, figsize=(5, 5 * num_plots), sharey=False)
         for i, col in enumerate(date_part_cols):
-            clean_col = self.remove(string=col, prefix="ts_", suffix=f"_{time_col}")
+            clean_col = remove_prefix_suffix(string=col, prefix="ts_", suffix=f"_{time_col}")
 
             # Count the number of occurrences of each unique value in the column
             counts = self.data[col].value_counts(normalize=True)[:14]
@@ -161,7 +168,6 @@ class TimeSeriesFeatureStatistics:
         plt.close()
 
     def run_single(self, time_col, plot=True):
-        # time_freq = self._get_time_frequency(time_col=time_col)
         self.plot_dates(time_col=time_col, time_freq=self.time_frequency, plot=plot)
 
     def run(self, plot=True):
@@ -169,22 +175,3 @@ class TimeSeriesFeatureStatistics:
             self.run_single(time_col, plot)
             self.plot_date_parts(time_col, plot)
             self.plot_time_between_events(time_col, plot)
-
-    @staticmethod
-    def remove(string, prefix, suffix):
-        """
-        Remove prefix and suffix from string and return the resulting string.
-
-        Parameters:
-        string (str): The input string from which the prefix and suffix will be removed.
-        prefix (str): The prefix to be removed from the input string.
-        suffix (str): The suffix to be removed from the input string.
-
-        Returns:
-        str: The input string with the prefix and suffix removed.
-        """
-        if string.startswith(prefix):
-            string = string[len(prefix):]
-        if string.endswith(suffix):
-            string = string[:-len(suffix)]
-        return string

@@ -35,6 +35,7 @@ def plot_corex_wordcloud(df, top_words=20, n_topics=10, plot=True, text_column='
                 plt.axis("off")
                 plt.title("Topic {}".format(i), fontsize=14)
             except:
+                plt.close()
                 pass
         plt.tight_layout()
         plt.show()

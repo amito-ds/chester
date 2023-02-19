@@ -134,6 +134,7 @@ class ModelAnalyzer:
             plt.show()
             plt.close()
         except:
+            plt.close()
             return None
 
     def plot_simple_feature_importance(self, X_train: pd.DataFrame):

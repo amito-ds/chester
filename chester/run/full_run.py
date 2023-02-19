@@ -19,6 +19,7 @@ from chester.post_model_analysis.post_model_analysis_class import PostModelAnaly
 from chester.pre_model_analysis.categorical import CategoricalPreModelAnalysis
 from chester.pre_model_analysis.numerics import NumericPreModelAnalysis
 from chester.pre_model_analysis.target import TargetPreModelAnalysis
+from chester.pre_model_analysis.time_series import TimeSeriesPreModelAnalysis
 from chester.preprocessing.preprocessor_handler import PreprocessHandler
 from chester.run.chapter_titles import chapter_title
 from chester.run.user_classes import Data, TextHandler, FeatureStats, ModelRun, TextFeatureSpec, FeatureTypes, \
@@ -169,6 +170,8 @@ def run_madcat(
         feat_hand.text_feature_extraction = text_feature_extraction
     feature_types, final_df = feat_hand.transform()
     final_df[target_column] = data_info.data[data_info.target]
+    final_df = final_df.loc[:, ~final_df.columns.duplicated()]
+    data_info.data = data_info.data.loc[:, ~data_info.data.columns.duplicated()]
 
     run_metadata_collector["data info"] = data_info
     run_metadata_collector["features data"] = final_df
@@ -199,21 +202,22 @@ def run_madcat(
                 plot_stats = True
 
         max_stats_col_width = max_stats_col_width or 30
-        # if len(num_cols) > 0:
-        #     title = "\nNumerical Feature statistics:"
-        #     print(title)
-        #     rc.save_text(title)
-        #     NumericStats(data_info_num_stats, max_print=max_stats_col_width).run(plot=plot_stats)
-        # title = "\nCategorical Feature statistics:"
-        # print(title)
-        # rc.save_text(title)
-        # CategoricalStats(data_info, max_print=max_stats_col_width).run(plot=plot_stats)
-        # if len(text_cols) > 0:
-        #     print("Text Feature Statistics")
-        #     data_info.data = clean_text_df
-        #     TextStats(data_info).run()
+        if len(num_cols) > 0:
+            title = "\nNumerical Feature statistics:"
+            print(title)
+            rc.save_text(title)
+            NumericStats(data_info_num_stats, max_print=max_stats_col_width).run(plot=plot_stats)
+        title = "\nCategorical Feature statistics:"
+        print(title)
+        rc.save_text(title)
 
-        all_features = chain.from_iterable(list(data_info.feature_types_val.values()))
+        CategoricalStats(data_info, max_print=max_stats_col_width).run(plot=plot_stats)
+        if len(text_cols) > 0:
+            print("Text Feature Statistics")
+            data_info.data = clean_text_df
+            TextStats(data_info).run()
+
+        all_features = list(set(chain.from_iterable(list(data_info.feature_types_val.values()))))
         ts_cols = [feat for feat in all_features if feat.startswith("ts_")]
         if len(ts_cols) > 0:
             TimeSeriesFeatureStatistics(data_info=data_info, ts_cols=ts_cols,
@@ -229,14 +233,14 @@ def run_madcat(
         rc.save_text("** model pre analysis report:")
         print(chapter_title('model pre analysis'))
         # label stats
-        TargetPreModelAnalysis(data_info).run(plot)
+        TargetPreModelAnalysis(data_info=data_info, time_series_handler=time_series_handler).run(plot)
+        TimeSeriesPreModelAnalysis(data_info=data_info, time_series_handler=time_series_handler).run()
         # num, cat pre model
         if data_info_num_stats is None:
             data_info_num_stats = DataInfo(data=final_df, target=target_column)
             data_info_num_stats.calculate()
         NumericPreModelAnalysis(data_info_num_stats).run(plot)
         plt.close()
-        # data_info.data = df why?
         # cat if found any
         cat_not_ts = data_info.feature_types_val["categorical"]
         # cat_not_ts = [col for col in cat_not_ts if not col.startswith('ts_')]
@@ -244,13 +248,14 @@ def run_madcat(
             CategoricalPreModelAnalysis(data_info).run(plot)
     ####################################################
     # model
-    # TODO: drop duplicates in feature type vals
     if is_model_training:
         print(chapter_title("model training"))
         rc.save_text("Training models and choosing the best one")
+        # drop col dups
+        data_info.feature_types_val["numeric"] = list(set(data_info.feature_types_val["numeric"]))
+        data_info.feature_types_val["categorical"] = list(set(data_info.feature_types_val["categorical"]))
         # encode if needed
         if data_info.problem_type_val in ["Binary classification", "Multiclass classification"]:
-            # print("Encoding target")
             label_encoder = LabelEncoder()
             final_df[target_column] = label_encoder.fit_transform(final_df[target_column])
 

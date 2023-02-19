@@ -12,7 +12,6 @@ from chester.run.user_classes import Data, ModelRun, TimeSeriesHandler
 matplotlib.use('TkAgg')
 target_column = 'target'
 
-
 ################################################################################################
 # df1 = load_data_pirates().assign(target='pirate').sample(300, replace=True)
 # df2 = load_data_king_arthur().assign(target='arthur').sample(300, replace=True)
@@ -48,11 +47,19 @@ target_column = 'target'
 # df.rename(columns={'cnt': 'target'}, inplace=True)
 ###############################################################################################
 
+###############################################################################################
+# df = pd.read_csv("/Users/amitosi/PycharmProjects/chester/chester/data/daily_cinema.csv")
+# df.rename(columns={'humidity': 'target'}, inplace=True)
+###############################################################################################
+
 
 ###############################################################################################
 # df = pd.read_csv("chester/model_training/models/chester_models/day.csv")
 # df = pd.read_csv("/Users/amitosi/PycharmProjects/chester/chester/data/time_series_kaggle.csv")
 # df = df[['date', 'store_nbr', 'family', 'sales']]
+#
+# top_stores = df.groupby('store_nbr').size().sort_values(ascending=False)[:1000].index
+# df = df[df['store_nbr'].isin(top_stores)]
 # df.rename(columns={'sales': 'target'}, inplace=True)
 ###############################################################################################
 
@@ -226,7 +233,7 @@ import yfinance as yf
 import pandas as pd
 
 
-def load_yaho(tickers=None, start_date='2005-01-01', end_date='2023-02-15'):
+def load_yaho(tickers=None, start_date='2015-01-01', end_date='2023-02-15'):
     # Download stock data for all tickers and concatenate them into a single dataframe
     if tickers is None:
         tickers = ['AAPL', 'MSFT', 'GOOG']
@@ -249,13 +256,15 @@ def load_yaho(tickers=None, start_date='2005-01-01', end_date='2023-02-15'):
     return df
 
 
-df = load_yaho()
+# df = load_yaho()
 print("df shape", df.shape)
 print("df cols", df.columns)
+
 madcat_collector = run_madcat(Data(df=df, target_column='target'),
                               is_feature_stats=True,
                               # time_series_handler=TimeSeriesHandler(id_cols=['store_nbr', 'family']),
-                              time_series_handler=TimeSeriesHandler(id_cols=["id"]),
+                              # time_series_handler=TimeSeriesHandler(id_cols=["id"]),
+                              time_series_handler=TimeSeriesHandler(),
                               is_pre_model=True,
                               is_model_training=True,
                               model_run=ModelRun(n_models=2),
