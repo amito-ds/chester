@@ -3,14 +3,17 @@ from collections import Counter
 
 import matplotlib
 import pandas as pd
+from chester.data_loader.webtext_data import load_data_pirates, load_data_king_arthur, load_data_chat_logs
 from flatbuffers.builder import np
-from sklearn.datasets import fetch_20newsgroups
+from sklearn.datasets import fetch_20newsgroups, fetch_openml
 
 from chester.run.full_run import run_madcat
 from chester.run.user_classes import Data, ModelRun, TimeSeriesHandler
+import yfinance as yf
 
 matplotlib.use('TkAgg')
 target_column = 'target'
+
 
 ################################################################################################
 # df1 = load_data_pirates().assign(target='pirate').sample(300, replace=True)
@@ -42,16 +45,14 @@ target_column = 'target'
 ###############################################################################################
 
 ###############################################################################################
-# df = pd.read_csv("chester/model_training/models/chester_models/day.csv")
 # df = pd.read_csv("/Users/amitosi/PycharmProjects/chester/chester/data/day.csv")
 # df.rename(columns={'cnt': 'target'}, inplace=True)
 ###############################################################################################
 
 ###############################################################################################
-# df = pd.read_csv("/Users/amitosi/PycharmProjects/chester/chester/data/daily_cinema.csv")
-# df.rename(columns={'humidity': 'target'}, inplace=True)
+df = pd.read_csv("/Users/amitosi/PycharmProjects/chester/chester/data/daily_cinema.csv")
+df.rename(columns={'humidity': 'target'}, inplace=True)
 ###############################################################################################
-
 
 ###############################################################################################
 # df = pd.read_csv("chester/model_training/models/chester_models/day.csv")
@@ -66,7 +67,6 @@ target_column = 'target'
 
 ################################################################################################
 # from sklearn import datasets
-#
 # digits = datasets.load_digits()
 # X = digits.images.reshape((len(digits.images), -1))
 # df = pd.DataFrame(X)
@@ -138,10 +138,6 @@ target_column = 'target'
 # df1 = pd.read_csv("chester/run_manual_chester/loans_1.csv")
 # df = df1.copy(deep=False)
 # df.rename(columns={'Loan_Status': 'target'}, inplace=True)
-# feature_types = {
-#     'numeric': ['ApplicantIncome', 'CoapplicantIncome', 'LoanAmount', 'Credit_History'],
-#     'boolean': [], 'text': [],
-#     'categorical': ['Gender', 'Married', 'Dependents', 'Education', 'Self_Employed', 'property_Area'], 'time': []}
 # df.dropna(subset=['target'], inplace=True)
 ###############################################################################################
 
@@ -173,16 +169,9 @@ def generate_data(n_features, n_rows, target_type='binary'):
     return df
 
 
-# df = generate_data(2, 100, target_type='binary')
+# df = generate_data(1, 100, target_type='binary')
 # df = generate_data(30, 100, target_type='multiclass')
 ###############################################################################################
-
-
-def load_ex1():
-    data = pd.read_csv("chester/model_training/models/chester_models/lead_df_2023-01-23.csv")
-    data.rename(columns={'lawer_conversion_label': target_column}, inplace=True)
-    # data.drop(columns=["LEAD_ID"], inplace=True)
-    return data
 
 
 def load_ex2():
@@ -224,16 +213,13 @@ def load_ex5():
 
 
 # load data
-# df = load_ex1()
 # df = load_ex2()
 # df = load_ex3().sample(1000)
 # df = load_ex4().sample(1000)
 # df = load_ex5().sample(900)
-import yfinance as yf
-import pandas as pd
 
 
-def load_yaho(tickers=None, start_date='2015-01-01', end_date='2023-02-15'):
+def load_yaho(tickers=None, start_date='2010-01-01', end_date='2023-02-15'):
     # Download stock data for all tickers and concatenate them into a single dataframe
     if tickers is None:
         tickers = ['AAPL', 'MSFT', 'GOOG']
@@ -256,7 +242,7 @@ def load_yaho(tickers=None, start_date='2015-01-01', end_date='2023-02-15'):
     return df
 
 
-# df = load_yaho()
+df = load_yaho()
 print("df shape", df.shape)
 print("df cols", df.columns)
 

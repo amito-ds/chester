@@ -65,6 +65,8 @@ class CategoricalPreModelAnalysis:
                 handles=[Patch(color=color_map[target_class], label=target_class) for target_class in target_classes])
             # ax2.legend(
             #     handles=[Patch(color=color_map[target_class], label=target_class) for target_class in target_classes])
+        plt.show()
+        plt.close()
 
     def sort_by_pvalue(self):
         from sklearn.cluster import KMeans
@@ -127,44 +129,65 @@ class CategoricalPreModelAnalysis:
         feature_index = {feature: index for index, feature in enumerate(self.cols_sorted[0:top_features])}
         top_feature_names.sort(key=lambda x: feature_index[x])
         if self.data_info.problem_type_val in ["Binary regression", "Binary classification"]:
-            plt.close()
-            max_plots = min(9, top_features)
-            dim = math.ceil(math.sqrt(max_plots))
-            num_rows = math.ceil(max_plots / dim)
-            fig, ax = plt.subplots(num_rows, dim, figsize=(18, 15))
-            fig.tight_layout()
-            if classification_row_percent:
-                plt.suptitle("Partial Plot to Identify Patterns between Sampled Categorical Features and Target\n"
-                             "Showing % from Feature (row)",
-                             fontsize=14, fontweight='bold')
-            else:
-                plt.suptitle("Partial Plot to Identify Patterns between Sampled Categorical Features and Target\n"
-                             "Showing % from Target (column)",
-                             fontsize=14, fontweight='bold')
-            for i, col in enumerate(top_feature_names):
-                if i >= num_rows * num_rows:
-                    return None
-                if dim == 1:
-                    ax_i = ax
-                else:
-                    ax_i = ax[i // dim, i % dim]
+            if top_features == 1:
+                fig, ax = plt.subplots(figsize=(10, 8))
                 if classification_row_percent:
-                    crosstab = pd.crosstab(self.data[col], self.target, normalize='index') * 100
+                    plt.suptitle("Partial Plot to Identify Patterns between Sampled Categorical Features and Target\n"
+                                 "Showing % from Feature (row)",
+                                 fontsize=14, fontweight='bold')
+                else:
+                    plt.suptitle("Partial Plot to Identify Patterns between Sampled Categorical Features and Target\n"
+                                 "Showing % from Target (column)",
+                                 fontsize=14, fontweight='bold')
+                if classification_row_percent:
+                    crosstab = pd.crosstab(self.data[top_feature_names[0]], self.target, normalize='index') * 100
                     crosstab = crosstab[(crosstab.T != 0).any()]
                     crosstab = crosstab.loc[:, (crosstab != 0).any(axis=0)]
                     crosstab = crosstab.loc[crosstab.sum(axis=1).sort_values(ascending=False).index[:5]]
                 else:
-                    crosstab = pd.crosstab(self.data[col], self.target, normalize='columns') * 100
+                    crosstab = pd.crosstab(self.data[top_feature_names[0]], self.target, normalize='columns') * 100
                     crosstab = crosstab[(crosstab.T != 0).any()]
                     crosstab = crosstab.loc[:, (crosstab != 0).any(axis=0)]
                     crosstab = crosstab.loc[crosstab.sum(axis=1).sort_values(ascending=False).index[:5]]
-                sns.heatmap(crosstab, annot=False, cmap="YlGnBu", fmt='g', ax=ax_i)
-                ax_i.set_ylabel(None)
-                ax_i.set_xlabel(None)
-                ax_i.set_title(col, fontsize=12, fontweight='bold')
-            plt.tight_layout()
-            plt.show()
-            plt.close()
+                sns.heatmap(crosstab, annot=False, cmap="YlGnBu", fmt='g', ax=ax)
+                ax.set_ylabel(None)
+                ax.set_xlabel(None)
+                ax.set_title(top_feature_names[0], fontsize=12, fontweight='bold')
+                plt.show()
+                plt.close()
+
+            else:
+                max_plots = min(9, top_features)
+                dim = min(math.ceil(math.sqrt(max_plots)), 2)
+                fig, ax = plt.subplots(dim, dim, figsize=(18, 15))
+                fig.tight_layout()
+                if classification_row_percent:
+                    plt.suptitle("Partial Plot to Identify Patterns between Sampled Categorical Features and Target\n"
+                                 "Showing % from Feature (row)",
+                                 fontsize=14, fontweight='bold')
+                else:
+                    plt.suptitle("Partial Plot to Identify Patterns between Sampled Categorical Features and Target\n"
+                                 "Showing % from Target (column)",
+                                 fontsize=14, fontweight='bold')
+                for i, col in enumerate(top_feature_names):
+                    ax_i = ax[i // dim, i % dim]
+                    if classification_row_percent:
+                        crosstab = pd.crosstab(self.data[col], self.target, normalize='index') * 100
+                        crosstab = crosstab[(crosstab.T != 0).any()]
+                        crosstab = crosstab.loc[:, (crosstab != 0).any(axis=0)]
+                        crosstab = crosstab.loc[crosstab.sum(axis=1).sort_values(ascending=False).index[:5]]
+                    else:
+                        crosstab = pd.crosstab(self.data[col], self.target, normalize='columns') * 100
+                        crosstab = crosstab[(crosstab.T != 0).any()]
+                        crosstab = crosstab.loc[:, (crosstab != 0).any(axis=0)]
+                        crosstab = crosstab.loc[crosstab.sum(axis=1).sort_values(ascending=False).index[:5]]
+                    sns.heatmap(crosstab, annot=False, cmap="YlGnBu", fmt='g', ax=ax_i)
+                    ax_i.set_ylabel(None)
+                    ax_i.set_xlabel(None)
+                    ax_i.set_title(col, fontsize=12, fontweight='bold')
+                plt.tight_layout()
+                plt.show()
+                plt.close()
         if self.data_info.problem_type_val in ["Regression"]:
             max_plots = 9
             top_n = self.data[:top_features].columns
@@ -194,6 +217,8 @@ class CategoricalPreModelAnalysis:
                 plt.ylabel("Target")
                 plt.xlabel("{} Value".format(col))
                 plt.subplots_adjust(hspace=0.5, wspace=0.5)
+                plt.show()
+                plt.close()
         elif self.data_info.problem_type_val in ["Multiclass classification"]:
             max_plots = 16
             top_n = self.data[:top_features].columns

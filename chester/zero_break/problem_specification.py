@@ -1,16 +1,43 @@
+import itertools
+import re
+from datetime import datetime
+
 import pandas as pd
+# need an extension for ts module
 from dateutil.parser import parse
 
 from chester.zero_break.text_detector import determine_if_text_or_categorical_column
-import itertools
 
 
-# need an extension for ts module
 def is_date(string):
+    if len(string) < 7:
+        return False
+    # Define regular expressions to match various date and datetime formats
+    date_formats = ["%Y-%m-%d", "%m/%d/%Y", "%d/%m/%Y"]
+    datetime_formats = ["%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M", "%m/%d/%Y %H:%M:%S", "%m/%d/%Y %H:%M"]
+    regexes = [
+        re.compile(r'\d{4}-\d{2}-\d{2}'),
+        re.compile(r'\d{2}/\d{2}/\d{4}'),
+        re.compile(r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}'),
+        re.compile(r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}'),
+        re.compile(r'\d{2}/\d{2}/\d{4} \d{2}:\d{2}:\d{2}'),
+        re.compile(r'\d{2}/\d{2}/\d{4} \d{2}:\d{2}')
+    ]
+
+    # Check if the string matches any of the known formats or regexes
     try:
         parse(string)
         return True
-    except:
+    except ValueError:
+        for fmt in date_formats + datetime_formats:
+            try:
+                datetime.strptime(string, fmt)
+                return True
+            except ValueError:
+                pass
+        for regex in regexes:
+            if regex.match(string):
+                return True
         return False
 
 
