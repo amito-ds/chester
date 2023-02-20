@@ -7,29 +7,48 @@ Target Variable: target
 Feature Types: {'numeric': [], 'boolean': [], 'text': [], 'categorical': ['id'], 'time': ['date'], 'id': []}
 Loss Function: R squared
 Evaluation Metrics: ['R2', 'MSE', 'MAE', 'MAPE']
-Optional Models: {'baseline-average', 'baseline-median', 'linear', 'catboost'}
+Optional Models: {'baseline-median', 'catboost', 'linear', 'baseline-average'}
 
 
 features engineering process for the data:
-features statistics for the data. Analyzed by groups (text, numeric, categorical) if exists:
-
-Numerical Feature statistics:
-
-Categorical Feature statistics:
+** model pre analysis report:
 Feature stats:
-                  col # unique # missing                       Distribution  \
-2     ts_quarter_date        4         0  3.0: 25%, 1.0: 25%, 4.0: 25%, ...   
-3  ts_dayinmonth_date       31         0  8.0: 3%, 9.0: 3%, 11.0: 3%, 13...   
-1   ts_dayinweek_date        5         0  Tuesday: 21%, Wednesday: 21%, ...   
-5       ts_month_date       12         0  8.0: 9%, 3.0: 9%, 10.0: 9%, 1....   
-0        ts_year_date       14         0  2020.0: 8%, 2015.0: 8%, 2013.0...   
-4                  id        3         0  GOOG: 33%, MSFT: 33%, AAPL: 33...   
+                       col # unique # missing       max      min        avg  \
+31     ts_freq_21_max_date        4         6  432000.0  86400.0   303264.0   
+48     ts_freq_2_mean_date        5         6  259200.0  86400.0  125332.36   
+18      ts_mm_14_mean_date     9865         3    337.39     7.04      67.33   
+46     ts_freq_14_max_date        4         6  432000.0  86400.0  289911.27   
+42            ts_year_date       14         0    2023.0   2010.0    2016.06   
+56     ts_freq_3_mean_date        5         6  201600.0  86400.0  125323.64   
+50  ts_dayinmonth_date_sin       31         0       1.0     -1.0       0.01   
+4       ts_dayinmonth_date       31         0      31.0      1.0       15.7   
+0         ts_mm_2_min_date     6820         3    341.27     6.86      67.17   
+41       ts_mm_7_mean_date     9836         3    339.78     6.96      67.49   
 
-                    Sample Top 5 values coverage  
-2                  2, 4, 1                  100%  
-3               19, 18, 25                   17%  
-1  Tuesday, Monday, Friday                  100%  
-5                 5, 10, 2                   43%  
-0         2017, 2012, 2016                   38%  
-4         MSFT, GOOG, AAPL                  100%  
+         std                CI    median              top_vals  \
+31  44888.71  (302522, 304006)  345600.0  432000,345600,259200   
+48  46650.33  (124561, 126103)   86400.0  259200,216000,172800   
+18     66.16      (66.2, 68.4)     41.34           337,337,337   
+46  42756.12  (289205, 290618)  259200.0  432000,345600,259200   
+42      3.78      (2016, 2016)    2016.0        2023,2022,2021   
+56  31158.55  (124809, 125839)  144000.0  201600,172800,144000   
+50      0.71      (-0.0, 0.02)      -0.0         1.0,0.99,0.97   
+4       8.75      (15.6, 15.8)      16.0              31,30,29   
+0       65.9      (66.1, 68.3)     41.21           341,341,340   
+41     66.28      (66.4, 68.6)     41.33           340,340,339   
+
+            bottom_vals  
+31  86400,259200,345600  
+48  86400,129600,172800  
+18       7.04,7.05,7.05  
+46  86400,259200,345600  
+42       2010,2011,2012  
+56  86400,115200,144000  
+50     -1.0,-0.99,-0.97  
+4                 1,2,3  
+0        6.86,6.86,6.93  
+41       6.96,6.98,6.98  
+
+top 50 with lowest partial pvalue for categorical feat based on chi square:
+[('ts_year_date', 0.0), ('id', 0.0), ('ts_month_date', 8.487577437486311e-48), ('ts_quarter_date', 3.6131333557676286e-39), ('ts_dayinweek_date', 0.9999999999999974), ('ts_dayinmonth_date', 1.0)]
 

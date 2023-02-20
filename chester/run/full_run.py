@@ -234,13 +234,13 @@ def run_madcat(
         rc.save_text("** model pre analysis report:")
         print(chapter_title('model pre analysis'))
         # label stats
-        TargetPreModelAnalysis(data_info=data_info, time_series_handler=time_series_handler).run(plot)
-        TimeSeriesPreModelAnalysis(data_info=data_info, time_series_handler=time_series_handler).run()
+        # TargetPreModelAnalysis(data_info=data_info, time_series_handler=time_series_handler).run(plot)
+        # TimeSeriesPreModelAnalysis(data_info=data_info, time_series_handler=time_series_handler).run()
         # num, cat pre model
         if data_info_num_stats is None:
             data_info_num_stats = DataInfo(data=final_df, target=target_column)
             data_info_num_stats.calculate()
-        NumericPreModelAnalysis(data_info_num_stats).run(plot)
+        # NumericPreModelAnalysis(data_info_num_stats).run(plot)
         plt.close()
         # cat if found any
         cat_not_ts = data_info.feature_types_val["categorical"]

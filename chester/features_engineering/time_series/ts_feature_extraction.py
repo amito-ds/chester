@@ -33,6 +33,8 @@ class TimeSeriesFeatureExtraction:
         sf_df, names = stat_features.run()
         sf_df = FeatureEliminationUtils(df=sf_df[names]).run()  # Elimination for the relevant features only
         self.data_info.data = pd.concat([self.data_info.data, sf_df], axis=1)  # update data
+        self.data_info.feature_types_val["categorical"] = list(
+            self.data_info.feature_types_val["categorical"])  # convert set to list
         self.data_info.feature_types_val["categorical"].extend(list(sf_df.columns))  # update features
 
     # return (interval, counts)
@@ -51,6 +53,8 @@ class TimeSeriesFeatureExtraction:
         target_df, names = mm.run()
         target_df = FeatureEliminationUtils(df=target_df[names]).run()  # Elimination for the relevant features only
         self.data_info.data = pd.concat([self.data_info.data, target_df], axis=1)  # update data
+        self.data_info.feature_types_val["numeric"] = list(
+            self.data_info.feature_types_val["numeric"])  # convert set to list
         self.data_info.feature_types_val["numeric"].extend(target_df.columns)  # update features
 
     def freq_features(self):
@@ -61,6 +65,8 @@ class TimeSeriesFeatureExtraction:
         df_ff, names = ff.run()
         df_ff = FeatureEliminationUtils(df=df_ff[names]).run()  # Elimination for the relevant features only
         self.data_info.data = pd.concat([self.data_info.data, df_ff], axis=1)  # update data
+        self.data_info.feature_types_val["numeric"] = list(
+            self.data_info.feature_types_val["numeric"])  # convert set to list
         self.data_info.feature_types_val["numeric"].extend(df_ff.columns)  # update features
 
     def cyclic_features(self):
@@ -71,6 +77,8 @@ class TimeSeriesFeatureExtraction:
         df_cf, names = cf.run()
         df_cf = FeatureEliminationUtils(df=df_cf[names]).run()  # Elimination for the relevant features only
         self.data_info.data = pd.concat([self.data_info.data, df_cf], axis=1)
+        self.data_info.feature_types_val["numeric"] = list(
+            self.data_info.feature_types_val["numeric"])  # convert set to list
         self.data_info.feature_types_val["numeric"].extend(df_cf.columns)  # update features
 
     def run(self):

@@ -57,8 +57,8 @@ class CategoricalStats:
             ax1.set_title(f"{col}")
             return None
         else:
-            dim = max(math.ceil(math.sqrt(len(top_n))), 2)
-            fig, ax = plt.subplots(dim, dim, figsize=(18, 15))
+            dim = max(math.floor(math.sqrt(len(top_n))), 2)
+            fig, ax = plt.subplots(dim, dim, figsize=(18, 3 + 3 * dim))
             fig.tight_layout()
             fig.suptitle("Top 5 Value Counts and Percentages for Each Feature")
             for i, col in enumerate(top_n):

@@ -9,6 +9,7 @@ import seaborn as sns
 from matplotlib.patches import Patch
 from sklearn.manifold import TSNE
 from wordcloud import WordCloud
+from sklearn.cluster import KMeans
 
 from chester.zero_break.problem_specification import DataInfo
 
@@ -191,12 +192,8 @@ class CategoricalPreModelAnalysis:
         if self.data_info.problem_type_val in ["Regression"]:
             max_plots = 9
             top_n = self.data[:top_features].columns
-            dim = math.ceil(math.sqrt(len(top_n)))
-            num_rows = math.ceil(max_plots / dim)
-            fig, ax = plt.subplots(num_rows, dim, figsize=(20, 20))
-            fig.tight_layout()
-
-            from sklearn.cluster import KMeans
+            dim = max(math.floor(math.sqrt(min(max_plots, len(top_n)))), 2)
+            fig, ax = plt.subplots(dim, dim, figsize=(20, 4 + 4 * dim))
             target = self.target
             plt.suptitle(
                 "Partial Plot to Identify Patterns between Categorical Sampled Features and Target (grouped by kmeans)",
@@ -217,14 +214,12 @@ class CategoricalPreModelAnalysis:
                 plt.ylabel("Target")
                 plt.xlabel("{} Value".format(col))
                 plt.subplots_adjust(hspace=0.5, wspace=0.5)
-                plt.show()
-                plt.close()
+            plt.show()
+            plt.close()
         elif self.data_info.problem_type_val in ["Multiclass classification"]:
             max_plots = 16
             top_n = self.data[:max_plots].columns
-            print("top_n", top_n)
             dim = max(math.floor(math.sqrt(len(top_n))), 2)
-            print("dim", dim)
             fig, ax = plt.subplots(dim, dim, figsize=(19, 4 * dim))
             fig.tight_layout()
             plt.suptitle(

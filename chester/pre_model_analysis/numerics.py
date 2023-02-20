@@ -35,14 +35,28 @@ class NumericPreModelAnalysis:
     def tsne(self):
         if self.n_cols in (1, 2):
             return None
-        X = self.data.copy()
+        all_cols = list(self.data.columns)
+        ts_cols = list(set([name for name in all_cols if
+                            name.startswith("num_ts_mm") or name.startswith("num_ts_freq_") or
+                            (name.startswith("num_ts_") and (name.endswith("_sin") or name.endswith("_cos")))]))
+
+        print("WOWOWOW")
+        print("ts_cols", ts_cols)
+        print("all_cols", all_cols)
+        not_ts_cols = [col for col in all_cols if col not in ts_cols]
+        if len(ts_cols) > 5:
+            numeric_cols = not_ts_cols + self.sample_list(ts_cols)
+        else:
+            numeric_cols = not_ts_cols
+        X = self.data[numeric_cols].copy()
         X = X.sample(n=min(5000, len(X)))
         target = self.target[X.index]
+        print("numeric_cols", numeric_cols)
 
         numerical_transformer = SimpleImputer(strategy='median')
         transformer = ColumnTransformer(
             transformers=[
-                ('n', numerical_transformer, self.cols)
+                ('n', numerical_transformer, numeric_cols)
             ])
         pipeline = Pipeline(steps=[('preprocessor', transformer)])
         X = pipeline.fit_transform(X)
@@ -86,6 +100,20 @@ class NumericPreModelAnalysis:
             ax1.legend(handles=legend_handles)
         plt.show()
         plt.close()
+
+    @staticmethod
+    def sample_list(l):
+        if not l:
+            return []
+
+        n = len(l)
+        min_sample_size = max(5, int(0.2 * n))
+        max_sample_size = min(15, n)
+
+        sample_size = random.randint(min_sample_size, max_sample_size)
+        sample = random.sample(l, sample_size)
+
+        return sample
 
     @staticmethod
     def median_imputation(df):
@@ -272,12 +300,13 @@ class NumericPreModelAnalysis:
 
     def run(self, plot=True):
         if self.n_cols > 1:
-            self.analyze_pvalue(is_plot=plot)
-            if ('classification' in self.data_info.problem_type_val.lower()) and plot:
-                self.partial_plot(classification_row_percent=True)
-                self.partial_plot(classification_row_percent=False)
-            else:
-                self.partial_plot()
+            pass
+            #     self.analyze_pvalue(is_plot=plot)
+            #     if ('classification' in self.data_info.problem_type_val.lower()) and plot:
+            #         self.partial_plot(classification_row_percent=True)
+            #         self.partial_plot(classification_row_percent=False)
+            #     else:
+            #         self.partial_plot()
             self.tsne()
         elif self.n_cols == 1:
             self.analyze_pvalue()
