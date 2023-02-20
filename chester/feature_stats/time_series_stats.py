@@ -18,14 +18,11 @@ class TimeSeriesFeatureStatistics:
                  ts_cols=None):
         self.data_info = data_info
         self.max_print = max_print
-        self.ts_cols = ts_cols
         self.time_series_handler = time_series_handler
-
-        self.time_cols = self.data_info.feature_types_val["time"]
-        self.data = self.data_info.data[list(set(self.ts_cols + self.time_cols))]
-        # if self.data.columns.duplicated().any():
-        #     self.data = self.data.loc[:, ~ self.data.columns.duplicated()]
-        self.data = self.data.sample(min(10000, len(self.data)))
+        self.time_cols = list(self.data_info.feature_types_val["time"])
+        self.ts_cols = ts_cols
+        self.data = self.data_info.data[list(set(list(self.ts_cols) + list(self.time_cols)))]
+        self.data = self.data.sample(min(10000, len(self.data)))  # sample
         self.time_frequency = time_series_handler.time_frequency
 
     @staticmethod

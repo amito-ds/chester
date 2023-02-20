@@ -228,8 +228,8 @@ class CategoricalPreModelAnalysis:
                 fontsize=15,
                 fontweight='bold')
             for i, col in enumerate(top_feature_names):
-                if i > 15:
-                    return None
+                if i >= dim * dim:
+                    break
                 plt.subplot(dim, dim, i + 1)
                 crosstab = pd.crosstab(self.data[col], self.target, normalize='index') * 100
                 crosstab = crosstab[(crosstab.T != 0).any()]

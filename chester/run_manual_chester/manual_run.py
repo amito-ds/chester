@@ -14,7 +14,6 @@ import yfinance as yf
 matplotlib.use('TkAgg')
 target_column = 'target'
 
-
 ################################################################################################
 # df1 = load_data_pirates().assign(target='pirate').sample(300, replace=True)
 # df2 = load_data_king_arthur().assign(target='arthur').sample(300, replace=True)
@@ -48,6 +47,12 @@ target_column = 'target'
 # df = pd.read_csv("/Users/amitosi/PycharmProjects/chester/chester/data/day.csv")
 # df.rename(columns={'cnt': 'target'}, inplace=True)
 ###############################################################################################
+
+###############################################################################################
+df = pd.read_csv("/Users/amitosi/PycharmProjects/chester/chester/data/camps.csv")
+df.rename(columns={'Competitors ': 'target'}, inplace=True)
+###############################################################################################
+
 
 ###############################################################################################
 # df = pd.read_csv("/Users/amitosi/PycharmProjects/chester/chester/data/daily_cinema.csv")
@@ -135,10 +140,10 @@ target_column = 'target'
 #                  'text': [],
 #                  'categorical': ['type_of_meal_plan', 'room_type_reserved', 'market_segment_type'], 'time': []}
 ###############################################################################################
-df1 = pd.read_csv("chester/run_manual_chester/loans_1.csv")
-df = df1.copy(deep=False)
-df.rename(columns={'Loan_Status': 'target'}, inplace=True)
-df.dropna(subset=['target'], inplace=True)
+# df1 = pd.read_csv("chester/run_manual_chester/loans_1.csv")
+# df = df1.copy(deep=False)
+# df.rename(columns={'Loan_Status': 'target'}, inplace=True)
+# df.dropna(subset=['target'], inplace=True)
 ###############################################################################################
 
 ###############################################################################################
@@ -255,7 +260,9 @@ madcat_collector = run_madcat(Data(df=df, target_column='target'),
                               is_model_training=True,
                               model_run=ModelRun(n_models=2),
                               is_post_model=True, is_model_weaknesses=True,
-                              plot=True
+                              plot=True,
+                              feature_types={'numeric': [], 'boolean': [], 'text': ['Campaign Name'],
+                                             'categorical': ['Campaign Name'], 'time': ['Date'], 'id': []}
                               )
 
 # output_collector = run_madcat(

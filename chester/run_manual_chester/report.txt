@@ -2,138 +2,87 @@ Full report to analyze my data:
 
 Data information:
 Data Information Report
-Problem Type: Binary classification
+Problem Type: Multiclass classification
 Target Variable: target
-Feature Types: {'numeric': ['no_of_adults', 'no_of_children', 'no_of_weekend_nights', 'no_of_week_nights', 'required_car_parking_space', 'lead_time', 'arrival_year', 'arrival_month', 'arrival_date', 'repeated_guest', 'no_of_previous_cancellations', 'no_of_previous_bookings_not_canceled', 'avg_price_per_room', 'no_of_special_requests'], 'boolean': [], 'text': [], 'categorical': ['type_of_meal_plan', 'room_type_reserved', 'market_segment_type'], 'time': [], 'id': ['Booking_ID']}
+Feature Types: {'numeric': set(), 'boolean': set(), 'text': {'Campaign Name'}, 'categorical': {'Campaign Name'}, 'time': {'Date'}, 'other': set()}
 Loss Function: Cross entropy
 Evaluation Metrics: ['Accuracy', 'Precision', 'Recall', 'F1']
-Optional Models: {'logistic', 'baseline-mode', 'catboost'}
+Optional Models: {'catboost', 'logistic', 'baseline-mode'}
 
 
+Cleaning and preprocessing Campaign Name column
+The following cleaning steps will be applied to clean column 'Campaign Name': Removing punctuation, Removing numbers, Removing whitespaces, Removing empty lines, Lowercasing text, Removing stopwords, Removing accented characters, Removing special characters, Removing html tags.
+Campaign Name column preprocessing
+The following preprocessing steps will be applied to the column 'Campaign Name': Stemming text, Tokenizing text.
 features engineering process for the data:
+Extracting embedding
+First, Extracting Corex topic model embeddings with dimension 30
+Next, Extracting TF-IDF embeddings with dimension 30
+Then, Extracting bag-of-words embeddings with dimension 30
+Lastly, All embeddings have been concatenated
 features statistics for the data. Analyzed by groups (text, numeric, categorical) if exists:
 
 Numerical Feature statistics:
 
 Categorical Feature statistics:
 Feature stats:
-                   col # unique # missing                       Distribution  \
-0   room_type_reserved        7         0  Room_Type 1: 79%, Room_Type 4:...   
-1  market_segment_type        5         0  Online: 64%, Offline: 29%, Cor...   
-2    type_of_meal_plan        4         0  Meal Plan 1: 77%, Not Selected...   
+                  col # unique # missing                       Distribution  \
+1       Campaign Name      352         0  everyth: 25%, sitewid: 5%, eve...   
+2   ts_dayinweek_Date        7         0  Sunday: 15%, Thursday: 15%, Tu...   
+3  ts_dayinmonth_Date       31         0  24.0: 4%, 19.0: 4%, 15.0: 4%, ...   
+4     ts_quarter_Date        4         0  4.0: 30%, 3.0: 30%, 2.0: 28%, ...   
+0       ts_month_Date       11         0  11.0: 13%, 5.0: 12%, 6.0: 11%,...   
 
                               Sample Top 5 values coverage  
-0  Room_Type 2, Room_Type 4, Room...                  100%  
-1          Online, Offline, Aviation                  100%  
-2  Not Selected, Meal Plan 3, Mea...                  100%  
+1  buy one get one free sitewid u...                   38%  
+2         Wednesday, Sunday, Tuesday                   73%  
+3                          11, 1, 29                   19%  
+4                            4, 1, 2                  100%  
+0                            8, 6, 9                   56%  
 
-** model pre analysis report:
-Feature stats:
-            col # unique # missing                       Distribution  \
-0  target_label        2         0  Not_Canceled: 68%, Canceled: 3...   
+Text statistics:
+Extracting embedding
+** Analayzing Campaign Name column
+Data quality stats:
+Number of rows with missing data: 0.0
+Number of unique words: 398
+Average type-token ratio: 0.89
+Median type-token ratio: 1.00
+Average number of words per text: 5.44
+Median number of words per text: 5.00
+Average number of sentences per text: 0.99
+Median number of sentences per text: 1.00
+Average length of text: 34.89
+Median length of text: 34.00
 
-                   Sample Top 5 values coverage  
-0  Not_Canceled, Canceled                  100%  
-
-values counts for categorical target to predict:
-Not_Canceled    24390
-Canceled        11885
-Name: target, dtype: int64
-
-top 50 with lowest partial pvalue for categorical feat based on chi square:
-[('market_segment_type', 6.748763024557236e-175), ('type_of_meal_plan', 4.951915406087789e-60), ('room_type_reserved', 1.5627796772447482e-10)]
-
-Training models and choosing the best one
-Model results compared - showing the best out of each type after CV & HP tuning: 
-+-------+-------------------------+--------------------+--------------------+--------------------+--------------------+
-|  type |          model          |   accuracy_score   |  precision_score   |    recall_score    |      f1_score      |
-+-------+-------------------------+--------------------+--------------------+--------------------+--------------------+
-|  test |      BaselineModel      | 0.6716747070985527 | 0.6716747070985527 |        1.0         | 0.8035795812318358 |
-|  test |      CatboostModel      | 0.7977257064093729 | 0.797760058862035  | 0.9362276309476385 | 0.8614455171149388 |
-|  test | LogisticRegressionModel | 0.8030323914541695 | 0.829029959526531  | 0.8904022547966063 | 0.8586104716098379 |
-| train |      BaselineModel      | 0.6716747070985527 | 0.6716747070985527 |        1.0         | 0.8035940222764438 |
-| train |      CatboostModel      | 0.7980875258442454 | 0.7981835489929396 | 0.9360671239180862 | 0.8616365973043341 |
-| train | LogisticRegressionModel | 0.8037904893177119 | 0.8295791238446351 | 0.8909035081867451 | 0.8591478097964874 |
-+-------+-------------------------+--------------------+--------------------+--------------------+--------------------+
-
-
-Post model analysis - analyzing results of the chosen model: 
-confusion matrix on the test set
-[[1503  854]
- [ 566 4332]]
-
-Learning curve by training examples
-+-------------+--------------------+-----------------------+--------------------+-----------------------+
-| train_sizes | train_scores_mean  |    train_scores_std   |  test_scores_mean  |    test_scores_std    |
-+-------------+--------------------+-----------------------+--------------------+-----------------------+
-|     2321    | 0.806031882809134  | 0.0015510555794915782 | 0.7968642315644383 |  0.007852568855203145 |
-|     7545    | 0.8015904572564612 |  0.004712097769285912 | 0.8040317022742937 |  0.007788494928015882 |
-|    12768    | 0.8023966165413533 | 0.0028955402816927085 | 0.804066161268091  | 0.0068010915641482155 |
-|    17992    | 0.8044575366829703 | 0.0022638023942450403 | 0.8036526533425224 |  0.007358104720093382 |
-|    23216    | 0.8045055134390076 |  0.001319097754058993 | 0.803893866299104  |  0.006836789421056793 |
-+-------------+--------------------+-----------------------+--------------------+-----------------------+
+Count word frequency for basic text analysis.
+Report shows most common words, giving insight into text topic and content:
+[('everything', 576), ('free', 280), ('code', 217), ('shipping', 202), ('day', 167), ('never', 150), ('sale', 138), ('orders', 127), ('shop', 121), ('ends', 108), ('extra', 106), ('use', 103), ('miss', 92), ('sitewide', 91), ('dont', 79), ('hours', 76), ('express', 75), ('get', 72), ('w', 69), ('ship', 65), ('hurry', 62), ('dresses', 59), ('jeans', 59), ('app', 56), ('one', 52), ('bogo', 51), ('final', 48), ('else', 48), ('standard', 46), ('buy', 43), ('tops', 39), ('shoes', 37), ('exclusive', 37), ('last', 35), ('summer', 33), ('needed', 33), ('pay', 29), ('later', 29), ('essentials', 27), ('download', 27), ('fall', 27), ('till', 26), ('party', 23), ('pm', 23), ('extended', 22), ('almost', 19), ('up', 19), ('halloween', 18), ('us', 18), ('weekend', 17), ('edit', 17), ('daysd', 17), ('hot', 16), ('styles', 15), ('denim', 15), ('shorts', 15), ('next', 14), ('ca', 14), ('starting', 14), ('event', 13), ('soon', 13), ('off', 13), ('nova', 13), ('week', 12), ('sweaters', 12), ('blowout', 11), ('new', 11), ('prices', 10), ('order', 10), ('flash', 10), ('friday', 10), ('starts', 10), ('swim', 10), ('spring', 10), ('boohoo', 10), ('price', 9), ('noon', 9), ('holiday', 9), ('vacation', 9), ('fn', 9), ('gone', 8), ('ld', 8), ('call', 8), ('midnight', 8), ('codeextra', 8), ('nan', 8), ('looks', 8), ('drop', 8), ('deals', 8), ('wont', 8), ('marked', 7), ('coats', 7), ('knits', 7), ('back', 7), ('beauty', 7), ('neededdont', 7), ('added', 7), ('long', 7), ('boots', 6), ('sun', 6)]
+Sentiment Statistics
++--------------------------------+
+|      Sentiment Statistics      |
++-----------+-------+------------+
+| Sentiment | Count | Percentage |
++-----------+-------+------------+
+|  Positive |  184  |   19.3%    |
+|  Negative |   52  |    5.5%    |
+|  Neutral  |  715  |   75.2%    |
++-----------+-------+------------+
 
 
-Boostrap metrics, sample 20 results:
-+----------------+--------------------+--------------------+--------------------+
-| accuracy_score |  precision_score   |    recall_score    |      f1_score      |
-+----------------+--------------------+--------------------+--------------------+
-|     0.745      | 0.7925925925925926 | 0.823076923076923  | 0.8075471698113208 |
-|      0.81      | 0.8625954198473282 | 0.849624060150376  | 0.8560606060606061 |
-|      0.83      | 0.8428571428571429 | 0.9076923076923077 | 0.8740740740740741 |
-|     0.755      | 0.7746478873239436 | 0.8661417322834646 | 0.8178438661710037 |
-|     0.845      | 0.841726618705036  | 0.9285714285714286 | 0.8830188679245283 |
-|     0.825      | 0.8652482269503546 | 0.8840579710144928 | 0.8745519713261649 |
-|      0.77      | 0.8079470198675497 | 0.8776978417266187 | 0.8413793103448276 |
-|     0.785      | 0.8275862068965517 | 0.8695652173913043 | 0.8480565371024734 |
-|     0.765      | 0.7928571428571428 | 0.8604651162790697 | 0.8252788104089218 |
-|     0.805      | 0.8013245033112583 | 0.9307692307692308 | 0.8612099644128113 |
-|      0.76      | 0.7744360902255639 | 0.8512396694214877 | 0.811023622047244  |
-|     0.795      | 0.8108108108108109 | 0.9022556390977443 | 0.8540925266903914 |
-|      0.78      | 0.8120300751879699 | 0.8503937007874016 | 0.8307692307692308 |
-|     0.745      | 0.7874015748031497 | 0.8064516129032258 | 0.796812749003984  |
-|     0.815      | 0.8601398601398601 | 0.8785714285714286 | 0.8692579505300353 |
-|      0.82      | 0.8089171974522293 | 0.9548872180451128 | 0.8758620689655172 |
-|     0.805      | 0.8410596026490066 | 0.8943661971830986 | 0.8668941979522184 |
-|      0.79      | 0.8372093023255814 | 0.8372093023255814 | 0.8372093023255814 |
-|     0.835      | 0.8455882352941176 | 0.905511811023622  | 0.8745247148288974 |
-|     0.795      | 0.8051948051948052 | 0.9185185185185185 | 0.8581314878892733 |
-+----------------+--------------------+--------------------+--------------------+
+Corex topic analysis:
+	Topic 1: bottoms, jeans tops, extra dresses, save orders, week, orders orders, mixitupbogo, download, fn, sitewidethe
+	Topic 2: blowout sale, sale prices, code mixitupbogo free, blowout sale prices, sale live everythingthe, summer outfits, extra use, sale ends soon, shipping orders ends, express shiping
+	Topic 3: boho clothing gothic, event styles, shop gone, half price, sale code hot, jeans wcode, bogo free sweaters, price drop, onlyfree, lingerie
+	Topic 4: bloom spring, download app exclusive, code bogo, code, shop extra, buy free dresses, shop app, app week, mixitup, sale ends soonhurry
+	Topic 5: code neededfinal hours, sale extra codeextra, final hours sale, hurry free day, dresses shoes, sale codesaledont miss, rush shipping, ends standard, black, midnightlast day sale
+	Topic 6: everythingextended, needed free, use code mixitupbogo, code mixitup, message bloom, outfits, midnight, till midnight, usa onlyfree, standard
+	Topic 7: beauty, ends pm, neededhurry, nova essentials, comes, free day shipping, orders free, hours code, fall dont miss, code ld
+	Topic 8: summer sale summer, sitewide code freebuy, orders ends pm, code neededhurry dont, codelove use codelove, gift shop gift, school, premier, codelove valenti, steals starting
+	Topic 9: orders free day, premier weekend premier, weekend premier dont, knits footwear, free jeans code, ends buy pay, code shipit, jeans ends soon, code fallfre, use code fallfre
+	Topic 10: free day, extra codeextraup extra, newaf, free shipping, hours sale, day ship, dont miss code, extra sale use, boohoo, download app
+	Key sentences out of based on LSA algorithm: ['app exclusive message spring wardrobe student loan drop get extra.', 'bogo free tops bottoms use code mixitupbogo free tops bottoms use code mixitup.', 'declining discount dont want wait shop  blast past.', 'formal looks never everything else.', 'everything coming hot ends hoursh minutesm secondss.'] 
 
-Trying to find weaknesses in the model by training models on the error:
-Most important features by catboost:
-+------------------------------------------+------------+
-|                 Feature                  | Importance |
-+------------------------------------------+------------+
-|              num_lead_time               |    37.0    |
-|        num_no_of_special_requests        |    19.0    |
-|        index_market_segment_type         |    11.0    |
-|            num_arrival_month             |    11.0    |
-|          num_avg_price_per_room          |    10.0    |
-|             num_no_of_adults             |    5.0     |
-|             num_arrival_date             |    2.0     |
-|             num_arrival_year             |    2.0     |
-|      num_required_car_parking_space      |    1.0     |
-|          num_no_of_week_nights           |    1.0     |
-|         num_no_of_weekend_nights         |    1.0     |
-|         index_room_type_reserved         |    0.0     |
-|            num_no_of_children            |    0.0     |
-|         index_type_of_meal_plan          |    0.0     |
-|            num_repeated_guest            |    0.0     |
-|     num_no_of_previous_cancellations     |    0.0     |
-| num_no_of_previous_bookings_not_canceled |    0.0     |
-+------------------------------------------+------------+
-
-Print of tree to look for potential segments with high error (use with caution)
-|--- index_room_type_reserved_3 <= 68.50
-|   |--- index_market_segment_type_4 <= 0.50
-|   |   |--- value: [0.19]
-|   |--- index_market_segment_type_4 >  0.50
-|   |   |--- value: [0.10]
-|--- index_room_type_reserved_3 >  68.50
-|   |--- index_market_segment_type_3 <= 99.58
-|   |   |--- value: [0.31]
-|   |--- index_market_segment_type_3 >  99.58
-|   |   |--- value: [0.21]
-
+popular terms extraction:
+[('swim jeans tops code needed co. hurry', 38.0), ('final hours bogo free jeans w code', 30.0), ('day bogo free sweaters jeans wcode bogolast', 28.0), ('bogo free jeans denim shorts code freejeansbogo', 26.0), ('bogo free dresses jeans w code summerfreebogo', 26.0), ('extended bogo free jeans w code freejeansextended', 26.0), ('bogo free jeans denim shorts w codefreejeansbogo', 26.0), ('extended bogo free sweaters jeans wcode bogoextended', 26.0), ('free day ship orders w code bdefree', 26.0), ('noon free day rush shipping orders ends', 24.0)]
 

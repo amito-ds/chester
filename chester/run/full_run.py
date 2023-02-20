@@ -1,17 +1,14 @@
 import warnings
-
-from chester.feature_stats.time_series_stats import TimeSeriesFeatureStatistics
-from chester.features_engineering.time_series.ts_feature_extraction import TimeSeriesFeatureExtraction
-from chester.features_engineering.time_series.ts_features_extraction import TimeSeriesFeaturesExtraction
-from chester.model_training.models.chester_models.best_logistic_regression import LogisticRegressionModel
-from matplotlib import pyplot as plt
 from itertools import chain
+
+from matplotlib import pyplot as plt
 
 from chester.cleaning.cleaner_handler import CleanerHandler
 from chester.feature_stats.categorical_stats import CategoricalStats
-from chester.feature_stats.numeric_stats import NumericStats
 from chester.feature_stats.text_stats import TextStats
+from chester.feature_stats.time_series_stats import TimeSeriesFeatureStatistics
 from chester.features_engineering.features_handler import FeaturesHandler
+from chester.features_engineering.time_series.ts_features_extraction import TimeSeriesFeaturesExtraction
 from chester.model_monitor.error_prediction import ModelWeaknesses
 from chester.model_monitor.model_boostrap import ModelBootstrap
 from chester.model_training.models.chester_models.best_model import BestModel
@@ -214,8 +211,10 @@ def run_madcat(
         CategoricalStats(data_info, max_print=max_stats_col_width).run(plot=plot_stats)
         if len(text_cols) > 0:
             print("Text Feature Statistics")
+            orig_df = data_info.data
             data_info.data = clean_text_df
             TextStats(data_info).run()
+            data_info.data = orig_df
 
         all_features = list(set(chain.from_iterable(list(data_info.feature_types_val.values()))))
         ts_cols = [feat for feat in all_features if feat.startswith("ts_")]
