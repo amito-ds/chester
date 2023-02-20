@@ -62,6 +62,8 @@ class CategoricalStats:
             fig.tight_layout()
             fig.suptitle("Top 5 Value Counts and Percentages for Each Feature")
             for i, col in enumerate(top_n):
+                if i >= dim*dim:
+                    break
                 count_data = pd.DataFrame(self.data[col].value_counts()[0:5]).reset_index(drop=False)
                 total_count = self.data[col].count()
                 percent_data = count_data.copy()
@@ -78,7 +80,6 @@ class CategoricalStats:
                 ax2_i.set_ylabel('Percentages', color='red')
                 ax1_i.set_xlabel(None)
                 ax1_i.set_title(plot_title)
-            # plt.tight_layout()
             plt.show()
             plt.close()
 

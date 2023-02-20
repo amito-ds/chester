@@ -43,21 +43,25 @@ class TimeSeriesPreModelAnalysis:
         num_rows = num_cols = k
 
         # Create a figure with two subplots
-        fig, axs = plt.subplots(nrows=2, figsize=(14, 10))
+        fig, ax = plt.subplots(figsize=(12, 4))
 
-        # Plot the correlation heatmap
+        # Plot the correlation heatmap in the top subplot
         corr_matrix = df.corr()[target_col][1:]
-        sns.heatmap(pd.DataFrame(corr_matrix).transpose(), cmap="coolwarm", vmin=-1, vmax=1, annot=True, ax=axs[0])
-        axs[0].set_title("Correlation between features and target")
+        sns.heatmap(pd.DataFrame(corr_matrix).transpose(), cmap="coolwarm", vmin=-1, vmax=1, annot=True, ax=ax)
+        ax.set_title("Correlation between features and target")
+        ax.set_xlabel("")
+        plt.show()
+        plt.close()
 
-        # Plot the partial dependence grid
+        # Plot the partial dependence grid in the bottom subplot
+        # Create a figure with two subplots
+        fig, ax = plt.subplots(figsize=(14, 4 + k * 4))
         for i, moving_metric_col in enumerate(moving_metric_cols):
             if i >= k * k:
-                plt.close()
-                return None
+                break
             row = i // num_cols
             col = i % num_cols
-            ax = fig.add_subplot(num_rows + 1, num_cols, num_cols + 1 + i)
+            ax = fig.add_subplot(num_rows, num_cols, i+1)
             ax.plot(df[moving_metric_col], df[target_col], '.', alpha=0.1)
             ax.set_xlabel(moving_metric_col)
             ax.set_ylabel(target_col)
@@ -66,8 +70,8 @@ class TimeSeriesPreModelAnalysis:
             if row != num_rows - 1:
                 ax.set_xticklabels([])
 
-        fig.suptitle("Correlation and partial dependence plots")
-        fig.subplots_adjust(wspace=0.2, hspace=0.5)
+        fig.suptitle("Partial Dependence Plots Between Target and Moving Average of the Past Periods")
+        # fig.subplots_adjust(wspace=0.2, hspace=0.5)
         plt.show()
         plt.close()
 

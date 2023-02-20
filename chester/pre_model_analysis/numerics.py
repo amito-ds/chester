@@ -40,9 +40,6 @@ class NumericPreModelAnalysis:
                             name.startswith("num_ts_mm") or name.startswith("num_ts_freq_") or
                             (name.startswith("num_ts_") and (name.endswith("_sin") or name.endswith("_cos")))]))
 
-        print("WOWOWOW")
-        print("ts_cols", ts_cols)
-        print("all_cols", all_cols)
         not_ts_cols = [col for col in all_cols if col not in ts_cols]
         if len(ts_cols) > 5:
             numeric_cols = not_ts_cols + self.sample_list(ts_cols)

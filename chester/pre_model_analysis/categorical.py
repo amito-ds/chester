@@ -201,16 +201,15 @@ class CategoricalPreModelAnalysis:
                 fontweight='bold')
             grid_size = math.ceil(math.sqrt(top_features))
             num_features = min(grid_size * grid_size, top_features)
-            num_rows = int(np.ceil(num_features / grid_size))
             for i, col in enumerate(top_feature_names[:num_features]):
-                plt.subplot(num_rows, grid_size, i + 1)
-                column = self.data[col]
-                if column.dtype == "object":
-                    column = column.astype("category").cat.codes
-                    column = column[column < 5]
-                    top_values = list(self.data[col].astype("category").cat.categories[:5])
-                    data_filtered = self.data[self.data[col].isin(top_values)]
-                    sns.boxplot(x=column, y=target, data=data_filtered)
+                if i >= dim * dim:
+                    break
+                plt.subplot(dim, dim, i + 1)
+                column = self.data[col].apply(lambda x: "'" + str(x))
+                new_df = pd.concat([column, target], axis=1)
+                top_values = list(column.value_counts().nlargest(5).index)
+                data_filtered = new_df[column.isin(top_values)]
+                sns.boxplot(x=col, y=target, data=data_filtered)
                 plt.ylabel("Target")
                 plt.xlabel("{} Value".format(col))
                 plt.subplots_adjust(hspace=0.5, wspace=0.5)

@@ -50,8 +50,8 @@ target_column = 'target'
 ###############################################################################################
 
 ###############################################################################################
-df = pd.read_csv("/Users/amitosi/PycharmProjects/chester/chester/data/daily_cinema.csv")
-df.rename(columns={'humidity': 'target'}, inplace=True)
+# df = pd.read_csv("/Users/amitosi/PycharmProjects/chester/chester/data/daily_cinema.csv")
+# df.rename(columns={'humidity': 'target'}, inplace=True)
 ###############################################################################################
 
 ###############################################################################################
@@ -85,10 +85,10 @@ df.rename(columns={'humidity': 'target'}, inplace=True)
 
 ################################################################################################
 # categorical
-# import seaborn as sns
-# df = sns.load_dataset("titanic")
-# df.rename(columns={'survived': target_column}, inplace=True)
-# df.drop(columns=['alive'], inplace=True)
+import seaborn as sns
+df = sns.load_dataset("titanic")
+df.rename(columns={'survived': target_column}, inplace=True)
+df.drop(columns=['alive'], inplace=True)
 ###############################################################################################
 
 ###############################################################################################
@@ -242,19 +242,19 @@ def load_yaho(tickers=None, start_date='2010-01-01', end_date='2023-02-15'):
     return df
 
 
-df = load_yaho()
-print("df shape", df.shape)
-print("df cols", df.columns)
+# df = load_yaho()
+# print("df shape", df.shape)
+# print("df cols", df.columns)
 
 madcat_collector = run_madcat(Data(df=df, target_column='target'),
-                              is_feature_stats=False,
+                              is_feature_stats=True,
                               # time_series_handler=TimeSeriesHandler(id_cols=['store_nbr', 'family']),
                               # time_series_handler=TimeSeriesHandler(id_cols=["id"]),
                               time_series_handler=TimeSeriesHandler(id_cols=["id"]),
                               is_pre_model=True,
-                              is_model_training=False,
+                              is_model_training=True,
                               model_run=ModelRun(n_models=2),
-                              is_post_model=False, is_model_weaknesses=False,
+                              is_post_model=True, is_model_weaknesses=True,
                               plot=True
                               )
 

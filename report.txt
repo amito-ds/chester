@@ -2,53 +2,126 @@ Full report to analyze my data:
 
 Data information:
 Data Information Report
-Problem Type: Regression
+Problem Type: Binary regression
 Target Variable: target
-Feature Types: {'numeric': [], 'boolean': [], 'text': [], 'categorical': ['id'], 'time': ['date'], 'id': []}
-Loss Function: R squared
-Evaluation Metrics: ['R2', 'MSE', 'MAE', 'MAPE']
-Optional Models: {'catboost', 'baseline-median', 'baseline-average', 'linear'}
+Feature Types: {'numeric': ['pclass', 'age', 'sibsp', 'parch', 'fare'], 'boolean': ['adult_male', 'alone'], 'text': [], 'categorical': ['sex', 'embarked', 'class', 'who', 'deck', 'embark_town'], 'time': [], 'id': []}
+Loss Function: Cross entropy
+Evaluation Metrics: ['MSE', 'ROC', 'MAE', 'MAPE']
+Optional Models: {'baseline-average', 'catboost', 'logistic', 'linear', 'baseline-median'}
 
 
 features engineering process for the data:
-** model pre analysis report:
+features statistics for the data. Analyzed by groups (text, numeric, categorical) if exists:
+
+Numerical Feature statistics:
+
+Categorical Feature statistics:
 Feature stats:
-                       col # unique # missing        max      min        avg  \
-12    ts_freq_21_mean_date       22         6  139885.71  86400.0  125293.57   
-34     ts_freq_3_mean_date        5         6   201600.0  86400.0  125323.64   
-9        ts_mm_21_max_date     2463         3     343.11     7.31      70.36   
-54  ts_dayinmonth_date_sin       31         0        1.0     -1.0       0.01   
-3      ts_freq_21_max_date        4         6   432000.0  86400.0   303264.0   
-31      ts_freq_2_max_date        5         6   432000.0  86400.0  163688.73   
-15      ts_mm_360_min_date      770         3      239.0     6.86      44.73   
-28        ts_mm_5_max_date     4635         3     343.11     7.01      68.74   
-50        ts_mm_3_min_date     5794         3     341.25     6.86      66.83   
-42       ts_mm_21_min_date     2386         3     329.68     6.86      63.84   
+           col # unique # missing                       Distribution  \
+5          sex        2         0             male: 65%, female: 35%   
+0        class        3         0  Third: 55%, First: 24%, Second...   
+4     embarked        3         2              S: 72%, C: 19%, Q: 9%   
+1          who        3         0  man: 60%, woman: 30%, child: 9...   
+3  embark_town        3         2  Southampton: 72%, Cherbourg: 1...   
+2         deck        7       688  C: 29%, B: 23%, D: 16%, E: 16%...   
 
-         std                CI     median              top_vals  \
-12   5726.54  (125199, 125388)  123428.57  139886,135771,131657   
-34  31158.55  (124809, 125839)   144000.0  201600,172800,144000   
-9      69.37      (69.2, 71.5)      42.61           343,343,342   
-54      0.71      (-0.0, 0.02)       -0.0         1.0,0.99,0.97   
-3   44888.71  (302522, 304006)   345600.0  432000,345600,259200   
-31  92442.05  (162161, 165217)    86400.0  432000,345600,259200   
-15     43.91      (44.0, 45.5)      27.72           239,239,238   
-28     67.61      (67.6, 69.9)      41.77           343,343,342   
-50     65.55      (65.8, 67.9)      41.08           341,340,339   
-42     62.56      (62.8, 64.9)       39.3           330,329,329   
+                              Sample Top 5 values coverage  
+5                       female, male                  100%  
+0               Third, Second, First                  100%  
+4                            Q, C, S                  100%  
+1                  child, woman, man                  100%  
+3  Queenstown, Southampton, Cherb...                  100%  
+2                            F, C, D                   92%  
 
-            bottom_vals  
-12  86400,105600,108000  
-34  86400,115200,144000  
-9        7.31,7.42,7.43  
-54     -1.0,-0.99,-0.97  
-3   86400,259200,345600  
-31  86400,172800,259200  
-15       6.86,6.86,6.93  
-28        7.01,7.1,7.12  
-50       6.86,6.86,6.93  
-42       6.86,6.86,6.93  
+** model pre analysis report:
+Training models and choosing the best one
+Model results compared - showing the best out of each type after CV & HP tuning: 
++-------+-------------------------+---------------------+--------------------+---------------------+--------------------------------+
+|  type |          model          |  mean_squared_error |   roc_auc_score    | mean_absolute_error | mean_absolute_percentage_error |
++-------+-------------------------+---------------------+--------------------+---------------------+--------------------------------+
+|  test |      BaselineModel      | 0.23942301764675022 |        0.5         |  0.4772678781151633 |       1074469129163465.4       |
+|  test |      CatboostModel      | 0.13862463132917538 | 0.8568827638823905 |  0.2816547139618637 |       622927519630757.4        |
+|  test |  LinearRegressionModel  | 0.16260559249297904 | 0.8453734620934634 |  0.3628465148767137 |       814116353406080.6        |
+|  test | LogisticRegressionModel | 0.14247040017843488 | 0.8534501343832114 |  0.2828195859241026 |       638448401807927.2        |
+| train |      BaselineModel      | 0.23784486046841305 |        0.5         |  0.4756897209368261 |       1071158024977533.0       |
+| train |      CatboostModel      | 0.12549293158659114 | 0.8816376870577824 |  0.2669269229908834 |       589992952379825.8        |
+| train |  LinearRegressionModel  | 0.15764103698246365 | 0.8536726318075771 | 0.35674080680118914 |       801510878726709.4        |
+| train | LogisticRegressionModel | 0.13238863897391162 | 0.8632399356219228 |  0.2711465666599646 |       610567741865034.8        |
++-------+-------------------------+---------------------+--------------------+---------------------+--------------------------------+
 
-top 50 with lowest partial pvalue for categorical feat based on chi square:
-[('id', 0.0), ('ts_year_date', 0.0), ('ts_month_date', 3.0081808371439236e-48), ('ts_quarter_date', 2.9233930462029097e-39), ('ts_dayinweek_date', 0.9999999999999998), ('ts_dayinmonth_date', 1.0)]
+
+Post model analysis - analyzing results of the chosen model: 
+Top 100 Feature importance (in %, 100 = the most important one):
+{'index_who': 100, 'index_sex': 47, 'is_adult_male': 35, 'index_class': 34, 'index_deck': 14, 'num_age': 12, 'num_sibsp': 11, 'num_pclass': 10, 'index_embark_town': 8, 'num_fare': 7, 'index_embarked': 6, 'num_parch': 2, 'is_alone': 1}
+
+Learning curve by training examples
++-------------+----------------------+----------------------+----------------------+----------------------+
+| train_sizes |  train_scores_mean   |   train_scores_std   |   test_scores_mean   |   test_scores_std    |
++-------------+----------------------+----------------------+----------------------+----------------------+
+|      56     | -0.09563863111877904 |  0.0054764918336146  | -0.18046487479051074 | 0.021264032384847725 |
+|     184     | -0.09812464651010974 | 0.004801358567862238 | -0.15351026045607402 | 0.015309411510692005 |
+|     312     | -0.11315591215334768 | 0.01171811836075608  | -0.14298314019388206 | 0.01828595123822636  |
+|     440     | -0.11886174758877413 | 0.007066358423464668 | -0.1409066639972013  | 0.01753538357976015  |
+|     569     | -0.1256129401043602  | 0.005634739157847562 | -0.13877969269572216 | 0.018997938384033474 |
++-------------+----------------------+----------------------+----------------------+----------------------+
+
+
+Boostrap metrics, sample 20 results:
++---------------------+--------------------+---------------------+--------------------------------+
+|  mean_squared_error |   roc_auc_score    | mean_absolute_error | mean_absolute_percentage_error |
++---------------------+--------------------+---------------------+--------------------------------+
+| 0.11736078268338522 | 0.9105797576154602 |  0.2660926174052454 |       691227782233093.2        |
+| 0.10143739253004344 | 0.9284615384615384 | 0.24144027156933062 |       569578352487588.0        |
+| 0.09143288524097844 | 0.9400352733686066 | 0.23032727983104817 |       540039118399488.6        |
+| 0.10737923385825152 | 0.9073066666666666 | 0.24392839027840005 |       622749807924202.1        |
+|  0.0894851945038512 | 0.958701134930643  |  0.2295907277502052 |       621541776656814.4        |
+| 0.10371472516542209 | 0.9263736263736264 |  0.2524547704876635 |       674560678068415.1        |
+| 0.10141005413559628 | 0.9177389705882353 |  0.2469591383405152 |       636480933236764.5        |
+| 0.08321631529954747 | 0.9520000000000001 |  0.223171420449457  |       562028496698019.5        |
+| 0.09045874844900621 | 0.9346874649309842 | 0.22624332596451222 |       587166226563171.9        |
+|  0.1089055304517819 | 0.928888888888889  | 0.24956516425649825 |       723134867508080.1        |
+| 0.08449545415425591 | 0.9364311829225144 |  0.2214013094633146 |       650817472365141.0        |
+| 0.10560682932773374 | 0.9190109890109891 |  0.2506945607825724 |       647909034088260.4        |
+| 0.08387529348664316 | 0.9572299285414039 | 0.22441228429515125 |       547917166416676.3        |
+| 0.10203607205656649 | 0.9329427764410504 | 0.24444950442243296 |       598217739521650.2        |
+| 0.11261042113471477 | 0.9101866666666667 | 0.25003026717951404 |       684893089847256.8        |
+| 0.12337225946030944 | 0.8933586738464787 | 0.27338669524623055 |       648586714102599.6        |
+| 0.11594631389636241 | 0.9163736263736263 | 0.27037371470613997 |       706430691417834.0        |
+| 0.11602321247617374 | 0.9157291666666667 | 0.26906905255460706 |       628256643248658.2        |
+|  0.0801294640814318 | 0.9645859604875999 | 0.21792925016637896 |       496903416418273.25       |
+| 0.09995656682441617 | 0.9352485691841543 |   0.24352288051384  |       716309087402426.8        |
++---------------------+--------------------+---------------------+--------------------------------+
+
+Trying to find weaknesses in the model by training models on the error:
+Most important features by catboost:
++-------------------+------------+
+|      Feature      | Importance |
++-------------------+------------+
+|   is_adult_male   |    37.0    |
+|     index_who     |    19.0    |
+|    index_class    |    15.0    |
+|     num_pclass    |    8.0     |
+|      num_age      |    5.0     |
+|      num_fare     |    4.0     |
+|     index_deck    |    4.0     |
+|     num_sibsp     |    3.0     |
+|     index_sex     |    2.0     |
+| index_embark_town |    2.0     |
+|     num_parch     |    1.0     |
+|   index_embarked  |    1.0     |
+|      is_alone     |    0.0     |
++-------------------+------------+
+
+Print of tree to look for potential segments with high error (use with caution)
+|--- index_embark_town_1 <= 0.50
+|   |--- index_deck_4 <= 0.50
+|   |   |--- value: [0.65]
+|   |--- index_deck_4 >  0.50
+|   |   |--- value: [0.87]
+|--- index_embark_town_1 >  0.50
+|   |--- index_embark_town_0 <= 14.98
+|   |   |--- value: [1.99]
+|   |--- index_embark_town_0 >  14.98
+|   |   |--- value: [1.78]
+
 
