@@ -246,15 +246,15 @@ df = load_yaho()
 print("df shape", df.shape)
 print("df cols", df.columns)
 
-madcat_collector = run_madcat(Data(df=df.sample(100), target_column='target'),
+madcat_collector = run_madcat(Data(df=df, target_column='target'),
                               is_feature_stats=True,
                               # time_series_handler=TimeSeriesHandler(id_cols=['store_nbr', 'family']),
                               # time_series_handler=TimeSeriesHandler(id_cols=["id"]),
-                              time_series_handler=TimeSeriesHandler(),
-                              is_pre_model=True,
-                              is_model_training=True,
+                              time_series_handler=TimeSeriesHandler(id_cols=["id"]),
+                              is_pre_model=False,
+                              is_model_training=False,
                               model_run=ModelRun(n_models=2),
-                              is_post_model=True, is_model_weaknesses=True,
+                              is_post_model=False, is_model_weaknesses=False,
                               plot=True
                               )
 

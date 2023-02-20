@@ -7,66 +7,29 @@ Target Variable: target
 Feature Types: {'numeric': [], 'boolean': [], 'text': [], 'categorical': ['id'], 'time': ['date'], 'id': []}
 Loss Function: R squared
 Evaluation Metrics: ['R2', 'MSE', 'MAE', 'MAPE']
-Optional Models: {'baseline-median', 'catboost', 'baseline-average', 'linear'}
+Optional Models: {'baseline-average', 'baseline-median', 'linear', 'catboost'}
 
 
 features engineering process for the data:
 features statistics for the data. Analyzed by groups (text, numeric, categorical) if exists:
 
 Numerical Feature statistics:
-Feature stats:
-                           col # unique # missing         max         min  \
-31       num_ts_mm_21_max_date       23         1      342.45        9.01   
-18        num_ts_mm_5_min_date       35         1      151.12        8.93   
-58   num_ts_freq_360_mean_date       96         2   8668800.0   2073600.0   
-22        num_ts_mm_7_min_date       30         1      143.64        8.93   
-50    num_ts_freq_14_mean_date       96         2   8668800.0  1734171.43   
-27       num_ts_mm_14_max_date       24         1      342.45        9.01   
-54    num_ts_freq_21_mean_date       95         2   8668800.0   2073600.0   
-1   num_ts_dayinmonth_date_cos       25         0         1.0       -0.99   
-34     num_ts_freq_1_mean_date       62         2  20908800.0     86400.0   
-39   num_ts_freq_3_median_date       43         2  16761600.0    259200.0   
-
-           avg         std                  CI      median  \
-31      114.13      113.24         (95.5, 133)       52.95   
-18       49.84       43.61        (42.7, 57.0)       28.64   
-58   4159707.1   698167.45  (4044859, 4274556)  4094403.77   
-22       46.59       41.07        (39.8, 53.3)       28.64   
-50   4155765.3  1418016.61  (3922502, 4389029)  3925028.57   
-27      113.65      112.37         (95.2, 132)       52.95   
-54  4233929.85  1122649.29  (4049254, 4418606)  3990857.14   
-1        -0.02        0.74        (-0.15, 0.1)       -0.05   
-34  4075787.76  4448595.02  (3343994, 4807582)   2635200.0   
-39  3130236.73  2607748.87  (2701262, 3559211)   2505600.0   
-
-                      top_vals              bottom_vals  
-31                 342,282,246           9.01,9.05,14.2  
-18                 151,144,140           8.93,9.01,11.8  
-58     8668800,6868800,5823360  2073600,2548800,3422400  
-22                 144,140,138           8.93,9.01,11.8  
-50     8668800,7331657,7146514  1734171,1826743,1937829  
-27                 342,295,282           9.01,9.05,14.2  
-54     8668800,6868800,6422400  2073600,2546743,2548800  
-1                1.0,0.98,0.98        -0.99,-0.99,-0.95  
-34  20908800,20390400,17539200      86400,259200,345600  
-39   16761600,13564800,9763200     259200,345600,777600  
-
 
 Categorical Feature statistics:
 Feature stats:
                   col # unique # missing                       Distribution  \
-3       ts_month_date       12         0  3.0: 13%, 1.0: 12%, 4.0: 10%, ...   
-5        ts_year_date       14         0  2015.0: 13%, 2012.0: 11%, 2022...   
-2  ts_dayinmonth_date       29         0  18.0: 7%, 30.0: 7%, 28.0: 6%, ...   
-0     ts_quarter_date        4         0  1.0: 31%, 2.0: 26%, 3.0: 22%, ...   
-1                  id        3         0  MSFT: 35%, GOOG: 35%, AAPL: 30...   
-4   ts_dayinweek_date        5         0  Tuesday: 21%, Wednesday: 20%, ...   
+2     ts_quarter_date        4         0  3.0: 25%, 1.0: 25%, 4.0: 25%, ...   
+3  ts_dayinmonth_date       31         0  8.0: 3%, 9.0: 3%, 11.0: 3%, 13...   
+1   ts_dayinweek_date        5         0  Tuesday: 21%, Wednesday: 21%, ...   
+5       ts_month_date       12         0  8.0: 9%, 3.0: 9%, 10.0: 9%, 1....   
+0        ts_year_date       14         0  2020.0: 8%, 2015.0: 8%, 2013.0...   
+4                  id        3         0  GOOG: 33%, MSFT: 33%, AAPL: 33...   
 
-                         Sample Top 5 values coverage  
-3                     5, 12, 11                   53%  
-5              2020, 2012, 2018                   54%  
-2                     9, 31, 14                   30%  
-0                       2, 4, 3                  100%  
-1              MSFT, AAPL, GOOG                  100%  
-4  Wednesday, Thursday, Tuesday                  100%  
+                    Sample Top 5 values coverage  
+2                  2, 4, 1                  100%  
+3               19, 18, 25                   17%  
+1  Tuesday, Monday, Friday                  100%  
+5                 5, 10, 2                   43%  
+0         2017, 2012, 2016                   38%  
+4         MSFT, GOOG, AAPL                  100%  
 

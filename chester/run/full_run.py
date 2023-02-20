@@ -206,7 +206,7 @@ def run_madcat(
             title = "\nNumerical Feature statistics:"
             print(title)
             rc.save_text(title)
-            NumericStats(data_info_num_stats, max_print=max_stats_col_width).run(plot=plot_stats)
+            # NumericStats(data_info_num_stats, max_print=max_stats_col_width).run(plot=plot_stats)
         title = "\nCategorical Feature statistics:"
         print(title)
         rc.save_text(title)

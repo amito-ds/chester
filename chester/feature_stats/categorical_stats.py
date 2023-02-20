@@ -73,7 +73,7 @@ class CategoricalStats:
                 ax1_i = ax_i
                 ax1_i.bar(count_data.iloc[:, 0], count_data.iloc[:, 1].to_list(), color='gray')
                 ax2_i = ax1_i.twinx()
-                ax2_i.plot(percent_data.iloc[:, 0], percent_data.iloc[:, 1].to_list(), color='red', marker='o')
+                ax2_i.plot(percent_data.iloc[:, 0], percent_data.iloc[:, 1].to_list(), marker='o', color='red')
                 ax1_i.set_ylabel('Counts', color='gray')
                 ax2_i.set_ylabel('Percentages', color='red')
                 ax1_i.set_xlabel(None)

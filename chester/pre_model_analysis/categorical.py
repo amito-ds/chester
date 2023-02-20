@@ -221,25 +221,26 @@ class CategoricalPreModelAnalysis:
                 plt.close()
         elif self.data_info.problem_type_val in ["Multiclass classification"]:
             max_plots = 16
-            top_n = self.data[:top_features].columns
-            dim = math.ceil(math.sqrt(len(top_n)))
-            num_rows = math.ceil(max_plots / dim)
-            fig, ax = plt.subplots(num_rows, dim, figsize=(20, 20))
+            top_n = self.data[:max_plots].columns
+            print("top_n", top_n)
+            dim = max(math.floor(math.sqrt(len(top_n))), 2)
+            print("dim", dim)
+            fig, ax = plt.subplots(dim, dim, figsize=(19, 4 * dim))
             fig.tight_layout()
             plt.suptitle(
                 "Heatmap to Show Correlation between Sampled Categorical Features (top 5 categories) and Target",
-                fontsize=16,
+                fontsize=15,
                 fontweight='bold')
             for i, col in enumerate(top_feature_names):
                 if i > 15:
                     return None
-                plt.subplot(num_rows, dim, i + 1)
+                plt.subplot(dim, dim, i + 1)
                 crosstab = pd.crosstab(self.data[col], self.target, normalize='index') * 100
                 crosstab = crosstab[(crosstab.T != 0).any()]
                 crosstab = crosstab.loc[:, (crosstab != 0).any(axis=0)]
                 crosstab = crosstab.loc[crosstab.sum(axis=1).sort_values(ascending=False).index[:5]]
                 sns.heatmap(crosstab, annot=False, cmap="YlGnBu", fmt='g')
-                plt.title(col, fontsize=12, fontweight='bold')
+                plt.title(col, fontsize=10, fontweight='bold')
             plt.show()
             plt.close()
 

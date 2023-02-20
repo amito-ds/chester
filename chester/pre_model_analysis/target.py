@@ -23,7 +23,6 @@ class TargetPreModelAnalysis:
                         list(self.data_info.feature_types_val["time"]) + \
                         [name for name in self.data_info.data.columns if name.startswith("ts_")]
         relevant_cols = list(set(relevant_cols))
-        print("Target relevant cols", relevant_cols)
         self.target_df = self.data_info.data[relevant_cols]  # select target, date and ts cols
         self.target_df.rename(columns={self.data_info.target: 'target_label'}, inplace=True)
         self.target_data_info = DataInfo(data=self.target_df.sample(min(len(self.target_df), 10000)))
