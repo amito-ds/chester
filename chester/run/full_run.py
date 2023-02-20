@@ -235,19 +235,19 @@ def run_madcat(
         print(chapter_title('model pre analysis'))
         # label stats
         print("Label pre model analysis:")
-        # TargetPreModelAnalysis(data_info=data_info, time_series_handler=time_series_handler).run(plot)
+        TargetPreModelAnalysis(data_info=data_info, time_series_handler=time_series_handler).run(plot)
         TimeSeriesPreModelAnalysis(data_info=data_info, time_series_handler=time_series_handler).run()
         # num, cat pre model
-        # if data_info_num_stats is None:
-        #     data_info_num_stats = DataInfo(data=final_df, target=target_column)
-        #     data_info_num_stats.calculate()
-        # NumericPreModelAnalysis(data_info_num_stats).run(plot)
-        # plt.close()
-        # # cat if found any
-        # cat_not_ts = data_info.feature_types_val["categorical"]
-        # if len(cat_not_ts) > 0:
-        #     print("Categorical pre model analysis:")
-        #     CategoricalPreModelAnalysis(data_info).run(plot)
+        if data_info_num_stats is None:
+            data_info_num_stats = DataInfo(data=final_df, target=target_column)
+            data_info_num_stats.calculate()
+        NumericPreModelAnalysis(data_info_num_stats).run(plot)
+        plt.close()
+        # cat if found any
+        cat_not_ts = data_info.feature_types_val["categorical"]
+        if len(cat_not_ts) > 0:
+            print("Categorical pre model analysis:")
+            CategoricalPreModelAnalysis(data_info).run(plot)
     ####################################################
     # model
     if is_model_training:

@@ -87,16 +87,3 @@ class TimeSeriesFeatureExtraction:
         if 'regression' in self.data_info.problem_type_val.lower():
             self.target_lags()
         self.freq_features()
-
-#
-# df = pd.read_csv("/Users/amitosi/PycharmProjects/chester/chester/data/day.csv")
-# df.rename(columns={'cnt': 'target'}, inplace=True)
-# dat_info = DataInfo(data=df, target='target')
-# dat_info.calculate()
-# # print(dat_info)
-#
-# # ts_handler = TimeSeriesHandler()
-# ts_handler = TimeSeriesHandler(id_cols=['workingday'])
-# tsfe = TimeSeriesFeatureExtraction(column=df['dteday'], col_name='dteday', data_info=dat_info,
-#                                    time_series_handler=ts_handler)
-# tsfe.run()

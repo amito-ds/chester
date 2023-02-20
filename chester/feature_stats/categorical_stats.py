@@ -1,7 +1,6 @@
 import math
 
 import pandas as pd
-import seaborn as sns
 from matplotlib import pyplot as plt
 
 from chester.zero_break.problem_specification import DataInfo
@@ -62,7 +61,7 @@ class CategoricalStats:
             fig.tight_layout()
             fig.suptitle("Top 5 Value Counts and Percentages for Each Feature")
             for i, col in enumerate(top_n):
-                if i >= dim*dim:
+                if i >= dim * dim:
                     break
                 count_data = pd.DataFrame(self.data[col].value_counts()[0:5]).reset_index(drop=False)
                 total_count = self.data[col].count()

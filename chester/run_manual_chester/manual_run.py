@@ -52,7 +52,7 @@ target_column = 'target'
 ###############################################################################################
 # df = pd.read_csv("/Users/amitosi/PycharmProjects/chester/chester/data/daily_cinema.csv")
 # df.rename(columns={'humidity': 'target'}, inplace=True)
-###############################################################################################
+##############################################################################################
 
 ###############################################################################################
 # df = pd.read_csv("chester/model_training/models/chester_models/day.csv")
@@ -85,10 +85,10 @@ target_column = 'target'
 
 ################################################################################################
 # categorical
-import seaborn as sns
-df = sns.load_dataset("titanic")
-df.rename(columns={'survived': target_column}, inplace=True)
-df.drop(columns=['alive'], inplace=True)
+# import seaborn as sns
+# df = sns.load_dataset("titanic")
+# df.rename(columns={'survived': target_column}, inplace=True)
+# df.drop(columns=['alive'], inplace=True)
 ###############################################################################################
 
 ###############################################################################################
@@ -123,7 +123,7 @@ df.drop(columns=['alive'], inplace=True)
 
 
 ###############################################################################################
-# df1 = pd.read_csv("chester/run_manual_chester/Hotel Reservations.csv")
+# df1 = pd.read_csv("/Users/amitosi/PycharmProjects/chester/chester/run_manual_chester/Hotel Reservations.csv")
 # df = df1.copy(deep=False)
 # df.rename(columns={'booking_status': 'target'}, inplace=True)
 # feature_types = {'numeric': ['no_of_adults', 'no_of_children', 'no_of_weekend_nights', 'no_of_week_nights',
@@ -135,10 +135,10 @@ df.drop(columns=['alive'], inplace=True)
 #                  'text': [],
 #                  'categorical': ['type_of_meal_plan', 'room_type_reserved', 'market_segment_type'], 'time': []}
 ###############################################################################################
-# df1 = pd.read_csv("chester/run_manual_chester/loans_1.csv")
-# df = df1.copy(deep=False)
-# df.rename(columns={'Loan_Status': 'target'}, inplace=True)
-# df.dropna(subset=['target'], inplace=True)
+df1 = pd.read_csv("chester/run_manual_chester/loans_1.csv")
+df = df1.copy(deep=False)
+df.rename(columns={'Loan_Status': 'target'}, inplace=True)
+df.dropna(subset=['target'], inplace=True)
 ###############################################################################################
 
 ###############################################################################################
@@ -250,7 +250,7 @@ madcat_collector = run_madcat(Data(df=df, target_column='target'),
                               is_feature_stats=True,
                               # time_series_handler=TimeSeriesHandler(id_cols=['store_nbr', 'family']),
                               # time_series_handler=TimeSeriesHandler(id_cols=["id"]),
-                              time_series_handler=TimeSeriesHandler(id_cols=["id"]),
+                              # time_series_handler=TimeSeriesHandler(id_cols=["id"]),
                               is_pre_model=True,
                               is_model_training=True,
                               model_run=ModelRun(n_models=2),

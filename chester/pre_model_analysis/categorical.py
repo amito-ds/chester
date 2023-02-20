@@ -160,7 +160,7 @@ class CategoricalPreModelAnalysis:
             else:
                 max_plots = min(9, top_features)
                 dim = min(math.ceil(math.sqrt(max_plots)), 2)
-                fig, ax = plt.subplots(dim, dim, figsize=(18, 15))
+                fig, ax = plt.subplots(dim, dim, figsize=(14, 4 + 4 * dim))
                 fig.tight_layout()
                 if classification_row_percent:
                     plt.suptitle("Partial Plot to Identify Patterns between Sampled Categorical Features and Target\n"
@@ -171,6 +171,8 @@ class CategoricalPreModelAnalysis:
                                  "Showing % from Target (column)",
                                  fontsize=14, fontweight='bold')
                 for i, col in enumerate(top_feature_names):
+                    if i >= dim * dim:
+                        break
                     ax_i = ax[i // dim, i % dim]
                     if classification_row_percent:
                         crosstab = pd.crosstab(self.data[col], self.target, normalize='index') * 100
