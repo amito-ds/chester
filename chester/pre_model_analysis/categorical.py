@@ -9,7 +9,6 @@ import seaborn as sns
 from matplotlib.patches import Patch
 from sklearn.manifold import TSNE
 from wordcloud import WordCloud
-from sklearn.cluster import KMeans
 
 from chester.zero_break.problem_specification import DataInfo
 

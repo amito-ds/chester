@@ -49,22 +49,22 @@ target_column = 'target'
 ###############################################################################################
 
 ###############################################################################################
-df = pd.read_csv("/Users/amitosi/PycharmProjects/chester/chester/data/camps.csv")
-df.rename(columns={'Competitors ': 'target'}, inplace=True)
+# df = pd.read_csv("/Users/amitosi/PycharmProjects/chester/chester/data/camps.csv")
+# df.rename(columns={'Competitors ': 'target'}, inplace=True)
 ###############################################################################################
 
 
 ###############################################################################################
-# df = pd.read_csv("/Users/amitosi/PycharmProjects/chester/chester/data/daily_cinema.csv")
-# df.rename(columns={'humidity': 'target'}, inplace=True)
+df = pd.read_csv("/Users/amitosi/PycharmProjects/chester/chester/data/daily_cinema.csv")
+df.rename(columns={'humidity': 'target'}, inplace=True)
 ##############################################################################################
 
 ###############################################################################################
 # df = pd.read_csv("chester/model_training/models/chester_models/day.csv")
 # df = pd.read_csv("/Users/amitosi/PycharmProjects/chester/chester/data/time_series_kaggle.csv")
 # df = df[['date', 'store_nbr', 'family', 'sales']]
-#
-# top_stores = df.groupby('store_nbr').size().sort_values(ascending=False)[:1000].index
+
+# top_stores = df.groupby('store_nbr').size().sort_values(ascending=False)[:5].index
 # df = df[df['store_nbr'].isin(top_stores)]
 # df.rename(columns={'sales': 'target'}, inplace=True)
 ###############################################################################################
@@ -261,8 +261,8 @@ madcat_collector = run_madcat(Data(df=df, target_column='target'),
                               model_run=ModelRun(n_models=2),
                               is_post_model=True, is_model_weaknesses=True,
                               plot=True,
-                              feature_types={'numeric': [], 'boolean': [], 'text': ['Campaign Name'],
-                                             'categorical': ['Campaign Name'], 'time': ['Date'], 'id': []}
+                              # feature_types={'numeric': [], 'boolean': [], 'text': ['Campaign Name'],
+                              #                'categorical': ['Campaign Name'], 'time': ['Date'], 'id': []}
                               )
 
 # output_collector = run_madcat(
@@ -273,3 +273,4 @@ madcat_collector = run_madcat(Data(df=df, target_column='target'),
 #     # feature_types=feature_types,
 #     is_model_training=True, is_post_model=True, is_model_weaknesses=True
 # )
+

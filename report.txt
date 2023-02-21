@@ -2,24 +2,15 @@ Full report to analyze my data:
 
 Data information:
 Data Information Report
-Problem Type: Multiclass classification
+Problem Type: Regression
 Target Variable: target
-Feature Types: {'numeric': set(), 'boolean': set(), 'text': {'Campaign Name'}, 'categorical': {'Campaign Name'}, 'time': {'Date'}, 'other': set()}
-Loss Function: Cross entropy
-Evaluation Metrics: ['Accuracy', 'Precision', 'Recall', 'F1']
-Optional Models: {'baseline-mode', 'catboost', 'logistic'}
+Feature Types: {'numeric': ['meantemp', 'wind_speed', 'meanpressure'], 'boolean': [], 'text': [], 'categorical': [], 'time': ['date'], 'id': []}
+Loss Function: R squared
+Evaluation Metrics: ['R2', 'MSE', 'MAE', 'MAPE']
+Optional Models: {'baseline-median', 'catboost', 'baseline-average', 'linear'}
 
 
-Cleaning and preprocessing Campaign Name column
-The following cleaning steps will be applied to clean column 'Campaign Name': Removing punctuation, Removing numbers, Removing whitespaces, Removing empty lines, Lowercasing text, Removing stopwords, Removing accented characters, Removing special characters, Removing html tags.
-Campaign Name column preprocessing
-The following preprocessing steps will be applied to the column 'Campaign Name': Stemming text, Tokenizing text.
 features engineering process for the data:
-Extracting embedding
-First, Extracting Corex topic model embeddings with dimension 30
-Next, Extracting TF-IDF embeddings with dimension 30
-Then, Extracting bag-of-words embeddings with dimension 30
-Lastly, All embeddings have been concatenated
 features statistics for the data. Analyzed by groups (text, numeric, categorical) if exists:
 
 Numerical Feature statistics:
@@ -27,224 +18,151 @@ Numerical Feature statistics:
 Categorical Feature statistics:
 Feature stats:
                   col # unique # missing                       Distribution  \
-4       ts_month_Date       11         0  11.0: 13%, 5.0: 12%, 6.0: 11%,...   
-3     ts_quarter_Date        4         0  4.0: 30%, 3.0: 30%, 2.0: 28%, ...   
-2       Campaign Name      352         0  everyth: 25%, sitewid: 5%, eve...   
-1   ts_dayinweek_Date        7         0  Sunday: 15%, Thursday: 15%, Tu...   
-0  ts_dayinmonth_Date       31         0  19.0: 4%, 24.0: 4%, 15.0: 4%, ...   
+1   ts_dayinweek_date        7         0  Monday: 15%, Sunday: 15%, Wedn...   
+0  ts_dayinmonth_date       31         0  19.0: 4%, 20.0: 4%, 13.0: 4%, ...   
+2       ts_month_date        4         0  1.0: 27%, 3.0: 27%, 2.0: 25%, ...   
 
-                              Sample Top 5 values coverage  
-4                            5, 6, 2                   56%  
-3                            2, 1, 4                  100%  
-2  hurri almost gone event way ou...                   38%  
-1            Friday, Monday, Tuesday                   73%  
-0                         27, 30, 19                   19%  
-
-Text statistics:
-Extracting embedding
-** Analayzing Campaign Name column
-Data quality stats:
-Number of rows with missing data: 0.0
-Number of unique words: 398
-Average type-token ratio: 0.89
-Median type-token ratio: 1.00
-Average number of words per text: 5.44
-Median number of words per text: 5.00
-Average number of sentences per text: 0.99
-Median number of sentences per text: 1.00
-Average length of text: 34.89
-Median length of text: 34.00
-
-Count word frequency for basic text analysis.
-Report shows most common words, giving insight into text topic and content:
-[('everything', 576), ('free', 280), ('code', 217), ('shipping', 202), ('day', 167), ('never', 150), ('sale', 138), ('orders', 127), ('shop', 121), ('ends', 108), ('extra', 106), ('use', 103), ('miss', 92), ('sitewide', 91), ('dont', 79), ('hours', 76), ('express', 75), ('get', 72), ('w', 69), ('ship', 65), ('hurry', 62), ('dresses', 59), ('jeans', 59), ('app', 56), ('one', 52), ('bogo', 51), ('else', 48), ('final', 48), ('standard', 46), ('buy', 43), ('tops', 39), ('shoes', 37), ('exclusive', 37), ('last', 35), ('summer', 33), ('needed', 33), ('pay', 29), ('later', 29), ('essentials', 27), ('fall', 27), ('download', 27), ('till', 26), ('party', 23), ('pm', 23), ('extended', 22), ('up', 19), ('almost', 19), ('us', 18), ('halloween', 18), ('daysd', 17), ('edit', 17), ('weekend', 17), ('hot', 16), ('styles', 15), ('denim', 15), ('shorts', 15), ('next', 14), ('ca', 14), ('starting', 14), ('soon', 13), ('nova', 13), ('off', 13), ('event', 13), ('week', 12), ('sweaters', 12), ('new', 11), ('blowout', 11), ('spring', 10), ('friday', 10), ('starts', 10), ('boohoo', 10), ('flash', 10), ('order', 10), ('prices', 10), ('swim', 10), ('holiday', 9), ('vacation', 9), ('fn', 9), ('noon', 9), ('price', 9), ('drop', 8), ('deals', 8), ('midnight', 8), ('looks', 8), ('ld', 8), ('gone', 8), ('codeextra', 8), ('wont', 8), ('nan', 8), ('call', 8), ('beauty', 7), ('long', 7), ('added', 7), ('coats', 7), ('knits', 7), ('neededdont', 7), ('marked', 7), ('back', 7), ('message', 6), ('newaf', 6)]
-Sentiment Statistics
-+--------------------------------+
-|      Sentiment Statistics      |
-+-----------+-------+------------+
-| Sentiment | Count | Percentage |
-+-----------+-------+------------+
-|  Positive |  184  |   19.3%    |
-|  Negative |   52  |    5.5%    |
-|  Neutral  |  715  |   75.2%    |
-+-----------+-------+------------+
-
-
-Corex topic analysis:
-	Topic 1: perfect gift, started sitewidethe, bogo free, final hours code, noon free day, code ld wont, ld wont long, bogo free sitewide, party started sitewidethe, sitewide code free
-	Topic 2: fits, freebuy free, ends, ends buy, ends buy pay, orders usa, final hours, freebuy free sitewide, black, miss fn weekend
-	Topic 3: shop extra, extra summer, freejeans, save orders, extra code, weekend, orders orders, new week, shoes code, exclusive extra
-	Topic 4: hot, buy pay, bogobogo free sweaters, gone event styles, shop gone event, code falldont, code shipit, delivery code, day delivery code, dont miss code
-	Topic 5: essentials ends, steals, app week, shop app, code nova, sitewide use, code fall, bdefree, hours ends daysd, jeans wcode bog
-	Topic 6: shop express, new free, party time halloween, knits footwear, time, shop express shipping, summer outfits, coming hot ends, miss everythingextended hurry, shop extra dresses
-	Topic 7: pm free day, ends pm free, hey, loan drop extra, wont, weekend premier dont, premier dont fancy, sale code needed, heat en, perfect gift shop
-	Topic 8: miss sale, dont miss sale, ends hoursh, sale code neededdont, marked blowout, use code mixitupbogo, ends free, miss fn, prices marked blowout, shop
-	Topic 9: szn halloween, halloween costumes, use codelove, added, edit time halloween, dresses jumpsuits, free dresses use, use code bogo, hot ends hoursh, final hours dresses
-	Topic 10: code freejeansbogo, freejeansbogo free, ca, ready extra, tops code, everythingblack, starts everythingblack friday, use code fall, usa, day free
-	Key sentences out of based on LSA algorithm: ['vacation shop shop  express shipping.', 'final hours everythingfinal hours everything get mom p. layering looks never everything else.', 'springs wanted sale everything shop nova essentials starting  fre.', 'dont miss halloween code needed halloween code needed.', 'dresses tops shoes shop  shipping.'] 
-
-popular terms extraction:
-[('final hours bogo free jeans w code', 30.0), ('day bogo free sweaters jeans wcode bogolast', 28.0), ('extended bogo free jeans w code freejeansextended', 26.0), ('extra w c. hurry free day shipping', 26.0), ('bogo free jeans denim shorts w codefreejeansbogo', 26.0), ('bogo free dresses jeans w code summerfreebogo', 26.0), ('bogo free jeans denim shorts code freejeansbogo', 26.0), ('free day ship orders w code bdefree', 26.0), ('extended bogo free sweaters jeans wcode bogoextended', 26.0), ('ends pm free day ship orders', 24.0)]
+                   Sample Top 5 values coverage  
+1  Friday, Monday, Sunday                   72%  
+0               20, 2, 22                   18%  
+2                 2, 4, 1                  100%  
 
 ** model pre analysis report:
 Feature stats:
-                 col # unique # missing                       Distribution  \
-1       target_label       12         0  FashionNova: 29%, BooHoo: 28%,...   
-0  ts_dayinweek_Date        7         0  Sunday: 15%, Thursday: 15%, Tu...   
+                       col # unique # missing    max    min    avg    std  \
+19       ts_mm_7_mean_date      113         1  85.87  24.22  57.82  17.95   
+28        ts_mm_3_max_date       57         1  95.83  21.12  61.73   18.8   
+17  ts_dayinmonth_date_sin       31         0    1.0   -1.0   0.04   0.72   
+7      ts_mm_3_median_date       70         1  85.87  19.43  56.92  18.62   
+31      ts_dayinmonth_date       31         0   31.0    1.0  14.89    8.5   
+24           ts_month_date        4         0    4.0    1.0   2.42    1.1   
+29    ts_mm_21_median_date       60         1  85.87  29.38  60.73  16.54   
+0      ts_mm_5_median_date       62         1  85.87  21.12  57.13  18.77   
+8       ts_mm_21_mean_date      113         1  85.87  30.12  60.89  16.53   
+22        ts_mm_3_min_date       60         1  85.87  17.75   52.3  18.32   
 
-                         Sample Top 5 values coverage  
-1  Adika, Nastygal, FashionNova                   94%  
-0      Thursday, Monday, Friday                   73%  
-
-values counts for categorical target to predict:
-FashionNova          272
-BooHoo               271
-Nastygal             245
-Edikted               78
-nastygal              27
-Prettylittlething     17
-DollsKill             14
-prettylittlething      8
-Adika                  6
-Princes Polly          5
-Name: target, dtype: int64
+               CI median        top_vals       bottom_vals  
+19   (55.1, 60.6)  58.11  85.9,81.7,81.5    24.2,24.7,25.8  
+28   (58.8, 64.6)  67.71  95.8,91.6,85.9    21.1,26.0,27.5  
+17  (-0.07, 0.15)    0.1   1.0,0.99,0.97  -1.0,-0.99,-0.97  
+7    (54.0, 59.8)  58.38  85.9,83.5,82.8    19.4,21.1,26.0  
+31   (13.6, 16.2)   15.0        31,30,29             1,2,3  
+24   (2.25, 2.59)    2.0           4,3,2             1,2,3  
+29   (58.2, 63.3)   65.5  85.9,81.9,81.5    29.4,29.8,29.9  
+0    (54.2, 60.0)  60.12  85.9,81.9,81.8    21.1,26.0,27.5  
+8    (58.3, 63.4)  62.57  85.9,81.7,81.5    30.1,30.2,30.2  
+22   (49.5, 55.1)  51.67  85.9,80.8,79.3    17.8,19.4,21.1  
 
 top 50 with lowest partial pvalue for categorical feat based on chi square:
-[('Campaign Name', 9.168082439783089e-149), ('ts_month_Date', 3.0865127669791225e-78), ('ts_quarter_Date', 9.606153583698453e-46), ('ts_dayinweek_Date', 0.9485038933953618), ('ts_dayinmonth_Date', 0.9999999999855391)]
+[('ts_month_date', 4.8907176121627826e-30), ('ts_dayinweek_date', 0.9732420767678049), ('ts_dayinmonth_date', 0.9993358155410214)]
 
 Training models and choosing the best one
 Model results compared - showing the best out of each type after CV & HP tuning: 
-+-------+-------------------------+---------------------+---------------------+---------------------+---------------------+
-|  type |          model          |    accuracy_score   |   precision_score   |     recall_score    |       f1_score      |
-+-------+-------------------------+---------------------+---------------------+---------------------+---------------------+
-|  test |      BaselineModel      | 0.25263157894736843 |         nan         |         nan         |         nan         |
-|  test |      CatboostModel      |  0.9105263157894736 |  0.6309046906460779 |  0.6217769569853828 |  0.6067329980155864 |
-|  test | LogisticRegressionModel |  0.2776315789473684 | 0.13181394415141418 | 0.11931776007336144 | 0.10227577234859539 |
-| train |      BaselineModel      |  0.2967105263157895 |         nan         |         nan         |         nan         |
-| train |      CatboostModel      |  0.9759868421052632 |  0.8572538318572034 |   0.80189395500154  |  0.8147398673938229 |
-| train | LogisticRegressionModel |  0.3555921052631579 | 0.23996516017376285 | 0.20782556645323727 | 0.20285115995161895 |
-+-------+-------------------------+---------------------+---------------------+---------------------+---------------------+
++-------+-----------------------+--------------------+---------------------+--------------------------------+
+|  type |         model         | mean_squared_error | mean_absolute_error | mean_absolute_percentage_error |
++-------+-----------------------+--------------------+---------------------+--------------------------------+
+|  test |     BaselineModel     | 364.7684903474441  |  16.687429842816673 |      0.36515675475817344       |
+|  test |     CatboostModel     | 69.25159639039235  |  5.966691192039112  |      0.11659757616702297       |
+|  test | LinearRegressionModel | 597.9830730749438  |  7.825062209395178  |       0.1337052976613464       |
+| train |     BaselineModel     | 351.5268339609389  |  16.325422749909585 |       0.3569474390849807       |
+| train |     CatboostModel     | 9.225473751887483  |   2.16320244657571  |      0.04306545237722991       |
+| train | LinearRegressionModel | 34.33000656593069  |  4.424969804024711  |      0.08555133296778325       |
++-------+-----------------------+--------------------+---------------------+--------------------------------+
 
 
 Post model analysis - analyzing results of the chosen model: 
 Top 100 Feature importance (in %, 100 = the most important one):
-{'index_ts_quarter_Date': 100, 'index_ts_month_Date': 88, 'index_ts_dayinmonth_Date': 78, 'index_ts_dayinweek_Date': 61, 'Campaign Name_tfidf_code': 56, 'Campaign Name_corex_topic_18': 46, 'num_ts_freq_1000_mean_Date': 29, 'Campaign Name_bow_code': 25, 'Campaign Name_corex_topic_3': 22, 'Campaign Name_corex_topic_15': 22, 'num_ts_freq_360_mean_Date': 20, 'Campaign Name_corex_topic_14': 16, 'num_ts_dayinmonth_Date_cos': 14, 'Campaign Name_corex_topic_1': 14, 'Campaign Name_corex_topic_5': 13, 'Campaign Name_bow_order': 13, 'Campaign Name_corex_topic_13': 13, 'Campaign Name_corex_topic_11': 11, 'Campaign Name_tfidf_bogo': 10, 'Campaign Name_corex_topic_9': 10, 'Campaign Name_tfidf_order': 10, 'Campaign Name_corex_topic_23': 10, 'Campaign Name_corex_topic_4': 10, 'Campaign Name_corex_topic_7': 10, 'num_ts_month_Date_cos': 9, 'num_ts_dayinmonth_Date_sin': 9, 'Campaign Name_corex_topic_6': 9, 'Campaign Name_corex_topic_16': 9, 'Campaign Name_corex_topic_24': 8, 'Campaign Name_corex_topic_8': 8, 'Campaign Name_corex_topic_10': 8, 'Campaign Name_tfidf_standard': 7, 'Campaign Name_corex_topic_25': 6, 'num_ts_quarter_Date_cos': 6, 'Campaign Name_corex_topic_17': 6, 'Campaign Name_corex_topic_28': 5, 'num_ts_freq_2_max_Date': 5, 'num_ts_quarter_Date_sin': 4, 'Campaign Name_corex_topic_21': 4, 'Campaign Name_corex_topic_19': 4, 'num_ts_freq_7_mean_Date': 4, 'Campaign Name_bow_dont': 4, 'Campaign Name_corex_topic_20': 4, 'Campaign Name_corex_topic_29': 4, 'Campaign Name_bow_sale': 4, 'Campaign Name_corex_topic_12': 3, 'Campaign Name_tfidf_dont': 3, 'num_ts_freq_5_mean_Date': 3, 'Campaign Name_corex_topic_2': 3, 'Campaign Name_bow_standard': 3, 'Campaign Name_corex_topic_26': 3, 'Campaign Name_bow_never': 3, 'Campaign Name_corex_topic_30': 3, 'num_ts_month_Date_sin': 3, 'Campaign Name_tfidf_never': 3, 'Campaign Name_tfidf_everyth': 3, 'num_ts_freq_21_mean_Date': 3, 'Campaign Name_tfidf_miss': 3, 'Campaign Name_bow_free': 2, 'Campaign Name_tfidf_sale': 2, 'Campaign Name_tfidf_express': 2, 'Campaign Name_corex_topic_27': 2, 'Campaign Name_corex_topic_22': 2, 'Campaign Name_tfidf_one': 2, 'Campaign Name_bow_bogo': 2, 'Campaign Name_tfidf_use': 1, 'Campaign Name_tfidf_shop': 1, 'num_ts_freq_2_mean_Date': 1, 'Campaign Name_tfidf_top': 1, 'Campaign Name_bow_everyth': 1, 'Campaign Name_bow_miss': 1, 'num_ts_freq_3_mean_Date': 1, 'Campaign Name_tfidf_buy': 1, 'Campaign Name_bow_els': 1, 'Campaign Name_bow_sitewid': 1, 'Campaign Name_bow_one': 1, 'num_ts_freq_14_mean_Date': 1, 'Campaign Name_bow_app': 1, 'Campaign Name_bow_express': 1, 'Campaign Name_bow_top': 1, 'Campaign Name_tfidf_get': 1, 'Campaign Name_tfidf_free': 0, 'Campaign Name_bow_dress': 0, 'Campaign Name_tfidf_ship': 0, 'Campaign Name_tfidf_els': 0, 'Campaign Name_bow_get': 0, 'Campaign Name_tfidf_app': 0, 'Campaign Name_bow_end': 0, 'Campaign Name_tfidf_sitewid': 0, 'Campaign Name_bow_day': 0, 'Campaign Name_bow_final': 0, 'Campaign Name_bow_use': 0, 'Campaign Name_tfidf_extra': 0, 'Campaign Name_tfidf_hour': 0, 'Campaign Name_tfidf_day': 0, 'Campaign Name_tfidf_final': 0, 'Campaign Name_bow_ship': 0, 'Campaign Name_bow_buy': 0, 'Campaign Name_bow_hurri': 0, 'Campaign Name_bow_hour': 0}
-
-confusion matrix on the test set
-[[47  0  0  0  1  0  0  0  0  0  0]
- [ 0  2  0  0  0  0  0  0  0  0  0]
- [ 1  0  0  0  0  0  1  0  0  0  0]
- [ 0  0  0 17  0  0  0  0  0  0  0]
- [ 0  0  0  0 55  0  0  1  0  0  0]
- [ 1  0  0  0  0 53  0  0  0  0  0]
- [ 1  0  0  0  1  0  0  0  0  0  0]
- [ 0  0  0  0  0  0  1  0  0  0  0]
- [ 0  0  2  0  0  0  0  0  0  0  0]
- [ 0  0  0  0  0  1  0  0  0  4  0]
- [ 0  0  1  0  0  0  0  1  0  0  0]]
+{'index_ts_month_date': 100, 'num_meantemp': 81, 'num_ts_mm_14_median_date': 74, 'num_ts_mm_2_min_date': 58, 'num_wind_speed': 54, 'num_ts_dayinmonth_date_sin': 44, 'num_ts_mm_2_mean_date': 39, 'num_ts_mm_14_min_date': 38, 'index_ts_dayinmonth_date': 37, 'index_ts_dayinweek_date': 35, 'num_ts_mm_1_mean_date': 30, 'num_ts_mm_360_min_date': 24, 'num_ts_mm_5_min_date': 21, 'num_ts_mm_21_min_date': 19, 'num_ts_month_date_sin': 19, 'num_ts_dayinmonth_date_cos': 18, 'num_ts_mm_3_median_date': 16, 'num_ts_mm_3_min_date': 16, 'num_ts_mm_2_max_date': 16, 'num_ts_month_date_cos': 15, 'num_ts_mm_21_median_date': 14, 'num_ts_mm_14_mean_date': 14, 'num_ts_mm_3_max_date': 13, 'num_ts_mm_5_max_date': 13, 'num_ts_mm_21_max_date': 12, 'num_ts_mm_3_mean_date': 11, 'num_meanpressure': 10, 'num_ts_mm_7_max_date': 9, 'num_ts_mm_5_median_date': 8, 'num_ts_mm_7_min_date': 8, 'num_ts_mm_360_mean_date': 7, 'num_ts_mm_5_mean_date': 6, 'num_ts_mm_7_median_date': 4, 'num_ts_mm_21_mean_date': 3, 'num_ts_mm_14_max_date': 2, 'num_ts_mm_360_median_date': 2, 'num_ts_mm_7_mean_date': 2}
 
 Learning curve by training examples
-+-------------+--------------------+-----------------------+--------------------+----------------------+
-| train_sizes | train_scores_mean  |    train_scores_std   |  test_scores_mean  |   test_scores_std    |
-+-------------+--------------------+-----------------------+--------------------+----------------------+
-|      60     |        1.0         |          0.0          | 0.780263157894737  | 0.01978065312943804  |
-|     197     | 0.981725888324873  |  0.006091370558375601 | 0.8605263157894736 | 0.011318849035582423 |
-|     334     | 0.9784431137724552 |  0.009543339790724104 | 0.8776315789473685 | 0.015898744702098143 |
-|     471     | 0.9723991507430998 |  0.004651571613631983 | 0.8973684210526317 | 0.01745591994923896  |
-|     608     | 0.9766447368421052 | 0.0054450478148838355 | 0.9197368421052632 | 0.024046930108548747 |
-+-------------+--------------------+-----------------------+--------------------+----------------------+
++-------------+--------------------+-----------------------+--------------------+---------------------+
+| train_sizes | train_scores_mean  |    train_scores_std   |  test_scores_mean  |   test_scores_std   |
++-------------+--------------------+-----------------------+--------------------+---------------------+
+|      7      | 0.9838642123007771 |  0.007813859691508761 | 0.5906182671825534 | 0.32460100241272893 |
+|      23     | 0.9780938328429354 |  0.013288557971126267 |  0.70676215824809  | 0.08884758797182428 |
+|      39     | 0.9789542292396496 |  0.008066750977542362 | 0.7147224978861184 | 0.11342598137928954 |
+|      55     | 0.9694979214673298 | 0.0032626480225470614 | 0.7125433542527222 | 0.11247684299741019 |
+|      72     | 0.9792334819580439 |  0.006158347126965306 | 0.7739981909084288 | 0.06596359145264184 |
++-------------+--------------------+-----------------------+--------------------+---------------------+
 
 
 Boostrap metrics, sample 20 results:
-+----------------+---------------------+---------------------+---------------------+
-| accuracy_score |   precision_score   |     recall_score    |       f1_score      |
-+----------------+---------------------+---------------------+---------------------+
-|      0.92      |  0.5345245536231021 |  0.5163213012477719 |  0.5237694587603623 |
-|     0.925      |  0.5382920110192838 |  0.5401160468168746 |  0.5391783057230157 |
-|      0.92      |  0.5846489104116224 |  0.5909527665317139 |  0.5876015846951808 |
-|     0.925      |  0.4904456654456655 | 0.46937062937062934 |  0.4781023349562675 |
-|     0.955      |  0.5897959183673469 |  0.5599999999999999 |  0.5697587719298245 |
-|      0.92      |  0.5850638716017033 |  0.5879585921325052 |  0.5864688905865376 |
-|     0.945      |  0.5894238860718525 |  0.5761648745519714 |  0.5816170776419698 |
-|      0.95      |  0.5386091740771544 |  0.5388309134906231 |  0.5387036226186945 |
-|      0.94      |  0.4875703513634548 |  0.4688311688311688 | 0.47564101340586334 |
-|      0.9       |  0.4882539682539683 |  0.4921423216962947 |  0.4900172718354536 |
-|      0.94      |  0.5391938250428816 |  0.5257947439765621 |  0.5318981814308917 |
-|     0.935      |  0.5338956714761376 |  0.4982517482517483 |  0.5083856390826694 |
-|      0.95      |  0.5407925407925408 |  0.5406698564593302 |  0.5406051984999354 |
-|     0.935      |  0.5335589758887544 |  0.5271430886404148 |  0.5294264763014763 |
-|     0.925      |  0.5358345358345358 |  0.5257335257335257 |  0.5300231754777209 |
-|      0.92      | 0.48518455769404534 | 0.45677419354838705 | 0.46571865347222846 |
-|      0.93      |  0.5290820785914452 |  0.5120698510529019 |  0.5182834650251364 |
-|     0.935      |  0.536265722678316  |  0.5384511784511784 |  0.5372767628330636 |
-|     0.955      |  0.5457975539942753 |  0.5481277981277981 |  0.5467773511758618 |
-|      0.95      |  0.4909376786735278 |  0.4946666666666667 |  0.4926873570350979 |
-+----------------+---------------------+---------------------+---------------------+
++--------------------+---------------------+--------------------------------+
+| mean_squared_error | mean_absolute_error | mean_absolute_percentage_error |
++--------------------+---------------------+--------------------------------+
+| 57.79827131271574  |  6.179186964050968  |       0.1462121616659438       |
+| 61.530127101658906 |  6.253551692214684  |      0.14741705367103666       |
+| 60.87347565595444  |  6.378398489447781  |       0.1588538273997312       |
+| 60.25927690536628  |  6.309445530916888  |      0.15410508534293077       |
+| 50.23376625882789  |  5.681940657666732  |       0.143690980479365        |
+| 65.05959487895475  |  6.687059773530402  |      0.16137247843419672       |
+| 60.79659501141512  |  6.383514050976446  |      0.16365825514149976       |
+| 53.78489367682875  |  5.803425455004248  |      0.12851562977954747       |
+| 61.84385974188713  |  6.376283165124608  |      0.15213613610060378       |
+| 56.805003803155245 |  6.032016003604976  |      0.14386502824853825       |
+| 53.53324276649697  |  6.007650150148495  |       0.1547688686381286       |
+| 55.05292622245938  |   6.21492147512974  |      0.16187440806681677       |
+| 63.05143903811073  |  6.557127030842505  |        0.15063245830242        |
+| 60.06398708855455  |  6.364236782204395  |      0.13887835027326953       |
+| 54.550704204173456 |  5.894647018933292  |       0.1402343800371446       |
+| 57.932844061965355 |  6.026265428062606  |      0.14587201913559608       |
+| 53.11832560825333  |  5.9018675648803445 |       0.1456692635865772       |
+| 63.65371989786092  |  6.4894707899919455 |       0.1538348529405525       |
+| 65.76868213075585  |   6.53437625914575  |      0.15776290065970267       |
+| 53.44636075578082  |  5.997920675146502  |       0.1560064672799688       |
++--------------------+---------------------+--------------------------------+
 
 Trying to find weaknesses in the model by training models on the error:
 Most important features by catboost:
-+------------------------------+------------+
-|           Feature            | Importance |
-+------------------------------+------------+
-| Campaign Name_corex_topic_24 |    9.0     |
-| Campaign Name_corex_topic_19 |    8.0     |
-| Campaign Name_corex_topic_25 |    8.0     |
-|    num_ts_month_Date_cos     |    8.0     |
-|   num_ts_quarter_Date_cos    |    8.0     |
-| Campaign Name_corex_topic_23 |    7.0     |
-| Campaign Name_corex_topic_29 |    7.0     |
-|  num_ts_freq_360_mean_Date   |    7.0     |
-| Campaign Name_corex_topic_27 |    5.0     |
-|  num_ts_freq_1000_mean_Date  |    5.0     |
-|   Campaign Name_tfidf_shop   |    4.0     |
-|   index_ts_dayinweek_Date    |    3.0     |
-| Campaign Name_corex_topic_8  |    2.0     |
-| Campaign Name_corex_topic_22 |    2.0     |
-|  num_ts_dayinmonth_Date_sin  |    1.0     |
-| Campaign Name_corex_topic_28 |    1.0     |
-| Campaign Name_corex_topic_26 |    1.0     |
-|   Campaign Name_tfidf_end    |    1.0     |
-|    Campaign Name_bow_dont    |    1.0     |
-|     index_ts_month_Date      |    1.0     |
-|   num_ts_freq_21_mean_Date   |    1.0     |
-| Campaign Name_corex_topic_18 |    1.0     |
-| Campaign Name_corex_topic_14 |    1.0     |
-| Campaign Name_corex_topic_13 |    1.0     |
-|    num_ts_month_Date_sin     |    1.0     |
-| Campaign Name_corex_topic_11 |    1.0     |
-|    Campaign Name_bow_free    |    0.0     |
-|   Campaign Name_bow_hurri    |    0.0     |
-|   Campaign Name_bow_order    |    0.0     |
-|    Campaign Name_bow_app     |    0.0     |
-|    Campaign Name_bow_day     |    0.0     |
-|    Campaign Name_bow_get     |    0.0     |
-|    Campaign Name_bow_ship    |    0.0     |
-|  Campaign Name_bow_express   |    0.0     |
-|  num_ts_dayinmonth_Date_cos  |    0.0     |
-|   Campaign Name_bow_extra    |    0.0     |
-|  Campaign Name_bow_sitewid   |    0.0     |
-|    Campaign Name_bow_top     |    0.0     |
-|    Campaign Name_bow_code    |    0.0     |
-|    Campaign Name_bow_sale    |    0.0     |
-|    Campaign Name_bow_end     |    0.0     |
-|    Campaign Name_bow_hour    |    0.0     |
-|   Campaign Name_bow_final    |    0.0     |
-|    Campaign Name_bow_shop    |    0.0     |
-|   num_ts_freq_14_mean_Date   |    0.0     |
-|    Campaign Name_bow_miss    |    0.0     |
-|   num_ts_freq_5_mean_Date    |    0.0     |
-|   num_ts_quarter_Date_sin    |    0.0     |
-|   num_ts_freq_2_mean_Date    |    0.0     |
-|    num_ts_freq_2_max_Date    |    0.0     |
-+------------------------------+------------+
++----------------------------+------------+
+|          Feature           | Importance |
++----------------------------+------------+
+|       num_wind_speed       |    30.0    |
+| num_ts_dayinmonth_date_sin |    7.0     |
+| num_ts_mm_360_median_date  |    6.0     |
+|    num_ts_mm_7_max_date    |    5.0     |
+|        num_meantemp        |    4.0     |
+|  index_ts_dayinweek_date   |    4.0     |
+|  num_ts_mm_3_median_date   |    4.0     |
+|   num_ts_mm_3_mean_date    |    4.0     |
+| num_ts_dayinmonth_date_cos |    3.0     |
+|   num_ts_mm_21_mean_date   |    3.0     |
+|   num_ts_mm_7_mean_date    |    2.0     |
+|  num_ts_mm_7_median_date   |    2.0     |
+|   num_ts_mm_14_max_date    |    2.0     |
+|  num_ts_mm_21_median_date  |    2.0     |
+|  num_ts_mm_360_mean_date   |    2.0     |
+|  index_ts_dayinmonth_date  |    2.0     |
+|    num_ts_mm_5_min_date    |    2.0     |
+|  num_ts_mm_14_median_date  |    1.0     |
+|   num_ts_mm_14_min_date    |    1.0     |
+|    num_ts_mm_5_max_date    |    1.0     |
+|    num_ts_mm_7_min_date    |    1.0     |
+|   num_ts_mm_5_mean_date    |    1.0     |
+|  num_ts_mm_5_median_date   |    1.0     |
+|    num_ts_mm_3_max_date    |    1.0     |
+|    num_ts_mm_3_min_date    |    1.0     |
+|   num_ts_mm_2_mean_date    |    1.0     |
+|   num_ts_mm_1_mean_date    |    1.0     |
+|   num_ts_month_date_sin    |    1.0     |
+|      num_meanpressure      |    1.0     |
+|   num_ts_mm_360_min_date   |    1.0     |
+|    num_ts_mm_2_max_date    |    0.0     |
+|   num_ts_mm_14_mean_date   |    0.0     |
+|    num_ts_mm_2_min_date    |    0.0     |
+|   num_ts_month_date_cos    |    0.0     |
+|   num_ts_mm_21_min_date    |    0.0     |
+|   num_ts_mm_21_max_date    |    0.0     |
+|    index_ts_month_date     |    0.0     |
++----------------------------+------------+
 
 Print of tree to look for potential segments with high error (use with caution)
-|--- index_ts_quarter_Date_2 <= 22749.07
-|   |--- value: [0.26]
-|--- index_ts_quarter_Date_2 >  22749.07
-|   |--- Campaign Name_tfidf_standard <= 0.00
-|   |   |--- value: [0.00]
-|   |--- Campaign Name_tfidf_standard >  0.00
-|   |   |--- value: [0.08]
+|--- num_ts_mm_21_min_date <= 12.00
+|   |--- num_ts_mm_21_median_date <= 16.98
+|   |   |--- value: [0.06]
+|   |--- num_ts_mm_21_median_date >  16.98
+|   |   |--- value: [0.12]
+|--- num_ts_mm_21_min_date >  12.00
+|   |--- value: [0.30]
 
 

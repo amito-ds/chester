@@ -48,7 +48,6 @@ class NumericPreModelAnalysis:
         X = self.data[numeric_cols].copy()
         X = X.sample(n=min(5000, len(X)))
         target = self.target[X.index]
-        print("numeric_cols", numeric_cols)
 
         numerical_transformer = SimpleImputer(strategy='median')
         transformer = ColumnTransformer(
