@@ -11,12 +11,14 @@ def run(ab_data: ABData, test_info: TestInfo):
     ab_info = ABInfo(ab_data=ab_data, test_info=test_info)
 
     # calculate bias
+    print("==========================> Bias calculations: ")
     BiasCalculation(ab_info).run()
 
     # metrics corr
     MetricCorrelation(ab_info).run()
 
     # Delta, Pvalue
+    print("==========================>  Test Analysis ")
     DeltaPValueCalc(ab_info=ab_info, test_info=test_info).run()
 
     # Features

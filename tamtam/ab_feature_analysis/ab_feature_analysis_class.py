@@ -47,5 +47,5 @@ class ABFeatureAnalysis:
     def run(self):
         metrics = self.ab_info.get_metric_cols()
         for metric in metrics:
-            print(f"===============> Training a model to predict diff in {metric}")
+            print(f"==========================> Training a model to predict diff in {metric}")
             self.run_single(metric=metric)

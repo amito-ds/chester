@@ -59,5 +59,6 @@ class MetricCorrelation:
     def run(self):
         if len(self.metrics) <= 1:
             return None
+        print("==========================> Metrics Correlations ")
         self.plot_correlation()
         self.partial_plots()

@@ -18,13 +18,10 @@ class ABInfo:
 
     def add_dummies(self):
         if not self.test_info.is_weight_col():
-            print("No weight found, putting dummies")
             self.df[Columns.weight] = 1
         if not self.test_info.is_id_cols():
-            print("No ID found, putting dummies")
             self.df[Columns.id] = 1
 
-    def aggregate(self):
         self.add_dummies()
         weight_col = self.test_info.get_weight_col() or Columns.weight
         id_cols = self.test_info.get_id_cols() or Columns.id
