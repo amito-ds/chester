@@ -20,4 +20,5 @@ def run(ab_data: ABData, test_info: TestInfo):
     DeltaPValueCalc(ab_info=ab_info, test_info=test_info).run()
 
     # Features
-    ABFeatureAnalysis(ab_info=ab_info, test_info=test_info).run()
+    if len(ab_info.test_info.get_feature_cols()) > 0:
+        ABFeatureAnalysis(ab_info=ab_info, test_info=test_info).run()

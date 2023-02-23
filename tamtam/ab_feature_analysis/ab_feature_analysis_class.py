@@ -12,7 +12,7 @@ class ABFeatureAnalysis:
         self.ab_info = ab_info
         self.test_info = test_info
         self.df = self.ab_info.df
-        self.feature_cols = self.test_info.feature_cols
+        self.feature_cols = self.test_info.feature_cols or []
         # df[metrics] = df[metrics].multiply(df[side_col].map({'A': -1, 'B': 1}), axis=0)
 
     def plot_tree(self, metric):

@@ -53,7 +53,7 @@ class TestInfo:
     def get_date_col(self):
         if not self.date_col:
             return []
-        return [self.date_col]
+        return self.date_col
 
     def get_is_higher_better(self):
         return self.is_higher_better

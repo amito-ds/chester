@@ -71,9 +71,13 @@ class ABInfo:
                 q = [p / 2, 1 - p / 2]
                 trimmed_vals = self.weighted_percentile(aggregated[m], aggregated[weight_col], q)
                 trimmed = np.clip(aggregated[m], *trimmed_vals)
-                aggregated[trimmed_col] = trimmed
-                trimmed_cols.append(trimmed_col)
-                trimmed_col_by_metric[m].extend([trimmed_col])
+
+                if len(np.unique(trimmed)) == 1:
+                    pass
+                else:
+                    aggregated[trimmed_col] = trimmed
+                    trimmed_cols.append(trimmed_col)
+                    trimmed_col_by_metric[m].extend([trimmed_col])
 
         return aggregated, trimmed_cols, trimmed_col_by_metric
 
