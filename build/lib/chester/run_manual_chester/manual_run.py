@@ -247,7 +247,7 @@ def load_yaho(tickers=None, start_date='2010-01-01', end_date='2023-02-15'):
     return df
 
 
-df = load_yaho()
+# df = load_yaho()
 # print("df shape", df.shape)
 # print("df cols", df.columns)
 

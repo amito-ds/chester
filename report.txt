@@ -4,10 +4,10 @@ Data information:
 Data Information Report
 Problem Type: Regression
 Target Variable: target
-Feature Types: {'numeric': ['meantemp', 'wind_speed', 'meanpressure'], 'boolean': [], 'text': [], 'categorical': [], 'time': ['date'], 'id': []}
+Feature Types: {'numeric': [], 'boolean': [], 'text': [], 'categorical': ['id'], 'time': ['date'], 'id': []}
 Loss Function: R squared
 Evaluation Metrics: ['R2', 'MSE', 'MAE', 'MAPE']
-Optional Models: {'baseline-median', 'catboost', 'baseline-average', 'linear'}
+Optional Models: {'linear', 'catboost', 'baseline-median', 'baseline-average'}
 
 
 features engineering process for the data:
@@ -18,98 +18,116 @@ Numerical Feature statistics:
 Categorical Feature statistics:
 Feature stats:
                   col # unique # missing                       Distribution  \
-1   ts_dayinweek_date        7         0  Monday: 15%, Sunday: 15%, Wedn...   
-0  ts_dayinmonth_date       31         0  19.0: 4%, 20.0: 4%, 13.0: 4%, ...   
-2       ts_month_date        4         0  1.0: 27%, 3.0: 27%, 2.0: 25%, ...   
+3     ts_quarter_date        4         0  3.0: 25%, 1.0: 25%, 4.0: 25%, ...   
+2                  id        3         0  GOOG: 33%, MSFT: 33%, AAPL: 33...   
+5       ts_month_date       12         0  8.0: 9%, 3.0: 9%, 10.0: 9%, 1....   
+0        ts_year_date       14         0  2020.0: 8%, 2013.0: 8%, 2019.0...   
+4   ts_dayinweek_date        5         0  Tuesday: 21%, Wednesday: 21%, ...   
+1  ts_dayinmonth_date       31         0  8.0: 3%, 13.0: 3%, 11.0: 3%, 9...   
 
-                   Sample Top 5 values coverage  
-1  Friday, Monday, Sunday                   72%  
-0               20, 2, 22                   18%  
-2                 2, 4, 1                  100%  
+                        Sample Top 5 values coverage  
+3                      1, 2, 4                  100%  
+2             AAPL, MSFT, GOOG                  100%  
+5                     2, 11, 7                   43%  
+0             2019, 2011, 2017                   38%  
+4  Monday, Wednesday, Thursday                  100%  
+1                   10, 25, 16                   17%  
 
 ** model pre analysis report:
 Feature stats:
-                       col # unique # missing    max    min    avg    std  \
-19       ts_mm_7_mean_date      113         1  85.87  24.22  57.82  17.95   
-28        ts_mm_3_max_date       57         1  95.83  21.12  61.73   18.8   
-17  ts_dayinmonth_date_sin       31         0    1.0   -1.0   0.04   0.72   
-7      ts_mm_3_median_date       70         1  85.87  19.43  56.92  18.62   
-31      ts_dayinmonth_date       31         0   31.0    1.0  14.89    8.5   
-24           ts_month_date        4         0    4.0    1.0   2.42    1.1   
-29    ts_mm_21_median_date       60         1  85.87  29.38  60.73  16.54   
-0      ts_mm_5_median_date       62         1  85.87  21.12  57.13  18.77   
-8       ts_mm_21_mean_date      113         1  85.87  30.12  60.89  16.53   
-22        ts_mm_3_min_date       60         1  85.87  17.75   52.3  18.32   
+                     col # unique # missing       max   min        avg  \
+33    ts_freq_3_max_date        6         2  432000.0   0.0  109387.08   
+24  ts_mm_1000_mean_date     9905         1     191.3  7.64      59.81   
+43     ts_mm_5_mean_date     9900         1    266.75  7.64      67.62   
+5    ts_mm_1000_min_date      275         1    105.44  6.86      29.67   
+10      ts_mm_5_max_date     2546         1    343.11  7.64     101.79   
+0    ts_quarter_date_sin        4         0       1.0  -1.0       -0.0   
+46      ts_year_date_cos       14         0       1.0   1.0        1.0   
+39       ts_quarter_date        4         0       4.0   1.0        2.5   
+36      ts_mm_3_min_date     4439         1     179.3  6.86      46.81   
+56     ts_month_date_sin       11         0       1.0  -1.0       -0.0   
 
-               CI median        top_vals       bottom_vals  
-19   (55.1, 60.6)  58.11  85.9,81.7,81.5    24.2,24.7,25.8  
-28   (58.8, 64.6)  67.71  95.8,91.6,85.9    21.1,26.0,27.5  
-17  (-0.07, 0.15)    0.1   1.0,0.99,0.97  -1.0,-0.99,-0.97  
-7    (54.0, 59.8)  58.38  85.9,83.5,82.8    19.4,21.1,26.0  
-31   (13.6, 16.2)   15.0        31,30,29             1,2,3  
-24   (2.25, 2.59)    2.0           4,3,2             1,2,3  
-29   (58.2, 63.3)   65.5  85.9,81.9,81.5    29.4,29.8,29.9  
-0    (54.2, 60.0)  60.12  85.9,81.9,81.8    21.1,26.0,27.5  
-8    (58.3, 63.4)  62.57  85.9,81.7,81.5    30.1,30.2,30.2  
-22   (49.5, 55.1)  51.67  85.9,80.8,79.3    17.8,19.4,21.1  
+         std                CI   median              top_vals  \
+33  90077.46  (107898, 110876)  86400.0  432000,345600,259200   
+24     51.83      (58.9, 60.7)    36.85           191,191,191   
+43     57.82      (66.7, 68.6)     40.7           267,265,263   
+5      23.72      (29.3, 30.1)    22.58           105,105,104   
+10     89.32        (100, 103)    56.55           343,343,342   
+0       0.71     (-0.01, 0.01)     -0.0          1.0,0.0,-0.0   
+46       0.0        (1.0, 1.0)      1.0           1.0,1.0,1.0   
+39      1.12      (2.48, 2.52)      3.0                 4,3,2   
+36     39.06      (46.2, 47.5)    29.25           179,179,178   
+56      0.71     (-0.02, 0.01)     -0.0         1.0,0.87,0.87   
+
+             bottom_vals  
+33  0.0,86400.0,172800.0  
+24        7.64,11.6,15.5  
+43        7.64,11.6,12.4  
+5         6.86,6.86,6.93  
+10        7.64,15.6,23.2  
+0          -1.0,-0.0,0.0  
+46           1.0,1.0,1.0  
+39                 1,2,3  
+36        6.86,6.86,6.93  
+56      -1.0,-0.87,-0.87  
 
 top 50 with lowest partial pvalue for categorical feat based on chi square:
-[('ts_month_date', 4.8907176121627826e-30), ('ts_dayinweek_date', 0.9732420767678049), ('ts_dayinmonth_date', 0.9993358155410214)]
+[('ts_year_date', 0.0), ('id', 0.0), ('ts_month_date', 7.0643631406558e-48), ('ts_quarter_date', 2.8393053610844976e-39), ('ts_dayinweek_date', 0.9999999999999978), ('ts_dayinmonth_date', 1.0)]
 
 Training models and choosing the best one
 Model results compared - showing the best out of each type after CV & HP tuning: 
 +-------+-----------------------+--------------------+---------------------+--------------------------------+
 |  type |         model         | mean_squared_error | mean_absolute_error | mean_absolute_percentage_error |
 +-------+-----------------------+--------------------+---------------------+--------------------------------+
-|  test |     BaselineModel     | 364.7684903474441  |  16.687429842816673 |      0.36515675475817344       |
-|  test |     CatboostModel     | 69.25159639039235  |  5.966691192039112  |      0.11659757616702297       |
-|  test | LinearRegressionModel | 597.9830730749438  |  7.825062209395178  |       0.1337052976613464       |
-| train |     BaselineModel     | 351.5268339609389  |  16.325422749909585 |       0.3569474390849807       |
-| train |     CatboostModel     | 9.225473751887483  |   2.16320244657571  |      0.04306545237722991       |
-| train | LinearRegressionModel | 34.33000656593069  |  4.424969804024711  |      0.08555133296778325       |
+|  test |     BaselineModel     | 4415.747822779664  |  49.50084907315121  |       1.340424584772275        |
+|  test |     CatboostModel     | 42.037294978222974 |  4.628710136280204  |      0.09517693063543164       |
+|  test | LinearRegressionModel | 497.4436871403682  |  13.631897843519713 |       0.2317560139825035       |
+| train |     BaselineModel     | 4415.106882586665  |  49.49618630404749  |       1.340294654618939        |
+| train |     CatboostModel     | 38.872648600150896 |  4.478690444336395  |      0.09305186039163629       |
+| train | LinearRegressionModel | 483.43044832870794 |  13.475992922245561 |      0.23014286682482163       |
 +-------+-----------------------+--------------------+---------------------+--------------------------------+
 
 
 Post model analysis - analyzing results of the chosen model: 
 Top 100 Feature importance (in %, 100 = the most important one):
-{'index_ts_month_date': 100, 'num_meantemp': 81, 'num_ts_mm_14_median_date': 74, 'num_ts_mm_2_min_date': 58, 'num_wind_speed': 54, 'num_ts_dayinmonth_date_sin': 44, 'num_ts_mm_2_mean_date': 39, 'num_ts_mm_14_min_date': 38, 'index_ts_dayinmonth_date': 37, 'index_ts_dayinweek_date': 35, 'num_ts_mm_1_mean_date': 30, 'num_ts_mm_360_min_date': 24, 'num_ts_mm_5_min_date': 21, 'num_ts_mm_21_min_date': 19, 'num_ts_month_date_sin': 19, 'num_ts_dayinmonth_date_cos': 18, 'num_ts_mm_3_median_date': 16, 'num_ts_mm_3_min_date': 16, 'num_ts_mm_2_max_date': 16, 'num_ts_month_date_cos': 15, 'num_ts_mm_21_median_date': 14, 'num_ts_mm_14_mean_date': 14, 'num_ts_mm_3_max_date': 13, 'num_ts_mm_5_max_date': 13, 'num_ts_mm_21_max_date': 12, 'num_ts_mm_3_mean_date': 11, 'num_meanpressure': 10, 'num_ts_mm_7_max_date': 9, 'num_ts_mm_5_median_date': 8, 'num_ts_mm_7_min_date': 8, 'num_ts_mm_360_mean_date': 7, 'num_ts_mm_5_mean_date': 6, 'num_ts_mm_7_median_date': 4, 'num_ts_mm_21_mean_date': 3, 'num_ts_mm_14_max_date': 2, 'num_ts_mm_360_median_date': 2, 'num_ts_mm_7_mean_date': 2}
+{'index_id': 100, 'num_ts_year_date_sin': 24, 'num_ts_mm_2_max_date': 23, 'num_ts_mm_14_median_date': 20, 'num_ts_mm_21_min_date': 20, 'num_ts_mm_5_min_date': 19, 'num_ts_mm_14_mean_date': 15, 'num_ts_mm_3_max_date': 14, 'num_ts_mm_14_max_date': 14, 'num_ts_mm_14_min_date': 12, 'index_ts_year_date': 11, 'num_ts_mm_1000_min_date': 9, 'num_ts_mm_360_median_date': 9, 'num_ts_mm_360_max_date': 7, 'num_ts_mm_3_mean_date': 7, 'num_ts_mm_1000_max_date': 6, 'num_ts_mm_1000_median_date': 6, 'num_ts_mm_7_median_date': 6, 'num_ts_mm_21_max_date': 5, 'num_ts_mm_7_min_date': 5, 'num_ts_mm_1_mean_date': 5, 'num_ts_mm_1000_mean_date': 5, 'num_ts_mm_7_mean_date': 5, 'num_ts_mm_5_median_date': 4, 'num_ts_mm_21_median_date': 3, 'num_ts_year_date_cos': 3, 'num_ts_mm_360_min_date': 2, 'num_ts_mm_3_min_date': 2, 'num_ts_mm_2_min_date': 2, 'num_ts_mm_5_mean_date': 2, 'num_ts_mm_7_max_date': 2, 'num_ts_mm_2_mean_date': 2, 'index_ts_quarter_date': 1, 'num_ts_mm_5_max_date': 1, 'num_ts_freq_5_max_date': 1, 'num_ts_mm_3_median_date': 1, 'index_ts_dayinweek_date': 1, 'num_ts_mm_360_mean_date': 1, 'num_ts_mm_21_mean_date': 1, 'num_ts_freq_14_mean_date': 0, 'num_ts_quarter_date_cos': 0, 'num_ts_freq_1000_mean_date': 0, 'num_ts_freq_360_mean_date': 0, 'index_ts_month_date': 0, 'num_ts_month_date_sin': 0, 'num_ts_month_date_cos': 0, 'num_ts_freq_3_mean_date': 0, 'num_ts_quarter_date_sin': 0, 'num_ts_freq_7_max_date': 0, 'num_ts_freq_5_mean_date': 0, 'num_ts_dayinmonth_date_cos': 0, 'num_ts_freq_1_mean_date': 0, 'num_ts_freq_2_mean_date': 0, 'num_ts_freq_7_mean_date': 0, 'num_ts_freq_3_max_date': 0, 'num_ts_freq_21_mean_date': 0, 'num_ts_dayinmonth_date_sin': 0, 'num_ts_freq_2_max_date': 0, 'index_ts_dayinmonth_date': 0}
 
 Learning curve by training examples
-+-------------+--------------------+-----------------------+--------------------+---------------------+
-| train_sizes | train_scores_mean  |    train_scores_std   |  test_scores_mean  |   test_scores_std   |
-+-------------+--------------------+-----------------------+--------------------+---------------------+
-|      7      | 0.9838642123007771 |  0.007813859691508761 | 0.5906182671825534 | 0.32460100241272893 |
-|      23     | 0.9780938328429354 |  0.013288557971126267 |  0.70676215824809  | 0.08884758797182428 |
-|      39     | 0.9789542292396496 |  0.008066750977542362 | 0.7147224978861184 | 0.11342598137928954 |
-|      55     | 0.9694979214673298 | 0.0032626480225470614 | 0.7125433542527222 | 0.11247684299741019 |
-|      72     | 0.9792334819580439 |  0.006158347126965306 | 0.7739981909084288 | 0.06596359145264184 |
-+-------------+--------------------+-----------------------+--------------------+---------------------+
++-------------+--------------------+------------------------+--------------------+-----------------------+
+| train_sizes | train_scores_mean  |    train_scores_std    |  test_scores_mean  |    test_scores_std    |
++-------------+--------------------+------------------------+--------------------+-----------------------+
+|     633     | 0.991846368665948  | 0.00033783488607577186 | 0.9868081597496143 | 0.0013414420359531317 |
+|     2060    | 0.9921965650308477 | 0.0002759583852650471  | 0.9909191733125319 | 0.0008373775016213397 |
+|     3486    | 0.9913527288491004 | 0.0006877744884905647  | 0.9902732154476986 | 0.0010089195811005779 |
+|     4912    | 0.9909010476839912 | 0.0007449311157342954  | 0.9901972720225153 | 0.0015083576999130545 |
+|     6339    | 0.9911658324714839 | 0.0008469433913780809  | 0.9903735215547428 |  0.000999359628727197 |
++-------------+--------------------+------------------------+--------------------+-----------------------+
 
 
 Boostrap metrics, sample 20 results:
 +--------------------+---------------------+--------------------------------+
 | mean_squared_error | mean_absolute_error | mean_absolute_percentage_error |
 +--------------------+---------------------+--------------------------------+
-| 57.79827131271574  |  6.179186964050968  |       0.1462121616659438       |
-| 61.530127101658906 |  6.253551692214684  |      0.14741705367103666       |
-| 60.87347565595444  |  6.378398489447781  |       0.1588538273997312       |
-| 60.25927690536628  |  6.309445530916888  |      0.15410508534293077       |
-| 50.23376625882789  |  5.681940657666732  |       0.143690980479365        |
-| 65.05959487895475  |  6.687059773530402  |      0.16137247843419672       |
-| 60.79659501141512  |  6.383514050976446  |      0.16365825514149976       |
-| 53.78489367682875  |  5.803425455004248  |      0.12851562977954747       |
-| 61.84385974188713  |  6.376283165124608  |      0.15213613610060378       |
-| 56.805003803155245 |  6.032016003604976  |      0.14386502824853825       |
-| 53.53324276649697  |  6.007650150148495  |       0.1547688686381286       |
-| 55.05292622245938  |   6.21492147512974  |      0.16187440806681677       |
-| 63.05143903811073  |  6.557127030842505  |        0.15063245830242        |
-| 60.06398708855455  |  6.364236782204395  |      0.13887835027326953       |
-| 54.550704204173456 |  5.894647018933292  |       0.1402343800371446       |
-| 57.932844061965355 |  6.026265428062606  |      0.14587201913559608       |
-| 53.11832560825333  |  5.9018675648803445 |       0.1456692635865772       |
-| 63.65371989786092  |  6.4894707899919455 |       0.1538348529405525       |
-| 65.76868213075585  |   6.53437625914575  |      0.15776290065970267       |
-| 53.44636075578082  |  5.997920675146502  |       0.1560064672799688       |
+| 34.089011838609885 |  4.323602983760833  |      0.08560302660169908       |
+| 34.62874740794784  |  4.021785134959373  |      0.08324795889751341       |
+| 37.789670877466406 |   4.34489615599751  |       0.0864285276359875       |
+| 36.13439591407678  |  4.276850021528668  |      0.08788686056099763       |
+| 37.90993016642194  |  4.1493122229655075 |      0.09190873976604232       |
+| 42.75834472770325  |   4.5435772703529   |      0.08949404275564338       |
+| 44.69553612256215  |  4.3352928263982005 |      0.08562660566265126       |
+| 39.026392450411606 |  4.270684353455393  |      0.08887539599661128       |
+| 50.86575222891877  |   4.65763108531468  |      0.09134559993097849       |
+| 41.85521749139954  |  4.525685162052175  |      0.08718055689090448       |
+| 28.98979695620361  |  3.8923031422685153 |      0.09425893808551784       |
+| 41.52796029019408  |  4.367422621594163  |      0.08072307660675197       |
+| 31.808465456241823 |  4.000995785929576  |      0.09035205608059486       |
+| 31.264863047958187 |  3.8330189119244715 |      0.08260687651028827       |
+| 32.324688684289534 |  4.140064235694383  |      0.08155203992448276       |
+| 38.36806618646032  |  4.441697988953806  |      0.09536599137634547       |
+| 41.991280897552855 |  4.217919679236204  |      0.08418999069014527       |
+| 36.83435006037228  |  4.236349736304649  |      0.09357262822450421       |
+| 32.67495814136106  |  3.985700389628983  |      0.08567677691878664       |
+| 44.22100293477525  |  4.711932754617249  |      0.09266582048222227       |
 +--------------------+---------------------+--------------------------------+
 
 Trying to find weaknesses in the model by training models on the error:
@@ -117,52 +135,65 @@ Most important features by catboost:
 +----------------------------+------------+
 |          Feature           | Importance |
 +----------------------------+------------+
-|       num_wind_speed       |    30.0    |
-| num_ts_dayinmonth_date_sin |    7.0     |
-| num_ts_mm_360_median_date  |    6.0     |
-|    num_ts_mm_7_max_date    |    5.0     |
-|        num_meantemp        |    4.0     |
-|  index_ts_dayinweek_date   |    4.0     |
-|  num_ts_mm_3_median_date   |    4.0     |
-|   num_ts_mm_3_mean_date    |    4.0     |
-| num_ts_dayinmonth_date_cos |    3.0     |
-|   num_ts_mm_21_mean_date   |    3.0     |
-|   num_ts_mm_7_mean_date    |    2.0     |
-|  num_ts_mm_7_median_date   |    2.0     |
-|   num_ts_mm_14_max_date    |    2.0     |
-|  num_ts_mm_21_median_date  |    2.0     |
-|  num_ts_mm_360_mean_date   |    2.0     |
-|  index_ts_dayinmonth_date  |    2.0     |
+|          index_id          |    38.0    |
+|   num_ts_mm_21_min_date    |    7.0     |
+|   num_ts_mm_360_max_date   |    7.0     |
+|    num_ts_mm_7_min_date    |    5.0     |
+|   num_ts_mm_14_min_date    |    5.0     |
+|   num_ts_mm_360_min_date   |    4.0     |
+| num_ts_mm_1000_median_date |    3.0     |
 |    num_ts_mm_5_min_date    |    2.0     |
-|  num_ts_mm_14_median_date  |    1.0     |
-|   num_ts_mm_14_min_date    |    1.0     |
-|    num_ts_mm_5_max_date    |    1.0     |
-|    num_ts_mm_7_min_date    |    1.0     |
+|    num_ts_mm_5_max_date    |    2.0     |
+|   num_ts_mm_21_max_date    |    2.0     |
+|    num_ts_mm_3_min_date    |    2.0     |
 |   num_ts_mm_5_mean_date    |    1.0     |
+|  num_ts_mm_360_mean_date   |    1.0     |
+|  num_ts_mm_21_median_date  |    1.0     |
+| num_ts_mm_360_median_date  |    1.0     |
+|  num_ts_mm_14_median_date  |    1.0     |
+|   num_ts_mm_14_mean_date   |    1.0     |
+|  num_ts_mm_1000_mean_date  |    1.0     |
+|  num_ts_mm_1000_min_date   |    1.0     |
+|  num_ts_mm_1000_max_date   |    1.0     |
 |  num_ts_mm_5_median_date   |    1.0     |
+|    num_ts_mm_7_max_date    |    1.0     |
 |    num_ts_mm_3_max_date    |    1.0     |
-|    num_ts_mm_3_min_date    |    1.0     |
 |   num_ts_mm_2_mean_date    |    1.0     |
-|   num_ts_mm_1_mean_date    |    1.0     |
-|   num_ts_month_date_sin    |    1.0     |
-|      num_meanpressure      |    1.0     |
-|   num_ts_mm_360_min_date   |    1.0     |
-|    num_ts_mm_2_max_date    |    0.0     |
-|   num_ts_mm_14_mean_date   |    0.0     |
-|    num_ts_mm_2_min_date    |    0.0     |
-|   num_ts_month_date_cos    |    0.0     |
-|   num_ts_mm_21_min_date    |    0.0     |
-|   num_ts_mm_21_max_date    |    0.0     |
-|    index_ts_month_date     |    0.0     |
+|     index_ts_year_date     |    1.0     |
+|  num_ts_mm_3_median_date   |    1.0     |
+|   num_ts_month_date_cos    |    1.0     |
+|    num_ts_year_date_sin    |    1.0     |
+|    num_ts_year_date_cos    |    1.0     |
+|    index_ts_month_date     |    1.0     |
+|    num_ts_mm_2_min_date    |    1.0     |
+|    num_ts_mm_2_max_date    |    1.0     |
+|   num_ts_freq_7_max_date   |    0.0     |
+|  num_ts_freq_7_mean_date   |    0.0     |
+|  index_ts_dayinweek_date   |    0.0     |
+|  num_ts_freq_5_mean_date   |    0.0     |
+|  num_ts_freq_14_mean_date  |    0.0     |
+|   num_ts_freq_3_max_date   |    0.0     |
+|  num_ts_freq_3_mean_date   |    0.0     |
+|  num_ts_freq_21_mean_date  |    0.0     |
+|   num_ts_freq_2_max_date   |    0.0     |
+|  num_ts_freq_2_mean_date   |    0.0     |
+| num_ts_freq_360_mean_date  |    0.0     |
+|  num_ts_freq_1_mean_date   |    0.0     |
+|   num_ts_freq_5_max_date   |    0.0     |
+| num_ts_dayinmonth_date_cos |    0.0     |
+|   index_ts_quarter_date    |    0.0     |
+| num_ts_dayinmonth_date_sin |    0.0     |
+|   num_ts_month_date_sin    |    0.0     |
+|  num_ts_quarter_date_sin   |    0.0     |
 +----------------------------+------------+
 
 Print of tree to look for potential segments with high error (use with caution)
-|--- num_ts_mm_21_min_date <= 12.00
-|   |--- num_ts_mm_21_median_date <= 16.98
-|   |   |--- value: [0.06]
-|   |--- num_ts_mm_21_median_date >  16.98
-|   |   |--- value: [0.12]
-|--- num_ts_mm_21_min_date >  12.00
-|   |--- value: [0.30]
+|--- num_ts_month_date_sin <= 0.50
+|   |--- index_ts_month_date_11 <= 24.92
+|   |   |--- value: [0.13]
+|   |--- index_ts_month_date_11 >  24.92
+|   |   |--- value: [0.09]
+|--- num_ts_month_date_sin >  0.50
+|   |--- value: [0.05]
 
 

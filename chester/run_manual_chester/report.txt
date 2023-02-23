@@ -1,0 +1,35 @@
+Full report to analyze my data:
+
+Data information:
+Data Information Report
+Problem Type: Regression
+Target Variable: target
+Feature Types: {'numeric': [], 'boolean': [], 'text': [], 'categorical': ['id'], 'time': ['date'], 'id': []}
+Loss Function: R squared
+Evaluation Metrics: ['R2', 'MSE', 'MAE', 'MAPE']
+Optional Models: {'baseline-average', 'linear', 'baseline-median', 'catboost'}
+
+
+features engineering process for the data:
+features statistics for the data. Analyzed by groups (text, numeric, categorical) if exists:
+
+Numerical Feature statistics:
+
+Categorical Feature statistics:
+Feature stats:
+                  col # unique # missing                       Distribution  \
+2                  id        3         0  AAPL: 33%, GOOG: 33%, MSFT: 33...   
+5       ts_month_date       12         0  8.0: 9%, 3.0: 9%, 10.0: 9%, 1....   
+1  ts_dayinmonth_date       31         0  8.0: 3%, 11.0: 3%, 9.0: 3%, 13...   
+3   ts_dayinweek_date        5         0  Tuesday: 21%, Wednesday: 21%, ...   
+4     ts_quarter_date        4         0  3.0: 25%, 1.0: 25%, 4.0: 25%, ...   
+0        ts_year_date       14         0  2020.0: 8%, 2021.0: 8%, 2011.0...   
+
+                         Sample Top 5 values coverage  
+2              GOOG, AAPL, MSFT                  100%  
+5                      10, 6, 5                   43%  
+1                      7, 8, 18                   17%  
+3  Tuesday, Thursday, Wednesday                  100%  
+4                       4, 1, 2                  100%  
+0              2022, 2020, 2015                   38%  
+
