@@ -60,18 +60,6 @@ class DeltaPValueCalc:
             mde = stats.t.ppf(0.8, len(data) - 1) * std / np.sqrt(len(data))
             ci = stats.t.interval(0.95, len(data) - 1, loc=-mean, scale=std / np.sqrt(len(data)))
 
-        # Return the results as a dictionary
-        # results = {
-        #     'metric': metric_col,
-        #     'weighted_mean': '{:.3f}'.format(mean),
-        #     'weighted_std': '{:.2f}'.format(std),
-        #     't_statistic': '{:.3f}'.format(t_stat),
-        #     'p_value': '{:.3f}'.format(p_val),
-        #     'effect_size': '{:.3f}'.format(effect_size),
-        #     'mde': '{:.3f}'.format(mde),
-        #     'ci_lower': '{:.2f}'.format(ci[0]),
-        #     'ci_upper': '{:.2f}'.format(ci[1])
-        # }
         results = {
             'metric': metric_col,
             'weighted_mean': mean,
@@ -99,9 +87,6 @@ class DeltaPValueCalc:
     def plot(self, delta_results):
         for col in self.ab_info.get_metric_cols():
             self.plot_single_metric(col, delta_results)
-
-    import pandas as pd
-    import matplotlib.pyplot as plt
 
     @staticmethod
     def _plot_util(df):
@@ -161,7 +146,8 @@ class DeltaPValueCalc:
         pd.set_option('display.max_rows', None)
 
         single_results = self.run_all_metrics()  # get diff, pvalue
-        # print(pd.DataFrame(single_results))
+        print("Test Statistics:")
+        print(pd.DataFrame(single_results))
 
         # plot
         self.plot(delta_results=pd.DataFrame(single_results))

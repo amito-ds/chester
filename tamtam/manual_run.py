@@ -11,7 +11,7 @@ df["side"] = df["version"].apply(lambda x: "B" if x == "gate_30" else "A")
 df.drop(columns=["version"], inplace=True)
 
 # Prepare
-ab_data = ABData(df.sort_values(by='userid')[0:5000])
+ab_data = ABData(df.sample(10000))
 test_info = TestInfo(side_col="side", metrics=['retention_1', 'retention_7'], id_cols=['userid'],
                      feature_cols=['sum_gamerounds'])
 

@@ -274,9 +274,12 @@ def run_madcat(
         model_results = model.get_best_model()  # returns result of the best baseline model
         # print model metadata
         params = model_results[1].get_params()
-        print(f"Best model: {type(model_results[1].model)}, with parameters:")
-        for p in params:
-            print(p.name, ":", p.value)
+        try:
+            print(f"Best model: {type(model_results[1].model)}, with parameters:")
+            for p in params:
+                print(p.name, ":", p.value)
+        except:
+            pass
 
         run_metadata_collector["data info"] = data_info
         run_metadata_collector["features data"] = final_df
@@ -286,6 +289,10 @@ def run_madcat(
     ####################################################
 
     # post model
+    is_baseline = type(model_results[1]).__name__ == "BaselineModel"
+    if is_baseline:
+        print("Best model is a simple baseline")
+        return run_metadata_collector
     if is_post_model and is_model_training:
         rc.save_text("\nPost model analysis - analyzing results of the chosen model: ")
         print(chapter_title('post model analysis'))

@@ -7,17 +7,17 @@ Target Variable: target
 Feature Types: {'numeric': ['sum_gamerounds'], 'boolean': [], 'text': [], 'categorical': [], 'time': [], 'id': []}
 Loss Function: R squared
 Evaluation Metrics: ['R2', 'MSE', 'MAE', 'MAPE']
-Optional Models: {'baseline-average', 'baseline-median', 'linear', 'catboost'}
+Optional Models: {'linear', 'baseline-average', 'baseline-median', 'catboost'}
 
 
 features engineering process for the data:
 ** model pre analysis report:
 Feature stats:
-            col # unique # missing  max   min   avg   std            CI  \
-0  target_label        3         0  1.0  -1.0  0.01  0.43  (-0.0, 0.01)   
+            col # unique # missing  max   min  avg   std            CI median  \
+0  target_label        3         0  1.0  -1.0  0.0  0.43  (-0.0, 0.01)    0.0   
 
-  median       top_vals    bottom_vals  
-0    0.0  1.0,-0.0,-1.0  -1.0,-0.0,1.0  
+       top_vals   bottom_vals  
+0  1.0,0.0,-1.0  -1.0,0.0,1.0  
 
 top 50 with lowest partial pvalue for numerical feat, based on chi square:
 [('num_sum_gamerounds', 0.0)]
@@ -27,11 +27,11 @@ Model results compared - showing the best out of each type after CV & HP tuning:
 +-------+-----------------------+---------------------+---------------------+--------------------------------+
 |  type |         model         |  mean_squared_error | mean_absolute_error | mean_absolute_percentage_error |
 +-------+-----------------------+---------------------+---------------------+--------------------------------+
-|  test |     BaselineModel     |       0.183375      |       0.183375      |            0.183375            |
-|  test |     CatboostModel     | 0.18377547839031688 |  0.1909079503426899 |       35205354210933.55        |
-|  test | LinearRegressionModel | 0.18348962413543707 | 0.18707669448443723 |       16626465705172.55        |
-| train |     BaselineModel     |       0.183375      |       0.183375      |            0.183375            |
-| train |     CatboostModel     | 0.18031124766286877 | 0.18926841117429563 |       35813613147196.36        |
-| train | LinearRegressionModel |  0.1832653255785847 | 0.18694724051073114 |        16566977685116.7        |
+|  test |     BaselineModel     | 0.18520886718750001 |   0.1912989453125   |       27465096774402.89        |
+|  test |     CatboostModel     | 0.18588168272588573 |  0.1913352461048045 |       26850373638758.54        |
+|  test | LinearRegressionModel |  0.1853823743085226 | 0.18978754207731702 |       20579317442837.766       |
+| train |     BaselineModel     |   0.1851920703125   | 0.19130573242187499 |       27533486397650.555       |
+| train |     CatboostModel     |  0.184194067003568  | 0.19050735068951402 |       26869453588785.008       |
+| train | LinearRegressionModel | 0.18505687566644186 | 0.18966567842323964 |       20723410718728.73        |
 +-------+-----------------------+---------------------+---------------------+--------------------------------+
 

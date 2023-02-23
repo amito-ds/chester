@@ -226,21 +226,24 @@ class NumericPreModelAnalysis:
         dim = math.ceil(math.sqrt(top_features))
         num_rows = math.ceil(top_features / dim)
         if self.data_info.problem_type_val in ["Binary regression"]:
-            fig, ax = plt.subplots(num_rows, dim)
-            plt.figure(figsize=(18, 15))
-            plt.suptitle("Partial Plot to Identify Patterns between Sampled Numeric Features and Target",
-                         fontsize=16, fontweight='bold')
-            for i in range(len(top_feature_names)):
-                col = top_feature_names[i]
-                column = self.data[col]
-                target = self.target
-                ax_i = ax[i // dim, i % dim]
-                sns.regplot(x=column, y=target, logistic=True, n_boot=250, y_jitter=.03, ax=ax_i)
-                ax_i.set_xlabel("")
-                ax_i.set_ylabel("")
-                ax_i.set_title(col, fontweight='bold', transform=ax_i.transAxes, y=0.5)
-            plt.show()
-            plt.close()
+            try:
+                fig, ax = plt.subplots(num_rows, dim)
+                plt.figure(figsize=(18, 15))
+                plt.suptitle("Partial Plot to Identify Patterns between Sampled Numeric Features and Target",
+                             fontsize=16, fontweight='bold')
+                for i in range(len(top_feature_names)):
+                    col = top_feature_names[i]
+                    column = self.data[col]
+                    target = self.target
+                    ax_i = ax[i // dim, i % dim]
+                    sns.regplot(x=column, y=target, logistic=True, n_boot=250, y_jitter=.03, ax=ax_i)
+                    ax_i.set_xlabel("")
+                    ax_i.set_ylabel("")
+                    ax_i.set_title(col, fontweight='bold', transform=ax_i.transAxes, y=0.5)
+                plt.show()
+                plt.close()
+            except:
+                pass
         elif self.data_info.problem_type_val in ["Regression"]:
             plt.figure(figsize=(18, 15))
             plt.suptitle("Partial Plot to Identify Patterns between Sampled Numeric Features and Target", fontsize=16,

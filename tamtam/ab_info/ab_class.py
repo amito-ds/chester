@@ -94,7 +94,10 @@ class ABInfo:
             pass
 
     def cast_cols(self):
-        pass
+        metrics = self.get_metric_cols()
+        df = self.df
+        df[metrics] = df[metrics].astype(float)
+        self.df = df
 
     def get_lead_metric(self):
         return self.test_info.metrics[0]
