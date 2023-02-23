@@ -37,15 +37,15 @@ run(ab_data=ab_data, test_info=test_info)
 # test_info = TestInfo(side_col="side", metrics=['REVENUE'], id_cols=['USER_ID'])
 
 #
-df = pd.read_csv("/Users/amitosi/PycharmProjects/chester/tamtam/data/abtest_kaggle_3.csv")
-df["side"] = df["group"].apply(lambda x: "A" if x == "control" else "B")
-df.drop(columns=["group"], inplace=True)
-df["ctr"] = df["clicks"] / df["views"]
-df.drop(columns=["clicks"], inplace=True)
-
-# Prepare
-ab_data = ABData(df.sample(5000))
-test_info = TestInfo(side_col="side", metrics=['ctr'], id_cols=['user_id'], weight_col='views')
-
-# run
-run(ab_data=ab_data, test_info=test_info)
+# df = pd.read_csv("/Users/amitosi/PycharmProjects/chester/tamtam/data/abtest_kaggle_3.csv")
+# df["side"] = df["group"].apply(lambda x: "A" if x == "control" else "B")
+# df.drop(columns=["group"], inplace=True)
+# df["ctr"] = df["clicks"] / df["views"]
+# df.drop(columns=["clicks"], inplace=True)
+#
+# # Prepare
+# ab_data = ABData(df.sample(5000))
+# test_info = TestInfo(side_col="side", metrics=['ctr'], id_cols=['user_id'], weight_col='views')
+#
+# # run
+# run(ab_data=ab_data, test_info=test_info)

@@ -22,7 +22,6 @@ class ABInfo:
         if not self.test_info.is_id_cols():
             self.df[Columns.id] = 1
 
-    def aggregate(self):
         self.add_dummies()
         weight_col = self.test_info.get_weight_col() or Columns.weight
         id_cols = self.test_info.get_id_cols() or Columns.id
