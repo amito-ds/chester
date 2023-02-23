@@ -67,7 +67,7 @@ class ABInfo:
         for m in metrics:
             trimmed_col_by_metric[m] = []
             for p in trimming_list:
-                trimmed_col = f"{m}_trim_{p:.2f}"
+                trimmed_col = f"{m}_trim_{100*p:.2f}"
                 q = [p / 2, 1 - p / 2]
                 trimmed_vals = self.weighted_percentile(aggregated[m], aggregated[weight_col], q)
                 trimmed = np.clip(aggregated[m], *trimmed_vals)
