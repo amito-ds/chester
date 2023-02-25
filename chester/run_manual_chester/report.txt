@@ -2,34 +2,55 @@ Full report to analyze my data:
 
 Data information:
 Data Information Report
-Problem Type: Regression
+Problem Type: Multiclass classification
 Target Variable: target
-Feature Types: {'numeric': [], 'boolean': [], 'text': [], 'categorical': ['id'], 'time': ['date'], 'id': []}
-Loss Function: R squared
-Evaluation Metrics: ['R2', 'MSE', 'MAE', 'MAPE']
-Optional Models: {'baseline-average', 'linear', 'baseline-median', 'catboost'}
+Feature Types: {'numeric': ['height', 'weight'], 'boolean': [], 'text': ['hero_names'], 'categorical': ['gender', 'eye color', 'race', 'hair color', 'publisher', 'skin color', 'agility', 'accelerated healing', 'lantern power ring', 'dimensional awareness', 'cold resistance', 'durability', 'stealth', 'energy absorption', 'flight', 'danger sense', 'underwater breathing', 'marksmanship', 'weapons master', 'power augmentation', 'animal attributes', 'longevity', 'intelligence', 'super strength', 'cryokinesis', 'telepathy', 'energy armor', 'energy blasts', 'duplication', 'size changing', 'density control', 'stamina', 'astral travel', 'audio control', 'dexterity', 'omnitrix', 'super speed', 'possession', 'animal oriented powers', 'weaponbased powers', 'electrokinesis', 'darkforce manipulation', 'death touch', 'teleportation', 'enhanced senses', 'telekinesis', 'energy beams', 'magic', 'hyperkinesis', 'jump', 'clairvoyance', 'dimensional travel', 'power sense', 'shapeshifting', 'peak human condition', 'immortality', 'camouflage', 'element control', 'phasing', 'astral projection', 'electrical transport', 'fire control', 'projection', 'summoning', 'enhanced memory', 'reflexes', 'invulnerability', 'energy constructs', 'force fields', 'selfsustenance', 'antigravity', 'empathy', 'power nullifier', 'radiation control', 'psionic powers', 'elasticity', 'substance secretion', 'elemental transmogrification', 'technopathcyberpath', 'photographic reflexes', 'seismic power', 'animation', 'precognition', 'mind control', 'fire resistance', 'power absorption', 'enhanced hearing', 'nova force', 'insanity', 'hypnokinesis', 'animal control', 'natural armor', 'intangibility', 'enhanced sight', 'molecular manipulation', 'heat generation', 'adaptation', 'gliding', 'power suit', 'mind blast', 'probability manipulation', 'gravity control', 'regeneration', 'light control', 'echolocation', 'levitation', 'toxin and disease control', 'banish', 'energy manipulation', 'heat resistance', 'natural weapons', 'time travel', 'enhanced smell', 'illusions', 'thirstokinesis', 'hair manipulation', 'illumination', 'omnipotent', 'cloaking', 'changing armor', 'power cosmic', 'biokinesis', 'water control', 'radiation immunity', 'vision  telescopic', 'toxin and disease resistance', 'spatial awareness', 'energy resistance', 'telepathy resistance', 'molecular combustion', 'omnilingualism', 'portal creation', 'magnetism', 'mind control resistance', 'plant control', 'sonar', 'sonic scream', 'time manipulation', 'enhanced touch', 'magic resistance', 'invisibility', 'submariner', 'radiation absorption', 'intuitive aptitude', 'vision  microscopic', 'melting', 'wind control', 'super breath', 'wallcrawling', 'vision  night', 'vision  infrared', 'grim reaping', 'matter absorption', 'the force', 'resurrection', 'terrakinesis', 'vision  heat', 'vitakinesis', 'radar sense', 'qwardian power ring', 'weather control', 'vision  xray', 'vision  thermal', 'web creation', 'reality warping', 'odin force', 'symbiote costume', 'speed force', 'phoenix force', 'molecular dissipation', 'vision  cryo', 'omnipresent', 'omniscient'], 'time': [], 'id': []}
+Loss Function: Cross entropy
+Evaluation Metrics: ['Accuracy', 'Precision', 'Recall', 'F1']
+Optional Models: {'logistic', 'baseline-mode', 'catboost'}
 
 
+Cleaning and preprocessing hero_names column
+The following cleaning steps will be applied to clean column 'hero_names': Removing punctuation, Removing numbers, Removing whitespaces, Removing empty lines, Lowercasing text, Removing stopwords, Removing accented characters, Removing special characters, Removing html tags.
+hero_names column preprocessing
+The following preprocessing steps will be applied to the column 'hero_names': Stemming text, Tokenizing text.
 features engineering process for the data:
+Extracting embedding
+First, Extracting Corex topic model embeddings with dimension 30
+Next, Extracting TF-IDF embeddings with dimension 30
+Then, Extracting bag-of-words embeddings with dimension 30
+Lastly, All embeddings have been concatenated
 features statistics for the data. Analyzed by groups (text, numeric, categorical) if exists:
 
 Numerical Feature statistics:
 
 Categorical Feature statistics:
 Feature stats:
-                  col # unique # missing                       Distribution  \
-2                  id        3         0  AAPL: 33%, GOOG: 33%, MSFT: 33...   
-5       ts_month_date       12         0  8.0: 9%, 3.0: 9%, 10.0: 9%, 1....   
-1  ts_dayinmonth_date       31         0  8.0: 3%, 11.0: 3%, 9.0: 3%, 13...   
-3   ts_dayinweek_date        5         0  Tuesday: 21%, Wednesday: 21%, ...   
-4     ts_quarter_date        4         0  3.0: 25%, 1.0: 25%, 4.0: 25%, ...   
-0        ts_year_date       14         0  2020.0: 8%, 2021.0: 8%, 2011.0...   
+                              col # unique # missing  \
+138                   radar sense        2        74   
+58                     mind blast        2        74   
+157               enhanced senses        2        74   
+28                   grim reaping        2        74   
+65                   danger sense        2        74   
+76                   illumination        2        74   
+147                  hypnokinesis        2        74   
+92                         gender        3         0   
+72                     power suit        2        74   
+134  elemental transmogrification        2        74   
 
-                         Sample Top 5 values coverage  
-2              GOOG, AAPL, MSFT                  100%  
-5                      10, 6, 5                   43%  
-1                      7, 8, 18                   17%  
-3  Tuesday, Thursday, Wednesday                  100%  
-4                       4, 1, 2                  100%  
-0              2022, 2020, 2015                   38%  
+                      Distribution           Sample Top 5 values coverage  
+138           False: 99%, True: 1%      False, True                  100%  
+58            False: 98%, True: 2%      False, True                  100%  
+157          False: 86%, True: 14%      False, True                  100%  
+28           False: 100%, True: 0%      False, True                  100%  
+65            False: 95%, True: 5%      False, True                  100%  
+76           False: 100%, True: 0%      False, True                  100%  
+147           False: 96%, True: 4%      True, False                  100%  
+92   Male: 69%, Female: 27%, -: 4%  Female, -, Male                  100%  
+72            False: 95%, True: 5%      False, True                  100%  
+134           False: 99%, True: 1%      True, False                  100%  
 
+Text statistics:
+Extracting embedding
+** Analayzing hero_names column
+Data quality stats:

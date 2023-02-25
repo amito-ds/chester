@@ -10,9 +10,11 @@ from sklearn.datasets import fetch_20newsgroups, fetch_openml
 from chester.run.full_run import run_madcat
 from chester.run.user_classes import Data, ModelRun, TimeSeriesHandler
 import yfinance as yf
+import ml_datasets
 
 matplotlib.use('TkAgg')
 target_column = 'target'
+
 
 ################################################################################################
 # df1 = load_data_pirates().assign(target='pirate').sample(300, replace=True)
@@ -55,9 +57,46 @@ target_column = 'target'
 
 
 ###############################################################################################
-df = pd.read_csv("/Users/amitosi/PycharmProjects/chester/chester/data/daily_cinema.csv")
-df.rename(columns={'humidity': 'target'}, inplace=True)
+# df = pd.read_csv("/Users/amitosi/PycharmProjects/chester/chester/data/daily_cinema.csv")
+# df.rename(columns={'humidity': 'target'}, inplace=True)
 ##############################################################################################
+
+
+###############################################################################################
+def load_marvel_goodbad():
+    heroes_information = pd.read_csv("/Users/amitosi/PycharmProjects/chester/chester/data/heroes_information.csv")
+    super_hero_powers = pd.read_csv("/Users/amitosi/PycharmProjects/chester/chester/data/super_hero_powers.csv")
+    df1 = pd.merge(heroes_information, super_hero_powers,
+                   left_on='name', right_on='hero_names', how='left')
+
+    df1.rename(columns={'Alignment': 'target'}, inplace=True)
+    df1.drop(columns=['Unnamed: 0', 'name', 'hero_names'],
+             inplace=True)
+
+    # define a translation table to remove the specified characters
+
+    def translate(str1):
+        str1 = str1.lower()
+        str1 = str1.replace('/', '')
+        str1 = str1.replace('.', '')
+        str1 = str1.replace('-', '')
+        str1 = str1.replace('*', '')
+        return str1
+
+    # map the columns to their cleaned names using the translation table
+    column_mapping = {col: translate(col) for col in df1.columns}
+    df1 = df1.rename(columns=column_mapping)
+    df1 = df1[df1['target'].isin(["good", "bad"])]
+
+    return df1
+
+
+df = load_marvel_goodbad()
+print(df[0:10])
+
+
+##############################################################################################
+
 
 ###############################################################################################
 # df = pd.read_csv("chester/model_training/models/chester_models/day.csv")
@@ -192,9 +231,6 @@ def load_ex2():
     return df
 
 
-import ml_datasets
-
-
 def load_ex3():
     train_data, _ = ml_datasets.dbpedia()
     train_data = pd.DataFrame(train_data, columns=["text", "target"])
@@ -247,18 +283,16 @@ def load_yaho(tickers=None, start_date='2010-01-01', end_date='2023-02-15'):
     return df
 
 
-df = load_yaho()
+# df = load_yaho()
 # print("df shape", df.shape)
 # print("df cols", df.columns)
 
 madcat_collector = run_madcat(Data(df=df, target_column='target'),
                               is_feature_stats=True,
-                              # time_series_handler=TimeSeriesHandler(id_cols=['store_nbr', 'family']),
-                              # time_series_handler=TimeSeriesHandler(id_cols=["id"]),
                               # time_series_handler=TimeSeriesHandler(id_cols=["id"]),
                               is_pre_model=True,
                               is_model_training=True,
-                              model_run=ModelRun(n_models=2),
+                              model_run=ModelRun(n_models=10),
                               is_post_model=True, is_model_weaknesses=True,
                               plot=True,
                               # feature_types={'numeric': [], 'boolean': [], 'text': ['Campaign Name'],
@@ -273,4 +307,3 @@ madcat_collector = run_madcat(Data(df=df, target_column='target'),
 #     # feature_types=feature_types,
 #     is_model_training=True, is_post_model=True, is_model_weaknesses=True
 # )
-

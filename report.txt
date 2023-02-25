@@ -2,73 +2,59 @@ Full report to analyze my data:
 
 Data information:
 Data Information Report
-Problem Type: Regression
+Problem Type: Binary classification
 Target Variable: target
-Feature Types: {'numeric': ['age', 'educ', 'black', 'hispan', 'married', 'nodegree'], 'boolean': [], 'text': [], 'categorical': [], 'time': [], 'id': []}
-Loss Function: R squared
-Evaluation Metrics: ['R2', 'MSE', 'MAE', 'MAPE']
-Optional Models: {'baseline-average', 'linear', 'baseline-median', 'catboost'}
+Feature Types: {'numeric': ['height', 'weight'], 'boolean': [], 'text': [], 'categorical': ['gender', 'eye color', 'race', 'hair color', 'publisher', 'skin color', 'agility', 'accelerated healing', 'lantern power ring', 'dimensional awareness', 'cold resistance', 'durability', 'stealth', 'energy absorption', 'flight', 'danger sense', 'underwater breathing', 'marksmanship', 'weapons master', 'power augmentation', 'animal attributes', 'longevity', 'intelligence', 'super strength', 'cryokinesis', 'telepathy', 'energy armor', 'energy blasts', 'duplication', 'size changing', 'density control', 'stamina', 'astral travel', 'audio control', 'dexterity', 'omnitrix', 'super speed', 'possession', 'animal oriented powers', 'weaponbased powers', 'electrokinesis', 'darkforce manipulation', 'death touch', 'teleportation', 'enhanced senses', 'telekinesis', 'energy beams', 'magic', 'hyperkinesis', 'jump', 'clairvoyance', 'dimensional travel', 'power sense', 'shapeshifting', 'peak human condition', 'immortality', 'camouflage', 'element control', 'phasing', 'astral projection', 'electrical transport', 'fire control', 'projection', 'summoning', 'enhanced memory', 'reflexes', 'invulnerability', 'energy constructs', 'force fields', 'selfsustenance', 'antigravity', 'empathy', 'power nullifier', 'radiation control', 'psionic powers', 'elasticity', 'substance secretion', 'elemental transmogrification', 'technopathcyberpath', 'photographic reflexes', 'seismic power', 'animation', 'precognition', 'mind control', 'fire resistance', 'power absorption', 'enhanced hearing', 'nova force', 'insanity', 'hypnokinesis', 'animal control', 'natural armor', 'intangibility', 'enhanced sight', 'molecular manipulation', 'heat generation', 'adaptation', 'gliding', 'power suit', 'mind blast', 'probability manipulation', 'gravity control', 'regeneration', 'light control', 'echolocation', 'levitation', 'toxin and disease control', 'banish', 'energy manipulation', 'heat resistance', 'natural weapons', 'time travel', 'enhanced smell', 'illusions', 'thirstokinesis', 'hair manipulation', 'illumination', 'omnipotent', 'cloaking', 'changing armor', 'power cosmic', 'biokinesis', 'water control', 'radiation immunity', 'vision  telescopic', 'toxin and disease resistance', 'spatial awareness', 'energy resistance', 'telepathy resistance', 'molecular combustion', 'omnilingualism', 'portal creation', 'magnetism', 'mind control resistance', 'plant control', 'sonar', 'sonic scream', 'time manipulation', 'enhanced touch', 'magic resistance', 'invisibility', 'submariner', 'radiation absorption', 'intuitive aptitude', 'vision  microscopic', 'melting', 'wind control', 'super breath', 'wallcrawling', 'vision  night', 'vision  infrared', 'grim reaping', 'matter absorption', 'the force', 'resurrection', 'terrakinesis', 'vision  heat', 'vitakinesis', 'radar sense', 'qwardian power ring', 'weather control', 'vision  xray', 'vision  thermal', 'web creation', 'reality warping', 'odin force', 'symbiote costume', 'speed force', 'phoenix force', 'molecular dissipation', 'vision  cryo', 'omnipresent', 'omniscient'], 'time': [], 'id': []}
+Loss Function: Cross entropy
+Evaluation Metrics: ['Accuracy', 'Precision', 'Recall', 'F1']
+Optional Models: {'baseline-mode', 'logistic', 'catboost'}
 
 
 features engineering process for the data:
+features statistics for the data. Analyzed by groups (text, numeric, categorical) if exists:
+
+Numerical Feature statistics:
+
+Categorical Feature statistics:
+Feature stats:
+                     col # unique # missing           Distribution  \
+95       enhanced senses        2        74  False: 87%, True: 13%   
+38       fire resistance        2        74   False: 97%, True: 3%   
+153  qwardian power ring        2        74  False: 100%, True: 0%   
+113           durability        2        74  False: 60%, True: 40%   
+139            magnetism        2        74   False: 98%, True: 2%   
+122         super breath        2        74   False: 97%, True: 3%   
+156        seismic power        2        74  False: 100%, True: 0%   
+123   lantern power ring        2        74   False: 98%, True: 2%   
+85          hypnokinesis        2        74   False: 96%, True: 4%   
+82        omnilingualism        2        74   False: 97%, True: 3%   
+
+          Sample Top 5 values coverage  
+95   False, True                  100%  
+38   False, True                  100%  
+153  True, False                  100%  
+113  True, False                  100%  
+139  False, True                  100%  
+122  True, False                  100%  
+156  False, True                  100%  
+123  False, True                  100%  
+85   False, True                  100%  
+82   True, False                  100%  
+
 ** model pre analysis report:
 Feature stats:
-            col # unique # missing       max        min      avg      std  \
-0  target_label      457         0  60307.93  -25564.67  -2966.8  9654.71   
+            col # unique # missing         Distribution     Sample  \
+0  target_label        2         0  good: 71%, bad: 29%  bad, good   
 
-               CI  median           top_vals           bottom_vals  
-0  (-3608, -2326)  -752.9  60308,36647,34099  -25565,-25514,-25049  
+  Top 5 values coverage  
+0                  100%  
+
+values counts for categorical target to predict:
+good    496
+bad     207
+Name: target, dtype: int64
+
+top 50 with lowest partial pvalue for categorical feat based on chi square:
+[('gender', 0.00011092700086763573), ('hair color', 0.00015721247715691608), ('super strength', 0.00021939804238579904), ('natural weapons', 0.009080356633757584), ('power suit', 0.009187736028066149), ('insanity', 0.013840723261314511), ('race', 0.020011701748211003), ('skin color', 0.02138487154423307), ('invisibility', 0.021611168834446342), ('publisher', 0.021845046844259062), ('shapeshifting', 0.02494245943293485), ('technopathcyberpath', 0.026725653354019628), ('camouflage', 0.033065076518526255), ('empathy', 0.035904238265538235), ('flight', 0.038113737676687895), ('durability', 0.03884404257438544), ('telekinesis', 0.04574292549924577), ('darkforce manipulation', 0.047661712451639464), ('eye color', 0.050282405022179795), ('radiation control', 0.05698443757514079), ('phasing', 0.06730438375017292), ('energy manipulation', 0.07060288376380587), ('invulnerability', 0.07177607161945165), ('density control', 0.09911353429126449), ('energy constructs', 0.1057597384760658), ('molecular manipulation', 0.10944002757337132), ('hypnokinesis', 0.11717252586764842), ('power augmentation', 0.11735029675685237), ('cryokinesis', 0.1268390349344308), ('marksmanship', 0.12734854963519665), ('peak human condition', 0.12845274299888904), ('radar sense', 0.1429111057707699), ('mind control', 0.1462710319159236), ('stealth', 0.1612063332081452), ('regeneration', 0.16270335112865184), ('weaponbased powers', 0.16881946124495184), ('adaptation', 0.16904026018584994), ('element control', 0.17215879864726416), ('melting', 0.17564044167799397), ('enhanced hearing', 0.1759916439414647), ('dimensional travel', 0.18298843432523962), ('intelligence', 0.1838790508517861), ('teleportation', 0.20484144892639353), ('longevity', 0.20644588589944793), ('agility', 0.2205624280686661), ('electrokinesis', 0.25129993849693477), ('resurrection', 0.25625999512077513), ('magic', 0.2631334962974072), ('mind control resistance', 0.27418204072377694), ('radiation immunity', 0.27418204072377694)]
 
 Training models and choosing the best one
-Model results compared - showing the best out of each type after CV & HP tuning: 
-+-------+-----------------------+--------------------+---------------------+--------------------------------+
-|  type |         model         | mean_squared_error | mean_absolute_error | mean_absolute_percentage_error |
-+-------+-----------------------+--------------------+---------------------+--------------------------------+
-|  test |     BaselineModel     | 89846296.95756996  |  6846.627933049827  |     3.1594085889594296e+18     |
-|  test |     CatboostModel     | 76051515.80025382  |  6447.858446216671  |     5.576630304359106e+18      |
-|  test | LinearRegressionModel | 72936336.47256535  |   6223.28990741922  |     4.701496291132721e+18      |
-| train |     BaselineModel     | 89668074.84290396  |  6838.579663168474  |     3.159031672959326e+18      |
-| train |     CatboostModel     | 44235856.59508495  |  4786.112232049477  |     3.6659973868694743e+18     |
-| train | LinearRegressionModel | 69397283.25316183  |  6064.068578774037  |     4.536961176812934e+18      |
-+-------+-----------------------+--------------------+---------------------+--------------------------------+
-
-
-Post model analysis - analyzing results of the chosen model: 
-Learning curve by training examples
-+-------------+---------------------+----------------------+----------------------+---------------------+
-| train_sizes |  train_scores_mean  |   train_scores_std   |   test_scores_mean   |   test_scores_std   |
-+-------------+---------------------+----------------------+----------------------+---------------------+
-|      39     |  0.4917739067995794 | 0.061921721468534675 | -0.06459637066777002 | 0.16850311191225265 |
-|     127     |  0.3210007947399293 | 0.02826498926629389  |  0.1380609037812982  |  0.0728017479388756 |
-|     215     | 0.26636588892882707 | 0.020006245737093222 | 0.15623378145839203  |  0.0746482668037361 |
-|     303     | 0.23620899870864145 | 0.012255561512376972 | 0.16711227787981536  | 0.05133671148823514 |
-|     392     | 0.22582425526569957 | 0.010081281301168626 |  0.1805857275249126  |  0.0539872451257407 |
-+-------------+---------------------+----------------------+----------------------+---------------------+
-
-
-Boostrap metrics, sample 20 results:
-+--------------------+---------------------+--------------------------------+
-| mean_squared_error | mean_absolute_error | mean_absolute_percentage_error |
-+--------------------+---------------------+--------------------------------+
-| 102607521.38672434 |   7596.8927331117   |     4.853597429879146e+18      |
-| 90307111.23960562  |   7481.57955081777  |     6.424201947282576e+18      |
-| 106598963.35452072 |  7792.747800558192  |     4.686118949726691e+18      |
-| 87957731.71604049  |  7300.026545080821  |     5.884296488600908e+18      |
-| 103556991.59953193 |  7572.392190340411  |     5.213359896421922e+18      |
-| 77764652.15997571  |  6934.917096366824  |     5.440411207462851e+18      |
-| 87957611.91636492  |  7067.166085163928  |     5.469987798714391e+18      |
-| 95665518.25480565  |  7452.411868960052  |     5.074450247069847e+18      |
-| 73176146.04140574  |  6635.3875917044725 |     5.135284907632511e+18      |
-| 90101866.10339317  |  7262.2752386593465 |     4.469768011367261e+18      |
-| 74178262.37846267  |  6790.698469626638  |     5.053068985023818e+18      |
-| 106778966.53488167 |  8137.512599937669  |     5.594664899399998e+18      |
-| 117060899.79785919 |  8427.030182287614  |     3.939855910234695e+18      |
-| 81195579.04618147  |  7162.327115650652  |     4.924503539673131e+18      |
-| 83512509.54980573  |  7095.427399228802  |     6.064694400426498e+18      |
-| 71990352.27080277  |  6685.029042950707  |     6.252669756518286e+18      |
-| 96141170.10082714  |   7642.97982525114  |     7.106576670487627e+18      |
-|  86249725.9476676  |  7327.831967411523  |     6.226501133110089e+18      |
-| 107165959.04328822 |  7907.537139903805  |     3.700597495014974e+18      |
-| 69141607.34610604  |  6311.143091749109  |     5.446097452128089e+18      |
-+--------------------+---------------------+--------------------------------+
-

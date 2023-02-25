@@ -91,7 +91,7 @@ def run_madcat(
 
     # meta learn
     df = data_spec.df.sample(frac=1).reset_index(drop=True)
-    data_info = DataInfo(data=df.sample(min(10000, len(df))), target='target')
+    data_info = DataInfo(data=df.sample(min(10000, len(df))), target=data_spec.target_column)
     data_info.calculate()
     data_info.data = df
 
@@ -166,7 +166,8 @@ def run_madcat(
     if text_feature_extraction is not None:
         feat_hand.text_feature_extraction = text_feature_extraction
     feature_types, final_df = feat_hand.transform()
-    final_df[target_column] = data_info.data[data_info.target]
+    if target_column is not None:
+        final_df[target_column] = data_info.data[data_info.target]
     final_df = final_df.loc[:, ~final_df.columns.duplicated()]
     data_info.data = data_info.data.loc[:, ~data_info.data.columns.duplicated()]
 
@@ -249,6 +250,8 @@ def run_madcat(
             CategoricalPreModelAnalysis(data_info).run(plot)
     ####################################################
     # model
+    if not is_model_training:
+        return run_metadata_collector
     if is_model_training:
         print(chapter_title("model training"))
         rc.save_text("Training models and choosing the best one")

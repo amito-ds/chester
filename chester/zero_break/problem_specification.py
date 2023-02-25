@@ -118,7 +118,7 @@ class DataInfo:
     def _determine_id_cols(self):
         id_cols = []
         for col in self.data.columns:
-            if col.startswith("ID_") or col.endswith("_id") or col.endswith("_ID"):
+            if col.startswith("ID_") or col.endswith("_id") or col.endswith("_ID") or col.lower().endswith(" id"):
                 id_cols.append(col)
         return id_cols
 
