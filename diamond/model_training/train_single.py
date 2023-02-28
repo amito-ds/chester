@@ -21,9 +21,22 @@ class ImageModelTraining:
     def load_model(self):
         if self.image_model.network_name == "EfficientNetB0":
             model = hub.load('rwightman/pytorch-image-models', 'efficientnet_b0', pretrained=True)
+        elif self.image_model.network_name == "EfficientNetB4":
+            model = hub.load('rwightman/pytorch-image-models', 'efficientnet_b4', pretrained=True)
+        elif self.image_model.network_name == "EfficientNetB7":
+            model = hub.load('rwightman/pytorch-image-models', 'efficientnet_b7', pretrained=True)
+        elif self.image_model.network_name == "ResNet50":
+            model = hub.load('pytorch/vision', 'resnet50', pretrained=True)
+        elif self.image_model.network_name == "ResNet101":
+            model = hub.load('pytorch/vision', 'resnet101', pretrained=True)
+        elif self.image_model.network_name == "DenseNet121":
+            model = hub.load('pytorch/vision', 'densenet121', pretrained=True)
+        elif self.image_model.network_name == "VGG16":
+            model = hub.load('pytorch/vision', 'vgg16', pretrained=True)
+        elif self.image_model.network_name == "InceptionV3":
+            model = hub.load('pytorch/vision', 'inception_v3', pretrained=True)
         else:
             raise ValueError(f"Unsupported network name: {self.image_model.network_name}")
-
         # remove the specified number of layers from the top
         if self.image_model.remove_last_layers_num > 0:
             for i in range(self.image_model.remove_last_layers_num):
