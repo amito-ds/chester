@@ -16,8 +16,9 @@ class ImageModelTraining:
         self.num_classes = len(np.unique(images_data.labels))
         self.num_epochs = image_model.num_epochs
         self.train_loader, self.val_loader = images_data.create_data_loaders(
-            batch_size=self.image_model.batch_size)  # train_loader, val_loader
+            batch_size=self.image_model.batch_size)
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        self.evaluate_predictions = None
 
     def get_model(self):
         if self.image_model.network_name == "EfficientNetB0":
@@ -65,7 +66,7 @@ class ImageModelTraining:
         for epoch in range(self.num_epochs):
             print(f"Epoch {epoch + 1}/{self.num_epochs}")
             train_loss = self.train_model_epoch(model, self.train_loader, criterion, optimizer)
-            val_loss = self.evaluate_model(model, self.val_loader)
+            val_loss = self.evaluate_model(model=model, data_loader=self.val_loader)
             print(f"Train loss: {train_loss:.4f} - Val loss: {val_loss:.4f}")
         return train_loss, val_loss
 
@@ -108,6 +109,21 @@ class ImageModelTraining:
         accuracy = correct / total
         return accuracy
 
+    @staticmethod
+    def get_eval_prediction(model, data_loader):
+        # Get the predictions for the eval set
+        eval_preds = []
+        with torch.no_grad():
+            for data in data_loader:
+                images, labels = data
+                outputs = model(images.float())
+                _, predicted = torch.max(outputs.data, 1)
+                eval_preds.append(predicted)
+        # Concatenate the predictions into a single tensor
+        eval_preds = torch.cat(eval_preds, dim=0)
+        # Return the predictions
+        return eval_preds
+
     def run(self):
         model = self.load_model()
         criterion = nn.CrossEntropyLoss()  # future: more loss functions, for bb, regression
@@ -115,4 +131,5 @@ class ImageModelTraining:
         print("\nTraining Specifications: ", self.image_model.network_parameters)
         optimizer = optim.Adam(model.parameters(), **optimizer_params)  # get rid of lr
         train_loss, val_loss = self.train_model(model, criterion, optimizer)  # get rid of epochs
-        return model, train_loss, val_loss
+        self.evaluate_predictions = self.get_eval_prediction(model, self.val_loader)
+        return model, train_loss, val_loss, self.evaluate_predictions

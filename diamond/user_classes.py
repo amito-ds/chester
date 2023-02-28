@@ -95,6 +95,7 @@ class ImageModel:
         if self.optimizer_params is None:
             self.optimizer_params = {"lr": 0.001, 'weight_decay': 0.0001}
         self.network_parameters = optimizer_params.copy()
+        self.network_parameters["_model_name"] = self.network_name
         self.network_parameters["_num_epochs"] = self.num_epochs
         self.network_parameters["_batch_size"] = self.batch_size
         self.network_parameters["_remove_last_layers_num layers"] = self.remove_last_layers_num
@@ -105,3 +106,14 @@ class ImageModels:
         self.image_model_list = image_model_list
         if image_model_list is None:
             self.image_model_list = [ImageModel()]
+
+
+class ImagePostModelSpec:
+    def __init__(self, plot,
+                 is_compare_models=True,
+                 is_confusion_matrix=True,
+                 is_precision_recall=True):
+        self.plot = plot
+        self.is_compare_models = is_compare_models
+        self.is_confusion_matrix = is_confusion_matrix
+        self.is_precision_recall = is_precision_recall

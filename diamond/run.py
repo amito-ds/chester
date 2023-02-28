@@ -3,7 +3,8 @@ import numpy as np
 from diamond.data_augmentation.augmentation import ImageAugmentation
 from diamond.image_data_info.image_info import ImageInfo
 from diamond.model_training.best_model import ImageModelsTraining
-from diamond.user_classes import ImagesData, ImagesAugmentationInfo, ImageModels
+from diamond.post_model_analysis.post_model import ImagePostModelAnalysis
+from diamond.user_classes import ImagesData, ImagesAugmentationInfo, ImageModels, ImagePostModelSpec
 
 
 def run(images,
@@ -11,7 +12,7 @@ def run(images,
         validation_prop=0.2,
         is_augment_data=True, image_augmentation_info=None,
         is_train_model=True, image_models=None,
-        is_post_model_analysis=True,
+        is_post_model_analysis=True, image_post_model: ImagePostModelSpec = None,
         plot=True
         ):
     diamond_collector = {}
@@ -47,13 +48,19 @@ def run(images,
         return diamond_collector
     if image_models is None:
         image_models = ImageModels()
-    best_models = ImageModelsTraining(images_data=image_data,
-                                      image_models=image_models).run()  # return the model ordered by best to worst
+    models_sorted = ImageModelsTraining(images_data=image_data,
+                                        image_models=image_models).run()  # return the model ordered by best to worst
 
-    diamond_collector["models"] = best_models
+    diamond_collector["models"] = models_sorted
 
     # Post model analysis
     if is_post_model_analysis:
-        pass
+        if image_post_model is None:
+            image_post_model = ImagePostModelSpec(plot=plot)
+        ImagePostModelAnalysis(model_list=models_sorted,
+                               images_data=image_data,
+                               image_post_model=image_post_model,
+                               diamond_collector=diamond_collector,
+                               plot=plot).run()
 
     return diamond_collector
