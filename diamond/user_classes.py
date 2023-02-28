@@ -97,6 +97,7 @@ class ImageModel:
         self.network_parameters = optimizer_params.copy()
         self.network_parameters["_num_epochs"] = self.num_epochs
         self.network_parameters["_batch_size"] = self.batch_size
+        self.network_parameters["_remove_last_layers_num layers"] = self.remove_last_layers_num
 
 
 class ImageModels:

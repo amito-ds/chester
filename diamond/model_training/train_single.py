@@ -1,9 +1,9 @@
 import torch.nn as nn
 from torch import optim
-from torchvision.models import efficientnet_b0
-
+import numpy as np
 from diamond.user_classes import ImagesData, ImageModel
 import torch.hub as hub
+from torchvision import datasets, models, transforms
 
 import torch
 
@@ -13,12 +13,13 @@ class ImageModelTraining:
                  image_model: ImageModel):
         self.images_data = images_data
         self.image_model = image_model
+        self.num_classes = len(np.unique(images_data.labels))
         self.num_epochs = image_model.num_epochs
         self.train_loader, self.val_loader = images_data.create_data_loaders(
             batch_size=self.image_model.batch_size)  # train_loader, val_loader
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    def load_model(self):
+    def get_model(self):
         if self.image_model.network_name == "EfficientNetB0":
             model = hub.load('rwightman/pytorch-image-models', 'efficientnet_b0', pretrained=True)
         elif self.image_model.network_name == "EfficientNetB4":
@@ -26,21 +27,32 @@ class ImageModelTraining:
         elif self.image_model.network_name == "EfficientNetB7":
             model = hub.load('rwightman/pytorch-image-models', 'efficientnet_b7', pretrained=True)
         elif self.image_model.network_name == "ResNet50":
-            model = hub.load('pytorch/vision', 'resnet50', pretrained=True)
+            model = models.resnet50(pretrained=True).to(self.device)
         elif self.image_model.network_name == "ResNet101":
-            model = hub.load('pytorch/vision', 'resnet101', pretrained=True)
+            model = models.resnet101(pretrained=True).to(self.device)
         elif self.image_model.network_name == "DenseNet121":
-            model = hub.load('pytorch/vision', 'densenet121', pretrained=True)
+            model = models.densenet121(pretrained=True).to(self.device)
         elif self.image_model.network_name == "VGG16":
-            model = hub.load('pytorch/vision', 'vgg16', pretrained=True)
+            model = models.vgg16(pretrained=True).to(self.device)
         elif self.image_model.network_name == "InceptionV3":
-            model = hub.load('pytorch/vision', 'inception_v3', pretrained=True)
+            model = models.inception_v3(pretrained=True).to(self.device)
         else:
             raise ValueError(f"Unsupported network name: {self.image_model.network_name}")
+        return model
+
+    def load_model(self):
+        model = self.get_model()
+
         # remove the specified number of layers from the top
         if self.image_model.remove_last_layers_num > 0:
-            for i in range(self.image_model.remove_last_layers_num):
-                model.classifier = nn.Sequential(*list(model.classifier.children())[:-1])
+            print(f"Removing last {self.image_model.remove_last_layers_num} layers for {self.image_model.network_name}")
+            if "resnet" in self.image_model.network_name.lower() \
+                    or self.image_model.network_name.lower() in "inception":
+                num_features = model.fc.in_features
+                model.fc = nn.Linear(num_features, self.num_classes)
+            else:
+                for i in range(self.image_model.remove_last_layers_num):
+                    model.classifier = nn.Sequential(*list(model.classifier.children())[:-1])
 
         # make the remaining layers non-trainable
         for param in model.parameters():
@@ -64,7 +76,12 @@ class ImageModelTraining:
 
             inputs, labels = inputs.to(self.device), labels.to(self.device)
 
-            outputs = model(inputs.float())
+            try:
+                outputs = model(inputs.float())
+            except Exception as e:
+                print(f"Error while running model: {e}")
+                print("Input size:", inputs.size())
+
             loss = criterion(outputs, labels)
             loss.backward()
 
@@ -76,7 +93,8 @@ class ImageModelTraining:
 
         return epoch_loss
 
-    def evaluate_model(self, model, data_loader):
+    @staticmethod
+    def evaluate_model(model, data_loader):
         correct = 0
         total = 0
         with torch.no_grad():
@@ -94,7 +112,7 @@ class ImageModelTraining:
         model = self.load_model()
         criterion = nn.CrossEntropyLoss()  # future: more loss functions, for bb, regression
         optimizer_params = self.image_model.optimizer_params
-        print("Training Specifications: ", self.image_model.network_parameters)
+        print("\nTraining Specifications: ", self.image_model.network_parameters)
         optimizer = optim.Adam(model.parameters(), **optimizer_params)  # get rid of lr
         train_loss, val_loss = self.train_model(model, criterion, optimizer)  # get rid of epochs
         return model, train_loss, val_loss
