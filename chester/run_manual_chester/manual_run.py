@@ -17,13 +17,13 @@ target_column = 'target'
 
 
 ################################################################################################
-# df1 = load_data_pirates().assign(target='pirate').sample(300, replace=True)
-# df2 = load_data_king_arthur().assign(target='arthur').sample(300, replace=True)
-# df3 = load_data_chat_logs().assign(target='chat').sample(300, replace=True)
-# df = pd.concat([
-#     df1, df2,
-#     df3
-# ])
+df1 = load_data_pirates().assign(target='pirate').sample(300, replace=True)
+df2 = load_data_king_arthur().assign(target='arthur').sample(300, replace=True)
+df3 = load_data_chat_logs().assign(target='chat').sample(300, replace=True)
+df = pd.concat([
+    df1, df2,
+    df3
+])
 
 # df['target'] = df['target'].apply(lambda x: 0 if "pirate" in x else 1)  # can do with or without
 ################################################################################################
@@ -91,10 +91,30 @@ def load_marvel_goodbad():
     return df1
 
 
-df = load_marvel_goodbad()
-print(df[0:10])
+# df = load_marvel_goodbad()
+##############################################################################################
+
+##############################################################################################
+def load_maverl_dc():
+    marvel = pd.read_csv("/Users/amitosi/PycharmProjects/chester/chester/data/marvel-wikia-data.csv")
+    dc = pd.read_csv("/Users/amitosi/PycharmProjects/chester/chester/data/dc-wikia-data.csv")
+    data1 = pd.concat([marvel, dc])
+    data1.rename(columns={'ALIGN': 'target'}, inplace=True)
+    data1.drop(columns=['urlslug', 'name'], inplace=True)
+    return data1
 
 
+# df = load_maverl_dc()
+# print(df[0:10])
+##############################################################################################
+
+##############################################################################################
+def load_autizm():
+    data_aut = pd.read_csv("/Users/amitosi/PycharmProjects/chester/chester/data/autism_prediction.csv")
+    data_aut.rename(columns={'Class/ASD': 'target'}, inplace=True)
+    return data_aut
+
+# df = load_autizm()
 ##############################################################################################
 
 
@@ -286,13 +306,13 @@ def load_yaho(tickers=None, start_date='2010-01-01', end_date='2023-02-15'):
 # df = load_yaho()
 # print("df shape", df.shape)
 # print("df cols", df.columns)
-
+#
 madcat_collector = run_madcat(Data(df=df, target_column='target'),
                               is_feature_stats=True,
                               # time_series_handler=TimeSeriesHandler(id_cols=["id"]),
                               is_pre_model=True,
                               is_model_training=True,
-                              model_run=ModelRun(n_models=10),
+                              model_run=ModelRun(n_models=2),
                               is_post_model=True, is_model_weaknesses=True,
                               plot=True,
                               # feature_types={'numeric': [], 'boolean': [], 'text': ['Campaign Name'],

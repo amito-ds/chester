@@ -4,53 +4,138 @@ Data information:
 Data Information Report
 Problem Type: Multiclass classification
 Target Variable: target
-Feature Types: {'numeric': ['height', 'weight'], 'boolean': [], 'text': ['hero_names'], 'categorical': ['gender', 'eye color', 'race', 'hair color', 'publisher', 'skin color', 'agility', 'accelerated healing', 'lantern power ring', 'dimensional awareness', 'cold resistance', 'durability', 'stealth', 'energy absorption', 'flight', 'danger sense', 'underwater breathing', 'marksmanship', 'weapons master', 'power augmentation', 'animal attributes', 'longevity', 'intelligence', 'super strength', 'cryokinesis', 'telepathy', 'energy armor', 'energy blasts', 'duplication', 'size changing', 'density control', 'stamina', 'astral travel', 'audio control', 'dexterity', 'omnitrix', 'super speed', 'possession', 'animal oriented powers', 'weaponbased powers', 'electrokinesis', 'darkforce manipulation', 'death touch', 'teleportation', 'enhanced senses', 'telekinesis', 'energy beams', 'magic', 'hyperkinesis', 'jump', 'clairvoyance', 'dimensional travel', 'power sense', 'shapeshifting', 'peak human condition', 'immortality', 'camouflage', 'element control', 'phasing', 'astral projection', 'electrical transport', 'fire control', 'projection', 'summoning', 'enhanced memory', 'reflexes', 'invulnerability', 'energy constructs', 'force fields', 'selfsustenance', 'antigravity', 'empathy', 'power nullifier', 'radiation control', 'psionic powers', 'elasticity', 'substance secretion', 'elemental transmogrification', 'technopathcyberpath', 'photographic reflexes', 'seismic power', 'animation', 'precognition', 'mind control', 'fire resistance', 'power absorption', 'enhanced hearing', 'nova force', 'insanity', 'hypnokinesis', 'animal control', 'natural armor', 'intangibility', 'enhanced sight', 'molecular manipulation', 'heat generation', 'adaptation', 'gliding', 'power suit', 'mind blast', 'probability manipulation', 'gravity control', 'regeneration', 'light control', 'echolocation', 'levitation', 'toxin and disease control', 'banish', 'energy manipulation', 'heat resistance', 'natural weapons', 'time travel', 'enhanced smell', 'illusions', 'thirstokinesis', 'hair manipulation', 'illumination', 'omnipotent', 'cloaking', 'changing armor', 'power cosmic', 'biokinesis', 'water control', 'radiation immunity', 'vision  telescopic', 'toxin and disease resistance', 'spatial awareness', 'energy resistance', 'telepathy resistance', 'molecular combustion', 'omnilingualism', 'portal creation', 'magnetism', 'mind control resistance', 'plant control', 'sonar', 'sonic scream', 'time manipulation', 'enhanced touch', 'magic resistance', 'invisibility', 'submariner', 'radiation absorption', 'intuitive aptitude', 'vision  microscopic', 'melting', 'wind control', 'super breath', 'wallcrawling', 'vision  night', 'vision  infrared', 'grim reaping', 'matter absorption', 'the force', 'resurrection', 'terrakinesis', 'vision  heat', 'vitakinesis', 'radar sense', 'qwardian power ring', 'weather control', 'vision  xray', 'vision  thermal', 'web creation', 'reality warping', 'odin force', 'symbiote costume', 'speed force', 'phoenix force', 'molecular dissipation', 'vision  cryo', 'omnipresent', 'omniscient'], 'time': [], 'id': []}
+Feature Types: {'numeric': ['APPEARANCES', 'Year', 'YEAR'], 'boolean': [], 'text': [], 'categorical': ['EYE', 'HAIR', 'SEX', 'GSM', 'ALIVE', 'FIRST APPEARANCE'], 'time': [], 'id': ['page_id', 'ID']}
 Loss Function: Cross entropy
 Evaluation Metrics: ['Accuracy', 'Precision', 'Recall', 'F1']
-Optional Models: {'logistic', 'baseline-mode', 'catboost'}
+Optional Models: {'baseline-mode', 'logistic', 'catboost'}
 
 
-Cleaning and preprocessing hero_names column
-The following cleaning steps will be applied to clean column 'hero_names': Removing punctuation, Removing numbers, Removing whitespaces, Removing empty lines, Lowercasing text, Removing stopwords, Removing accented characters, Removing special characters, Removing html tags.
-hero_names column preprocessing
-The following preprocessing steps will be applied to the column 'hero_names': Stemming text, Tokenizing text.
 features engineering process for the data:
-Extracting embedding
-First, Extracting Corex topic model embeddings with dimension 30
-Next, Extracting TF-IDF embeddings with dimension 30
-Then, Extracting bag-of-words embeddings with dimension 30
-Lastly, All embeddings have been concatenated
 features statistics for the data. Analyzed by groups (text, numeric, categorical) if exists:
 
 Numerical Feature statistics:
 
 Categorical Feature statistics:
 Feature stats:
-                              col # unique # missing  \
-138                   radar sense        2        74   
-58                     mind blast        2        74   
-157               enhanced senses        2        74   
-28                   grim reaping        2        74   
-65                   danger sense        2        74   
-76                   illumination        2        74   
-147                  hypnokinesis        2        74   
-92                         gender        3         0   
-72                     power suit        2        74   
-134  elemental transmogrification        2        74   
+                col # unique # missing                       Distribution  \
+1  FIRST APPEARANCE     1461       362  Jun-92: 0%, May-93: 0%, Aug-10...   
+4               SEX        5       420  Male Characters: 74%, Female C...   
+2               EYE       25      5674  Blue Eyes: 31%, Brown Eyes: 28...   
+0             ALIVE        2         3  Living Characters: 76%, Deceas...   
+3              HAIR       25      2782  Black Hair: 32%, Brown Hair: 2...   
+5               GSM        2      9936  Homosexual Characters: 83%, Bi...   
 
-                      Distribution           Sample Top 5 values coverage  
-138           False: 99%, True: 1%      False, True                  100%  
-58            False: 98%, True: 2%      False, True                  100%  
-157          False: 86%, True: 14%      False, True                  100%  
-28           False: 100%, True: 0%      False, True                  100%  
-65            False: 95%, True: 5%      False, True                  100%  
-76           False: 100%, True: 0%      False, True                  100%  
-147           False: 96%, True: 4%      True, False                  100%  
-92   Male: 69%, Female: 27%, -: 4%  Female, -, Male                  100%  
-72            False: 95%, True: 5%      False, True                  100%  
-134           False: 99%, True: 1%      True, False                  100%  
+                              Sample Top 5 values coverage  
+1       Mar-76, 1999, August, Aug-77                    2%  
+4  Male Characters, Agender Chara...                  100%  
+2       Amber Eyes, One Eye, No Eyes                   86%  
+0  Deceased Characters, Living Ch...                  100%  
+3  Strawberry Blond Hair, Magenta...                   81%  
+5  Bisexual Characters, Homosexua...                  100%  
 
-Text statistics:
-Extracting embedding
-** Analayzing hero_names column
-Data quality stats:
+** model pre analysis report:
+Feature stats:
+            col # unique # missing                       Distribution  \
+0  target_label        3      1519  Bad Characters: 49%, Good Char...   
+
+                              Sample Top 5 values coverage  
+0  Neutral Characters, Good Chara...                  100%  
+
+values counts for categorical target to predict:
+Bad Characters        9615
+Good Characters       7468
+Neutral Characters    2773
+Reformed Criminals       3
+Name: target, dtype: int64
+
+top 50 with lowest partial pvalue for categorical feat based on chi square:
+[('FIRST APPEARANCE', 4.5238097468731855e-204), ('SEX', 2.7213261886470876e-135), ('HAIR', 5.826531398719736e-77), ('EYE', 9.915299826307018e-59), ('ALIVE', 1.4943918171359309e-33), ('GSM', 0.335435998847665)]
+
+Training models and choosing the best one
+Model results compared - showing the best out of each type after CV & HP tuning: 
++-------+-------------------------+--------------------+---------------------+---------------------+---------------------+
+|  type |          model          |   accuracy_score   |   precision_score   |     recall_score    |       f1_score      |
++-------+-------------------------+--------------------+---------------------+---------------------+---------------------+
+|  test |      BaselineModel      | 0.409517909543053  |         nan         |         nan         |         nan         |
+|  test |      CatboostModel      | 0.5124342599332451 |  0.4396147355521579 | 0.32488820867184565 |  0.3077951123568927 |
+|  test | LogisticRegressionModel | 0.4422294801121602 | 0.20908584635036234 |  0.2474076813152024 | 0.19560047977264577 |
+| train |      BaselineModel      | 0.4095181652576346 |         nan         |         nan         |         nan         |
+| train |      CatboostModel      | 0.5906697036776488 |  0.5047176646575192 | 0.35056312820594127 | 0.33982024617070106 |
+| train | LogisticRegressionModel | 0.4420958884986031 | 0.19025510847298588 | 0.22515788372307455 | 0.17817772303039492 |
++-------+-------------------------+--------------------+---------------------+---------------------+---------------------+
+
+
+Post model analysis - analyzing results of the chosen model: 
+Top 100 Feature importance (in %, 100 = the most important one):
+{'index_FIRST APPEARANCE': 100, 'num_APPEARANCES': 91, 'num_Year': 80, 'index_EYE': 70, 'index_HAIR': 51, 'index_SEX': 48, 'index_ALIVE': 33, 'index_GSM': 20, 'num_YEAR': 12}
+
+confusion matrix on the test set
+[[1447  460    4   80]
+ [ 545  859    6   49]
+ [ 274  225   10   24]
+ [ 370  184    1  117]]
+
+Learning curve by training examples
++-------------+--------------------+-----------------------+---------------------+----------------------+
+| train_sizes | train_scores_mean  |    train_scores_std   |   test_scores_mean  |   test_scores_std    |
++-------------+--------------------+-----------------------+---------------------+----------------------+
+|     1489    | 0.5262592343854936 | 0.0021490933512424704 | 0.48530818239336104 | 0.009388425728053606 |
+|     4840    | 0.5634297520661158 |  0.005925106885598292 | 0.49578294187177396 | 0.006197811950563975 |
+|     8191    | 0.5630814308387254 |  0.010655290990903083 |  0.5032491150750135 | 0.009050913750063337 |
+|    11542    | 0.5756541327326287 |  0.01191298498760037  |  0.5098556509842582 | 0.010686663151285858 |
+|    14893    | 0.5816289531994897 |  0.008300396029766536 |  0.5113061518767565 | 0.007463266643829541 |
++-------------+--------------------+-----------------------+---------------------+----------------------+
+
+
+Boostrap metrics, sample 20 results:
++----------------+---------------------+---------------------+---------------------+
+| accuracy_score |   precision_score   |     recall_score    |       f1_score      |
++----------------+---------------------+---------------------+---------------------+
+|     0.505      |  0.6481944444444445 |  0.3989837555349604 | 0.38803072733914085 |
+|     0.525      |  0.6089651455264103 | 0.38066816816816823 | 0.35966175668303324 |
+|     0.495      |  0.5744839449541284 | 0.36615870688451335 |  0.3445641898109266 |
+|     0.485      |  0.3656309297912713 | 0.35343567251461994 |  0.3191666666666667 |
+|      0.46      | 0.35653235653235654 | 0.34996732026143795 | 0.32762875447208584 |
+|      0.52      | 0.48140868140868137 | 0.38788934246845536 | 0.38374313464435833 |
+|     0.475      |  0.3151663125204315 |  0.3398793859649123 |  0.3243631368631369 |
+|      0.54      |  0.3806109787571968 | 0.39776653171390014 | 0.36270022883295194 |
+|      0.53      |  0.4113169966199903 | 0.37943170955621386 | 0.37231096340766157 |
+|     0.485      | 0.40158882879134594 |  0.3464029322881614 | 0.31637524733963823 |
+|      0.53      | 0.38419003115264794 |  0.3804131054131054 |  0.3729074414083594 |
+|      0.54      | 0.41177024482109226 | 0.38147872164265606 |  0.3766203703703704 |
+|     0.565      |  0.5103131953273998 |  0.400848547587678  | 0.39936804443810414 |
+|      0.6       |  0.5415549043743455 | 0.47123645061970154 |  0.4514827839536452 |
+|      0.47      |  0.6163749294184078 |  0.3505853043896522 |  0.3403476779582283 |
+|      0.52      |  0.3695104226077678 |  0.3769542299678492 | 0.35582667569397425 |
+|      0.54      |  0.5381469979296066 |  0.397093837535014  |  0.4085330701623715 |
+|      0.57      |  0.6456521739130434 | 0.41197477466777516 |  0.4106365094277937 |
+|      0.49      | 0.34818733897681264 |  0.3554622121837474 |  0.3449189186926529 |
+|      0.54      |  0.3972946878940731 |  0.3791892643582256 | 0.36593858102603144 |
++----------------+---------------------+---------------------+---------------------+
+
+Trying to find weaknesses in the model by training models on the error:
+Most important features by catboost:
++------------------------+------------+
+|        Feature         | Importance |
++------------------------+------------+
+|        num_Year        |    32.0    |
+|    num_APPEARANCES     |    15.0    |
+|       index_EYE        |    14.0    |
+| index_FIRST APPEARANCE |    13.0    |
+|       index_SEX        |    11.0    |
+|       index_HAIR       |    6.0     |
+|      index_ALIVE       |    4.0     |
+|        num_YEAR        |    4.0     |
+|       index_GSM        |    0.0     |
++------------------------+------------+
+
+Print of tree to look for potential segments with high error (use with caution)
+|--- index_FIRST APPEARANCE_1604 <= 1977.50
+|   |--- value: [0.40]
+|--- index_FIRST APPEARANCE_1604 >  1977.50
+|   |--- index_SEX_1 <= 0.50
+|   |   |--- value: [0.55]
+|   |--- index_SEX_1 >  0.50
+|   |   |--- value: [0.47]
+
+
