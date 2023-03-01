@@ -70,7 +70,7 @@ class ImagesData:
 
 class ImagesAugmentationInfo:
 
-    def __init__(self, aug_types=None, aug_prop=0.9):
+    def __init__(self, aug_types=None, aug_prop=0.05):
         self.aug_types = aug_types
         self.aug_prop = aug_prop
         # calc
@@ -81,23 +81,26 @@ class ImagesAugmentationInfo:
 class ImageModel:
     def __init__(self,
                  network_name="EfficientNetB0",
-                 remove_num_layers_layers=1,
+                 remove_num_last_layers=1,
                  batch_size=32,
                  num_epochs=2,
                  optimizer_params=None,
+                 dropout=0.7
                  ):
         self.network_name = network_name
         # TODO: validate network_name name!
-        self.remove_last_layers_num = remove_num_layers_layers
+        self.remove_last_layers_num = remove_num_last_layers
         self.batch_size = batch_size
         self.num_epochs = num_epochs
         self.optimizer_params = optimizer_params
+        self.dropout = dropout
         if self.optimizer_params is None:
-            self.optimizer_params = {"lr": 0.001, 'weight_decay': 0.0001}
+            self.optimizer_params = {"lr": 0.01, 'weight_decay': 0.0001}
         self.network_parameters = optimizer_params.copy()
         self.network_parameters["_model_name"] = self.network_name
         self.network_parameters["_num_epochs"] = self.num_epochs
         self.network_parameters["_batch_size"] = self.batch_size
+        self.network_parameters["_dropout"] = self.dropout
         self.network_parameters["_remove_last_layers_num layers"] = self.remove_last_layers_num
 
 

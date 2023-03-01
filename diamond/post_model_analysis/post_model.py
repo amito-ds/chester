@@ -1,7 +1,13 @@
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import torch
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import precision_score, recall_score
+
 from diamond.model_training.model_results import ImageModelResults
 from diamond.user_classes import ImagesData, ImagePostModelSpec
-import pandas as pd
-import torch
 
 
 class ImagePostModelAnalysis:
@@ -21,7 +27,8 @@ class ImagePostModelAnalysis:
         self.image_model_training = self.model_list[0].image_model_training
         self.train_loader, self.val_loader = self.images_data.create_data_loaders(
             batch_size=self.network_parameters["_batch_size"])
-        self.prediction = self.get_prediction()
+        self.eval_predictions = self.get_prediction()
+        self.eval_labels = self.images_data.labels_val
 
     def get_prediction(self):
         predicted = self.image_model_training.evaluate_predictions
@@ -38,23 +45,57 @@ class ImagePostModelAnalysis:
         self.diamond_collector["models comparison"] = df
         return df
 
+    @staticmethod
+    def replace_predictions(eval_labels_unique, eval_predictions):
+        updated_predictions = []
+        for eval_prediction in eval_predictions:
+            if eval_prediction not in eval_labels_unique:
+                updated_predictions.append(-1)
+            else:
+                updated_predictions.append(eval_prediction)
+        return updated_predictions
+
     def confusion_matrix(self, plot):
         if "class" not in self.images_data.problem_type:
             return None
-        # update in diamond_collector
+
+        # Replace predictions not in true labels with -1
+        modified_eval_predictions = self.replace_predictions(eval_labels_unique=np.unique(self.eval_labels),
+                                                             eval_predictions=self.eval_predictions.numpy())
+        cm = confusion_matrix(self.eval_labels, modified_eval_predictions)
+        self.diamond_collector["confusion matrix"] = cm
+
+        # Create confusion matrix plot
         if plot:
-            pass
-        pass
+            fig, ax = plt.subplots(figsize=(8, 8))
+            sns.heatmap(cm, annot=True, fmt='d', cmap=plt.cm.Blues, ax=ax, cbar=False)
+            ax.set_xlabel('Predicted label')
+            ax.set_ylabel('True label')
+            ax.set_title('Confusion Matrix')
+            plt.show()
+        return cm
 
     def precision_recall(self, plot):
         if "class" not in self.images_data.problem_type:
             return None
-        # self.predictions VS self.images_data.labels_val
-        # calc the confusion matrix
-        if plot:
-            # plot with appropriare title
-            pass
-        pass
+
+        # Calculate precision and recall for each class
+        precision = precision_score(self.eval_labels, self.eval_predictions, average=None)
+        recall = recall_score(self.eval_labels, self.eval_predictions, average=None)
+
+        # Calculate F1-score for each class
+        f1_score = 2 * (precision * recall) / (precision + recall)
+
+        # Create a dataframe with the results
+        label_values = np.unique(self.eval_labels)
+        results = pd.DataFrame({"Class": label_values,
+                                "Precision": precision,
+                                "Recall": recall,
+                                "F1-Score": f1_score})
+
+        # Display the results
+        self.diamond_collector["Precision Recall"] = results
+        return results
 
     def run(self):
         if self.image_post_model.is_compare_models:

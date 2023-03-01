@@ -28,8 +28,8 @@ def run(images,
     image_data = ImagesData(images=images, labels=labels, validation_prop=validation_prop)
     diamond_collector["image_data"] = image_data
     # plot
-    print("Sample Plot")
     if plot:
+        print("Sample Plot")
         image_data.plot_images()
 
     # augmentation
@@ -39,8 +39,8 @@ def run(images,
         image_data = ImageAugmentation(image_data, image_augmentation_info).run()
         diamond_collector["augmented_image_data"] = image_data
         # plot
-        print("Updated Sample Plot")
         if plot:
+            print("Updated Sample Plot")
             image_data.plot_images()
 
     # Training

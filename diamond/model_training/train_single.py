@@ -1,11 +1,11 @@
+import numpy as np
+import torch
+import torch.hub as hub
 import torch.nn as nn
 from torch import optim
-import numpy as np
-from diamond.user_classes import ImagesData, ImageModel
-import torch.hub as hub
-from torchvision import datasets, models, transforms
+from torchvision import models
 
-import torch
+from diamond.user_classes import ImagesData, ImageModel
 
 
 class ImageModelTraining:
@@ -50,10 +50,18 @@ class ImageModelTraining:
             if "resnet" in self.image_model.network_name.lower() \
                     or self.image_model.network_name.lower() in "inception":
                 num_features = model.fc.in_features
-                model.fc = nn.Linear(num_features, self.num_classes)
+                model.fc = nn.Sequential(
+                    nn.Dropout(p=self.image_model.dropout),
+                    nn.Linear(num_features, self.num_classes)
+                )
             else:
                 for i in range(self.image_model.remove_last_layers_num):
-                    model.classifier = nn.Sequential(*list(model.classifier.children())[:-1])
+                    num_features = model.classifier.in_features
+                    model.classifier = nn.Sequential(
+                        *list(model.classifier.children())[:-1],
+                        nn.Dropout(p=self.image_model.dropout),
+                        nn.Linear(num_features, self.num_classes)
+                    )
 
         # make the remaining layers non-trainable
         for param in model.parameters():
@@ -62,13 +70,13 @@ class ImageModelTraining:
         return model
 
     def train_model(self, model, criterion, optimizer):
-        train_loss, val_loss = 0, 0
+        train_loss, evaluate_accuracy = 0, 0
         for epoch in range(self.num_epochs):
             print(f"Epoch {epoch + 1}/{self.num_epochs}")
             train_loss = self.train_model_epoch(model, self.train_loader, criterion, optimizer)
-            val_loss = self.evaluate_model(model=model, data_loader=self.val_loader)
-            print(f"Train loss: {train_loss:.4f} - Val loss: {val_loss:.4f}")
-        return train_loss, val_loss
+            evaluate_accuracy = self.evaluate_model(model=model, data_loader=self.val_loader)
+            print(f"Train Loss: {train_loss:.4f} - Evaluate Accuracy: {evaluate_accuracy:.4f}")
+        return train_loss, evaluate_accuracy
 
     def train_model_epoch(self, model, dataloader, criterion, optimizer):
         running_loss = 0.0
@@ -110,18 +118,18 @@ class ImageModelTraining:
         return accuracy
 
     @staticmethod
-    def get_eval_prediction(model, data_loader):
+    def get_eval_prediction(model, data_loader, num_classes):
         # Get the predictions for the eval set
         eval_preds = []
         with torch.no_grad():
             for data in data_loader:
                 images, labels = data
                 outputs = model(images.float())
-                _, predicted = torch.max(outputs.data, 1)
-                eval_preds.append(predicted)
-        # Concatenate the predictions into a single tensor
-        eval_preds = torch.cat(eval_preds, dim=0)
-        # Return the predictions
+                for i in range(outputs.size(0)):  # iterate over batch size
+                    output = outputs[i]
+                    _, predicted = torch.max(output, 0)
+                    eval_preds.append(predicted)
+        eval_preds = torch.stack(eval_preds)
         return eval_preds
 
     def run(self):
@@ -131,5 +139,5 @@ class ImageModelTraining:
         print("\nTraining Specifications: ", self.image_model.network_parameters)
         optimizer = optim.Adam(model.parameters(), **optimizer_params)  # get rid of lr
         train_loss, val_loss = self.train_model(model, criterion, optimizer)  # get rid of epochs
-        self.evaluate_predictions = self.get_eval_prediction(model, self.val_loader)
+        self.evaluate_predictions = self.get_eval_prediction(model, self.val_loader, num_classes=self.num_classes)
         return model, train_loss, val_loss, self.evaluate_predictions
