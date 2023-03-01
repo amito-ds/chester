@@ -13,12 +13,11 @@ images = data[b'data'][0:2500]
 labels = np.array(data[b'labels'])[0:2500]
 
 image_model_list = [
-    ImageModel(network_name="VGG16",
+    ImageModel(network_name="EfficientNetB0",
                batch_size=64 * 32,
                num_epochs=2,
                optimizer_params={'lr': 0.05},
-               dropout=0.4,
-               remove_num_last_layers=1),
+               dropout=0.4),
 
     # ImageModel(network_name="ResNet101", batch_size=64 * 2, num_epochs=8, optimizer_params={'lr': 0.05},
     #            dropout=0.5,
@@ -37,6 +36,6 @@ diamond_collector = run(images,
                         image_augmentation_info=ImagesAugmentationInfo(aug_prop=0.01),
                         is_train_model=True, image_models=image_models,
                         is_post_model_analysis=True,
-                        plot=True)
+                        plot=False)
 
 # print(diamond_collector["models"])

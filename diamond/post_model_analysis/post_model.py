@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import torch
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix, accuracy_score
 from sklearn.metrics import precision_score, recall_score
 
 from diamond.model_training.model_results import ImageModelResults
@@ -75,20 +75,20 @@ class ImagePostModelAnalysis:
             plt.show()
         return cm
 
-    def precision_recall(self, plot):
+    def precision_recall(self):
         if "class" not in self.images_data.problem_type:
             return None
 
         # Calculate precision and recall for each class
         precision = precision_score(self.eval_labels, self.eval_predictions, average=None)
         recall = recall_score(self.eval_labels, self.eval_predictions, average=None)
-
-        # Calculate F1-score for each class
         f1_score = 2 * (precision * recall) / (precision + recall)
+        accuracy = accuracy_score(self.eval_labels, self.eval_predictions)
 
         # Create a dataframe with the results
         label_values = np.unique(self.eval_labels)
         results = pd.DataFrame({"Class": label_values,
+                                "Accuracy": accuracy,
                                 "Precision": precision,
                                 "Recall": recall,
                                 "F1-Score": f1_score})
@@ -103,4 +103,4 @@ class ImagePostModelAnalysis:
         if self.image_post_model.is_confusion_matrix:
             self.confusion_matrix(plot=self.plot)
         if self.image_post_model.is_precision_recall:
-            self.precision_recall(plot=self.plot)
+            self.precision_recall()

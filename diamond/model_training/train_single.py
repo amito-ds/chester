@@ -21,6 +21,8 @@ class ImageModelTraining:
         self.evaluate_predictions = None
 
     def get_model(self):
+        supported_models = ["EfficientNetB0", "EfficientNetB4", "EfficientNetB7", "ResNet50", "ResNet101",
+                            "DenseNet121"]
         if self.image_model.network_name == "EfficientNetB0":
             model = hub.load('rwightman/pytorch-image-models', 'efficientnet_b0', pretrained=True)
         elif self.image_model.network_name == "EfficientNetB4":
@@ -33,12 +35,9 @@ class ImageModelTraining:
             model = models.resnet101(pretrained=True).to(self.device)
         elif self.image_model.network_name == "DenseNet121":
             model = models.densenet121(pretrained=True).to(self.device)
-        elif self.image_model.network_name == "VGG16":
-            model = models.vgg16(pretrained=True).to(self.device)
-        elif self.image_model.network_name == "InceptionV3":
-            model = models.inception_v3(pretrained=True).to(self.device)
         else:
-            raise ValueError(f"Unsupported network name: {self.image_model.network_name}")
+            raise ValueError(
+                f"Unsupported network name: {self.image_model.network_name}, please choose one of: {supported_models}")
         return model
 
     def load_model(self):
@@ -47,16 +46,23 @@ class ImageModelTraining:
         # remove the specified number of layers from the top
         if self.image_model.remove_last_layers_num > 0:
             print(f"Removing last {self.image_model.remove_last_layers_num} layers for {self.image_model.network_name}")
-            if "resnet" in self.image_model.network_name.lower() \
-                    or self.image_model.network_name.lower() in "inception":
+            if "resnet" in self.image_model.network_name.lower():
                 num_features = model.fc.in_features
                 model.fc = nn.Sequential(
                     nn.Dropout(p=self.image_model.dropout),
                     nn.Linear(num_features, self.num_classes)
                 )
+            elif "inception" in self.image_model.network_name.lower():
+                num_features = model.fc.in_features
+                model.fc = nn.Identity()
+                model.fc_new = nn.Linear(num_features, self.num_classes).to(self.device)
             else:
                 for i in range(self.image_model.remove_last_layers_num):
-                    num_features = model.classifier.in_features
+                    try:
+                        num_features = model.classifier.in_features
+                    except:
+                        num_features = model.classifier[0].in_features
+
                     model.classifier = nn.Sequential(
                         *list(model.classifier.children())[:-1],
                         nn.Dropout(p=self.image_model.dropout),
