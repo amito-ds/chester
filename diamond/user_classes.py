@@ -5,27 +5,41 @@ import numpy as np
 import torch
 from torch.utils.data import TensorDataset, DataLoader
 from tqdm import tqdm
+import pandas as pd
 
 
 class ImagesData:
-    def __init__(self, images, labels, validation_prop):
+    def __init__(self, images, labels, validation_prop, image_shape):
         self.images = images
         self.labels = labels
         self.validation_prop = validation_prop
+        self.image_shape = image_shape
         self.problem_type = self.get_problem_type()
+        # reshape
+        # Convert to ndarray and reshape
+        if isinstance(self.images, pd.DataFrame):
+            self.images = self.images.to_numpy()
+        if isinstance(self.labels, pd.DataFrame):
+            self.labels = self.labels.to_numpy()
+        self.images = self.images.reshape((-1,) + self.image_shape)
+        self.is_colored = True if len(self.image_shape) > 2 else False
+        if self.is_colored:
+            self.images_to_show = np.transpose(self.images, (0, 2, 3, 1))
+        else:
+            self.images_to_show = np.transpose(self.images, (0, 1, 2))
         self.images_train, self.labels_train, self.images_val, self.labels_val = self.split()
-        self.images_to_show = np.transpose(images, (0, 2, 3, 1))
+        if self.is_colored:
+            print("Colored image")
+        else:
+            print("Grayscale image")
 
     def split(self):
-        print("Splitting Data to Train and Evaluation Set")
         assert 0 <= self.validation_prop < 0.8, "validation proportion should be in range (0, 0.8)"
         num_val = int(self.validation_prop * len(self.images))
         indices = np.random.permutation(len(self.images))
         val_indices, train_indices = indices[:num_val], indices[num_val:]
-
         images_train, labels_train = self.images[train_indices], self.labels[train_indices]
         images_val, labels_val = self.images[val_indices], self.labels[val_indices]
-
         return images_train, labels_train, images_val, labels_val
 
     def create_data_loaders(self, batch_size):
@@ -52,7 +66,7 @@ class ImagesData:
         if num_images > 100:
             image_indices = range(num_images - 100, num_images)
         else:
-            image_indices = range(num_images)
+            image_indices = random.sample(range(num_images), num_images)
 
         num_cols = int(math.floor(math.sqrt(len(image_indices))))
         num_rows = int(math.ceil(len(image_indices) / num_cols))
@@ -82,21 +96,20 @@ class ImageModel:
     def __init__(self,
                  network_name="EfficientNetB0",
                  remove_num_last_layers=1,
-                 batch_size=32,
-                 num_epochs=2,
+                 batch_size=64,
+                 num_epochs=3,
                  optimizer_params=None,
-                 dropout=0.7
+                 dropout=0.5
                  ):
         self.network_name = network_name
-        # TODO: validate network_name name!
         self.remove_last_layers_num = remove_num_last_layers
         self.batch_size = batch_size
         self.num_epochs = num_epochs
         self.optimizer_params = optimizer_params
         self.dropout = dropout
         if self.optimizer_params is None:
-            self.optimizer_params = {"lr": 0.01, 'weight_decay': 0.0001}
-        self.network_parameters = optimizer_params.copy()
+            self.optimizer_params = {"lr": 0.001, 'weight_decay': 0.0001}
+        self.network_parameters = self.optimizer_params.copy()
         self.network_parameters["_model_name"] = self.network_name
         self.network_parameters["_num_epochs"] = self.num_epochs
         self.network_parameters["_batch_size"] = self.batch_size
@@ -107,6 +120,7 @@ class ImageModel:
 class ImageModels:
     def __init__(self, image_model_list=None):
         self.image_model_list = image_model_list
+        self.n_models = len(image_model_list)
         if image_model_list is None:
             self.image_model_list = [ImageModel()]
 

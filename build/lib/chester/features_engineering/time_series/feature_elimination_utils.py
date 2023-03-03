@@ -44,25 +44,3 @@ class FeatureEliminationUtils:
         self.eliminate_duplicates_features()
         self.eliminate_high_shared_features()
         return self.df
-
-# import pandas as pd
-# import numpy as np
-#
-# # Create a sample DataFrame with multiple features and duplicated columns
-# data = {
-#     'A': [1, 2, 3, 4, 5],
-#     'B': [1, 1, 1, 1, 1],
-#     'C': [3, 3, 3, 3, 3],
-#     'D': [1, 1, 1, 1, 2],
-#     'E': [np.nan, 2, 3, 4, 5],
-#     'F': [1, 2, 3, 4, 5],
-#     'G': [1, 2, 3, 4, 5],
-#     'H': [1, 1, 1, 1, 1],
-#     'I': [1, 2, 3, 4, 5],
-#     'J': [np.nan, np.nan, np.nan, np.nan, np.nan],
-# }
-#
-# df = pd.DataFrame(data)
-#
-# fe = FeatureEliminationUtils(df)
-# print(fe.run())

@@ -2,8 +2,10 @@ import numpy as np
 import torch
 import torch.hub as hub
 import torch.nn as nn
+from IPython import get_ipython
 from torch import optim
 from torchvision import models
+from tqdm import tqdm
 
 from diamond.user_classes import ImagesData, ImageModel
 
@@ -18,11 +20,17 @@ class ImageModelTraining:
         self.train_loader, self.val_loader = images_data.create_data_loaders(
             batch_size=self.image_model.batch_size)
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        print(f"Training using {self.device}")
+        if 'google.colab' in str(get_ipython()) and self.device == "cpu":
+            print(
+                f"If you are using Google Colab, you may want to change the runtime to use a GPU or TPU by "
+                f"selecting 'Runtime' -> 'Change runtime type'.")
         self.evaluate_predictions = None
+        self.is_colored = self.images_data.is_colored
 
     def get_model(self):
         supported_models = ["EfficientNetB0", "EfficientNetB4", "EfficientNetB7", "ResNet50", "ResNet101",
-                            "DenseNet121"]
+                            "DenseNet121", "DenseNet161", "DenseNet201"]
         if self.image_model.network_name == "EfficientNetB0":
             model = hub.load('rwightman/pytorch-image-models', 'efficientnet_b0', pretrained=True)
         elif self.image_model.network_name == "EfficientNetB4":
@@ -30,18 +38,24 @@ class ImageModelTraining:
         elif self.image_model.network_name == "EfficientNetB7":
             model = hub.load('rwightman/pytorch-image-models', 'efficientnet_b7', pretrained=True)
         elif self.image_model.network_name == "ResNet50":
-            model = models.resnet50(pretrained=True).to(self.device)
+            model = models.resnet50(pretrained=True)
         elif self.image_model.network_name == "ResNet101":
-            model = models.resnet101(pretrained=True).to(self.device)
+            model = models.resnet101(pretrained=True)
         elif self.image_model.network_name == "DenseNet121":
-            model = models.densenet121(pretrained=True).to(self.device)
+            model = models.densenet121(pretrained=True)
+        elif self.image_model.network_name == "DenseNet161":
+            model = models.densenet161(pretrained=True)
+        elif self.image_model.network_name == "DenseNet169":
+            model = models.densenet169(pretrained=True)
+        elif self.image_model.network_name == "DenseNet201":
+            model = models.densenet201(pretrained=True)
         else:
             raise ValueError(
                 f"Unsupported network name: {self.image_model.network_name}, please choose one of: {supported_models}")
         return model
 
     def load_model(self):
-        model = self.get_model()
+        model = self.get_model().to(self.device)
 
         # remove the specified number of layers from the top
         if self.image_model.remove_last_layers_num > 0:
@@ -55,7 +69,7 @@ class ImageModelTraining:
             elif "inception" in self.image_model.network_name.lower():
                 num_features = model.fc.in_features
                 model.fc = nn.Identity()
-                model.fc_new = nn.Linear(num_features, self.num_classes).to(self.device)
+                model.fc_new = nn.Linear(num_features, self.num_classes)
             else:
                 for i in range(self.image_model.remove_last_layers_num):
                     try:
@@ -77,26 +91,31 @@ class ImageModelTraining:
 
     def train_model(self, model, criterion, optimizer):
         train_loss, evaluate_accuracy = 0, 0
-        for epoch in range(self.num_epochs):
-            print(f"Epoch {epoch + 1}/{self.num_epochs}")
+        for epoch in tqdm(range(self.num_epochs)):
             train_loss = self.train_model_epoch(model, self.train_loader, criterion, optimizer)
-            evaluate_accuracy = self.evaluate_model(model=model, data_loader=self.val_loader)
-            print(f"Train Loss: {train_loss:.4f} - Evaluate Accuracy: {evaluate_accuracy:.4f}")
+            evaluate_accuracy = self.evaluate_model(model=model, data_loader=self.val_loader, device=self.device)
+            tqdm.write(
+                f"Epoch {epoch + 1}/{self.num_epochs} - Train Loss: {train_loss:.4f} - Evaluate Accuracy: {evaluate_accuracy:.4f}")
         return train_loss, evaluate_accuracy
 
     def train_model_epoch(self, model, dataloader, criterion, optimizer):
         running_loss = 0.0
-        for i, (inputs, labels) in enumerate(dataloader, 0):
+        for i, (inputs_raw, labels) in enumerate(dataloader, 0):
             optimizer.zero_grad()
 
-            inputs, labels = inputs.to(self.device), labels.to(self.device)
-
+            if self.is_colored:
+                inputs, labels = inputs_raw.to(self.device).float(), labels.to(self.device)
+            else:
+                # Add a new dimension to the input tensors to represent the grayscale channel
+                inputs_gray = inputs_raw.unsqueeze(1)
+                inputs = torch.cat([inputs_gray, inputs_gray, inputs_gray], dim=1)
+                inputs, labels = inputs.to(self.device).float(), labels.to(self.device)
             try:
-                outputs = model(inputs.float())
+                model = model.to(self.device)
+                outputs = model(inputs).to(self.device)
             except Exception as e:
                 print(f"Error while running model: {e}")
                 print("Input size:", inputs.size())
-
             loss = criterion(outputs, labels)
             loss.backward()
 
@@ -108,14 +127,22 @@ class ImageModelTraining:
 
         return epoch_loss
 
-    @staticmethod
-    def evaluate_model(model, data_loader):
+    def evaluate_model(self, model, data_loader, device):
         correct = 0
         total = 0
         with torch.no_grad():
             for data in data_loader:
                 images, labels = data
-                outputs = model(images.float())
+
+                if self.is_colored:
+                    inputs, labels = images.to(device).float(), labels.to(device)
+                else:
+                    # Add a new dimension to the input tensors to represent the grayscale channel
+                    inputs_gray = images.unsqueeze(1)
+                    inputs = torch.cat([inputs_gray, inputs_gray, inputs_gray], dim=1)
+                    inputs, labels = inputs.to(self.device).float(), labels.to(self.device)
+
+                outputs = model(inputs).to(device)
                 _, predicted = torch.max(outputs.data, 1)
                 total += labels.size(0)
                 correct += (predicted == labels).sum().item()
@@ -123,14 +150,23 @@ class ImageModelTraining:
         accuracy = correct / total
         return accuracy
 
-    @staticmethod
-    def get_eval_prediction(model, data_loader, num_classes):
+    def get_eval_prediction(self, model, data_loader, device):
         # Get the predictions for the eval set
         eval_preds = []
         with torch.no_grad():
             for data in data_loader:
                 images, labels = data
-                outputs = model(images.float())
+                images, labels = images.to(device).float(), labels.to(device)
+
+                if self.is_colored:
+                    inputs = images.to(device).float()
+                else:
+                    # Add a new dimension to the input tensors to represent the grayscale channel
+                    inputs_gray = images.unsqueeze(1)
+                    inputs = torch.cat([inputs_gray, inputs_gray, inputs_gray], dim=1)
+                    inputs = inputs.to(self.device).float()
+
+                outputs = model(inputs).to(device)
                 for i in range(outputs.size(0)):  # iterate over batch size
                     output = outputs[i]
                     _, predicted = torch.max(output, 0)
@@ -145,5 +181,5 @@ class ImageModelTraining:
         print("\nTraining Specifications: ", self.image_model.network_parameters)
         optimizer = optim.Adam(model.parameters(), **optimizer_params)  # get rid of lr
         train_loss, val_loss = self.train_model(model, criterion, optimizer)  # get rid of epochs
-        self.evaluate_predictions = self.get_eval_prediction(model, self.val_loader, num_classes=self.num_classes)
+        self.evaluate_predictions = self.get_eval_prediction(model, self.val_loader, device=self.device)
         return model, train_loss, val_loss, self.evaluate_predictions

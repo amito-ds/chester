@@ -7,7 +7,7 @@ Target Variable: target
 Feature Types: {'numeric': [], 'boolean': [], 'text': ['text'], 'categorical': [], 'time': [], 'id': []}
 Loss Function: Cross entropy
 Evaluation Metrics: ['Accuracy', 'Precision', 'Recall', 'F1']
-Optional Models: {'logistic', 'baseline-mode', 'catboost'}
+Optional Models: {'logistic', 'catboost', 'baseline-mode'}
 
 
 Cleaning and preprocessing text column
@@ -30,183 +30,58 @@ Extracting embedding
 ** Analayzing text column
 Data quality stats:
 Number of rows with missing data: 0.0
-Number of unique words: 1858
+Number of unique words: 1874
 Average type-token ratio: 0.96
 Median type-token ratio: 1.00
-Average number of words per text: 9.18
+Average number of words per text: 9.35
 Median number of words per text: 7.00
 Average number of sentences per text: 1.00
 Median number of sentences per text: 1.00
-Average length of text: 58.20
+Average length of text: 58.47
 Median length of text: 42.00
 
 Count word frequency for basic text analysis.
 Report shows most common words, giving insight into text topic and content:
-[('lady', 163), ('seeks', 116), ('yo', 95), ('jack', 81), ('male', 73), ('looking', 63), ('fun', 62), ('slim', 61), ('good', 61), ('arthur', 59), ('well', 54), ('rship', 54), ('attractive', 53), ('seeking', 52), ('relationship', 51), ('like', 47), ('sparrow', 47), ('age', 46), ('build', 46), ('friendship', 44), ('movies', 43), ('life', 41), ('fship', 41), ('dining', 39), ('ns', 39), ('enjoy', 38), ('man', 38), ('guy', 36), ('meet', 35), ('honest', 35), ('open', 35), ('would', 34), ('turner', 34), ('caring', 32), ('ft', 32), ('tall', 31), ('love', 31), ('away', 31), ('launcelot', 31), ('drinker', 31), ('fit', 30), ('must', 30), ('gent', 30), ('likes', 30), ('oh', 30), ('social', 29), ('music', 29), ('interests', 29), ('non', 29), ('employed', 28), ('single', 27), ('genuine', 27), ('elizabeth', 26), ('married', 26), ('gsoh', 26), ('ni', 26), ('smoker', 26), ('quiet', 26), ('young', 25), ('times', 25), ('long', 25), ('sd', 25), ('poss', 24), ('woman', 23), ('run', 23), ('possible', 23), ('wltm', 23), ('hello', 23), ('yrs', 22), ('galahad', 22), ('gibbs', 21), ('one', 21), ('black', 21), ('female', 21), ('sought', 21), ('sexy', 20), ('guard', 20), ('please', 20), ('right', 20), ('beach', 20), ('view', 20), ('easygoing', 20), ('term', 20), ('come', 19), ('im', 19), ('old', 19), ('jones', 19), ('similar', 18), ('scene', 18), ('go', 17), ('ship', 17), ('father', 17), ('dancing', 16), ('share', 16), ('enjoys', 16), ('fishing', 16), ('tim', 16), ('knights', 16), ('soh', 16), ('home', 16)]
+[('lady', 169), ('seeks', 136), ('yo', 102), ('jack', 78), ('male', 76), ('looking', 72), ('rship', 67), ('fun', 64), ('arthur', 62), ('ns', 56), ('good', 54), ('married', 49), ('sparrow', 46), ('fship', 44), ('movies', 44), ('caring', 43), ('likes', 43), ('seeking', 43), ('well', 43), ('build', 43), ('attractive', 43), ('relationship', 41), ('honest', 41), ('like', 40), ('guy', 40), ('single', 39), ('slim', 39), ('man', 38), ('gsoh', 35), ('dining', 35), ('turner', 34), ('music', 34), ('life', 34), ('friendship', 33), ('times', 32), ('elizabeth', 31), ('oh', 31), ('fit', 31), ('one', 30), ('sd', 29), ('genuine', 29), ('enjoy', 29), ('age', 29), ('gent', 28), ('father', 28), ('im', 28), ('poss', 28), ('interests', 28), ('beach', 28), ('must', 26), ('launcelot', 26), ('quiet', 26), ('tall', 25), ('open', 25), ('prof', 25), ('love', 24), ('galahad', 24), ('ni', 24), ('ft', 24), ('non', 24), ('witch', 23), ('country', 23), ('swann', 23), ('would', 23), ('female', 23), ('drinker', 23), ('woman', 23), ('similar', 22), ('share', 22), ('meet', 22), ('late', 21), ('come', 21), ('yes', 21), ('secure', 21), ('dont', 21), ('going', 21), ('old', 21), ('social', 21), ('soh', 21), ('dte', 20), ('head', 20), ('asian', 20), ('view', 20), ('enjoys', 20), ('shh', 20), ('home', 20), ('burn', 20), ('scene', 19), ('jones', 19), ('sir', 19), ('gibbs', 19), ('wltm', 19), ('nights', 19), ('fishing', 19), ('want', 18), ('romantic', 18), ('bedevere', 18), ('walks', 18), ('employed', 18), ('sexy', 17)]
 Sentiment Statistics
 +--------------------------------+
 |      Sentiment Statistics      |
 +-----------+-------+------------+
 | Sentiment | Count | Percentage |
 +-----------+-------+------------+
-|  Positive |  330  |   36.7%    |
-|  Negative |  119  |   13.2%    |
-|  Neutral  |  451  |   50.1%    |
+|  Positive |  343  |   38.1%    |
+|  Negative |  102  |   11.3%    |
+|  Neutral  |  455  |   50.6%    |
 +-----------+-------+------------+
 
 
 Corex topic analysis:
-	Topic 1: yo prof, intelligent slimmedium build, fship poss rship, medium build, older, lady friendship, meet lady, girls, seeks lady, healthy living exercise
-	Topic 2: looking forward meeting, non smoker social, carefree, abound, yrs age gsoh, send, lady sought male, int, personality, slim medium build
-	Topic 3: know, years, slim build, ft med build, holy grail, photo poss genuine, witch, dinners, young, term relationship slim
-	Topic 4: gardening bbqs, mid, employed responsible seeking, gent yrs, easy going, possibly, likes fishing dining, movies music, spanking, fishing
-	Topic 5: active, slim medium, looking forward, camping, relationship slim, old working tall, outings, old outgoing, yo lady, attractive guy nonsmokersocial
-	Topic 6: long term fshiprship, loves, yo attractive, let, grail, prof, holy, genu, australian, build ft
-	Topic 7: classes, swf, adventurous, pintel, pole, experience, male seeks, student, dogs natural food, theatre
-	Topic 8: light hearted dance, older women, ship, boy, like meet attractive, gen, short long, outlook seeks, yo ft, tall slim
-	Topic 9: life age, outlooks yo, cm, older lady, friendship relation, say, fish, adventurous executive articulate, male seeking dte, tim
-	Topic 10: leading, morals nonsmoker social, enjoys, love dance, hah, meetings, east, walking, female similar interests, outdoors
-	Key sentences out of based on LSA algorithm: ['jack sparrow funny man forestall final judgment.', 'dennis well didnt bother find.', 'turner cut anyone path.', 'outgoing guy late seeks lady size unimportant fun good times.', 'arthur oh stop.'] 
+	Topic 1: seeking, loves, yo romantic easy, hurry, married personal, country guy, male dte, sexy country, guy prof, dog
+	Topic 2: company, hair blue, cooking gsoh ss, gosh financially secure, rship cuddly lady, port, mature gent ns, movies dinners, tractive prof, golf
+	Topic 3: quiet nts home, caring honest, fship possible rship, natural, soh nonsmokersocial, man yo, married man, career like fun, poor work career, movies dining
+	Topic 4: married woman, ing, im, listen, sought, elegance rship, seeks similar, single tall, lots, early honest caring
+	Topic 5: lady friendship, hi swm med, suburbs friendship view, plus prefer living, easy going, lonely, old male, slim shy, fem rship enjoys, god
+	Topic 6: athletic, honest, concerts dining, country drives, loves life, good looking, villager, bridgekeeper, nonsmoker, quiet
+	Topic 7: share, help, foxy yummy, stern headmaster, shall, fair, single yo romantic, seeks fem, table, standing
+	Topic 8: older women, fun friendship, love laughter nonsmoker, drives quiet, dtoe soh seeks, soldier, country drives quiet, friendshiprelationship, quiet nts, aussie
+	Topic 9: flying, ala lots, turner, vibrant personality good, personality, holding, pintel, swm, enjoy, sports
+	Topic 10: large build seeks, dining art beach, attrac, older, genuine replies ala, social, zoot, replies ala lots, herpes, fem
+	Key sentences out of based on LSA algorithm: ['launcelot uh knight king arthur sir.', 'crewmember wyvern seen right encrusted interior side hull standing.', 'arthur yes.', 'chaplain ill take chances sir.', 'ragetti never another like captain jack.'] 
 
 popular terms extraction:
-[('arthur lady lake angels sing arm clad', 48.0), ('prof kind generous great listener enjoys fun', 48.0), ('early outgoing intelligent independant fitness outdoor activites', 46.0), ('supporting happy nat fun loving likes cooking', 44.0), ('greekaust male early slim build nonsmoker enjoys', 44.0), ('preserved prof sgle prince charming living cityinner', 42.0), ('male late aust single tall prof interests', 40.0), ('lady wltm genu ine person dtoe possibly', 38.0), ('ties secure ft slim build enjoy outdoors', 38.0), ('ft slimmed build ns sd interests dining', 36.0)]
+[('prof kind generous great listener enjoys fun', 48.0), ('early outgoing intelligent independant fitness outdoor activites', 46.0), ('greekaust male early slim build nonsmoker enjoys', 44.0), ('supporting happy nat fun loving likes cooking', 44.0), ('preserved prof sgle prince charming living cityinner', 42.0), ('strategy required quest holy grail brought successful', 42.0), ('male late aust single tall prof interests', 40.0), ('lady wltm genu ine person dtoe possibly', 38.0), ('early honest caring likes fishing animals golf', 38.0), ('ties secure ft slim build enjoy outdoors', 38.0)]
 
 ** model pre analysis report:
 Feature stats:
             col # unique # missing                       Distribution  \
-0  target_label        3         0  chat: 33%, arthur: 33%, pirate...   
+0  target_label        3         0  arthur: 33%, chat: 33%, pirate...   
 
                  Sample Top 5 values coverage  
-0  arthur, chat, pirate                  100%  
+0  pirate, chat, arthur                  100%  
 
 values counts for categorical target to predict:
-chat      300
 pirate    300
 arthur    300
+chat      300
 Name: target, dtype: int64
-
-Training models and choosing the best one
-Model results compared - showing the best out of each type after CV & HP tuning: 
-+-------+-------------------------+--------------------+--------------------+--------------------+--------------------+
-|  type |          model          |   accuracy_score   |  precision_score   |    recall_score    |      f1_score      |
-+-------+-------------------------+--------------------+--------------------+--------------------+--------------------+
-|  test |      BaselineModel      | 0.3041666666666667 |        nan         |        nan         |        nan         |
-|  test |      CatboostModel      | 0.8472222222222221 | 0.8469230762893325 | 0.8488196604723216 | 0.847411637725054  |
-|  test | LogisticRegressionModel | 0.8486111111111111 | 0.8506293384806606 | 0.8518351484597984 | 0.8493135460406739 |
-| train |      BaselineModel      | 0.3472222222222222 |        nan         |        nan         |        nan         |
-| train |      CatboostModel      | 0.9944444444444445 | 0.9946789311131219 | 0.9944030242805215 | 0.9945042324168145 |
-| train | LogisticRegressionModel | 0.8802083333333334 | 0.8821576361579806 | 0.8816990919391184 | 0.8814447638924282 |
-+-------+-------------------------+--------------------+--------------------+--------------------+--------------------+
-
-
-Post model analysis - analyzing results of the chosen model: 
-confusion matrix on the test set
-[[44  0  9]
- [ 0 66  0]
- [ 9  0 52]]
-
-Learning curve by training examples
-+-------------+--------------------+-----------------------+--------------------+----------------------+
-| train_sizes | train_scores_mean  |    train_scores_std   |  test_scores_mean  |   test_scores_std    |
-+-------------+--------------------+-----------------------+--------------------+----------------------+
-|      57     | 0.8385964912280702 | 0.0070175438596490995 | 0.6916666666666667 | 0.03362144010252835  |
-|     187     | 0.881283422459893  |  0.01190965639108027  |       0.7875       | 0.023895347964007295 |
-|     316     | 0.8759493670886076 |  0.00968168262074578  | 0.8277777777777778 | 0.02031769283101083  |
-|     446     | 0.8713004484304931 |  0.007844329903379322 | 0.8388888888888889 | 0.022566773346211016 |
-|     576     | 0.8805555555555555 |  0.007233564811110992 | 0.8472222222222221 | 0.015214515486254621 |
-+-------------+--------------------+-----------------------+--------------------+----------------------+
-
-
-Boostrap metrics, sample 20 results:
-+----------------+--------------------+--------------------+--------------------+
-| accuracy_score |  precision_score   |    recall_score    |      f1_score      |
-+----------------+--------------------+--------------------+--------------------+
-|      0.92      | 0.9140859140859141 | 0.9140859140859141 | 0.9140859140859141 |
-|      0.91      | 0.8916473573871787 | 0.8916473573871787 | 0.890909090909091  |
-|      0.92      | 0.9128379655889582 | 0.9034369885433714 | 0.9074074074074074 |
-|     0.895      | 0.8913480885311872 | 0.8885577082298394 | 0.8890760496599913 |
-|      0.9       | 0.9049999999999999 | 0.9036177851422259 | 0.9038328490383285 |
-|      0.86      | 0.8562741846323935 | 0.8562741846323935 | 0.8562741846323935 |
-|     0.895      | 0.8945701357466064 | 0.8947765700483092 | 0.8946415435975782 |
-|     0.945      | 0.9402432575356955 | 0.9411140583554376 | 0.9403162839939125 |
-|      0.95      | 0.9432122575806279 | 0.9410951621477937 | 0.9404001702852277 |
-|      0.92      | 0.9144781144781144 | 0.9144781144781144 | 0.9144781144781144 |
-|      0.88      | 0.8804218657159834 | 0.8808035714285714 | 0.8804905239687848 |
-|     0.835      | 0.8328664799253035 | 0.8261648745519713 | 0.8257317903335603 |
-|     0.875      | 0.8610805860805861 | 0.8616161616161616 | 0.8613116933727621 |
-|      0.91      | 0.9107142857142857 | 0.9083407014441497 | 0.9093937375083279 |
-|     0.875      | 0.8600280997541271 | 0.8637665592552811 | 0.8615633375418078 |
-|      0.91      | 0.9060223409422049 | 0.9060223409422049 | 0.9060223409422049 |
-|     0.875      | 0.8768550228310502 | 0.8784872016105839 | 0.8774049217002237 |
-|      0.92      | 0.9057971014492754 | 0.9057971014492754 | 0.9057971014492754 |
-|     0.915      | 0.9092514124293786 | 0.9101541733120682 | 0.9078347107438017 |
-|     0.905      | 0.9064558629776022 | 0.9064558629776021 | 0.9061728395061728 |
-+----------------+--------------------+--------------------+--------------------+
-
-Trying to find weaknesses in the model by training models on the error:
-Most important features by catboost:
-+-----------------------+------------+
-|        Feature        | Importance |
-+-----------------------+------------+
-|   text_corex_topic_7  |    14.0    |
-|  text_corex_topic_26  |    14.0    |
-|   text_corex_topic_1  |    13.0    |
-|  text_corex_topic_15  |    8.0     |
-|  text_corex_topic_24  |    7.0     |
-|  text_corex_topic_13  |    5.0     |
-|   text_corex_topic_8  |    4.0     |
-|   text_corex_topic_2  |    4.0     |
-|  text_corex_topic_29  |    3.0     |
-|  text_corex_topic_27  |    3.0     |
-|   text_corex_topic_6  |    2.0     |
-|   text_corex_topic_5  |    2.0     |
-|  text_corex_topic_11  |    2.0     |
-|  text_corex_topic_14  |    2.0     |
-|     text_tfidf_yo     |    2.0     |
-|      text_bow_yo      |    2.0     |
-|  text_corex_topic_21  |    1.0     |
-|  text_corex_topic_28  |    1.0     |
-|  text_corex_topic_30  |    1.0     |
-|    text_tfidf_jack    |    1.0     |
-|   text_corex_topic_3  |    1.0     |
-|  text_corex_topic_19  |    1.0     |
-|  text_corex_topic_17  |    1.0     |
-|   text_corex_topic_9  |    1.0     |
-|  text_corex_topic_12  |    1.0     |
-|  text_corex_topic_20  |    0.0     |
-|      text_bow_fun     |    0.0     |
-|      text_bow_guy     |    0.0     |
-| text_bow_relationship |    0.0     |
-|  text_bow_friendship  |    0.0     |
-|     text_bow_dine     |    0.0     |
-|     text_bow_enjoy    |    0.0     |
-|     text_bow_male     |    0.0     |
-|     text_bow_love     |    0.0     |
-|     text_bow_like     |    0.0     |
-|     text_bow_look     |    0.0     |
-|     text_bow_ladi     |    0.0     |
-|    text_bow_attract   |    0.0     |
-|    text_tfidf_build   |    0.0     |
-|      text_bow_age     |    0.0     |
-|     text_bow_jack     |    0.0     |
-|     text_bow_meet     |    0.0     |
-|     text_bow_movi     |    0.0     |
-|    text_tfidf_fship   |    0.0     |
-|     text_bow_seek     |    0.0     |
-|     text_bow_slim     |    0.0     |
-|     text_bow_life     |    0.0     |
-|    text_bow_arthur    |    0.0     |
-|      text_bow_ns      |    0.0     |
-|     text_bow_well     |    0.0     |
-+-----------------------+------------+
-
-Print of tree to look for potential segments with high error (use with caution)
-|--- text_corex_topic_26 <= 0.01
-|   |--- text_corex_topic_6 <= 0.00
-|   |   |--- value: [0.00]
-|   |--- text_corex_topic_6 >  0.00
-|   |   |--- value: [0.10]
-|--- text_corex_topic_26 >  0.01
-|   |--- value: [0.21]
-
 

@@ -1,4 +1,3 @@
-import warnings
 from itertools import chain
 
 from matplotlib import pyplot as plt
@@ -24,7 +23,6 @@ from chester.run.user_classes import Data, TextHandler, FeatureStats, ModelRun, 
 from chester.util import REPORT_PATH, ReportCollector
 from chester.zero_break.problem_specification import DataInfo
 
-warnings.filterwarnings("ignore", category=UserWarning, module="lightgbm")
 import logging
 
 logging.basicConfig(level=logging.WARNING)

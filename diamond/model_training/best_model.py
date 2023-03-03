@@ -11,7 +11,6 @@ class ImageModelsTraining:
         self.image_model_list = image_models.image_model_list
 
     def run(self):
-        print(f"Training {len(self.image_model_list)} Networks")
         image_model_results = []
         for image_model in self.image_model_list:
             image_model_training = ImageModelTraining(images_data=self.images_data, image_model=image_model)
@@ -19,7 +18,7 @@ class ImageModelsTraining:
             image_model_results.append(ImageModelResults(model=model, train_loss=train_loss, val_loss=val_loss,
                                                          network_parameters=image_model.network_parameters,
                                                          image_model_training=image_model_training,
-                                                         evaluate_predictions = evaluate_predictions))
+                                                         evaluate_predictions=evaluate_predictions))
         # sort image_model_results by val loss
         sorted_results = sorted(image_model_results, key=lambda x: x.val_loss)
         return sorted_results

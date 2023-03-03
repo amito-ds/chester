@@ -16,3 +16,4 @@ wordcloud>=1.8.2.2
 tensorflow>=2.11.0
 fuzzywuzzy>=0.18.0
 catboost>=1.1.1
+huggingface_hub>=0.12.1

@@ -93,6 +93,8 @@ class DataInfo:
                 time_cols.append(col)
             else:
                 non_missing_values = self.data[col][self.data[col].notna()].astype(str)
+                if non_missing_values.shape[0] == 0:
+                    pass
                 count = 0
                 for value in non_missing_values:
                     if is_date(value):
@@ -118,7 +120,9 @@ class DataInfo:
     def _determine_id_cols(self):
         id_cols = []
         for col in self.data.columns:
-            if col.startswith("ID_") or col.endswith("_id") or col.endswith("_ID") or col.lower().endswith(" id"):
+            if col.startswith("ID_") or col.endswith("_id") \
+                    or col.endswith("_ID") or col.lower().endswith(" id") \
+                    or col.lower() == "id":
                 id_cols.append(col)
         return id_cols
 

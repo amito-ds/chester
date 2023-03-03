@@ -8,24 +8,28 @@ from diamond.user_classes import ImagesData, ImagesAugmentationInfo, ImageModels
 
 
 def run(images,
+        image_shape,
         labels=None,
-        validation_prop=0.2,
+        validation_prop=0.3,
         is_augment_data=True, image_augmentation_info=None,
         is_train_model=True, image_models=None,
         is_post_model_analysis=True, image_post_model: ImagePostModelSpec = None,
         plot=True
         ):
+    # Tell a story
+    story = """Welcome to MadCat, the comprehensive machine learning and data analysis solution!
+    \nThis module is designed to streamline the entire process image classification models, 
+    \nfrom start to finish.
+    \nTo learn more about MadCat, visit https://github.com/amito-ds/chester.\n"""
+    print(story)
     diamond_collector = {}
-
-    # load the data
-    images = images.reshape(-1, 3, 32, 32)
 
     if labels is None:
         is_train_model = False
         pass  # TODO: create labels of 1s
 
     # Image data
-    image_data = ImagesData(images=images, labels=labels, validation_prop=validation_prop)
+    image_data = ImagesData(images=images, labels=labels, validation_prop=validation_prop, image_shape=image_shape)
     diamond_collector["image_data"] = image_data
     # plot
     if plot:
@@ -34,6 +38,7 @@ def run(images,
 
     # augmentation
     if is_augment_data:
+        print("====> Augmenting data")
         if image_augmentation_info is None:
             image_augmentation_info = ImagesAugmentationInfo()
         image_data = ImageAugmentation(image_data, image_augmentation_info).run()
@@ -48,6 +53,10 @@ def run(images,
         return diamond_collector
     if image_models is None:
         image_models = ImageModels()
+    s = ''
+    if image_models.n_models > 1:
+        s = 's'
+    print(f"====> Training {image_models.n_models} Model{s}")
     models_sorted = ImageModelsTraining(images_data=image_data,
                                         image_models=image_models).run()  # return the model ordered by best to worst
 
@@ -55,6 +64,7 @@ def run(images,
 
     # Post model analysis
     if is_post_model_analysis:
+        print("====> Analyzing the best model")
         if image_post_model is None:
             image_post_model = ImagePostModelSpec(plot=plot)
         ImagePostModelAnalysis(model_list=models_sorted,
