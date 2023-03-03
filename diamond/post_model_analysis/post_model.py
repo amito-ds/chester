@@ -23,6 +23,8 @@ class ImagePostModelAnalysis:
         self.plot = plot
         self.best_model = self.model_list[0].model
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        self.label_dict = self.images_data.label_dict
+
         self.diamond_collector = {} if diamond_collector is None else diamond_collector
         self.network_parameters = self.model_list[0].network_parameters
         self.image_model_training = self.model_list[0].image_model_training
@@ -57,22 +59,60 @@ class ImagePostModelAnalysis:
                 updated_predictions.append(eval_prediction)
         return updated_predictions
 
+    def map_labels(self, x):
+        for k, v in self.label_dict.items():
+            if v == x:
+                return k
+        return x  # Return the original value if it is not in the label_dict dictionary
+
+    # def confusion_matrix(self, plot):
+    #     if "class" not in self.images_data.problem_type:
+    #         return None
+    #
+    #     vmap_labels = np.vectorize(self.map_labels)
+    #     eval_labels = vmap_labels(self.eval_labels)
+    #     eval_predictions = vmap_labels(self.eval_predictions)
+    #     try:
+    #         cm = confusion_matrix(eval_labels, eval_predictions)
+    #     except:
+    #         cm = confusion_matrix(eval_labels, eval_labels.cpu().numpy())
+    #     self.diamond_collector["confusion matrix"] = cm
+    #     # Create confusion matrix plot
+    #     if plot:
+    #         fig, ax = plt.subplots(figsize=(8, 8))
+    #         sns.heatmap(cm, annot=True, fmt='d', cmap=plt.cm.Blues, ax=ax, cbar=False)
+    #         ax.set_xlabel('Predicted label')
+    #         ax.set_ylabel('True label')
+    #         ax.set_title('Confusion Matrix')
+    #         plt.show()
+    #     return cm
+
     def confusion_matrix(self, plot):
         if "class" not in self.images_data.problem_type:
             return None
+
+        vmap_labels = np.vectorize(self.map_labels)
+        eval_labels = vmap_labels(self.eval_labels)
+        eval_predictions = vmap_labels(self.eval_predictions)
         try:
-            cm = confusion_matrix(self.eval_labels, self.eval_predictions)
+            cm = confusion_matrix(eval_labels, eval_predictions)
         except:
-            cm = confusion_matrix(self.eval_labels, self.eval_predictions.cpu().numpy())
-        self.diamond_collector["confusion matrix"] = cm
-        # Create confusion matrix plot
+            cm = confusion_matrix(eval_labels, eval_labels.cpu().numpy())
+
+        # Get the actual class names in sorted order
+        sorted_class_names = sorted(self.label_dict, key=lambda x: self.label_dict[x])
+
+        # Create a heatmap plot with class names as tick labels
         if plot:
             fig, ax = plt.subplots(figsize=(8, 8))
-            sns.heatmap(cm, annot=True, fmt='d', cmap=plt.cm.Blues, ax=ax, cbar=False)
+            sns.heatmap(cm, annot=True, fmt='d', cmap=plt.cm.Blues, ax=ax, cbar=False,
+                        xticklabels=sorted_class_names, yticklabels=sorted_class_names)
             ax.set_xlabel('Predicted label')
             ax.set_ylabel('True label')
             ax.set_title('Confusion Matrix')
             plt.show()
+
+        self.diamond_collector["confusion matrix"] = cm
         return cm
 
     def precision_recall(self):
@@ -81,22 +121,24 @@ class ImagePostModelAnalysis:
 
         if "class" not in self.images_data.problem_type:
             return None
-
+        vmap_labels = np.vectorize(self.map_labels)
+        eval_labels = vmap_labels(self.eval_labels)
+        eval_predictions = vmap_labels(self.eval_predictions)
         # Calculate precision and recall for each class
         try:
-            precision = precision_score(self.eval_labels, self.eval_predictions, average=None)
-            recall = recall_score(self.eval_labels, self.eval_predictions, average=None)
-            accuracy = accuracy_score(self.eval_labels, self.eval_predictions)
+            precision = precision_score(eval_labels, eval_predictions, average=None)
+            recall = recall_score(eval_labels, eval_predictions, average=None)
+            accuracy = accuracy_score(eval_labels, eval_predictions)
         except:
-            eval_pred = self.eval_predictions.cpu().numpy()
-            precision = precision_score(self.eval_labels, eval_pred, average=None)
-            recall = recall_score(self.eval_labels, eval_pred, average=None)
-            accuracy = accuracy_score(self.eval_labels, eval_pred)
+            eval_pred = eval_predictions.cpu().numpy()
+            precision = precision_score(eval_labels, eval_pred, average=None)
+            recall = recall_score(eval_labels, eval_pred, average=None)
+            accuracy = accuracy_score(eval_labels, eval_pred)
 
         f1_score = 2 * (precision * recall) / (precision + recall)
 
         # Create a dataframe with the results
-        label_values = np.unique(self.eval_labels)
+        label_values = np.unique(eval_labels)
         results = pd.DataFrame({"Class": label_values,
                                 "Accuracy": accuracy,
                                 "Precision": precision,
