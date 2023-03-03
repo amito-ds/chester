@@ -5,6 +5,9 @@ from diamond.image_data_info.image_info import ImageInfo
 from diamond.model_training.best_model import ImageModelsTraining
 from diamond.post_model_analysis.post_model import ImagePostModelAnalysis
 from diamond.user_classes import ImagesData, ImagesAugmentationInfo, ImageModels, ImagePostModelSpec
+import pandas as pd
+
+from diamond.utils import index_labels
 
 
 def run(images,
@@ -26,10 +29,17 @@ def run(images,
 
     if labels is None:
         is_train_model = False
-        pass  # TODO: create labels of 1s
-
+        labels = pd.Series([1] * len(images))
     # Image data
-    image_data = ImagesData(images=images, labels=labels, validation_prop=validation_prop, image_shape=image_shape)
+    if type(images).__name__ == "DataFrame":
+        images = images.values
+
+    label_dict, labels = index_labels(labels)
+
+    image_data = ImagesData(images=images, labels=labels,
+                            validation_prop=validation_prop,
+                            image_shape=image_shape,
+                            label_dict=label_dict)
     diamond_collector["image_data"] = image_data
     # plot
     if plot:

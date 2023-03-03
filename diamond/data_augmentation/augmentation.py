@@ -16,6 +16,7 @@ class ImageAugmentation:
         self.aug_types, self.aug_prop = self.image_augmentation_info.aug_types, self.image_augmentation_info.aug_prop
         self.is_colored = self.images_data.is_colored
         self.image_shape = self.images_data.image_shape
+        self.label_dict = self.images_data.label_dict
 
     def rotate_image(self):
         # Sample images to rotate
@@ -161,6 +162,7 @@ class ImageAugmentation:
 
         images_data = ImagesData(images=self.images, labels=self.labels,
                                  validation_prop=self.images_data.validation_prop,
-                                 image_shape=self.images_data.image_shape)
+                                 image_shape=self.images_data.image_shape,
+                                 label_dict=self.label_dict)
         self.images_data = images_data
         return images_data

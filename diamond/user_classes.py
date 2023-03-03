@@ -9,18 +9,19 @@ import pandas as pd
 
 
 class ImagesData:
-    def __init__(self, images, labels, validation_prop, image_shape):
+    def __init__(self, images, labels, validation_prop, image_shape, label_dict):
         self.images = images
         self.labels = labels
         self.validation_prop = validation_prop
         self.image_shape = image_shape
+        self.label_dict = label_dict
         self.problem_type = self.get_problem_type()
         # reshape
         # Convert to ndarray and reshape
         if isinstance(self.images, pd.DataFrame):
             self.images = self.images.to_numpy()
-        if isinstance(self.labels, pd.DataFrame):
-            self.labels = self.labels.to_numpy()
+        self.label_hanlder()
+
         self.images = self.images.reshape((-1,) + self.image_shape)
         self.is_colored = True if len(self.image_shape) > 2 else False
         if self.is_colored:
@@ -32,6 +33,10 @@ class ImagesData:
             print("Colored image")
         else:
             print("Grayscale image")
+
+    def label_hanlder(self):
+        if isinstance(self.labels, pd.DataFrame):
+            self.labels = self.labels.to_numpy()
 
     def split(self):
         assert 0 <= self.validation_prop < 0.8, "validation proportion should be in range (0, 0.8)"
@@ -120,9 +125,9 @@ class ImageModel:
 class ImageModels:
     def __init__(self, image_model_list=None):
         self.image_model_list = image_model_list
-        self.n_models = len(image_model_list)
         if image_model_list is None:
             self.image_model_list = [ImageModel()]
+        self.n_models = len(self.image_model_list)
 
 
 class ImagePostModelSpec:

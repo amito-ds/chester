@@ -1,4 +1,5 @@
 .requirements-compiled.txt
 .chester/run_manual_chester/manual_run.py
 *.csv
+*.png
 ./chester/data/*

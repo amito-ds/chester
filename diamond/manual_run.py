@@ -3,15 +3,15 @@ import pandas as pd
 import numpy as np
 import os
 from sklearn.preprocessing import LabelEncoder
-
+# exec(open("/Users/amitosi/PycharmProjects/chester/diamond/manual_run.py").read())
 from PIL import Image
 
 from diamond.run import run
 from diamond.user_classes import ImageModels, ImageModel, ImagesAugmentationInfo
 from sklearn.datasets import fetch_openml
 
-# with open("/Users/amitosi/PycharmProjects/chester/chester/data/data_batch_1", 'rb') as fo:
-#     data = pickle.load(fo, encoding='bytes')
+with open("/Users/amitosi/PycharmProjects/chester/chester/data/data_batch_1", 'rb') as fo:
+    data = pickle.load(fo, encoding='bytes')
 # Extract the image and label data from the batch
 
 
@@ -19,6 +19,7 @@ from sklearn.datasets import fetch_openml
 # mnist = fetch_openml('mnist_784')
 # Extract the data and labels
 # X, y = mnist['data'], mnist['target']
+
 # X = X.astype(np.float32)
 # X.to_csv('mnist_fashion_X.csv', index=False)
 # y.to_csv('mnist_fashion_y.csv', index=False)
@@ -41,26 +42,28 @@ image_model_list = [
 image_models = ImageModels(image_model_list=image_model_list)
 
 # y = pd.read_csv('/Users/amitosi/PycharmProjects/chester/mnist_fashion_y.csv')
+# y = y['class']
 # X = pd.read_csv('/Users/amitosi/PycharmProjects/chester/mnist_fashion_X.csv')
-# filter = y.isin([0, 1, 3]).values
-# X = X[filter]
-# y = y[filter]
 
 # image_shape = (28, 28)
-# image_shape = (32, 32)
-# diamond_collector = run(images=X.values,
+# # # image_shape = (32, 32)
+# diamond_collector = run(images=X,
 #                         image_shape=image_shape,
-#                         labels=np.array(y['class']),
+#                         labels=y,
 #                         is_augment_data=True,
 #                         image_augmentation_info=ImagesAugmentationInfo(aug_prop=0.2),
 #                         is_train_model=True, image_models=image_models,
 #                         is_post_model_analysis=True,
-#                         plot=True)
+#                         plot=False)
+
+# labels handling
+# image convert to np nd array
 #
 # images = data[b'data'][0:2500]
-# labels = np.array(data[b'labels'])[0:2500]
+# # labels = np.array(data[b'labels'])[0:2500]
+# labels = data[b'labels'][0:2500]
 # image_shape = (3, 32, 32)
-#
+# #
 # diamond_collector = run(images=images,
 #                         image_shape=image_shape,
 #                         labels=labels,
@@ -72,130 +75,27 @@ image_models = ImageModels(image_model_list=image_model_list)
 
 # print(diamond_collector["models"])
 #
-# # define directory path
-# data_dir = '/Users/amitosi/PycharmProjects/chester/chester/data/piza_not_piza'
-# #
-# # # define image size
-# img_size = (64, 64)
-#
-# # define empty arrays to store images and labels
-# images = []
-# labels = []
-#
-# # loop over the directories containing the images
-# for subdir in os.listdir(data_dir):
-#     # get the label for the directory
-#     if subdir == 'pizza':
-#         label = 1
-#     else:
-#         label = 0
-#
-#     # loop over the files in the directory
-#     subdir_path = os.path.join(data_dir, subdir)
-#     for filename in os.listdir(subdir_path):
-#         if filename.endswith('.jpg'):
-#             # read the image as a PIL.Image object
-#             img = Image.open(os.path.join(subdir_path, filename)).convert('RGB')
-#             # resize the image
-#             img = img.resize(img_size)
-#             # convert the image to a NumPy array
-#             img_array = np.array(img)
-#             # append the image array to the list of images
-#             images.append(img_array)
-#             # append the label to the list of labels
-#             labels.append(label)
-#
-# # convert the lists to NumPy arrays
-# images = np.array(images)
-# labels = np.array(labels)
-#
-#
-# image_shape = (3, 64, 64)
-#
-# diamond_collector = run(images=images,
-#                         image_shape=image_shape,
-#                         labels=labels,
-#                         is_augment_data=False,
-#                         image_augmentation_info=ImagesAugmentationInfo(aug_prop=0.01),
-#                         is_train_model=True, image_models=image_models,
-#                         is_post_model_analysis=True,
-#                         plot=True)
-
 
 # define directory path
-# data_dir = '/Users/amitosi/PycharmProjects/chester/chester/data/blood_type'
-# #
-# # # define image size
-# img_size = (640, 480)
-# # img_size = (32, 32)
+data_dir = '/Users/amitosi/PycharmProjects/chester/chester/data/blood_type'
 #
-# # define empty arrays to store images and labels
-# images = []
-# labels = []
-# labels_df = pd.read_csv(data_dir + "/labels.csv")
-#
-# # loop over the directories containing the images
-#
-# # loop over the files in the directory
-# for filename in os.listdir(data_dir):
-#     if filename.endswith('.jpg'):
-#         label_idx = int(filename.split("_")[1].split(".")[0])
-#         # read the image as a PIL.Image object
-#         img = Image.open(os.path.join(data_dir, filename)).convert('RGB')
-#         # resize the image
-#         img = img.resize(img_size)
-#         # convert the image to a NumPy array
-#         img_array = np.array(img)
-#         # append the image array to the list of images
-#         images.append(img_array)
-#         # append the label to the list of labels
-#         label = labels_df[labels_df.Image == label_idx].Category.iloc[0]
-#         labels.append(label)
-#
-# # convert the lists to NumPy arrays
-# images = np.array(images)
-# labels = np.array(labels)
-# # create a LabelEncoder object
-# encoder = LabelEncoder()
-#
-# # fit the encoder to the labels and transform the labels to integer indices
-# labels = encoder.fit_transform(labels)
-#
-# # image_shape = (3, 32, 32)
-# image_shape = (3, 640, 480)
-#
-# diamond_collector = run(images=images,
-#                         image_shape=image_shape,
-#                         labels=labels,
-#                         is_augment_data=True,
-#                         image_augmentation_info=ImagesAugmentationInfo(aug_prop=0.1),
-#                         is_train_model=True, image_models=image_models,
-#                         is_post_model_analysis=True,
-#                         plot=True)
-#
-
-
-# define directory path
-data_dir = '/Users/amitosi/PycharmProjects/chester/chester/data/weather'
-
 # # define image size
-img_size = (64, 64)
+img_size = (640, 480)
 # img_size = (32, 32)
 
 # define empty arrays to store images and labels
 images = []
 labels = []
+labels_df = pd.read_csv(data_dir + "/labels.csv")
 
 # loop over the directories containing the images
 
 # loop over the files in the directory
 for filename in os.listdir(data_dir):
     if filename.endswith('.jpg'):
-        label = filename.split("/")[-1].split(".")[0]
-        label = ''.join(char for char in label if not char.isdigit())
+        label_idx = int(filename.split("_")[1].split(".")[0])
         # read the image as a PIL.Image object
         img = Image.open(os.path.join(data_dir, filename)).convert('RGB')
-        # print(img.size)
         # resize the image
         img = img.resize(img_size)
         # convert the image to a NumPy array
@@ -203,19 +103,14 @@ for filename in os.listdir(data_dir):
         # append the image array to the list of images
         images.append(img_array)
         # append the label to the list of labels
+        label = labels_df[labels_df.Image == label_idx].Category.iloc[0]
         labels.append(label)
 
-# convert the lists to NumPy arrays
-images = np.array(images)
-print(np.unique(labels))
-labels = np.array(labels)
-# create a LabelEncoder object
-encoder = LabelEncoder()
+# # convert the lists to NumPy arrays
+# images = np.array(images)
+# labels = np.array(labels)
 #
-# fit the encoder to the labels and transform the labels to integer indices
-labels = encoder.fit_transform(labels)
-#
-image_shape = (3, 64, 64)
+image_shape = (3, 32, 32)
 # image_shape = (3, 640, 480)
 #
 diamond_collector = run(images=images,
@@ -226,3 +121,57 @@ diamond_collector = run(images=images,
                         is_train_model=True, image_models=image_models,
                         is_post_model_analysis=True,
                         plot=True)
+#
+#
+#
+# # define directory path
+# data_dir = '/Users/amitosi/PycharmProjects/chester/chester/data/weather'
+#
+# # # define image size
+# img_size = (64, 64)
+# # img_size = (32, 32)
+#
+# # define empty arrays to store images and labels
+# images = []
+# labels = []
+#
+# # loop over the directories containing the images
+#
+# # loop over the files in the directory
+# for filename in os.listdir(data_dir):
+#     if filename.endswith('.jpg'):
+#         label = filename.split("/")[-1].split(".")[0]
+#         label = ''.join(char for char in label if not char.isdigit())
+#         # read the image as a PIL.Image object
+#         img = Image.open(os.path.join(data_dir, filename)).convert('RGB')
+#         # print(img.size)
+#         # resize the image
+#         img = img.resize(img_size)
+#         # convert the image to a NumPy array
+#         img_array = np.array(img)
+#         # append the image array to the list of images
+#         images.append(img_array)
+#         # append the label to the list of labels
+#         labels.append(label)
+#
+# # convert the lists to NumPy arrays
+# images = np.array(images)
+# print(np.unique(labels))
+# labels = np.array(labels)
+# # create a LabelEncoder object
+# encoder = LabelEncoder()
+# #
+# # fit the encoder to the labels and transform the labels to integer indices
+# labels = encoder.fit_transform(labels)
+# #
+# image_shape = (3, 64, 64)
+# # image_shape = (3, 640, 480)
+# #
+# diamond_collector = run(images=images,
+#                         image_shape=image_shape,
+#                         labels=labels,
+#                         is_augment_data=True,
+#                         image_augmentation_info=ImagesAugmentationInfo(aug_prop=0.1),
+#                         is_train_model=True, image_models=image_models,
+#                         is_post_model_analysis=True,
+#                         plot=True)
