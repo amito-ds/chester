@@ -12,9 +12,9 @@ def get_embeddings(training_data: pd.DataFrame,
                    split_data: bool = True, split_prop: float = 0.3,
                    split_random_state=42,
                    text_column="clean_text", target_column='target',
-                   corex=True, corex_dim=50, tfidf=True,
-                   tfidf_dim=100, bow=True, bow_dim=100,
-                   ngram_range=(1, 1)):
+                   corex=True, corex_dim=50, anchor_words=None, anchor_strength=1.6,
+                   tfidf=True, tfidf_dim=100, bow=True, bow_dim=100,
+                   ngram_range=(1, 2)):
     rc = ReportCollector(REPORT_PATH)
     rc.save_text("Extracting embedding")
     if split_data:
@@ -39,10 +39,10 @@ def get_embeddings(training_data: pd.DataFrame,
         title_to_print = f"{order_list[i]}, Extracting Corex topic model embeddings with dimension {corex_dim}"
         print(title_to_print)
         rc.save_text(title_to_print)
-
-        corex_embedding, corex_test_embedding = get_corex_embedding(training_data=training_data, test_data=test_data,
-                                                                    ngram_range=ngram_range,
-                                                                    n_topics=corex_dim, text_column=text_column)
+        corex_embedding, corex_test_embedding = \
+            get_corex_embedding(training_data=training_data, test_data=test_data,
+                                ngram_range=ngram_range, n_topics=corex_dim, text_column=text_column,
+                                anchor_words=anchor_words, anchor_strength=anchor_strength)
         i += 1
 
     # Extract TF-IDF embeddings if requested

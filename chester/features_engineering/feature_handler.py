@@ -2,7 +2,7 @@ import pandas as pd
 
 from chester.features_engineering.fe_nlp import get_embeddings
 from chester.features_engineering.time_series.ts_feature_extraction import TimeSeriesFeatureExtraction
-from chester.run.user_classes import TextFeatureSpec, TimeSeriesHandler
+from chester.run.user_classes import TextFeatureExtraction, TimeSeriesHandler
 from chester.zero_break.problem_specification import DataInfo
 
 
@@ -10,7 +10,7 @@ class FeatureHandler:
     def __init__(self, column, col_name,
                  feature_type=None,
                  time_series_handler: TimeSeriesHandler = None,
-                 text_feature_extraction: TextFeatureSpec = None,
+                 text_feature_extraction: TextFeatureExtraction = None,
                  data_info: DataInfo = None):
         self.column = column
         self.feature_type = feature_type
@@ -65,6 +65,7 @@ class FeatureHandler:
                 split_data=False,
                 text_column=self.col_name,
                 corex_dim=feat_ext.corex_dim, corex=feat_ext.corex,
+                anchor_words=feat_ext.anchor_words, anchor_strength=feat_ext.anchor_strength,
                 bow_dim=feat_ext.bow_dim, bow=feat_ext.bow,
                 tfidf_dim=feat_ext.tfidf_dim, tfidf=feat_ext.tfidf,
                 ngram_range=feat_ext.ngram_range

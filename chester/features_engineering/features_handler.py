@@ -1,14 +1,14 @@
 import pandas as pd
 
 from chester.features_engineering.feature_handler import FeatureHandler
-from chester.run.user_classes import TextFeatureSpec
+from chester.run.user_classes import TextFeatureExtraction
 from chester.zero_break.problem_specification import DataInfo
 
 
 class FeaturesHandler:
     def __init__(self,
                  data_info: DataInfo,
-                 text_feature_extraction: TextFeatureSpec = None):
+                 text_feature_extraction: TextFeatureExtraction = None):
         self.data_info = data_info
         self.data = data_info.data
         self.target = data_info.target

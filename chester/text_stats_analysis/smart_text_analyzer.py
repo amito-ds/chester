@@ -83,6 +83,8 @@ def analyze_text(df: pd.DataFrame,
                  data_quality: bool = True,
                  kewords_extraction: bool = True,
                  corex_topics_num: int = 10,
+                 corex_anchor_strength=1.6,
+                 corex_anchor_words=None,
                  top_words: int = 10,
                  n_sentences: int = 10,
                  text_column: str = 'text'):
@@ -99,6 +101,9 @@ def analyze_text(df: pd.DataFrame,
     :param corex_topics_num: number of corex topics to extract (default: 10)
     :param top_words: top words
     :param n_sentences: number of sentences to return
+    :param text_column: the text column
+    :param corex_anchor_words: corex anchore words (for semi supervised version)
+    :param corex_anchor_strength: anchore strength
     """
 
     rc = ReportCollector(REPORT_PATH)
@@ -147,12 +152,16 @@ def analyze_text(df: pd.DataFrame,
 
     if corex_topics:
         print(corex_topic_message)
-
+        print("wow why like", corex_topics_num)
         if is_clean_col_exists:
             corex.plot_corex_wordcloud(modified_df, n_topics=corex_topics_num, top_words=top_words,
-                                       text_column=text_column)
+                                       text_column=text_column, corex_anchor_words=corex_anchor_words,
+                                       corex_anchor_strength=corex_anchor_strength)
         else:
-            corex.plot_corex_wordcloud(df, n_topics=corex_topics_num, top_words=top_words, text_column=text_column)
+            corex.plot_corex_wordcloud(df, n_topics=corex_topics_num, top_words=top_words, text_column=text_column,
+                                       corex_anchor_words=corex_anchor_words,
+                                       corex_anchor_strength=corex_anchor_strength
+                                       )
 
     if key_sentences:
         print(key_sentences_message)
@@ -176,6 +185,8 @@ def analyze_text(df: pd.DataFrame,
 
 def analyze_text_df(text_analyzer: TextAnalyzer):
     df = text_analyzer.df
+    print("In analyze text df wow")
+    print(text_analyzer.corex_topics_num)
     analyze_text(df=df, text_column=text_analyzer.text_column,
                  create_wordcloud=text_analyzer.create_wordcloud,
                  corex_topics=text_analyzer.corex_topics,
@@ -185,4 +196,6 @@ def analyze_text_df(text_analyzer: TextAnalyzer):
                  data_quality=text_analyzer.data_quality,
                  corex_topics_num=text_analyzer.corex_topics_num,
                  top_words=text_analyzer.top_words,
-                 n_sentences=text_analyzer.n_sentences)
+                 n_sentences=text_analyzer.n_sentences,
+                 corex_anchor_strength=text_analyzer.corex_anchor_strength,
+                 corex_anchor_words=text_analyzer.corex_anchor_words)

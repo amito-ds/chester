@@ -64,16 +64,18 @@ class TimeSeriesHandler:
 
 
 class FeatureStats:
-    def __init__(self, plot=True):
+    def __init__(self, plot=True, sample_obs=5000):
         self.plot = plot
+        self.sample_obs = sample_obs
 
 
-class TextFeatureSpec:
+class TextFeatureExtraction:
     def __init__(self,
                  split_data: bool = True, split_prop: float = 0.3, split_random_state=42,
                  text_column="text", target_column='target',
-                 corex=True, corex_dim=50, tfidf=True, tfidf_dim=100, bow=True, bow_dim=100,
-                 ngram_range=(2, 1)):
+                 corex=True, corex_dim=50, anchor_strength=1.6, anchor_words=None,
+                 tfidf=True, tfidf_dim=100, bow=True, bow_dim=100,
+                 ngram_range=(1, 2)):
         self.split_data = split_data
         self.split_prop = split_prop
         self.split_random_state = split_random_state
@@ -81,6 +83,8 @@ class TextFeatureSpec:
         self.target_column = target_column
         self.corex = corex
         self.corex_dim = corex_dim
+        self.anchor_strength = anchor_strength
+        self.anchor_words = anchor_words
         self.tfidf = tfidf
         self.tfidf_dim = tfidf_dim
         self.bow = bow
@@ -89,7 +93,7 @@ class TextFeatureSpec:
 
 
 class FeatureExtraction:
-    def __init__(self, text_featrue_extraction: TextFeatureSpec):
+    def __init__(self, text_featrue_extraction: TextFeatureExtraction):
         self.text_featrue_extraction = text_featrue_extraction
 
 

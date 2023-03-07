@@ -18,7 +18,7 @@ from chester.pre_model_analysis.target import TargetPreModelAnalysis
 from chester.pre_model_analysis.time_series import TimeSeriesPreModelAnalysis
 from chester.preprocessing.preprocessor_handler import PreprocessHandler
 from chester.run.chapter_titles import chapter_title
-from chester.run.user_classes import Data, TextHandler, FeatureStats, ModelRun, TextFeatureSpec, FeatureTypes, \
+from chester.run.user_classes import Data, TextHandler, FeatureStats, ModelRun, TextFeatureExtraction, FeatureTypes, \
     TimeSeriesHandler
 from chester.util import REPORT_PATH, ReportCollector
 from chester.zero_break.problem_specification import DataInfo
@@ -38,7 +38,7 @@ def run_madcat(
         text_handler: TextHandler = None, is_text_handler=True,
         time_series_handler: TimeSeriesHandler = None, is_time_series_handler=True,
         feature_stats: FeatureStats = None, is_feature_stats=True,
-        text_feature_extraction: TextFeatureSpec = None,
+        text_feature_extraction: TextFeatureExtraction = None,
         is_pre_model=True,
         is_model_training=True, model_run: ModelRun = None,
         is_post_model=True,
@@ -178,8 +178,12 @@ def run_madcat(
         rc.save_text(
             text="features statistics for the data. Analyzed by groups (text, numeric, categorical) if exists:")
         print(chapter_title('feature statistics'))
-        final_df = final_df.loc[:, ~final_df.columns.duplicated()]
-        data_info_num_stats = DataInfo(data=final_df.sample(min(5000, len(final_df))), target=target_column)
+        if feature_stats is None:
+            feature_stats = FeatureStats()
+        sample_obs = feature_stats.sample_obs
+        # sample data for stats
+        final_df = final_df.loc[:, ~final_df.columns.duplicated()].sample(min(sample_obs, len(final_df)))
+        data_info_num_stats = DataInfo(data=final_df, target=target_column)
         data_info_num_stats.calculate()
 
         num_cols = data_info_num_stats.feature_types_val["numeric"]
@@ -212,7 +216,7 @@ def run_madcat(
             print("Text Feature Statistics")
             orig_df = data_info.data
             data_info.data = clean_text_df
-            TextStats(data_info).run()
+            TextStats(data_info, text_spec=text_feature_extraction).run()
             data_info.data = orig_df
 
         all_features = list(set(chain.from_iterable(list(data_info.feature_types_val.values()))))

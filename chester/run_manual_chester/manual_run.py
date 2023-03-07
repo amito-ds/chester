@@ -8,13 +8,12 @@ from flatbuffers.builder import np
 from sklearn.datasets import fetch_20newsgroups, fetch_openml
 
 from chester.run.full_run import run_madcat
-from chester.run.user_classes import Data, ModelRun, TimeSeriesHandler
+from chester.run.user_classes import Data, ModelRun, TimeSeriesHandler, TextFeatureExtraction
 import yfinance as yf
 import ml_datasets
 
 matplotlib.use('TkAgg')
 target_column = 'target'
-
 
 ################################################################################################
 df1 = load_data_pirates().assign(target='pirate').sample(300, replace=True)
@@ -24,6 +23,7 @@ df = pd.concat([
     df1, df2,
     df3
 ])
+
 
 # df['target'] = df['target'].apply(lambda x: 0 if "pirate" in x else 1)  # can do with or without
 ################################################################################################
@@ -113,6 +113,7 @@ def load_autizm():
     data_aut = pd.read_csv("/Users/amitosi/PycharmProjects/chester/chester/data/autism_prediction.csv")
     data_aut.rename(columns={'Class/ASD': 'target'}, inplace=True)
     return data_aut
+
 
 # df = load_autizm()
 ##############################################################################################
@@ -306,15 +307,16 @@ def load_yaho(tickers=None, start_date='2010-01-01', end_date='2023-02-15'):
 # df = load_yaho()
 # print("df shape", df.shape)
 # print("df cols", df.columns)
-#
+anchors = [['jack', 'tailor', 'arthur'], ['smoker light drinker', 'smoker', 'looking', 'look']]
 madcat_collector = run_madcat(Data(df=df, target_column='target'),
                               is_feature_stats=True,
+                              text_feature_extraction=TextFeatureExtraction(corex_dim=2, anchor_words=anchors),
                               # time_series_handler=TimeSeriesHandler(id_cols=["id"]),
-                              is_pre_model=True,
-                              is_model_training=True,
+                              is_pre_model=False,
+                              is_model_training=False,
                               model_run=ModelRun(n_models=2),
-                              is_post_model=True, is_model_weaknesses=True,
-                              plot=True,
+                              is_post_model=False, is_model_weaknesses=False,
+                              plot=False,
                               # feature_types={'numeric': [], 'boolean': [], 'text': ['Campaign Name'],
                               #                'categorical': ['Campaign Name'], 'time': ['Date'], 'id': []}
                               )

@@ -11,8 +11,12 @@ from wordcloud import WordCloud
 from chester.util import ReportCollector, REPORT_PATH
 
 
-def plot_corex_wordcloud(df, top_words=20, n_topics=10, plot=True, text_column='text'):
-    top_words_list = get_top_words(df, top_words, n_topics, text_column=text_column)
+def plot_corex_wordcloud(df, top_words=20, n_topics=10, plot=True, text_column='text',
+                         corex_anchor_strength=1.6,
+                         corex_anchor_words=None):
+    top_words_list = get_top_words(df, top_words, n_topics, text_column=text_column,
+                                   corex_anchor_strength=corex_anchor_strength,
+                                   corex_anchor_words=corex_anchor_words)
     top_words_list = pd.DataFrame(top_words_list, columns=["topic_index", "term", "weight"])
     if plot:
         # Plot the word clouds
@@ -47,7 +51,12 @@ def get_top_words(df: pd.DataFrame,
                   n_topics,
                   max_features=1000,
                   text_column: str = 'text',
-                  ngram_range=(1, 3)):
+                  ngram_range=(1, 3),
+                  corex_anchor_strength=1.6,
+                  corex_anchor_words=None
+                  ):
+    print("wow???")
+    print(corex_anchor_strength, corex_anchor_words, n_topics)
     rc = ReportCollector(REPORT_PATH)
     # Preprocess data
     vectorizer = CountVectorizer(stop_words='english',
@@ -60,8 +69,12 @@ def get_top_words(df: pd.DataFrame,
     words = list(np.asarray(feature_names))
 
     # Train model
-    topic_model = ct.Corex(n_hidden=n_topics, words=words, max_iter=200, verbose=False, seed=1)
-    topic_model.fit(doc_word, words=words)
+    topic_model = ct.Corex(n_hidden=n_topics, words=words, max_iter=200, verbose=False, seed=12345)
+    if corex_anchor_words is None:
+        topic_model.fit(doc_word, words=words)
+    else:
+        print("Anchored Corex")
+        topic_model.fit(doc_word, words=words, anchor_strength=corex_anchor_strength, anchors=corex_anchor_words)
 
     # Get top words and weights for each topic
     topics = topic_model.get_topics()
