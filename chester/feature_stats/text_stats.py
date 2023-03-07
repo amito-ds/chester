@@ -13,7 +13,6 @@ class TextStats:
         self.data = self.data_info.data
 
     def run(self):
-        print("wow text stats")
         rc = ReportCollector(REPORT_PATH)
         rc.save_text("Text Statistics:")
         rc.save_text("Extracting Embedding")

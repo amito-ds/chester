@@ -55,8 +55,6 @@ def get_top_words(df: pd.DataFrame,
                   corex_anchor_strength=1.6,
                   corex_anchor_words=None
                   ):
-    print("wow???")
-    print(corex_anchor_strength, corex_anchor_words, n_topics)
     rc = ReportCollector(REPORT_PATH)
     # Preprocess data
     vectorizer = CountVectorizer(stop_words='english',

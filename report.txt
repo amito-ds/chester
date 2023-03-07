@@ -30,36 +30,36 @@ Extracting Embedding
 ** Analyzing text Column
 Data quality stats:
 Number of rows with missing data: 0.0
-Number of unique words: 1947
+Number of unique words: 1952
 Average type-token ratio: 0.96
 Median type-token ratio: 1.00
-Average number of words per text: 9.61
+Average number of words per text: 9.79
 Median number of words per text: 7.00
 Average number of sentences per text: 1.00
 Median number of sentences per text: 1.00
-Average length of text: 61.21
-Median length of text: 43.00
+Average length of text: 62.17
+Median length of text: 44.00
 
 Count word frequency for basic text analysis.
 Report shows most common words, giving insight into text topic and content:
-[('lady', 151), ('seeks', 146), ('yo', 114), ('jack', 93), ('male', 77), ('looking', 67), ('attractive', 64), ('build', 61), ('seeking', 60), ('good', 60), ('fun', 59), ('like', 58), ('rship', 57), ('honest', 54), ('slim', 54), ('arthur', 53), ('dining', 51), ('movies', 49), ('sparrow', 48), ('relationship', 46), ('age', 43), ('open', 43), ('fship', 42), ('well', 41), ('man', 41), ('elizabeth', 38), ('music', 38), ('married', 38), ('guy', 37), ('employed', 37), ('fit', 37), ('times', 36), ('ns', 36), ('female', 36), ('friendship', 35), ('interests', 35), ('would', 35), ('beach', 35), ('single', 34), ('country', 34), ('ft', 34), ('non', 34), ('black', 32), ('life', 31), ('smoker', 31), ('enjoy', 31), ('swann', 28), ('woman', 28), ('enjoys', 28), ('tall', 28), ('social', 27), ('sd', 27), ('must', 27), ('guard', 26), ('genuine', 25), ('meet', 25), ('likes', 24), ('drinker', 24), ('caring', 24), ('oh', 24), ('knight', 24), ('one', 24), ('scene', 23), ('home', 23), ('gibbs', 23), ('gsoh', 23), ('walks', 23), ('medium', 23), ('launcelot', 22), ('nights', 21), ('long', 21), ('pearl', 21), ('poss', 21), ('come', 21), ('soh', 21), ('children', 21), ('father', 21), ('im', 20), ('gardening', 20), ('quiet', 20), ('living', 20), ('drives', 20), ('right', 20), ('loving', 20), ('prof', 19), ('share', 19), ('dte', 19), ('similar', 19), ('view', 18), ('dont', 18), ('possible', 18), ('going', 18), ('dancing', 18), ('gentleman', 17), ('wltm', 17), ('sir', 17), ('head', 17), ('asian', 17), ('look', 17), ('chest', 17)]
+[('lady', 168), ('seeks', 128), ('yo', 110), ('jack', 94), ('male', 72), ('good', 64), ('build', 63), ('looking', 63), ('arthur', 62), ('attractive', 61), ('fun', 58), ('seeking', 54), ('rship', 53), ('well', 51), ('like', 51), ('guy', 50), ('ns', 49), ('slim', 49), ('relationship', 45), ('honest', 44), ('sparrow', 44), ('movies', 44), ('married', 43), ('would', 41), ('times', 41), ('fit', 40), ('fship', 40), ('man', 39), ('age', 39), ('dining', 39), ('music', 36), ('life', 35), ('friendship', 34), ('oh', 34), ('enjoy', 34), ('ft', 33), ('employed', 32), ('likes', 32), ('caring', 31), ('turner', 30), ('open', 30), ('interests', 30), ('female', 30), ('drinker', 29), ('single', 29), ('meet', 29), ('gsoh', 29), ('travel', 28), ('black', 28), ('beach', 28), ('tall', 27), ('living', 27), ('children', 27), ('poss', 26), ('late', 26), ('elizabeth', 25), ('going', 25), ('nonsmoker', 25), ('social', 25), ('woman', 25), ('home', 25), ('away', 25), ('long', 24), ('must', 24), ('sd', 24), ('similar', 24), ('hello', 24), ('knights', 23), ('gibbs', 22), ('wltm', 22), ('enjoys', 22), ('love', 21), ('non', 20), ('galahad', 20), ('sports', 20), ('genuine', 20), ('medium', 20), ('quiet', 20), ('healthy', 19), ('discreet', 19), ('gent', 19), ('knight', 19), ('guard', 19), ('sexy', 19), ('one', 19), ('dont', 19), ('scene', 19), ('villager', 19), ('mid', 19), ('father', 18), ('want', 18), ('robin', 18), ('sir', 18), ('bedevere', 17), ('secure', 17), ('smoker', 17), ('norrington', 17), ('nights', 17), ('prof', 17), ('swann', 16)]
 Sentiment Statistics
 +--------------------------------+
 |      Sentiment Statistics      |
 +-----------+-------+------------+
 | Sentiment | Count | Percentage |
 +-----------+-------+------------+
-|  Positive |  340  |   37.8%    |
-|  Negative |  140  |   15.6%    |
-|  Neutral  |  420  |   46.7%    |
+|  Positive |  356  |   39.6%    |
+|  Negative |  109  |   12.1%    |
+|  Neutral  |  435  |   48.3%    |
 +-----------+-------+------------+
 
 
 Corex topic analysis:
-	Topic 1: european, callers, gentleman honest, daytime, entertain quiet, lot, seeks gentleman honest, seeks country, davy, lady enjoys
-	Topic 2: home, children like, soh non, nice attractive, girl seeks country, background children, domine dona, black, car racing gardening, friendship maybe leading
-	Key sentences out of based on LSA algorithm: ['launcelot right idiom.', 'male burly beared seeks intimate woman outings ns sd fstonpen.', 'swm dtoe honest sd cm kg clean cut intelligent natur ist seeks petite open minded red hd brunette asian eurasian welcome home bch drives fship poss rship.', 'norrington walk away wobbling dizziness.', 'galahad three questions.'] 
+	Topic 1: nonsmoker social drinker, domine, professional business male, clean cut intelligent, open, personality, elegant articulate seeks, lord, crew, sunsets candlelight
+	Topic 2: wont, prefer, medium lady friendship, peninsula, seeking affectionate, love, living, great, quiet nights, children enjoy
+	Key sentences out of based on LSA algorithm: ['jack ducks back forth behind sides large post norrington points pistol jack.', 'chaplain ill take chances sir.', 'arthur black knight aaah hiyaah etc arthur chops black knights left arm.', 'bridgekeeper right go.', 'sword thrown ragetti time.'] 
 
 popular terms extraction:
-[('active years ft slim build nonsmoker social', 54.0), ('brother saint attila raised hand grenade high', 48.0), ('monks chanting pie iesu domine dona eis', 48.0), ('prof kind generous great listener enjoys fun', 48.0), ('monks chanting pie iesu domine dona eis', 48.0), ('early outgoing intelligent independant fitness outdoor activites', 46.0), ('greekaust male early slim build nonsmoker enjoys', 44.0), ('preserved prof sgle prince charming living cityinner', 42.0), ('male late aust single tall prof interests', 40.0), ('ties secure ft slim build enjoy outdoors', 38.0)]
+[('active years ft slim build nonsmoker social', 54.0), ('monks chanting pie iesu domine dona eis', 48.0), ('monks chanting pie iesu domine dona eis', 48.0), ('prof kind generous great listener enjoys fun', 48.0), ('greekaust male early slim build nonsmoker enjoys', 44.0), ('supporting happy nat fun loving likes cooking', 44.0), ('preserved prof sgle prince charming living cityinner', 42.0), ('male late aust single tall prof interests', 40.0), ('early honest caring likes fishing animals golf', 38.0), ('bit scared mashed pulp eyes gouged elbows', 38.0)]
 

@@ -152,7 +152,6 @@ def analyze_text(df: pd.DataFrame,
 
     if corex_topics:
         print(corex_topic_message)
-        print("wow why like", corex_topics_num)
         if is_clean_col_exists:
             corex.plot_corex_wordcloud(modified_df, n_topics=corex_topics_num, top_words=top_words,
                                        text_column=text_column, corex_anchor_words=corex_anchor_words,
@@ -185,8 +184,6 @@ def analyze_text(df: pd.DataFrame,
 
 def analyze_text_df(text_analyzer: TextAnalyzer):
     df = text_analyzer.df
-    print("In analyze text df wow")
-    print(text_analyzer.corex_topics_num)
     analyze_text(df=df, text_column=text_analyzer.text_column,
                  create_wordcloud=text_analyzer.create_wordcloud,
                  corex_topics=text_analyzer.corex_topics,
