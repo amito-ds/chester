@@ -7,7 +7,7 @@ Target Variable: target
 Feature Types: {'numeric': [], 'boolean': [], 'text': ['text'], 'categorical': [], 'time': [], 'id': []}
 Loss Function: Cross entropy
 Evaluation Metrics: ['Accuracy', 'Precision', 'Recall', 'F1']
-Optional Models: {'logistic', 'catboost', 'baseline-mode'}
+Optional Models: {'baseline-mode', 'logistic', 'catboost'}
 
 
 Cleaning and preprocessing text column
@@ -30,54 +30,54 @@ Extracting embedding
 ** Analayzing text column
 Data quality stats:
 Number of rows with missing data: 0.0
-Number of unique words: 1874
+Number of unique words: 1859
 Average type-token ratio: 0.96
 Median type-token ratio: 1.00
-Average number of words per text: 9.35
+Average number of words per text: 8.99
 Median number of words per text: 7.00
 Average number of sentences per text: 1.00
 Median number of sentences per text: 1.00
-Average length of text: 58.47
+Average length of text: 57.36
 Median length of text: 42.00
 
 Count word frequency for basic text analysis.
 Report shows most common words, giving insight into text topic and content:
-[('lady', 169), ('seeks', 136), ('yo', 102), ('jack', 78), ('male', 76), ('looking', 72), ('rship', 67), ('fun', 64), ('arthur', 62), ('ns', 56), ('good', 54), ('married', 49), ('sparrow', 46), ('fship', 44), ('movies', 44), ('caring', 43), ('likes', 43), ('seeking', 43), ('well', 43), ('build', 43), ('attractive', 43), ('relationship', 41), ('honest', 41), ('like', 40), ('guy', 40), ('single', 39), ('slim', 39), ('man', 38), ('gsoh', 35), ('dining', 35), ('turner', 34), ('music', 34), ('life', 34), ('friendship', 33), ('times', 32), ('elizabeth', 31), ('oh', 31), ('fit', 31), ('one', 30), ('sd', 29), ('genuine', 29), ('enjoy', 29), ('age', 29), ('gent', 28), ('father', 28), ('im', 28), ('poss', 28), ('interests', 28), ('beach', 28), ('must', 26), ('launcelot', 26), ('quiet', 26), ('tall', 25), ('open', 25), ('prof', 25), ('love', 24), ('galahad', 24), ('ni', 24), ('ft', 24), ('non', 24), ('witch', 23), ('country', 23), ('swann', 23), ('would', 23), ('female', 23), ('drinker', 23), ('woman', 23), ('similar', 22), ('share', 22), ('meet', 22), ('late', 21), ('come', 21), ('yes', 21), ('secure', 21), ('dont', 21), ('going', 21), ('old', 21), ('social', 21), ('soh', 21), ('dte', 20), ('head', 20), ('asian', 20), ('view', 20), ('enjoys', 20), ('shh', 20), ('home', 20), ('burn', 20), ('scene', 19), ('jones', 19), ('sir', 19), ('gibbs', 19), ('wltm', 19), ('nights', 19), ('fishing', 19), ('want', 18), ('romantic', 18), ('bedevere', 18), ('walks', 18), ('employed', 18), ('sexy', 17)]
+[('lady', 164), ('seeks', 149), ('yo', 109), ('jack', 84), ('male', 78), ('arthur', 69), ('fun', 67), ('looking', 65), ('rship', 61), ('married', 53), ('good', 53), ('build', 52), ('attractive', 47), ('fship', 45), ('ns', 43), ('sparrow', 43), ('movies', 42), ('man', 42), ('slim', 42), ('dining', 41), ('single', 40), ('honest', 40), ('music', 38), ('turner', 37), ('elizabeth', 37), ('seeking', 37), ('fit', 36), ('likes', 35), ('relationship', 35), ('guy', 34), ('ft', 34), ('well', 33), ('friendship', 32), ('like', 32), ('times', 32), ('walks', 31), ('age', 31), ('meet', 30), ('female', 28), ('interests', 28), ('going', 28), ('enjoy', 28), ('non', 28), ('genuine', 28), ('black', 27), ('ni', 27), ('open', 27), ('launcelot', 27), ('employed', 27), ('beach', 26), ('poss', 26), ('must', 25), ('oh', 25), ('smoker', 25), ('sir', 24), ('caring', 24), ('tall', 24), ('life', 24), ('head', 23), ('swann', 23), ('gent', 23), ('sd', 22), ('knight', 22), ('would', 22), ('witch', 22), ('bedevere', 21), ('gsoh', 21), ('quiet', 21), ('woman', 21), ('robin', 20), ('one', 19), ('children', 19), ('similar', 19), ('yes', 19), ('jones', 19), ('country', 19), ('away', 18), ('father', 18), ('im', 18), ('late', 18), ('gibbs', 18), ('view', 18), ('enjoys', 17), ('suburbs', 17), ('know', 17), ('home', 17), ('asian', 17), ('galahad', 17), ('romantic', 17), ('living', 17), ('dead', 17), ('sought', 16), ('love', 16), ('long', 16), ('secure', 16), ('travel', 16), ('grail', 16), ('singing', 15), ('ship', 15), ('share', 15)]
 Sentiment Statistics
 +--------------------------------+
 |      Sentiment Statistics      |
 +-----------+-------+------------+
 | Sentiment | Count | Percentage |
 +-----------+-------+------------+
-|  Positive |  343  |   38.1%    |
-|  Negative |  102  |   11.3%    |
-|  Neutral  |  455  |   50.6%    |
+|  Positive |  342  |   38.0%    |
+|  Negative |  111  |   12.3%    |
+|  Neutral  |  447  |   49.7%    |
 +-----------+-------+------------+
 
 
 Corex topic analysis:
-	Topic 1: seeking, loves, yo romantic easy, hurry, married personal, country guy, male dte, sexy country, guy prof, dog
-	Topic 2: company, hair blue, cooking gsoh ss, gosh financially secure, rship cuddly lady, port, mature gent ns, movies dinners, tractive prof, golf
-	Topic 3: quiet nts home, caring honest, fship possible rship, natural, soh nonsmokersocial, man yo, married man, career like fun, poor work career, movies dining
-	Topic 4: married woman, ing, im, listen, sought, elegance rship, seeks similar, single tall, lots, early honest caring
-	Topic 5: lady friendship, hi swm med, suburbs friendship view, plus prefer living, easy going, lonely, old male, slim shy, fem rship enjoys, god
-	Topic 6: athletic, honest, concerts dining, country drives, loves life, good looking, villager, bridgekeeper, nonsmoker, quiet
-	Topic 7: share, help, foxy yummy, stern headmaster, shall, fair, single yo romantic, seeks fem, table, standing
-	Topic 8: older women, fun friendship, love laughter nonsmoker, drives quiet, dtoe soh seeks, soldier, country drives quiet, friendshiprelationship, quiet nts, aussie
-	Topic 9: flying, ala lots, turner, vibrant personality good, personality, holding, pintel, swm, enjoy, sports
-	Topic 10: large build seeks, dining art beach, attrac, older, genuine replies ala, social, zoot, replies ala lots, herpes, fem
-	Key sentences out of based on LSA algorithm: ['launcelot uh knight king arthur sir.', 'crewmember wyvern seen right encrusted interior side hull standing.', 'arthur yes.', 'chaplain ill take chances sir.', 'ragetti never another like captain jack.'] 
+	Topic 1: jack sparrow, yo tertiary, perm rship, fun looking com, callers welcome reply, friendship, greek lady, lady share, standing, knights
+	Topic 2: weekends, indiansri lankan lady, lady good times, jones, gardening, youre, ss, reliable looking friend, owner, fship poss
+	Topic 3: bi curious fem, tall male, family values social, yo fdship, loves life, lover, secure, build ft, fdship poss rel, seeks honest
+	Topic 4: officer, lady genuine, conversation, ok, parties, living, meet, crew, yo seeks greek, greek yo seeks
+	Topic 5: heading, lord cutler, adventurous yo, man interests theatre, going meal, honest strong, indiansri, uh, articulate, partner
+	Topic 6: seeks similar, fun ft enjoy, slim travelled beach, vegetarian slim travelled, romantic easy, nonsmoker, crowd, great, clean shaven, fun
+	Topic 7: discreet, yr, body, away, emp tradesman ns, taurus fitness cafes, vibrant, poss, non smoker vegetarian, dinner
+	Topic 8: sd enjoys movies, likes meet lady, meet lady good, married european, european lady, witch, possible, seeks attr, lady yo, real
+	Topic 9: non smoker outdoor, smoker, company fship, galahad, seeks indiansri lankan, japaneseasian sought aussie, camping walks music, life camping walks, mature, animals
+	Topic 10: sgl yo, ns sd, seeks lady, ish, social drinker, non smoker, meetings, earth, marty, dinner parties seeks
+	Key sentences out of based on LSA algorithm: ['elizabeth swann davy jones.', 'villager yes.', 'wheel continues jack hangs frond drops ground.', 'officer run along run along.', 'maynard aramaic.'] 
 
 popular terms extraction:
-[('prof kind generous great listener enjoys fun', 48.0), ('early outgoing intelligent independant fitness outdoor activites', 46.0), ('greekaust male early slim build nonsmoker enjoys', 44.0), ('supporting happy nat fun loving likes cooking', 44.0), ('preserved prof sgle prince charming living cityinner', 42.0), ('strategy required quest holy grail brought successful', 42.0), ('male late aust single tall prof interests', 40.0), ('lady wltm genu ine person dtoe possibly', 38.0), ('early honest caring likes fishing animals golf', 38.0), ('ties secure ft slim build enjoy outdoors', 38.0)]
+[('cartmaster bring dead clang cough ninepence rewr', 86.0), ('arthur lady lake angels sing arm clad', 48.0), ('monks chanting pie iesu domine dona eis', 48.0), ('early outgoing intelligent independant fitness outdoor activites', 46.0), ('greekaust male early slim build nonsmoker enjoys', 44.0), ('supporting happy nat fun loving likes cooking', 44.0), ('preserved prof sgle prince charming living cityinner', 42.0), ('male late aust single tall prof interests', 40.0), ('dennis listen strange women lying ponds distributing', 40.0), ('bit scared mashed pulp eyes gouged elbows', 38.0)]
 
 ** model pre analysis report:
 Feature stats:
             col # unique # missing                       Distribution  \
-0  target_label        3         0  arthur: 33%, chat: 33%, pirate...   
+0  target_label        3         0  chat: 33%, pirate: 33%, arthur...   
 
                  Sample Top 5 values coverage  
-0  pirate, chat, arthur                  100%  
+0  chat, pirate, arthur                  100%  
 
 values counts for categorical target to predict:
 pirate    300

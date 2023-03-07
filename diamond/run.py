@@ -1,10 +1,12 @@
 import random
 import numpy as np
 from diamond.data_augmentation.augmentation import ImageAugmentation
+from diamond.image_caption.image_caption_class import ImageDescription
 from diamond.image_data_info.image_info import ImageInfo
 from diamond.model_training.best_model import ImageModelsTraining
 from diamond.post_model_analysis.post_model import ImagePostModelAnalysis
-from diamond.user_classes import ImagesData, ImagesAugmentationInfo, ImageModels, ImagePostModelSpec
+from diamond.user_classes import ImagesData, ImagesAugmentationInfo, ImageModels, ImagePostModelSpec, \
+    ImageDescriptionSpec
 import pandas as pd
 
 from diamond.utils import index_labels
@@ -14,6 +16,7 @@ def run(images,
         image_shape,
         labels=None,
         validation_prop=0.3,
+        get_image_description=False, image_description_spec: ImageDescriptionSpec = None,
         is_augment_data=True, image_augmentation_info=None,
         is_train_model=True, image_models=None,
         is_post_model_analysis=True, image_post_model: ImagePostModelSpec = None,
@@ -39,12 +42,24 @@ def run(images,
     image_data = ImagesData(images=images, labels=labels,
                             validation_prop=validation_prop,
                             image_shape=image_shape,
-                            label_dict=label_dict)
+                            label_dict=label_dict,
+                            for_model_training=is_train_model)
     diamond_collector["image_data"] = image_data
     # plot
     if plot:
         print("Sample Plot")
         image_data.plot_images()
+
+    # Image description
+    if get_image_description:
+        print("====> Calculating Image Description")
+        if image_description_spec is None:
+            image_description_spec = ImageDescriptionSpec()
+        ImageDescription(
+            images_data=image_data,
+            image_description_spec=image_description_spec,
+            diamond_collector=diamond_collector,
+            plot=plot).run()
 
     # augmentation
     if is_augment_data:

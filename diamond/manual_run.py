@@ -21,14 +21,14 @@ mnist = fetch_openml('mnist_784')
 # Extract the data and labels
 X, y = mnist['data'], mnist['target']
 
-# X = X.astype(np.float32)
+X = X.astype(np.float32)
 # X.to_csv('mnist_fashion_X.csv', index=False)
 # y.to_csv('mnist_fashion_y.csv', index=False)
 
 
 image_model_list = [
     ImageModel(network_name="EfficientNetB0",
-               batch_size=64*64*16,
+               batch_size=64 * 64 * 16,
                num_epochs=1,
                optimizer_params={'lr': 0.005},
                dropout=0.7),
@@ -48,44 +48,47 @@ image_models = ImageModels(image_model_list=image_model_list)
 
 image_shape = (28, 28)
 # image_shape = (32, 32)
-diamond_collector = run(images=X,
+diamond_collector = run(images=X[0:100],
                         image_shape=image_shape,
-                        labels=y,
+                        labels=y[0:100],
+                        get_image_description=True,
                         is_augment_data=True,
                         image_augmentation_info=ImagesAugmentationInfo(aug_prop=0.2),
-                        is_train_model=True, image_models=image_models,
-                        is_post_model_analysis=True,
-                        plot=True)
+                        is_train_model=False, image_models=image_models,
+                        is_post_model_analysis=False,
+                        plot=False)
 
 # labels handling
 # image convert to np nd array
 #
-# images = data[b'data'][0:2500]
-# # labels = np.array(data[b'labels'])[0:2500]
-# labels = data[b'labels'][0:2500]
+# images = data[b'data'][0:100]
+# labels = np.array(data[b'labels'])[0:2500]
+# labels = data[b'labels'][0:100]
 # image_shape = (3, 32, 32)
-# #
+#
 # diamond_collector = run(images=images,
 #                         image_shape=image_shape,
 #                         labels=labels,
-#                         is_augment_data=True,
+#                         get_image_description=True,
+#                         is_augment_data=False,
 #                         image_augmentation_info=ImagesAugmentationInfo(aug_prop=0.01),
-#                         is_train_model=True, image_models=image_models,
-#                         is_post_model_analysis=True,
-#                         plot=True)
+#                         is_train_model=False, image_models=image_models,
+#                         is_post_model_analysis=False,
+#                         plot=False)
 
 # print(diamond_collector["models"])
 #
 #
 
-#
-# # define directory path
+# #
+# # # define directory path
 # data_dir = '/Users/amitosi/PycharmProjects/chester/chester/data/weather'
 #
 # # # define image size
 # img_size = (64, 64)
+# # img_size = (640, 480)
 # # img_size = (32, 32)
-#
+# #
 # # define empty arrays to store images and labels
 # images = []
 # labels = []
@@ -102,6 +105,7 @@ diamond_collector = run(images=X,
 #         # print(img.size)
 #         # resize the image
 #         img = img.resize(img_size)
+#         # img = img.resize(img.size)
 #         # convert the image to a NumPy array
 #         img_array = np.array(img)
 #         # append the image array to the list of images
@@ -110,23 +114,19 @@ diamond_collector = run(images=X,
 #         labels.append(label)
 #
 # # # convert the lists to NumPy arrays
-# images = np.array(images)
+# images = np.array(images[0:50])
 # # print(np.unique(labels))
-# labels = np.array(labels)
-# # # create a LabelEncoder object
-# # encoder = LabelEncoder()
-# # #
-# # # fit the encoder to the labels and transform the labels to integer indices
-# # labels = encoder.fit_transform(labels)
-# # #
-# image_shape = (3, 64, 64)
-# # # image_shape = (3, 640, 480)
+# labels = np.array(labels[0:50])
 #
+# image_shape = (3, 64, 64)
+# # image_shape = (3, 480, 640)
+# #
 # diamond_collector = run(images=images,
 #                         image_shape=image_shape,
 #                         labels=labels,
-#                         is_augment_data=True,
+#                         get_image_description=True,
+#                         is_augment_data=False,
 #                         image_augmentation_info=ImagesAugmentationInfo(aug_prop=0.1),
-#                         is_train_model=True, image_models=image_models,
-#                         is_post_model_analysis=True,
+#                         is_train_model=False, image_models=image_models,
+#                         is_post_model_analysis=False,
 #                         plot=True)

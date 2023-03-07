@@ -65,39 +65,17 @@ class ImagePostModelAnalysis:
                 return k
         return x  # Return the original value if it is not in the label_dict dictionary
 
-    # def confusion_matrix(self, plot):
-    #     if "class" not in self.images_data.problem_type:
-    #         return None
-    #
-    #     vmap_labels = np.vectorize(self.map_labels)
-    #     eval_labels = vmap_labels(self.eval_labels)
-    #     eval_predictions = vmap_labels(self.eval_predictions)
-    #     try:
-    #         cm = confusion_matrix(eval_labels, eval_predictions)
-    #     except:
-    #         cm = confusion_matrix(eval_labels, eval_labels.cpu().numpy())
-    #     self.diamond_collector["confusion matrix"] = cm
-    #     # Create confusion matrix plot
-    #     if plot:
-    #         fig, ax = plt.subplots(figsize=(8, 8))
-    #         sns.heatmap(cm, annot=True, fmt='d', cmap=plt.cm.Blues, ax=ax, cbar=False)
-    #         ax.set_xlabel('Predicted label')
-    #         ax.set_ylabel('True label')
-    #         ax.set_title('Confusion Matrix')
-    #         plt.show()
-    #     return cm
-
     def confusion_matrix(self, plot):
         if "class" not in self.images_data.problem_type:
             return None
-
         vmap_labels = np.vectorize(self.map_labels)
         eval_labels = vmap_labels(self.eval_labels)
-        eval_predictions = vmap_labels(self.eval_predictions)
-        try:
-            cm = confusion_matrix(eval_labels, eval_predictions)
-        except:
-            cm = confusion_matrix(eval_labels, eval_labels.cpu().numpy())
+        if torch.cuda.is_available():
+            eval_predictions = vmap_labels(self.eval_predictions.cpu().numpy())
+        else:
+            eval_predictions = vmap_labels(self.eval_predictions)
+
+        cm = confusion_matrix(eval_labels, eval_predictions)
 
         # Get the actual class names in sorted order
         sorted_class_names = sorted(self.label_dict, key=lambda x: self.label_dict[x])
@@ -118,23 +96,26 @@ class ImagePostModelAnalysis:
     def precision_recall(self):
         import warnings
         warnings.filterwarnings("ignore", message="invalid value encountered in divide")
-
         if "class" not in self.images_data.problem_type:
             return None
+
         vmap_labels = np.vectorize(self.map_labels)
         eval_labels = vmap_labels(self.eval_labels)
-        eval_predictions = vmap_labels(self.eval_predictions)
-        # Calculate precision and recall for each class
-        try:
-            precision = precision_score(eval_labels, eval_predictions, average=None)
-            recall = recall_score(eval_labels, eval_predictions, average=None)
-            accuracy = accuracy_score(eval_labels, eval_predictions)
-        except:
+        if torch.cuda.is_available():
+            eval_predictions = vmap_labels(self.eval_predictions.cpu().numpy())
+        else:
+            eval_predictions = vmap_labels(self.eval_predictions)
+
+        if torch.cuda.is_available():
             eval_pred = eval_predictions.cpu().numpy()
             precision = precision_score(eval_labels, eval_pred, average=None)
             recall = recall_score(eval_labels, eval_pred, average=None)
             accuracy = accuracy_score(eval_labels, eval_pred)
-
+        else:
+            precision = precision_score(eval_labels, eval_predictions, average=None)
+            recall = recall_score(eval_labels, eval_predictions, average=None)
+            accuracy = accuracy_score(eval_labels, eval_predictions)
+        # Calculate precision and recall for each class
         f1_score = 2 * (precision * recall) / (precision + recall)
 
         # Create a dataframe with the results
@@ -155,4 +136,7 @@ class ImagePostModelAnalysis:
         if self.image_post_model.is_confusion_matrix:
             self.confusion_matrix(plot=self.plot)
         if self.image_post_model.is_precision_recall:
-            self.precision_recall()
+            try:
+                self.precision_recall()
+            except:
+                pass

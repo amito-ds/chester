@@ -163,6 +163,7 @@ class ImageAugmentation:
         images_data = ImagesData(images=self.images, labels=self.labels,
                                  validation_prop=self.images_data.validation_prop,
                                  image_shape=self.images_data.image_shape,
-                                 label_dict=self.label_dict)
+                                 label_dict=self.label_dict,
+                                 for_model_training=self.images_data.for_model_training)
         self.images_data = images_data
         return images_data

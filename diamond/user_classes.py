@@ -9,12 +9,15 @@ import pandas as pd
 
 
 class ImagesData:
-    def __init__(self, images, labels, validation_prop, image_shape, label_dict):
+    def __init__(self, images, labels, validation_prop, image_shape, label_dict, for_model_training=True):
         self.images = images
+        self.raw_images = self.images
         self.labels = labels
         self.validation_prop = validation_prop
         self.image_shape = image_shape
         self.label_dict = label_dict
+        self.for_model_training = for_model_training
+        self.validate()
         self.problem_type = self.get_problem_type()
         # reshape
         # Convert to ndarray and reshape
@@ -22,17 +25,27 @@ class ImagesData:
             self.images = self.images.to_numpy()
         self.label_hanlder()
 
-        self.images = self.images.reshape((-1,) + self.image_shape)
         self.is_colored = True if len(self.image_shape) > 2 else False
-        if self.is_colored:
-            self.images_to_show = np.transpose(self.images, (0, 2, 3, 1))
-        else:
-            self.images_to_show = np.transpose(self.images, (0, 1, 2))
-        self.images_train, self.labels_train, self.images_val, self.labels_val = self.split()
+        self.images_to_show = None
+        self.image_to_show()
+        if self.for_model_training:
+            self.images_train, self.labels_train, self.images_val, self.labels_val = self.split()
         if self.is_colored:
             print("Colored image")
         else:
             print("Grayscale image")
+
+    def validate(self):
+        if self.labels is None:
+            pass
+        assert len(self.images) == len(self.labels), "# of Images must be == # of labels"
+
+    def image_to_show(self):
+        images = self.images.reshape((-1,) + self.image_shape)
+        if self.is_colored:
+            self.images_to_show = np.transpose(images, (0, 2, 3, 1))
+        else:
+            self.images_to_show = np.transpose(images, (0, 1, 2))
 
     def label_hanlder(self):
         if isinstance(self.labels, pd.DataFrame):
@@ -40,12 +53,21 @@ class ImagesData:
 
     def split(self):
         assert 0 <= self.validation_prop < 0.8, "validation proportion should be in range (0, 0.8)"
-        num_val = int(self.validation_prop * len(self.images))
-        indices = np.random.permutation(len(self.images))
-        val_indices, train_indices = indices[:num_val], indices[num_val:]
-        images_train, labels_train = self.images[train_indices], self.labels[train_indices]
-        images_val, labels_val = self.images[val_indices], self.labels[val_indices]
-        return images_train, labels_train, images_val, labels_val
+        try:
+            self.images = self.images.reshape((-1,) + self.image_shape)
+            num_val = int(self.validation_prop * len(self.images))
+            indices = np.random.permutation(len(self.images))
+            val_indices, train_indices = indices[:num_val], indices[num_val:]
+            images_train, labels_train = self.images[train_indices], self.labels[train_indices]
+            images_val, labels_val = self.images[val_indices], self.labels[val_indices]
+            return images_train, labels_train, images_val, labels_val
+        except:
+            num_val = int(self.validation_prop * len(self.images))
+            indices = np.random.permutation(len(self.images))
+            val_indices, train_indices = indices[:num_val], indices[num_val:]
+            images_train, labels_train = self.images[train_indices], self.labels[train_indices]
+            images_val, labels_val = self.images[val_indices], self.labels[val_indices]
+            return images_train, labels_train, images_val, labels_val
 
     def create_data_loaders(self, batch_size):
         train_dataset = TensorDataset(torch.from_numpy(self.images_train), torch.from_numpy(self.labels_train))
@@ -139,3 +161,10 @@ class ImagePostModelSpec:
         self.is_compare_models = is_compare_models
         self.is_confusion_matrix = is_confusion_matrix
         self.is_precision_recall = is_precision_recall
+
+
+class ImageDescriptionSpec:
+    def __init__(self, max_length=16, num_beams=4):
+        self.max_length = max_length
+        self.num_beams = num_beams
+        self.gen_kwargs = {"max_length": self.max_length, "num_beams": self.num_beams}
