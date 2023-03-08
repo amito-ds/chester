@@ -2,4 +2,5 @@
 .chester/run_manual_chester/manual_run.py
 *.csv
 *.png
+*.jpg
 ./chester/data/*

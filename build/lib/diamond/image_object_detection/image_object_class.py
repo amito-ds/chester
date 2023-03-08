@@ -44,7 +44,19 @@ class ImageObjectDetection:
         return bounding_boxes
 
     def plot_detected_objets(self):
-        pass
+        if self.plot:
+            # sample self.plot_sample images from self.images_to_show
+            for i in range(len(self.images_data.images_to_show)):
+                image = self.images_data.images_to_show[i]
+                bounding_boxes = self.diamond_collector["object detection"][i]
+                lables = [pred["label"] for pred in bounding_boxes]
+                # Draw bounding boxes and labels on original image
+                draw = ImageDraw.Draw(image)
+                for prediction in bounding_boxes:
+                    box = prediction["box"]
+                    label = prediction["label"]
+                    draw.rectangle([box["xmin"], box["ymin"], box["xmax"], box["ymax"]], outline="black", width=10)
+                    draw.text((box["xmin"], box["ymin"] - 20), label, fill="black")
 
     def run(self):
         self.diamond_collector["object detection"] = self.detect_objects()

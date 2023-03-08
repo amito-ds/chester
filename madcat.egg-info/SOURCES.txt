@@ -105,6 +105,7 @@ diamond/__init__.py
 diamond/manual_run.py
 diamond/manual_run2.py
 diamond/manual_run3.py
+diamond/manual_run4.py
 diamond/run.py
 diamond/user_classes.py
 diamond/utils.py
