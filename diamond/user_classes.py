@@ -41,11 +41,14 @@ class ImagesData:
         assert len(self.images) == len(self.labels), "# of Images must be == # of labels"
 
     def image_to_show(self):
-        images = self.images.reshape((-1,) + self.image_shape)
-        if self.is_colored:
-            self.images_to_show = np.transpose(images, (0, 2, 3, 1))
-        else:
-            self.images_to_show = np.transpose(images, (0, 1, 2))
+        try:
+            images = self.images.reshape((-1,) + self.image_shape)
+            if self.is_colored:
+                self.images_to_show = np.transpose(images, (0, 2, 3, 1))
+            else:
+                self.images_to_show = np.transpose(images, (0, 1, 2))
+        except:
+            pass
 
     def label_hanlder(self):
         if isinstance(self.labels, pd.DataFrame):
@@ -89,7 +92,11 @@ class ImagesData:
         return "classification"
 
     def plot_images(self):
-        num_images = len(self.images_to_show)
+        print("len images", len(self.images))
+        if self.images_to_show is None:
+            self.images_to_show = self.images
+        images = self.images_to_show
+        num_images = len(images)
         if num_images > 100:
             image_indices = range(num_images - 100, num_images)
         else:
@@ -102,7 +109,7 @@ class ImagesData:
         for i, index in enumerate(image_indices):
             row = i // num_cols
             col = i % num_cols
-            ax[row, col].imshow(self.images_to_show[index])
+            ax[row, col].imshow(images[index])
             ax[row, col].axis('off')
             if self.labels is not None:
                 ax[row, col].set_title(str(self.labels[index]))

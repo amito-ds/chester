@@ -47,27 +47,32 @@ class ImageObjectDetection:
 
     def plot_detected_objets(self):
         if self.plot:
-            for i in range(len(self.images_data.images_to_show)):
-                image = Image.fromarray(self.images_data.images_to_show[i])
-                bounding_boxes = self.diamond_collector["object detection"][i]
-                lables = []
-                # Draw bounding boxes and labels on original image
-                draw = ImageDraw.Draw(image)
-                for prediction in bounding_boxes:
-                    box = prediction["box"]
-                    label = prediction["label"]
-                    lables.append(label)
-                    draw.rectangle([box["xmin"], box["ymin"], box["xmax"], box["ymax"]], outline="black", width=10)
-                    draw.text((box["xmin"], box["ymin"] - 20), label, fill="black")
-                # Display image with bounding boxes
-                fig, ax = plt.subplots(figsize=(10, 10))
-                plt.title(lables)
-                plt.imshow(image)
-                plt.show()
-                plt.close()
-
-                if i > self.plot_sample:
-                    break
+            try:
+                for i in range(len(self.images_data.images_to_show)):
+                    try:
+                        image = Image.fromarray(self.images_data.images_to_show[i])
+                    except:
+                        image = self.images_data.images_to_show[i]
+                    bounding_boxes = self.diamond_collector["object detection"][i]
+                    lables = []
+                    # Draw bounding boxes and labels on original image
+                    draw = ImageDraw.Draw(image)
+                    for prediction in bounding_boxes:
+                        box = prediction["box"]
+                        label = prediction["label"]
+                        lables.append(label)
+                        draw.rectangle([box["xmin"], box["ymin"], box["xmax"], box["ymax"]], outline="black", width=12)
+                        draw.text((box["xmin"], box["ymin"] - 20), label, fill="black")
+                    # Display image with bounding boxes
+                    fig, ax = plt.subplots(figsize=(15, 11))
+                    plt.title(lables)
+                    plt.imshow(image)
+                    plt.show()
+                    plt.close()
+                    if i > self.plot_sample:
+                        return None
+            except Exception as e:
+                print(f"Error while running model: {e}")
 
     def run(self):
         self.diamond_collector["object detection"] = self.detect_objects()

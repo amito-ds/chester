@@ -28,12 +28,12 @@ for filename in os.listdir(data_dir):
 
 new_images = []
 img_size = (1024, 1024)
-for image in images:
-    img = image.resize(img_size)
-    img_array = np.array(img)
-    new_images.append(img_array)
+# for image in images:
+#     img = image.resize(img_size)
+#     img_array = np.array(img)
+#     new_images.append(img_array)
 
-new_images = np.array(new_images)
+# new_images = np.array(new_images)
 print(len(new_images))
 
 # labels = pd.read_csv(data_dir + "/labels.csv").fillna('UNK')['Category']
@@ -55,7 +55,7 @@ image_model_list = [
                dropout=0.7)]
 image_models = ImageModels(image_model_list=image_model_list)
 
-diamond_collector = run(images=new_images,
+diamond_collector = run(images=images,
                         image_shape=image_shape,
                         # labels=labels,
                         get_image_description=False,
