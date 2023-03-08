@@ -61,7 +61,7 @@ class ImageObjectDetection:
                         box = prediction["box"]
                         label = prediction["label"]
                         lables.append(label)
-                        draw.rectangle([box["xmin"], box["ymin"], box["xmax"], box["ymax"]], outline="black", width=12)
+                        draw.rectangle([box["xmin"], box["ymin"], box["xmax"], box["ymax"]], outline="red", width=12)
                         draw.text((box["xmin"], box["ymin"] - 20), label, fill="black")
                     # Display image with bounding boxes
                     fig, ax = plt.subplots(figsize=(15, 11))

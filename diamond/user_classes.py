@@ -91,16 +91,17 @@ class ImagesData:
     def get_problem_type():
         return "classification"
 
-    def plot_images(self):
-        print("len images", len(self.images))
+    def plot_images(self, plot_sample):
+        print("Total Images:", len(self.images))
         if self.images_to_show is None:
             self.images_to_show = self.images
         images = self.images_to_show
         num_images = len(images)
+        plot_sample = min(plot_sample, num_images)
         if num_images > 100:
-            image_indices = range(num_images - 100, num_images)
+            image_indices = range(num_images - plot_sample + 1, num_images)
         else:
-            image_indices = random.sample(range(num_images), num_images)
+            image_indices = random.sample(range(num_images), plot_sample)
 
         num_cols = int(math.floor(math.sqrt(len(image_indices))))
         num_rows = int(math.ceil(len(image_indices) / num_cols))

@@ -26,7 +26,7 @@ def run(images,
         ):
     # Tell a story
     story = """Welcome to MadCat, the comprehensive machine learning and data analysis solution!
-    \nThis module is designed to streamline the entire process image classification models, 
+    \nThis module is designed to streamline the entire process of video tasks,
     \nfrom start to finish.
     \nTo learn more about MadCat, visit https://github.com/amito-ds/chester.\n"""
     print(story)
@@ -36,6 +36,7 @@ def run(images,
         is_train_model = False
         labels = pd.Series([1] * len(images))
     # Image data
+    # TODO: convert in case you got a list of images!
     if type(images).__name__ == "DataFrame":
         images = images.values
 
@@ -49,8 +50,8 @@ def run(images,
     diamond_collector["image_data"] = image_data
     # plot
     if plot:
-        print("Sample Plot")
-        image_data.plot_images()
+        print("Plotting Sample of Images")
+        image_data.plot_images(plot_sample = plot_sample)
 
     # Image description
     if get_image_description:
@@ -80,7 +81,7 @@ def run(images,
         diamond_collector["augmented_image_data"] = image_data
         # plot
         if plot:
-            print("Updated Sample Plot")
+            print("Updated Plotting Sample of Images")
             image_data.plot_images()
 
     # Training
