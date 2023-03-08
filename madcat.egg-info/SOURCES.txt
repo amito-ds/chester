@@ -117,6 +117,8 @@ diamond/image_caption/image_caption_class.py
 diamond/image_caption/utils.py
 diamond/image_data_info/__init__.py
 diamond/image_data_info/image_info.py
+diamond/image_object_detection/__init__.py
+diamond/image_object_detection/image_object_class.py
 diamond/model_training/__init__.py
 diamond/model_training/best_model.py
 diamond/model_training/model_results.py
