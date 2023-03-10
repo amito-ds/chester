@@ -3,29 +3,31 @@ import math
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
+from PIL import Image
 from torch.utils.data import TensorDataset, DataLoader
 from tqdm import tqdm
 import pandas as pd
+
+from diamond.image_caption.utils import load_images_from_numpy
 
 
 class ImagesData:
     def __init__(self, images, labels, validation_prop, image_shape, label_dict, for_model_training=True):
         self.images = images
         self.raw_images = self.images
+        self.raw_image = None
+        self.image_shape = image_shape
+        # print("image shape origin", self.image_shape)
+        self.is_colored = True if len(self.image_shape) > 2 else False
+
+        self.format_images()  # format images
         self.labels = labels
         self.validation_prop = validation_prop
-        self.image_shape = image_shape
         self.label_dict = label_dict
         self.for_model_training = for_model_training
-        self.validate()
+        self.validate()  # validation
         self.problem_type = self.get_problem_type()
-        # reshape
-        # Convert to ndarray and reshape
-        if isinstance(self.images, pd.DataFrame):
-            self.images = self.images.to_numpy()
         self.label_hanlder()
-
-        self.is_colored = True if len(self.image_shape) > 2 else False
         self.images_to_show = None
         self.image_to_show()
         if self.for_model_training:
@@ -34,6 +36,70 @@ class ImagesData:
             print("Colored image")
         else:
             print("Grayscale image")
+
+    def format_images(self):
+        print("Formatting images of type", type(self.images))
+        np_images = []
+        image_list = []
+
+        if isinstance(self.images, pd.DataFrame):
+            # Convert DataFrame to numpy array
+            np_images = self.images.to_numpy()
+
+            # Convert each numpy array to PIL Image object and add to list
+            for img_arr in np_images:
+                img = Image.fromarray(img_arr)
+                image_list.append(img)
+
+        elif isinstance(self.images, list):
+            # Loop through each image and convert to numpy array and PIL Image object
+            for idx, image in enumerate(self.images):
+                if isinstance(image, str):
+                    # if image is a file path, open it using PIL and convert to numpy array
+                    with Image.open(image) as img:
+                        img_array = np.array(img)
+                elif isinstance(image, np.ndarray):
+                    # if image is a numpy array, use it directly
+                    img_array = image
+                else:
+                    try:
+                        img_array = np.array(image)
+                    except:
+                        img_array = image
+
+                # Append PIL Image object and numpy array to lists
+                image_list.append(Image.fromarray(img_array))
+                np_images.append(img_array)
+
+        elif isinstance(self.images, np.ndarray):
+            # Convert numpy array to PIL Image object
+            for img_arr in self.images:
+                if self.is_colored:
+                    mode = 'RGB'
+                    height, width = sorted(self.image_shape, reverse=True)[:2]
+                    img_arr = img_arr.reshape((height, width, 3))
+                else:
+                    mode = 'L'  # L stands for grayscale mode
+                    img_arr = img_arr.reshape(self.image_shape)
+                img = Image.fromarray(img_arr, mode=mode)
+                image_list.append(img)
+                np_images.append(img_arr)
+        else:
+            raise TypeError("Unsupported image format:", type(self.images))
+
+        # Update the instance variables with the formatted image data
+        self.images = np.array(np_images)
+        self.raw_image = image_list[0]
+        self.raw_images = image_list
+        # print("XXXX ***** ===> Formatted report:")
+        # print("raw images type:")
+        # print(type(self.raw_images))
+        # print(type(self.raw_images[0]))
+        try:
+            print(self.raw_images[0].size)
+        except:
+            pass
+        # TODO: validate format
 
     def validate(self):
         if self.labels is None:
@@ -55,28 +121,42 @@ class ImagesData:
             self.labels = self.labels.to_numpy()
 
     def split(self):
-        assert 0 <= self.validation_prop < 0.8, "validation proportion should be in range (0, 0.8)"
-        try:
-            self.images = self.images.reshape((-1,) + self.image_shape)
-            num_val = int(self.validation_prop * len(self.images))
-            indices = np.random.permutation(len(self.images))
-            val_indices, train_indices = indices[:num_val], indices[num_val:]
-            images_train, labels_train = self.images[train_indices], self.labels[train_indices]
-            images_val, labels_val = self.images[val_indices], self.labels[val_indices]
-            return images_train, labels_train, images_val, labels_val
-        except:
-            num_val = int(self.validation_prop * len(self.images))
-            indices = np.random.permutation(len(self.images))
-            val_indices, train_indices = indices[:num_val], indices[num_val:]
-            images_train, labels_train = self.images[train_indices], self.labels[train_indices]
-            images_val, labels_val = self.images[val_indices], self.labels[val_indices]
-            return images_train, labels_train, images_val, labels_val
+        assert 0 <= self.validation_prop < 0.5, "validation proportion should be in range (0, 0.5)"
+        print("Before splitting, these are the shapes")
+        print("images:", self.images.shape)
+
+        num_images = len(self.images)
+        num_val_images = int(num_images * self.validation_prop)
+        num_train_images = num_images - num_val_images
+
+        # Shuffle the images and labels before splitting
+        shuffled_indices = np.random.permutation(num_images)
+        shuffled_images = np.array(self.images)[shuffled_indices]
+        shuffled_labels = self.labels[shuffled_indices]
+
+        # Split the images and labels into training and validation sets
+        train_images = shuffled_images[:num_train_images]
+        train_labels = shuffled_labels[:num_train_images]
+        val_images = shuffled_images[num_train_images:]
+        val_labels = shuffled_labels[num_train_images:]
+
+        # Convert to correct shape
+        train_images = train_images.reshape((-1,) + self.image_shape)
+        val_images = val_images.reshape((-1,) + self.image_shape)
+
+        print("After splitting, these are the shapes")
+        print("train_images:", train_images.shape)
+        print("val_images:", val_images.shape)
+
+        return train_images, train_labels, val_images, val_labels
 
     def create_data_loaders(self, batch_size):
-        train_dataset = TensorDataset(torch.from_numpy(self.images_train), torch.from_numpy(self.labels_train))
+        labels_train = np.array(self.labels_train)
+        train_dataset = TensorDataset(torch.from_numpy(self.images_train), torch.from_numpy(labels_train))
         train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 
-        val_dataset = TensorDataset(torch.from_numpy(self.images_val), torch.from_numpy(self.labels_val))
+        labels_val = np.array(self.labels_val)
+        val_dataset = TensorDataset(torch.from_numpy(self.images_val), torch.from_numpy(labels_val))
         val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
 
         # add tqdm progress bar to train_loader

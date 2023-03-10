@@ -36,6 +36,7 @@ def run(video,
 
     diamond_collector = diamond_run.run(images=video_data.images,
                                         image_shape=image_shape,
+                                        plot_sample=plot_sample,
                                         get_image_description=get_frames_description,
                                         get_object_detection=detect_frame_objects,
                                         is_augment_data=False, is_post_model_analysis=False, is_train_model=False,

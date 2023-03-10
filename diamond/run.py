@@ -1,6 +1,7 @@
 import random
 import numpy as np
 from diamond.data_augmentation.augmentation import ImageAugmentation
+from diamond.face_detection.face_image_ import ImageFaceDetection
 from diamond.image_caption.image_caption_class import ImageDescription
 from diamond.image_data_info.image_info import ImageInfo
 from diamond.image_object_detection.image_object_class import ImageObjectDetection
@@ -19,6 +20,7 @@ def run(images,
         validation_prop=0.3,
         get_image_description=False, image_description_spec: ImageDescriptionSpec = None,
         get_object_detection=False,
+        detect_faces=False,
         is_augment_data=True, image_augmentation_info=None,
         is_train_model=True, image_models=None,
         is_post_model_analysis=True, image_post_model: ImagePostModelSpec = None,
@@ -51,7 +53,7 @@ def run(images,
     # plot
     if plot:
         print("Plotting Sample of Images")
-        image_data.plot_images(plot_sample = plot_sample)
+        image_data.plot_images(plot_sample=plot_sample)
 
     # Image description
     if get_image_description:
@@ -63,10 +65,19 @@ def run(images,
             image_description_spec=image_description_spec,
             diamond_collector=diamond_collector,
             plot=plot).run()
-
+    # Object detection
     if get_object_detection:
         print("====> Detecting Objects in the Images")
         ImageObjectDetection(
+            images_data=image_data,
+            diamond_collector=diamond_collector,
+            plot_sample=plot_sample,
+            plot=plot).run()
+
+    # Face detection
+    if detect_faces:
+        print("====> Detecting Faces in the Images")
+        ImageFaceDetection(
             images_data=image_data,
             diamond_collector=diamond_collector,
             plot_sample=plot_sample,
@@ -82,7 +93,7 @@ def run(images,
         # plot
         if plot:
             print("Updated Plotting Sample of Images")
-            image_data.plot_images()
+            image_data.plot_images(plot_sample=plot_sample)
 
     # Training
     if not is_train_model:

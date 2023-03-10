@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 from diamond.user_classes import ImagesData, ImagesAugmentationInfo
 from scipy.ndimage import rotate, zoom
 
+import math
+
 
 class ImageAugmentation:
     def __init__(self, images_data: ImagesData, image_augmentation_info: ImagesAugmentationInfo):
@@ -21,41 +23,42 @@ class ImageAugmentation:
     def rotate_image(self):
         # Sample images to rotate
         num_images = len(self.images)
-        num_to_rotate = int(num_images * self.aug_prop)
+        num_to_rotate = math.ceil(num_images * self.aug_prop)
         image_indices = random.choices(range(num_images), k=num_to_rotate)
+
         # Apply rotation to sampled images
-        first_image = self.images[0]
         if self.is_colored:
-            rotated_images = np.tile(first_image, reps=(num_to_rotate, 1, 1, 1))
+            rotated_images = []
             for i, index in enumerate(image_indices):
                 image = self.images[index]
-                image = np.transpose(image, (1, 2, 0))
+                # image = np.transpose(image, (1, 2, 0))
                 angle = random.randint(-180, 180)
                 rotated = rotate(image, angle, reshape=True)
-
-                resized = np.transpose(
-                    cv2.resize(rotated, (image.shape[1], image.shape[0]), interpolation=cv2.INTER_LINEAR),
-                    (2, 0, 1))
-                rotated_images[i] = resized
-
+                resized_rotated = cv2.resize(rotated, dsize=image.shape[:2][::-1])
+                rotated_images.append(resized_rotated)
             # Concatenate rotated images with original images
-            self.images = np.concatenate((self.images, rotated_images[:len(image_indices)]), axis=0)
+            try:
+                self.images = np.concatenate((self.images, rotated_images), axis=0)
+            except:
+                self.images = np.concatenate((self.images, rotated_images))
             self.labels = np.concatenate((self.labels, self.labels[image_indices]), axis=0)
             # Check that the number of images and labels is the same
             if len(self.images) != len(self.labels):
                 raise ValueError(f"Number of images and labels must be the same, {len(self.images), len(self.labels)}")
         else:
-            rotated_images = np.tile(first_image, reps=(num_to_rotate, 1, 1))
+            rotated_images = []
             for i, index in enumerate(image_indices):
                 image = self.images[index]
                 angle = random.randint(-180, 180)
                 rotated = rotate(image, angle, reshape=True)
-                resized = cv2.resize(rotated, (image.shape[1], image.shape[0]), interpolation=cv2.INTER_LINEAR)
-                rotated_images[i] = resized
+                rotated = cv2.resize(rotated, (image.shape[1], image.shape[0]), interpolation=cv2.INTER_LINEAR)
+                rotated_images.append(rotated)
 
             # Concatenate rotated images with original images
-            self.images = np.concatenate(
-                (self.images, rotated_images[:len(image_indices)].reshape(-1, *self.image_shape)), axis=0)
+            try:
+                self.images = np.concatenate((self.images, rotated_images), axis=0)
+            except:
+                self.images = np.concatenate((self.images, rotated_images))
             self.labels = np.concatenate((self.labels, self.labels[image_indices]), axis=0)
             # Check that the number of images and labels is the same
             if len(self.images) != len(self.labels):
@@ -66,7 +69,10 @@ class ImageAugmentation:
     def zoom_image(self):
         if self.is_colored:
             # Retrieve size and number of channels of the first image in the data
-            orig_height, orig_width, *_ = self.image_shape
+            try:
+                orig_height, orig_width = self.image_shape
+            except:
+                _, orig_height, orig_width = self.image_shape
             # Sample images to zoom
             num_images = len(self.images)
             num_to_zoom = int(num_images * self.aug_prop)
@@ -77,7 +83,8 @@ class ImageAugmentation:
             for i, index in enumerate(image_indices):
                 image = self.images[index]
                 # Resize the image while maintaining the aspect ratio
-                zoomed = zoom(image, (random.uniform(0.2, 1.8), random.uniform(0.2, 1.8), 1))
+                eps = 0.2
+                zoomed = zoom(image, (random.uniform(eps, 2 - eps), random.uniform(eps, 2 - eps), 1))
                 # Crop or pad the zoomed image to maintain the original shape
                 new_height, new_width, _ = zoomed.shape
                 if new_height > orig_height:
@@ -101,6 +108,7 @@ class ImageAugmentation:
                         zoomed = np.pad(zoomed, ((0, 0), (pad_left, pad_right)), 'constant')
                 # Convert the image to the original data type
                 zoomed = zoomed.astype(image.dtype)
+                zoomed = cv2.resize(zoomed, dsize=image.shape[:2][::-1])
                 zoomed_images[i] = zoomed
 
             # Concatenate zoomed images with original images

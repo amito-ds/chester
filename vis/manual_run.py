@@ -14,13 +14,9 @@ data_dir = '/Users/amitosi/PycharmProjects/chester/chester/data/videos/productio
 # Create a video capture object
 cap = cv2.VideoCapture(data_dir)
 
-# # define image size
+# Define image size
 image_shape = (3, 1024, 1024)
 
 vis_collector = run(video=cap,
-                    frame_per_second=5,
-                    image_shape=image_shape,
-                    plot_sample=16,
-                    get_frames_description=True,
-                    detect_frame_objects=True,
-                    plot=True)
+                    frame_per_second=5, image_shape=image_shape, plot_sample=16,
+                    get_frames_description=True, detect_frame_objects=True, plot=False)

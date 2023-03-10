@@ -4,7 +4,7 @@ from matplotlib import pyplot as plt
 
 from diamond.image_caption.utils import load_images_from_numpy
 from diamond.user_classes import ImagesData, ImageDescriptionSpec
-
+import numpy as np
 import os
 from transformers import VisionEncoderDecoderModel, ViTImageProcessor, AutoTokenizer
 from transformers import pipeline
@@ -25,22 +25,15 @@ class ImageObjectDetection:
         self.model = None
         # TODO: later add support for labels (labels VS description?)
         self.diamond_collector = {} if diamond_collector is None else diamond_collector
-        self.formatted_images = None
-        self.format_images()
+        self.images = self.images_data.raw_images
         self.load_model()
 
     def load_model(self):
         self.model = get_image_object_detection_model()
 
-    def format_images(self):
-        print("=>Formatting images...")
-        self.formatted_images = load_images_from_numpy(self.images_data.raw_images)
-
     def detect_objects(self):
         bounding_boxes = []
-        for image in self.formatted_images:
-            # TODO: make sure the right format...
-            # test on collab first
+        for image in self.images:
             bounding_box = self.model(image)
             bounding_boxes.append(bounding_box)
         return bounding_boxes
