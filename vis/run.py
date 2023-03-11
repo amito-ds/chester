@@ -17,6 +17,7 @@ def run(video,
         plot=True,
         get_frames_description=False,
         detect_frame_objects=False,
+        detect_faces=False,
         plot_sample=16
         ):
     # Tell a story
@@ -39,6 +40,7 @@ def run(video,
                                         plot_sample=plot_sample,
                                         get_image_description=get_frames_description,
                                         get_object_detection=detect_frame_objects,
+                                        detect_faces=detect_faces,
                                         is_augment_data=False, is_post_model_analysis=False, is_train_model=False,
                                         plot=plot)
 

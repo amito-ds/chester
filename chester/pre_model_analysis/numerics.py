@@ -83,10 +83,14 @@ class NumericPreModelAnalysis:
             # ax2.set_title("Visualizing Numerical Features and Target with t-SNE (3D)")
             ax1.legend(handles=legend_handles)
         else:  # Multi-class classification
+            target = target.astype(str)
             target_classes = target.unique()
             color_map = {target_class: color for target_class, color in
                          zip(target_classes, plt.cm.rainbow(np.linspace(0, 1, len(target_classes))))}
-            colors = target.apply(lambda x: color_map[x])
+            try:
+                colors = target.apply(lambda x: color_map[x])
+            except:
+                colors = target.apply(lambda x: color_map[str(x)])
             plt.scatter(X_tsne_2d[:, 0], X_tsne_2d[:, 1], c=colors)
             # ax2.scatter(X_tsne_3d[:, 0], X_tsne_3d[:, 1], X_tsne_3d[:, 2], c=colors)
             legend_handles = [Patch(color=color_map[target_class], label=target_class) for target_class in
@@ -272,8 +276,10 @@ class NumericPreModelAnalysis:
                 if i < dim * dim:
                     row = i // dim
                     col = i % dim
-                    ax = axs[row, col]
-
+                    try:
+                        ax = axs[row, col]
+                    except:
+                        ax = axs
                     col = top_feature_names[i]
                     data_col = self.data[[col]]
                     num_groups = min(floor(self.data_info.rows / 20), 10)

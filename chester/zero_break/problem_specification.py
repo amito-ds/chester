@@ -99,8 +99,11 @@ class DataInfo:
                 for value in non_missing_values:
                     if is_date(value):
                         count += 1
-                if count / non_missing_values.shape[0] >= 0.9:
-                    time_cols.append(col)
+                try:
+                    if count / non_missing_values.shape[0] >= 0.9:
+                        time_cols.append(col)
+                except:
+                    pass
         return time_cols
 
     def _determine_numerical_cols(self):

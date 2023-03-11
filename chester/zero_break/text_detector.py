@@ -4,8 +4,11 @@ import pandas as pd
 def determine_if_text_or_categorical_column(column):
     # Check if column is a string or categorical data type
     if column.dtype == 'object' or column.dtype.name == 'category':
+        # less than 20 unique values -> not a text column
+        if len(column.unique()) < 20:
+            return False, True
         # Check if column contains more than 50% unique values
-        if len(column.unique()) > 0.5 * len(column):
+        elif len(column.unique()) > 0.5 * len(column):
             return True, False  # Text column
         else:
             return False, True  # Categorical column

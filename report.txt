@@ -4,62 +4,248 @@ Data information:
 Data Information Report
 Problem Type: Multiclass classification
 Target Variable: target
-Feature Types: {'numeric': [], 'boolean': [], 'text': ['text'], 'categorical': [], 'time': [], 'id': []}
+Feature Types: {'numeric': ['age', 'TSH', 'T3', 'TT4', 'T4U', 'FTI'], 'boolean': [], 'text': [], 'categorical': ['sex', 'on_thyroxine', 'query_on_thyroxine', 'on_antithyroid_medication', 'sick', 'pregnant', 'thyroid_surgery', 'I131_treatment', 'query_hypothyroid', 'query_hyperthyroid', 'lithium', 'goitre', 'tumor', 'hypopituitary', 'psych', 'TSH_measured', 'T3_measured', 'TT4_measured', 'T4U_measured', 'FTI_measured', 'TBG_measured', 'referral_source'], 'time': [], 'id': []}
 Loss Function: Cross entropy
 Evaluation Metrics: ['Accuracy', 'Precision', 'Recall', 'F1']
-Optional Models: {'catboost', 'logistic', 'baseline-mode'}
+Optional Models: {'catboost', 'baseline-mode', 'logistic'}
 
 
-Cleaning and preprocessing text column
-The following cleaning steps will be applied to clean column 'text': Removing punctuation, Removing numbers, Removing whitespaces, Removing empty lines, Lowercasing text, Removing stopwords, Removing accented characters, Removing special characters, Removing html tags.
-text column preprocessing
-The following preprocessing steps will be applied to the column 'text': Stemming text, Tokenizing text.
 features engineering process for the data:
-Extracting embedding
-First, Extracting Corex topic model embeddings with dimension 2
-Next, Extracting TF-IDF embeddings with dimension 100
-Then, Extracting bag-of-words embeddings with dimension 100
-Lastly, All embeddings have been concatenated
 features statistics for the data. Analyzed by groups (text, numeric, categorical) if exists:
 
 Numerical Feature statistics:
 
 Categorical Feature statistics:
-Text Statistics:
-Extracting Embedding
-** Analyzing text Column
-Data quality stats:
-Number of rows with missing data: 0.0
-Number of unique words: 1952
-Average type-token ratio: 0.96
-Median type-token ratio: 1.00
-Average number of words per text: 9.79
-Median number of words per text: 7.00
-Average number of sentences per text: 1.00
-Median number of sentences per text: 1.00
-Average length of text: 62.17
-Median length of text: 44.00
+Feature stats:
+                          col # unique # missing    Distribution Sample  \
+9          query_on_thyroxine        2         0   f: 99%, t: 1%   t, f   
+17               FTI_measured        2         0  t: 90%, f: 10%   t, f   
+21                       sick        2         0   f: 96%, t: 4%   f, t   
+19                     goitre        2         0   f: 99%, t: 1%   f, t   
+12                      psych        2         0   f: 95%, t: 5%   t, f   
+7   on_antithyroid_medication        2         0   f: 99%, t: 1%   t, f   
+14                   pregnant        2         0   f: 99%, t: 1%   t, f   
+10               TBG_measured        1         0         f: 100%      f   
+13               on_thyroxine        2         0  f: 88%, t: 12%   t, f   
+0                         sex        2       150  F: 68%, M: 32%   F, M   
 
-Count word frequency for basic text analysis.
-Report shows most common words, giving insight into text topic and content:
-[('lady', 168), ('seeks', 128), ('yo', 110), ('jack', 94), ('male', 72), ('good', 64), ('build', 63), ('looking', 63), ('arthur', 62), ('attractive', 61), ('fun', 58), ('seeking', 54), ('rship', 53), ('well', 51), ('like', 51), ('guy', 50), ('ns', 49), ('slim', 49), ('relationship', 45), ('honest', 44), ('sparrow', 44), ('movies', 44), ('married', 43), ('would', 41), ('times', 41), ('fit', 40), ('fship', 40), ('man', 39), ('age', 39), ('dining', 39), ('music', 36), ('life', 35), ('friendship', 34), ('oh', 34), ('enjoy', 34), ('ft', 33), ('employed', 32), ('likes', 32), ('caring', 31), ('turner', 30), ('open', 30), ('interests', 30), ('female', 30), ('drinker', 29), ('single', 29), ('meet', 29), ('gsoh', 29), ('travel', 28), ('black', 28), ('beach', 28), ('tall', 27), ('living', 27), ('children', 27), ('poss', 26), ('late', 26), ('elizabeth', 25), ('going', 25), ('nonsmoker', 25), ('social', 25), ('woman', 25), ('home', 25), ('away', 25), ('long', 24), ('must', 24), ('sd', 24), ('similar', 24), ('hello', 24), ('knights', 23), ('gibbs', 22), ('wltm', 22), ('enjoys', 22), ('love', 21), ('non', 20), ('galahad', 20), ('sports', 20), ('genuine', 20), ('medium', 20), ('quiet', 20), ('healthy', 19), ('discreet', 19), ('gent', 19), ('knight', 19), ('guard', 19), ('sexy', 19), ('one', 19), ('dont', 19), ('scene', 19), ('villager', 19), ('mid', 19), ('father', 18), ('want', 18), ('robin', 18), ('sir', 18), ('bedevere', 17), ('secure', 17), ('smoker', 17), ('norrington', 17), ('nights', 17), ('prof', 17), ('swann', 16)]
-Sentiment Statistics
-+--------------------------------+
-|      Sentiment Statistics      |
-+-----------+-------+------------+
-| Sentiment | Count | Percentage |
-+-----------+-------+------------+
-|  Positive |  356  |   39.6%    |
-|  Negative |  109  |   12.1%    |
-|  Neutral  |  435  |   48.3%    |
-+-----------+-------+------------+
+   Top 5 values coverage  
+9                   100%  
+17                  100%  
+21                  100%  
+19                  100%  
+12                  100%  
+7                   100%  
+14                  100%  
+10                  100%  
+13                  100%  
+0                   100%  
+
+Model results compared - showing the best out of each type after CV & HP tuning: 
++-------+-------------------------+--------------------+--------------------+--------------------+--------------------+
+|  type |          model          |   accuracy_score   |  precision_score   |    recall_score    |      f1_score      |
++-------+-------------------------+--------------------+--------------------+--------------------+--------------------+
+|  test |      BaselineModel      | 0.6207867494824016 |        0.0         |        0.0         |        0.0         |
+|  test |      CatboostModel      | 0.9511387163561077 | 0.9104315184749968 | 0.9691391941391941 | 0.9384861581706083 |
+|  test | LogisticRegressionModel | 0.9397101449275362 | 0.933393665158371  | 0.9075507825507826 | 0.9199745840762346 |
+| train |      BaselineModel      | 0.6206957015033134 |        0.0         |        0.0         |        0.0         |
+| train |      CatboostModel      | 0.9554524122637374 | 0.9146362983330821 | 0.9733022077361699 | 0.943046811020005  |
+| train | LogisticRegressionModel | 0.9985637296614321 |        1.0         | 0.9963463463463462 | 0.9981647900662949 |
++-------+-------------------------+--------------------+--------------------+--------------------+--------------------+
 
 
-Corex topic analysis:
-	Topic 1: nonsmoker social drinker, domine, professional business male, clean cut intelligent, open, personality, elegant articulate seeks, lord, crew, sunsets candlelight
-	Topic 2: wont, prefer, medium lady friendship, peninsula, seeking affectionate, love, living, great, quiet nights, children enjoy
-	Key sentences out of based on LSA algorithm: ['jack ducks back forth behind sides large post norrington points pistol jack.', 'chaplain ill take chances sir.', 'arthur black knight aaah hiyaah etc arthur chops black knights left arm.', 'bridgekeeper right go.', 'sword thrown ragetti time.'] 
+Post model analysis - analyzing results of the chosen model: 
+confusion matrix on the test set
+[[ 1  2]
+ [ 3 25]]
 
-popular terms extraction:
-[('active years ft slim build nonsmoker social', 54.0), ('monks chanting pie iesu domine dona eis', 48.0), ('monks chanting pie iesu domine dona eis', 48.0), ('prof kind generous great listener enjoys fun', 48.0), ('greekaust male early slim build nonsmoker enjoys', 44.0), ('supporting happy nat fun loving likes cooking', 44.0), ('preserved prof sgle prince charming living cityinner', 42.0), ('male late aust single tall prof interests', 40.0), ('early honest caring likes fishing animals golf', 38.0), ('bit scared mashed pulp eyes gouged elbows', 38.0)]
+** model pre analysis report:
+Top 100 Feature importance (in %, 100 = the most important one):
+{'index_physician-fee-freeze': 100, 'index_adoption-of-the-budget-resolution': 11, 'index_synfuels-corporation-cutback': 10, 'index_el-salvador-aid': 9, 'index_anti-satellite-test-ban': 3, 'index_education-spending': 2, 'index_water-project-cost-sharing': 2, 'index_mx-missile': 2, 'index_export-administration-act-south-africa': 2, 'index_superfund-right-to-sue': 2, 'index_aid-to-nicaraguan-contras': 1, 'index_duty-free-exports': 1, 'index_religious-groups-in-schools': 1, 'index_crime': 0, 'index_handicapped-infants': 0, 'index_immigration': 0}
+
+Feature stats:
+            col # unique # missing                       Distribution  \
+0  target_label        4         0  negative: 92%, compensated_hyp...   
+
+                              Sample Top 5 values coverage  
+0  secondary_hypothyroid, compens...                  100%  
+
+values counts for categorical target to predict:
+negative                   3481
+compensated_hypothyroid     194
+primary_hypothyroid          95
+secondary_hypothyroid         2
+Name: target, dtype: int64
+
+confusion matrix on the test set
+[[50  1]
+ [ 2 34]]
+
+Learning curve by training examples
++-------------+--------------------+----------------------+--------------------+---------------------+
+| train_sizes | train_scores_mean  |   train_scores_std   |  test_scores_mean  |   test_scores_std   |
++-------------+--------------------+----------------------+--------------------+---------------------+
+|      9      |        1.0         |         0.0          |       0.751        | 0.12395160345876934 |
+|      32     |        1.0         |         0.0          | 0.8233333333333335 |  0.1085254706406647 |
+|      54     | 0.9851851851851852 | 0.018144368465060606 | 0.7910000000000001 | 0.06755738301621812 |
+|      76     | 0.9789473684210526 | 0.013418472404191532 | 0.7913333333333334 | 0.09842312284778973 |
+|      99     | 0.983838383838384  | 0.017611712903194646 |       0.791        | 0.07644605941446554 |
++-------------+--------------------+----------------------+--------------------+---------------------+
+
+
+Boostrap metrics, sample 20 results:
++----------------+--------------------+--------------------+--------------------+
+| accuracy_score |  precision_score   |    recall_score    |      f1_score      |
++----------------+--------------------+--------------------+--------------------+
+|     0.855      | 0.9111111111111111 | 0.9265536723163842 | 0.9187675070028011 |
+|     0.875      | 0.9491525423728814 | 0.9130434782608695 | 0.9307479224376731 |
+|     0.865      | 0.9532163742690059 | 0.8956043956043956 | 0.9235127478753542 |
+|      0.83      | 0.9252873563218391 | 0.8846153846153846 | 0.9044943820224719 |
+|     0.845      | 0.9352941176470588 | 0.888268156424581  | 0.9111747851002865 |
+|     0.805      | 0.9075144508670521 | 0.8722222222222222 | 0.8895184135977338 |
+|      0.83      | 0.9252873563218391 | 0.8846153846153846 | 0.9044943820224719 |
+|      0.9       | 0.9542857142857143 | 0.9329608938547486 | 0.943502824858757  |
+|      0.82      | 0.888268156424581  | 0.9085714285714286 | 0.8983050847457626 |
+|      0.85      | 0.9234972677595629 | 0.9135135135135135 | 0.9184782608695653 |
+|     0.815      | 0.9272727272727272 | 0.8595505617977528 | 0.892128279883382  |
+|     0.825      | 0.9017341040462428 | 0.896551724137931  | 0.899135446685879  |
+|     0.875      | 0.9597701149425287 | 0.9027027027027027 | 0.9303621169916434 |
+|      0.85      | 0.9195402298850575 | 0.9090909090909091 | 0.9142857142857144 |
+|      0.81      | 0.9137931034482759 | 0.8736263736263736 | 0.8932584269662922 |
+|      0.82      | 0.9137931034482759 | 0.8833333333333333 | 0.8983050847457628 |
+|      0.84      | 0.930635838150289  | 0.8895027624309392 | 0.9096045197740112 |
+|     0.825      | 0.9520958083832335 | 0.8548387096774194 | 0.9008498583569404 |
+|      0.87      | 0.9597701149425287 | 0.8978494623655914 | 0.9277777777777778 |
+|     0.855      | 0.9162011173184358 | 0.9213483146067416 | 0.9187675070028011 |
++----------------+--------------------+--------------------+--------------------+
+
+Trying to find weaknesses in the model by training models on the error:
+Most important features by catboost:
++-----------------------+------------+
+|        Feature        | Importance |
++-----------------------+------------+
+|      num_ALBUMIN      |    31.0    |
+|    index_LIVER_BIG    |    15.0    |
+|     index_STEROID     |    9.0     |
+|     index_MALAISE     |    9.0     |
+|    index_LIVER_FIRM   |    7.0     |
+|     num_BILIRUBIN     |    6.0     |
+|     index_VARICES     |    6.0     |
+|     index_ANOREXIA    |    3.0     |
+|     index_SPIDERS     |    3.0     |
+|        num_AGE        |    2.0     |
+|     index_PROTIME     |    2.0     |
+|        num_SGOT       |    2.0     |
+|   num_ALK_PHOSPHATE   |    2.0     |
+| index_SPLEEN_PALPABLE |    1.0     |
+|     index_FATIGUE     |    1.0     |
+|    index_HISTOLOGY    |    1.0     |
+|     index_ASCITES     |    0.0     |
+|       index_SEX       |    0.0     |
+|    index_ANTIVIRALS   |    0.0     |
++-----------------------+------------+
+
+Print of tree to look for potential segments with high error (use with caution)
+|--- index_ANTIVIRALS_1 <= 0.50
+|   |--- value: [0.45]
+|--- index_ANTIVIRALS_1 >  0.50
+|   |--- value: [0.00]
+
+
+top 50 with lowest partial pvalue for categorical feat based on chi square:
+[('TSH_measured', 1.8045989284348652e-07), ('query_hypothyroid', 2.762677152071162e-07), ('on_thyroxine', 1.309561157263055e-06), ('TT4_measured', 0.010895593541200675), ('sex', 0.014951014231503076), ('referral_source', 0.015340301869871195), ('T3_measured', 0.04592343997720127), ('sick', 0.13493875417449608), ('psych', 0.14166741470304262), ('T4U_measured', 0.18398333913709555), ('FTI_measured', 0.18694524741422663), ('pregnant', 0.21284712498549138), ('thyroid_surgery', 0.35894992401511305), ('goitre', 0.41240542615514175), ('on_antithyroid_medication', 0.5877381501130177), ('query_hyperthyroid', 0.622444274113259), ('query_on_thyroxine', 0.7075189375638059), ('lithium', 0.9232146968499925), ('tumor', 0.9473648573127396), ('I131_treatment', 0.9748685583549124), ('hypopituitary', 0.9937279937363492), ('TBG_measured', 1.0)]
+
+Learning curve by training examples
++-------------+--------------------+----------------------+--------------------+----------------------+
+| train_sizes | train_scores_mean  |   train_scores_std   |  test_scores_mean  |   test_scores_std    |
++-------------+--------------------+----------------------+--------------------+----------------------+
+|      27     | 0.9925925925925926 | 0.014814814814814836 | 0.8880745341614906 | 0.04615103278632361  |
+|      90     | 0.9711111111111113 | 0.01507184440694503  | 0.9511387163561077 | 0.023347208375627464 |
+|     152     | 0.9592105263157894 | 0.010526315789473708 | 0.9539958592132505 | 0.02118464703414464  |
+|     215     | 0.9627906976744185 | 0.005095093558187576 | 0.9539958592132505 | 0.02118464703414464  |
+|     278     | 0.9597122302158272 | 0.004772122000511367 | 0.9511387163561077 | 0.023347208375627464 |
++-------------+--------------------+----------------------+--------------------+----------------------+
+
+
+Boostrap metrics, sample 20 results:
++----------------+--------------------+--------------------+--------------------+
+| accuracy_score |  precision_score   |    recall_score    |      f1_score      |
++----------------+--------------------+--------------------+--------------------+
+|     0.955      |        1.0         | 0.8977272727272727 | 0.9461077844311377 |
+|      0.96      | 0.9574468085106383 | 0.9574468085106383 | 0.9574468085106385 |
+|     0.985      |        1.0         | 0.967391304347826  | 0.9834254143646408 |
+|     0.975      | 0.9782608695652174 | 0.967741935483871  | 0.972972972972973  |
+|     0.965      | 0.9873417721518988 | 0.9285714285714286 | 0.9570552147239264 |
+|      0.96      | 0.9473684210526315 | 0.9473684210526315 | 0.9473684210526315 |
+|     0.935      | 0.918918918918919  | 0.9066666666666666 | 0.912751677852349  |
+|      0.97      | 0.9770114942528736 | 0.9550561797752809 | 0.9659090909090908 |
+|      0.96      | 0.9591836734693877 | 0.9591836734693877 | 0.9591836734693877 |
+|      0.97      | 0.9615384615384616 | 0.9615384615384616 | 0.9615384615384616 |
+|     0.965      | 0.9871794871794872 | 0.927710843373494  | 0.9565217391304347 |
+|      0.96      | 0.9726027397260274 | 0.922077922077922  | 0.9466666666666667 |
+|     0.955      | 0.9666666666666667 | 0.9354838709677419 | 0.9508196721311476 |
+|     0.955      | 0.9868421052631579 | 0.9036144578313253 | 0.9433962264150944 |
+|     0.965      | 0.9264705882352942 | 0.9692307692307692 | 0.9473684210526316 |
+|      0.98      |        1.0         | 0.9452054794520548 | 0.971830985915493  |
+|      0.98      | 0.9871794871794872 |       0.9625       | 0.9746835443037976 |
+|      0.99      | 0.978021978021978  |        1.0         | 0.9888888888888888 |
+|      0.96      | 0.9361702127659575 | 0.9777777777777777 | 0.9565217391304347 |
+|     0.985      |       0.9875       | 0.9753086419753086 | 0.9813664596273292 |
++----------------+--------------------+--------------------+--------------------+
+
+Trying to find weaknesses in the model by training models on the error:
+Most important features by catboost:
++----------------------------------------------+------------+
+|                   Feature                    | Importance |
++----------------------------------------------+------------+
+|         index_superfund-right-to-sue         |    40.0    |
+|               index_mx-missile               |    16.0    |
+|           index_education-spending           |    9.0     |
+|   index_adoption-of-the-budget-resolution    |    6.0     |
+|              index_immigration               |    6.0     |
+|          index_handicapped-infants           |    5.0     |
+|                 index_crime                  |    5.0     |
+|       index_water-project-cost-sharing       |    3.0     |
+|      index_synfuels-corporation-cutback      |    3.0     |
+|          index_physician-fee-freeze          |    2.0     |
+|      index_religious-groups-in-schools       |    2.0     |
+|       index_aid-to-nicaraguan-contras        |    1.0     |
+|           index_duty-free-exports            |    1.0     |
+| index_export-administration-act-south-africa |    1.0     |
+|            index_el-salvador-aid             |    0.0     |
+|        index_anti-satellite-test-ban         |    0.0     |
++----------------------------------------------+------------+
+
+Print of tree to look for potential segments with high error (use with caution)
+|--- index_duty-free-exports_0 <= 0.50
+|   |--- index_religious-groups-in-schools_0 <= 0.50
+|   |   |--- value: [0.17]
+|   |--- index_religious-groups-in-schools_0 >  0.50
+|   |   |--- value: [0.00]
+|--- index_duty-free-exports_0 >  0.50
+|   |--- value: [0.00]
+
+
+Training models and choosing the best one
+Model results compared - showing the best out of each type after CV & HP tuning: 
++-------+-------------------------+--------------------+--------------------+--------------------+--------------------+
+|  type |          model          |   accuracy_score   |  precision_score   |    recall_score    |      f1_score      |
++-------+-------------------------+--------------------+--------------------+--------------------+--------------------+
+|  test |      BaselineModel      | 0.922772451209735  |        nan         |        nan         |        nan         |
+|  test |      CatboostModel      | 0.9963543211096834 | 0.876925148680488  | 0.8872238622281289 | 0.8815191235935561 |
+|  test | LogisticRegressionModel | 0.9542596070420524 | 0.7827145870567291 | 0.6279126597381696 | 0.6706670654651317 |
+| train |      BaselineModel      | 0.922771057489963  |        nan         |        nan         |        nan         |
+| train |      CatboostModel      |        1.0         |        1.0         |        1.0         |        1.0         |
+| train | LogisticRegressionModel | 0.9600600654216613 | 0.8845283628877787 | 0.6818898250545464 | 0.7449851372270838 |
++-------+-------------------------+--------------------+--------------------+--------------------+--------------------+
+
+
+Post model analysis - analyzing results of the chosen model: 
+Top 100 Feature importance (in %, 100 = the most important one):
+{'num_TSH': 100, 'num_TT4': 60, 'num_T3': 35, 'num_T4U': 23, 'num_FTI': 17, 'index_on_thyroxine': 9, 'index_referral_source': 7, 'index_thyroid_surgery': 3, 'num_age': 3, 'index_sex': 3, 'index_TT4_measured': 2, 'index_FTI_measured': 1, 'index_tumor': 0, 'index_psych': 0, 'index_I131_treatment': 0, 'index_sick': 0, 'index_query_hyperthyroid': 0, 'index_on_antithyroid_medication': 0, 'index_query_hypothyroid': 0, 'index_TSH_measured': 0, 'index_lithium': 0, 'index_T4U_measured': 0, 'index_pregnant': 0, 'index_goitre': 0, 'index_TBG_measured': 0, 'index_query_on_thyroxine': 0, 'index_hypopituitary': 0, 'index_T3_measured': 0}
+
+confusion matrix on the test set
+[[ 36   1   1]
+ [  0 696   1]
+ [  1   0  19]]
 

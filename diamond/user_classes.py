@@ -38,7 +38,7 @@ class ImagesData:
             print("Grayscale image")
 
     def format_images(self):
-        print("Formatting images of type", type(self.images))
+        # print("Formatting images of type", type(self.images))
         np_images = []
         image_list = []
 
@@ -95,10 +95,6 @@ class ImagesData:
         # print("raw images type:")
         # print(type(self.raw_images))
         # print(type(self.raw_images[0]))
-        try:
-            print(self.raw_images[0].size)
-        except:
-            pass
         # TODO: validate format
 
     def validate(self):

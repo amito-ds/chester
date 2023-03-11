@@ -63,7 +63,7 @@ class CategoricalStats:
             for i, col in enumerate(top_n):
                 if i >= dim * dim:
                     break
-                count_data = pd.DataFrame(self.data[col].value_counts()[0:5]).reset_index(drop=False)
+                count_data = pd.DataFrame(self.data[col].value_counts().head(5)).reset_index(drop=False)
                 total_count = self.data[col].count()
                 percent_data = count_data.copy()
                 percent_data[col] = percent_data[col] / total_count * 100
@@ -108,7 +108,7 @@ class CategoricalStats:
 
             # add more columns
             # 1. % from all that covers the top 5 values
-            top_5 = 100 * value_counts.iloc[:5]["count"].sum() / value_counts["count"].sum()
+            top_5 = 100 * value_counts.head(5)["count"].sum() / value_counts["count"].sum()
             result_dicts[-1][f'Top 5 values coverage'] = f"{top_5:.0f}%"
 
         results_df = pd.DataFrame(result_dicts)

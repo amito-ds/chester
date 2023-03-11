@@ -32,11 +32,10 @@ class CategoricalPreModelAnalysis:
 
     def tsne(self):
         X = self.data.copy()
-        X = X.sample(n=min(5000, len(X)))
+        X = X.sample(n=5000)
         target = self.target[X.index]
 
-        X_tsne_3d = TSNE(n_components=3).fit_transform(pd.get_dummies(X))
-        X_tsne_2d = X_tsne_3d[:, :2]
+        X_tsne_2d = TSNE(n_components=2).fit_transform(pd.get_dummies(X))
 
         fig = plt.figure(figsize=(16, 10))
         ax1 = plt
@@ -121,7 +120,7 @@ class CategoricalPreModelAnalysis:
             top_features = self.n_cols
         else:
             sample_features = min(50, int(self.n_cols / 2))
-
+        top_features = min(top_features, sample_features)
         top_feature_names = random.sample(self.cols_sorted[0:sample_features], top_features)
         feature_index = {feature: index for index, feature in enumerate(self.cols_sorted)}
         top_feature_names.sort(key=lambda x: feature_index[x])
@@ -288,7 +287,10 @@ class CategoricalPreModelAnalysis:
                     self.partial_plot(classification_row_percent=True)
                 else:
                     self.partial_plot()
-                self.tsne()
+                try:
+                    self.tsne()
+                except:
+                    pass
         elif self.n_cols == 1:
             self.analyze_pvalue(is_plot=is_plot)
             if is_plot:

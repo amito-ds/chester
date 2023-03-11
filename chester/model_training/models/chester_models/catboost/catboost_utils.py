@@ -116,6 +116,7 @@ def visualize_performance(df, with_baseline=True):
 
     # Create pivot table to summarize mean performance metric by type and model
     metric_columns = [col for col in df.columns if col not in ["type", "model"]]
+    metric_columns = [metric for metric in metric_columns if metric is not None]
     pivot = df.pivot(index="model", columns="type", values=metric_columns)
 
     if not with_baseline:

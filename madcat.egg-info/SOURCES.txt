@@ -111,9 +111,9 @@ diamond/user_classes.py
 diamond/utils.py
 diamond/data_augmentation/__init__.py
 diamond/data_augmentation/augmentation.py
+diamond/face_detection/__init__.py
+diamond/face_detection/face_image_.py
 diamond/image_caption/__init__.py
-diamond/image_caption/example.py
-diamond/image_caption/example2.py
 diamond/image_caption/image_caption_class.py
 diamond/image_caption/utils.py
 diamond/image_data_info/__init__.py
@@ -152,3 +152,9 @@ tamtam/user_class/user_class.py
 tamtam/utils/__init__.py
 tamtam/utils/column_utils.py
 tamtam/utils/utils.py
+vis/__init__.py
+vis/manual_run.py
+vis/run.py
+vis/user_classes.py
+vis/utils.py
+vis/video_data_info/__init__.py

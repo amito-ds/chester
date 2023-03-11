@@ -4,10 +4,10 @@ Data information:
 Data Information Report
 Problem Type: Multiclass classification
 Target Variable: target
-Feature Types: {'numeric': ['APPEARANCES', 'Year', 'YEAR'], 'boolean': [], 'text': [], 'categorical': ['EYE', 'HAIR', 'SEX', 'GSM', 'ALIVE', 'FIRST APPEARANCE'], 'time': [], 'id': ['page_id', 'ID']}
+Feature Types: {'numeric': ['lym_nodes_dimin', 'lym_nodes_enlar', 'no_of_nodes_in'], 'boolean': [], 'text': [], 'categorical': ['lymphatics', 'block_of_affere', 'bl_of_lymph_c', 'bl_of_lymph_s', 'by_pass', 'extravasates', 'regeneration_of', 'early_uptake_in', 'changes_in_lym', 'defect_in_node', 'changes_in_node', 'changes_in_stru', 'special_forms', 'dislocation_of', 'exclusion_of_no'], 'time': [], 'id': []}
 Loss Function: Cross entropy
 Evaluation Metrics: ['Accuracy', 'Precision', 'Recall', 'F1']
-Optional Models: {'baseline-mode', 'logistic', 'catboost'}
+Optional Models: {'catboost', 'logistic', 'baseline-mode'}
 
 
 features engineering process for the data:
@@ -18,124 +18,66 @@ Numerical Feature statistics:
 Categorical Feature statistics:
 Feature stats:
                 col # unique # missing                       Distribution  \
-1  FIRST APPEARANCE     1461       362  Jun-92: 0%, May-93: 0%, Aug-10...   
-4               SEX        5       420  Male Characters: 74%, Female C...   
-2               EYE       25      5674  Blue Eyes: 31%, Brown Eyes: 28...   
-0             ALIVE        2         3  Living Characters: 76%, Deceas...   
-3              HAIR       25      2782  Black Hair: 32%, Brown Hair: 2...   
-5               GSM        2      9936  Homosexual Characters: 83%, Bi...   
+10  regeneration_of        2         0                   no: 93%, yes: 7%   
+2   block_of_affere        2         0                  yes: 55%, no: 45%   
+4    changes_in_lym        3         0  oval: 52%, round: 44%, bean: 4...   
+0   changes_in_node        4         0  lac_margin: 51%, lacunar: 28%,...   
+14  early_uptake_in        2         0                  yes: 70%, no: 30%   
+13     extravasates        2         0                  yes: 51%, no: 49%   
+7           by_pass        2         0                  no: 76%, yes: 24%   
+11   dislocation_of        2         0                  yes: 66%, no: 34%   
+6    defect_in_node        4         0  lac_central: 34%, lacunar: 33%...   
+1     bl_of_lymph_s        2         0                   no: 95%, yes: 5%   
 
-                              Sample Top 5 values coverage  
-1       Mar-76, 1999, August, Aug-77                    2%  
-4  Male Characters, Agender Chara...                  100%  
-2       Amber Eyes, One Eye, No Eyes                   86%  
-0  Deceased Characters, Living Ch...                  100%  
-3  Strawberry Blond Hair, Magenta...                   81%  
-5  Bisexual Characters, Homosexua...                  100%  
+                     Sample Top 5 values coverage  
+10                  yes, no                  100%  
+2                   yes, no                  100%  
+4         round, bean, oval                  100%  
+0   no, lac_margin, lacunar                  100%  
+14                  yes, no                  100%  
+13                  yes, no                  100%  
+7                   yes, no                  100%  
+11                  no, yes                  100%  
+6   no, lacunar, lac_margin                  100%  
+1                   yes, no                  100%  
 
 ** model pre analysis report:
 Feature stats:
             col # unique # missing                       Distribution  \
-0  target_label        3      1519  Bad Characters: 49%, Good Char...   
+0  target_label        4         0  metastases: 55%, malign_lymph:...   
 
                               Sample Top 5 values coverage  
-0  Neutral Characters, Good Chara...                  100%  
+0  normal, metastases, malign_lym...                  100%  
 
 values counts for categorical target to predict:
-Bad Characters        9615
-Good Characters       7468
-Neutral Characters    2773
-Reformed Criminals       3
+metastases      81
+malign_lymph    61
+fibrosis         4
+normal           2
 Name: target, dtype: int64
 
 top 50 with lowest partial pvalue for categorical feat based on chi square:
-[('FIRST APPEARANCE', 4.5238097468731855e-204), ('SEX', 2.7213261886470876e-135), ('HAIR', 5.826531398719736e-77), ('EYE', 9.915299826307018e-59), ('ALIVE', 1.4943918171359309e-33), ('GSM', 0.335435998847665)]
+[('lymphatics', 1.5107094430969193e-29), ('changes_in_node', 2.987921496927272e-20), ('defect_in_node', 2.427749682478937e-19), ('changes_in_lym', 4.472109702198352e-13), ('regeneration_of', 7.642997887719277e-13), ('block_of_affere', 2.2506424669517005e-07), ('special_forms', 1.4313092124087244e-06), ('changes_in_stru', 5.751755689439823e-06), ('early_uptake_in', 1.6190321594722196e-05), ('bl_of_lymph_s', 0.00024676665491348606), ('by_pass', 0.0014183468506184487), ('exclusion_of_no', 0.002872271410146594), ('dislocation_of', 0.006574013431958962), ('bl_of_lymph_c', 0.06996442272413549), ('extravasates', 0.21862297621289886)]
 
 Training models and choosing the best one
 Model results compared - showing the best out of each type after CV & HP tuning: 
-+-------+-------------------------+--------------------+---------------------+---------------------+---------------------+
-|  type |          model          |   accuracy_score   |   precision_score   |     recall_score    |       f1_score      |
-+-------+-------------------------+--------------------+---------------------+---------------------+---------------------+
-|  test |      BaselineModel      | 0.409517909543053  |         nan         |         nan         |         nan         |
-|  test |      CatboostModel      | 0.5124342599332451 |  0.4396147355521579 | 0.32488820867184565 |  0.3077951123568927 |
-|  test | LogisticRegressionModel | 0.4422294801121602 | 0.20908584635036234 |  0.2474076813152024 | 0.19560047977264577 |
-| train |      BaselineModel      | 0.4095181652576346 |         nan         |         nan         |         nan         |
-| train |      CatboostModel      | 0.5906697036776488 |  0.5047176646575192 | 0.35056312820594127 | 0.33982024617070106 |
-| train | LogisticRegressionModel | 0.4420958884986031 | 0.19025510847298588 | 0.22515788372307455 | 0.17817772303039492 |
-+-------+-------------------------+--------------------+---------------------+---------------------+---------------------+
++-------+-------------------------+--------------------+--------------------+--------------------+--------------------+
+|  type |          model          |   accuracy_score   |  precision_score   |    recall_score    |      f1_score      |
++-------+-------------------------+--------------------+--------------------+--------------------+--------------------+
+|  test |      BaselineModel      | 0.5159420289855072 |        nan         |        nan         |        nan         |
+|  test |      CatboostModel      | 0.8297101449275364 | 0.7022792022792024 | 0.7018686868686869 | 0.6853725532198184 |
+|  test | LogisticRegressionModel | 0.805072463768116  | 0.7577625152625153 | 0.7445202020202021 | 0.7310827722902026 |
+| train |      BaselineModel      | 0.5168868980963046 |        nan         |        nan         |        nan         |
+| train |      CatboostModel      | 0.9681970884658455 | 0.8829742162491566 | 0.861674173484278  | 0.8680549596179734 |
+| train | LogisticRegressionModel |        1.0         |        1.0         |        1.0         |        1.0         |
++-------+-------------------------+--------------------+--------------------+--------------------+--------------------+
 
 
 Post model analysis - analyzing results of the chosen model: 
 Top 100 Feature importance (in %, 100 = the most important one):
-{'index_FIRST APPEARANCE': 100, 'num_APPEARANCES': 91, 'num_Year': 80, 'index_EYE': 70, 'index_HAIR': 51, 'index_SEX': 48, 'index_ALIVE': 33, 'index_GSM': 20, 'num_YEAR': 12}
+{'index_changes_in_node': 100, 'index_special_forms': 66, 'index_block_of_affere': 50, 'index_changes_in_stru': 31, 'num_no_of_nodes_in': 29, 'index_changes_in_lym': 25, 'index_defect_in_node': 19, 'num_lym_nodes_dimin': 15, 'num_lym_nodes_enlar': 15, 'index_lymphatics': 13, 'index_early_uptake_in': 11, 'index_exclusion_of_no': 8, 'index_extravasates': 7, 'index_dislocation_of': 4, 'index_by_pass': 1, 'index_regeneration_of': 1, 'index_bl_of_lymph_s': 0, 'index_bl_of_lymph_c': 0}
 
 confusion matrix on the test set
-[[1447  460    4   80]
- [ 545  859    6   49]
- [ 274  225   10   24]
- [ 370  184    1  117]]
-
-Learning curve by training examples
-+-------------+--------------------+-----------------------+---------------------+----------------------+
-| train_sizes | train_scores_mean  |    train_scores_std   |   test_scores_mean  |   test_scores_std    |
-+-------------+--------------------+-----------------------+---------------------+----------------------+
-|     1489    | 0.5262592343854936 | 0.0021490933512424704 | 0.48530818239336104 | 0.009388425728053606 |
-|     4840    | 0.5634297520661158 |  0.005925106885598292 | 0.49578294187177396 | 0.006197811950563975 |
-|     8191    | 0.5630814308387254 |  0.010655290990903083 |  0.5032491150750135 | 0.009050913750063337 |
-|    11542    | 0.5756541327326287 |  0.01191298498760037  |  0.5098556509842582 | 0.010686663151285858 |
-|    14893    | 0.5816289531994897 |  0.008300396029766536 |  0.5113061518767565 | 0.007463266643829541 |
-+-------------+--------------------+-----------------------+---------------------+----------------------+
-
-
-Boostrap metrics, sample 20 results:
-+----------------+---------------------+---------------------+---------------------+
-| accuracy_score |   precision_score   |     recall_score    |       f1_score      |
-+----------------+---------------------+---------------------+---------------------+
-|     0.505      |  0.6481944444444445 |  0.3989837555349604 | 0.38803072733914085 |
-|     0.525      |  0.6089651455264103 | 0.38066816816816823 | 0.35966175668303324 |
-|     0.495      |  0.5744839449541284 | 0.36615870688451335 |  0.3445641898109266 |
-|     0.485      |  0.3656309297912713 | 0.35343567251461994 |  0.3191666666666667 |
-|      0.46      | 0.35653235653235654 | 0.34996732026143795 | 0.32762875447208584 |
-|      0.52      | 0.48140868140868137 | 0.38788934246845536 | 0.38374313464435833 |
-|     0.475      |  0.3151663125204315 |  0.3398793859649123 |  0.3243631368631369 |
-|      0.54      |  0.3806109787571968 | 0.39776653171390014 | 0.36270022883295194 |
-|      0.53      |  0.4113169966199903 | 0.37943170955621386 | 0.37231096340766157 |
-|     0.485      | 0.40158882879134594 |  0.3464029322881614 | 0.31637524733963823 |
-|      0.53      | 0.38419003115264794 |  0.3804131054131054 |  0.3729074414083594 |
-|      0.54      | 0.41177024482109226 | 0.38147872164265606 |  0.3766203703703704 |
-|     0.565      |  0.5103131953273998 |  0.400848547587678  | 0.39936804443810414 |
-|      0.6       |  0.5415549043743455 | 0.47123645061970154 |  0.4514827839536452 |
-|      0.47      |  0.6163749294184078 |  0.3505853043896522 |  0.3403476779582283 |
-|      0.52      |  0.3695104226077678 |  0.3769542299678492 | 0.35582667569397425 |
-|      0.54      |  0.5381469979296066 |  0.397093837535014  |  0.4085330701623715 |
-|      0.57      |  0.6456521739130434 | 0.41197477466777516 |  0.4106365094277937 |
-|      0.49      | 0.34818733897681264 |  0.3554622121837474 |  0.3449189186926529 |
-|      0.54      |  0.3972946878940731 |  0.3791892643582256 | 0.36593858102603144 |
-+----------------+---------------------+---------------------+---------------------+
-
-Trying to find weaknesses in the model by training models on the error:
-Most important features by catboost:
-+------------------------+------------+
-|        Feature         | Importance |
-+------------------------+------------+
-|        num_Year        |    32.0    |
-|    num_APPEARANCES     |    15.0    |
-|       index_EYE        |    14.0    |
-| index_FIRST APPEARANCE |    13.0    |
-|       index_SEX        |    11.0    |
-|       index_HAIR       |    6.0     |
-|      index_ALIVE       |    4.0     |
-|        num_YEAR        |    4.0     |
-|       index_GSM        |    0.0     |
-+------------------------+------------+
-
-Print of tree to look for potential segments with high error (use with caution)
-|--- index_FIRST APPEARANCE_1604 <= 1977.50
-|   |--- value: [0.40]
-|--- index_FIRST APPEARANCE_1604 >  1977.50
-|   |--- index_SEX_1 <= 0.50
-|   |   |--- value: [0.55]
-|   |--- index_SEX_1 >  0.50
-|   |   |--- value: [0.47]
-
+[[ 7  3]
+ [ 2 18]]
 

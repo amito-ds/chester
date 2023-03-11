@@ -10,10 +10,11 @@ from diamond.run import run
 from diamond.user_classes import ImagesAugmentationInfo, ImageModel, ImageModels
 
 # # define directory path
-data_dir = '/Users/amitosi/PycharmProjects/chester/chester/data/pics_ex'
+# data_dir = '/Users/amitosi/PycharmProjects/chester/chester/data/pics_ex'
+data_dir = '/Users/amitosi/PycharmProjects/chester/chester/data/pics_ex2'
 
 # # define image size
-img_size = (512, 512)
+img_size = (1024, 1024)
 # img_size = (640, 480)
 # img_size = (32, 32)
 #
@@ -45,7 +46,7 @@ print("Total pics", len(new_images))
 # print(np.unique(labels))
 # labels = np.array(labels[0:100])
 
-image_shape = (3, 640, 640)
+image_shape = (3, 1024, 1024)
 # image_shape = (3, 480, 640)
 
 
@@ -67,4 +68,4 @@ diamond_collector = run(images=images,
                         image_augmentation_info=ImagesAugmentationInfo(aug_prop=0.7),
                         is_train_model=False, image_models=image_models,
                         is_post_model_analysis=False,
-                        plot=False)
+                        plot=True)

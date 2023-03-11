@@ -14,15 +14,20 @@ import ml_datasets
 
 matplotlib.use('TkAgg')
 target_column = 'target'
+import matplotlib.pyplot as plt
+
+# Disable interactive mode
+plt.ioff()
+
 
 ################################################################################################
-df1 = load_data_pirates().assign(target='pirate').sample(300, replace=True)
-df2 = load_data_king_arthur().assign(target='arthur').sample(300, replace=True)
-df3 = load_data_chat_logs().assign(target='chat').sample(300, replace=True)
-df = pd.concat([
-    df1, df2,
-    df3
-])
+# df1 = load_data_pirates().assign(target='pirate').sample(300, replace=True)
+# df2 = load_data_king_arthur().assign(target='arthur').sample(300, replace=True)
+# df3 = load_data_chat_logs().assign(target='chat').sample(300, replace=True)
+# df = pd.concat([
+#     df1, df2,
+#     df3
+# ])
 
 
 # df['target'] = df['target'].apply(lambda x: 0 if "pirate" in x else 1)  # can do with or without
@@ -307,19 +312,92 @@ def load_yaho(tickers=None, start_date='2010-01-01', end_date='2023-02-15'):
 # df = load_yaho()
 # print("df shape", df.shape)
 # print("df cols", df.columns)
-anchors = [['jack', 'tailor', 'arthur'], ['smoker light drinker', 'smoker', 'looking', 'look']]
-madcat_collector = run_madcat(Data(df=df, target_column='target'),
-                              is_feature_stats=True,
-                              text_feature_extraction=TextFeatureExtraction(corex_dim=2, anchor_words=anchors),
-                              # time_series_handler=TimeSeriesHandler(id_cols=["id"]),
-                              is_pre_model=False,
-                              is_model_training=False,
-                              model_run=ModelRun(n_models=2),
-                              is_post_model=False, is_model_weaknesses=False,
-                              plot=False,
-                              # feature_types={'numeric': [], 'boolean': [], 'text': ['Campaign Name'],
-                              #                'categorical': ['Campaign Name'], 'time': ['Date'], 'id': []}
-                              )
+
+import pandas as pd
+from sklearn.datasets import fetch_openml
+
+
+def load_dataset(name):
+    print("DB name:", name)
+    data = fetch_openml(name=name, as_frame=True)
+    df = data.data
+    df['target'] = data.target
+    # df['target'] = df['target'].apply(lambda x: 'class_' + str(x))
+    df = df.dropna(axis=1, how='all')  # remove nas
+    return df
+
+
+# df = load_dataset('arrhythmia')
+# df['target'] = df['target'].cat.codes
+
+# df = load_dataset('labor')
+
+# df = load_dataset('arrhythmia')
+# df['target'] = df['target'].cat.codes
+
+# df = load_dataset('letter')
+# df['target'] = df['target'].cat.codes
+
+# df = load_dataset('audiology')
+
+# df = load_dataset('autos')
+
+# df = load_dataset('lymph')
+# df = load_dataset('balance-scale')
+# df = load_dataset('mfeat-factors')
+# df = load_dataset('breast-cancer')
+# df = load_dataset('mfeat-fourier')
+# df = load_dataset('breast-w')
+# df = load_dataset('mfeat-karhunen')
+# df = load_dataset('mfeat-morphological')
+# df = load_dataset('mfeat-pixel')
+# df = load_dataset('mfeat-zernike')
+# df = load_dataset('cmc')
+# df = load_dataset('mushroom')
+# df = load_dataset('colic')
+# df = load_dataset('optdigits')
+# df = load_dataset('credit-approval')
+# df = load_dataset('page-blocks')
+# df = load_dataset('credit-g')
+# df = load_dataset('pendigits')
+# df = load_dataset('postoperative-patient-data')
+# df = load_dataset('dermatology')
+# df = load_dataset('segment')
+# df = load_dataset('diabetes')
+# df = load_dataset('sick')
+# df = load_dataset('ecoli')
+# df = load_dataset('sonar')
+# df = load_dataset('glass')
+# df = load_dataset('soybean')
+# df = load_dataset('haberman')
+# df = load_dataset('spambase')
+# df = load_dataset('splice')
+# df = load_dataset('tae')
+# df = load_dataset('heart-c')
+# df = load_dataset('tic-tac-toe')
+# df = load_dataset('heart-h')
+# df = load_dataset('trains')
+# df = load_dataset('heart-statlog')
+# df = load_dataset('vehicle')
+# df = load_dataset('hepatitis')
+# df = load_dataset('vote')
+df = load_dataset('hypothyroid')
+
+
+
+madcat_collector = run_madcat(Data(df=df, target_column='target'), model_run=ModelRun(n_models=2))
+# madcat_collector = run_madcat(Data(df=df, target_column='target'),
+#                               is_feature_stats=True,
+#                               # text_feature_extraction=TextFeatureExtraction(corex_dim=2, anchor_words=anchors),
+#                               # time_series_handler=TimeSeriesHandler(id_cols=["id"]),
+#                               is_pre_model=False,
+#                               is_model_training=False,
+#                               model_run=ModelRun(n_models=2),
+#                               is_post_model=False, is_model_weaknesses=False,
+#                               plot=False,
+#                               # feature_types={'numeric': [], 'boolean': [], 'text': ['Campaign Name'],
+#                               #                'categorical': ['Campaign Name'], 'time': ['Date'], 'id': []}
+#                               )
 
 # output_collector = run_madcat(
 #     Data(df=df, target_column='target'),
