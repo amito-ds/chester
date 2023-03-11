@@ -4,248 +4,399 @@ Data information:
 Data Information Report
 Problem Type: Multiclass classification
 Target Variable: target
-Feature Types: {'numeric': ['age', 'TSH', 'T3', 'TT4', 'T4U', 'FTI'], 'boolean': [], 'text': [], 'categorical': ['sex', 'on_thyroxine', 'query_on_thyroxine', 'on_antithyroid_medication', 'sick', 'pregnant', 'thyroid_surgery', 'I131_treatment', 'query_hypothyroid', 'query_hyperthyroid', 'lithium', 'goitre', 'tumor', 'hypopituitary', 'psych', 'TSH_measured', 'T3_measured', 'TT4_measured', 'T4U_measured', 'FTI_measured', 'TBG_measured', 'referral_source'], 'time': [], 'id': []}
+Feature Types: {'numeric': ['Elevation', 'Aspect', 'Slope', 'Horizontal_Distance_To_Hydrology', 'Vertical_Distance_To_Hydrology', 'Horizontal_Distance_To_Roadways', 'Hillshade_9am', 'Hillshade_Noon', 'Hillshade_3pm', 'Horizontal_Distance_To_Fire_Points'], 'boolean': [], 'text': [], 'categorical': ['Wilderness_Area1', 'Wilderness_Area2', 'Wilderness_Area3', 'Wilderness_Area4', 'Soil_Type1', 'Soil_Type2', 'Soil_Type3', 'Soil_Type4', 'Soil_Type5', 'Soil_Type6', 'Soil_Type7', 'Soil_Type8', 'Soil_Type9', 'Soil_Type10', 'Soil_Type11', 'Soil_Type12', 'Soil_Type13', 'Soil_Type14', 'Soil_Type15', 'Soil_Type16', 'Soil_Type17', 'Soil_Type18', 'Soil_Type19', 'Soil_Type20', 'Soil_Type21', 'Soil_Type22', 'Soil_Type23', 'Soil_Type24', 'Soil_Type25', 'Soil_Type26', 'Soil_Type27', 'Soil_Type28', 'Soil_Type29', 'Soil_Type30', 'Soil_Type31', 'Soil_Type32', 'Soil_Type33', 'Soil_Type34', 'Soil_Type35', 'Soil_Type36', 'Soil_Type37', 'Soil_Type38', 'Soil_Type39', 'Soil_Type40'], 'time': [], 'id': []}
 Loss Function: Cross entropy
 Evaluation Metrics: ['Accuracy', 'Precision', 'Recall', 'F1']
-Optional Models: {'catboost', 'baseline-mode', 'logistic'}
+Optional Models: {'baseline-mode', 'logistic', 'catboost'}
 
 
 features engineering process for the data:
+
+Boostrap metrics, sample 20 results:
++----------------+--------------------+--------------------+--------------------+
+| accuracy_score |  precision_score   |    recall_score    |      f1_score      |
++----------------+--------------------+--------------------+--------------------+
+|     0.915      | 0.9541984732824428 | 0.9191176470588235 | 0.9363295880149813 |
+|      0.94      | 0.959731543624161  | 0.959731543624161  | 0.959731543624161  |
+|      0.86      | 0.8947368421052632 | 0.8947368421052632 | 0.8947368421052632 |
+|     0.905      | 0.9618320610687023 |        0.9         | 0.929889298892989  |
+|      0.88      | 0.9253731343283582 | 0.8985507246376812 | 0.9117647058823529 |
+|      0.91      | 0.9411764705882353 | 0.927536231884058  | 0.9343065693430658 |
+|      0.85      | 0.8591549295774648 | 0.9242424242424242 | 0.8905109489051095 |
+|      0.92      | 0.9324324324324325 | 0.9583333333333334 | 0.9452054794520548 |
+|      0.92      | 0.9689922480620154 | 0.9124087591240876 | 0.9398496240601503 |
+|     0.925      | 0.965034965034965  | 0.9324324324324325 | 0.9484536082474226 |
+|      0.89      | 0.9007633587786259 | 0.9291338582677166 | 0.9147286821705426 |
+|      0.91      | 0.9402985074626866 | 0.9264705882352942 | 0.9333333333333335 |
+|     0.905      | 0.9318181818181818 | 0.924812030075188  | 0.9283018867924527 |
+|      0.89      | 0.9444444444444444 | 0.8880597014925373 | 0.9153846153846154 |
+|     0.935      | 0.9714285714285714 | 0.9379310344827586 | 0.9543859649122807 |
+|      0.9       | 0.9172932330827067 | 0.9312977099236641 | 0.9242424242424241 |
+|      0.91      | 0.9027777777777778 | 0.9701492537313433 | 0.9352517985611511 |
+|      0.91      | 0.9139072847682119 | 0.965034965034965  | 0.9387755102040817 |
+|      0.92      | 0.9264705882352942 | 0.9545454545454546 | 0.9402985074626866 |
+|     0.895      | 0.9202898550724637 | 0.927007299270073  | 0.9236363636363637 |
++----------------+--------------------+--------------------+--------------------+
+
 features statistics for the data. Analyzed by groups (text, numeric, categorical) if exists:
+Trying to find weaknesses in the model by training models on the error:
 
 Numerical Feature statistics:
 
 Categorical Feature statistics:
 Feature stats:
-                          col # unique # missing    Distribution Sample  \
-9          query_on_thyroxine        2         0   f: 99%, t: 1%   t, f   
-17               FTI_measured        2         0  t: 90%, f: 10%   t, f   
-21                       sick        2         0   f: 96%, t: 4%   f, t   
-19                     goitre        2         0   f: 99%, t: 1%   f, t   
-12                      psych        2         0   f: 95%, t: 5%   t, f   
-7   on_antithyroid_medication        2         0   f: 99%, t: 1%   t, f   
-14                   pregnant        2         0   f: 99%, t: 1%   t, f   
-10               TBG_measured        1         0         f: 100%      f   
-13               on_thyroxine        2         0  f: 88%, t: 12%   t, f   
-0                         sex        2       150  F: 68%, M: 32%   F, M   
+                 col # unique # missing    Distribution Sample  \
+42       Soil_Type26        2         0  0: 100%, 1: 0%   0, 1   
+39        Soil_Type5        2         0  0: 100%, 1: 0%   1, 0   
+26       Soil_Type10        2         0   0: 94%, 1: 6%   1, 0   
+22       Soil_Type31        2         0   0: 96%, 1: 4%   0, 1   
+23       Soil_Type40        2         0   0: 99%, 1: 1%   1, 0   
+18       Soil_Type34        2         0  0: 100%, 1: 0%   1, 0   
+36       Soil_Type39        2         0   0: 98%, 1: 2%   0, 1   
+29       Soil_Type35        2         0  0: 100%, 1: 0%   1, 0   
+38       Soil_Type32        2         0   0: 91%, 1: 9%   0, 1   
+3   Wilderness_Area2        2         0   0: 95%, 1: 5%   1, 0   
 
    Top 5 values coverage  
-9                   100%  
-17                  100%  
-21                  100%  
-19                  100%  
-12                  100%  
-7                   100%  
-14                  100%  
-10                  100%  
-13                  100%  
-0                   100%  
+42                  100%  
+39                  100%  
+26                  100%  
+22                  100%  
+23                  100%  
+18                  100%  
+36                  100%  
+29                  100%  
+38                  100%  
+3                   100%  
 
+** model pre analysis report:
+Feature stats:
+            col # unique # missing                       Distribution  \
+0  target_label        7         0  2: 48%, 1: 37%, 3: 6%, 7: 4%, ...   
+
+    Sample Top 5 values coverage  
+0  1, 7, 5                   98%  
+
+values counts for categorical target to predict:
+2    283301
+1    211840
+3     35754
+7     20510
+6     17367
+5      9493
+4      2747
+Name: target, dtype: int64
+
+Most important features by catboost:
++------------+------------+
+|  Feature   | Importance |
++------------+------------+
+| index_p-16 |    22.0    |
+| index_p-22 |    14.0    |
+| index_p-13 |    7.0     |
+| index_p-41 |    7.0     |
+| index_p-35 |    6.0     |
+| index_p-27 |    5.0     |
+|  index_p1  |    5.0     |
+| index_p-20 |    4.0     |
+| index_p-44 |    3.0     |
+| index_p-10 |    3.0     |
+| index_p-26 |    3.0     |
+| index_p-39 |    2.0     |
+| index_p-15 |    2.0     |
+| index_p-25 |    2.0     |
+| index_p-31 |    2.0     |
+| index_p-9  |    1.0     |
+| index_p-1  |    1.0     |
+| index_p-28 |    1.0     |
+|  index_p4  |    1.0     |
+| index_p-49 |    1.0     |
+| index_p-14 |    1.0     |
+| index_p-50 |    1.0     |
+| index_p-29 |    1.0     |
+| index_p-32 |    1.0     |
+| index_p-33 |    1.0     |
+| index_p-30 |    1.0     |
+| index_p-36 |    1.0     |
+| index_p-40 |    1.0     |
+| index_p-2  |    0.0     |
+| index_p-6  |    0.0     |
+| index_p-5  |    0.0     |
+| index_p-4  |    0.0     |
+| index_p-3  |    0.0     |
+| index_p-47 |    0.0     |
+| index_p-46 |    0.0     |
+| index_p-8  |    0.0     |
+|  index_p2  |    0.0     |
+|  index_p3  |    0.0     |
+| index_p-48 |    0.0     |
+|  index_p5  |    0.0     |
+|  index_p6  |    0.0     |
+| index_p-7  |    0.0     |
+| index_p-11 |    0.0     |
+| index_p-45 |    0.0     |
+| index_p-43 |    0.0     |
+| index_p-12 |    0.0     |
+| index_p-42 |    0.0     |
+| index_p-38 |    0.0     |
+| index_p-37 |    0.0     |
+| index_p-17 |    0.0     |
++------------+------------+
+
+Print of tree to look for potential segments with high error (use with caution)
+|--- index_p-17_1 <= 0.50
+|   |--- value: [0.00]
+|--- index_p-17_1 >  0.50
+|   |--- value: [0.40]
+
+
+Training models and choosing the best one
 Model results compared - showing the best out of each type after CV & HP tuning: 
-+-------+-------------------------+--------------------+--------------------+--------------------+--------------------+
-|  type |          model          |   accuracy_score   |  precision_score   |    recall_score    |      f1_score      |
-+-------+-------------------------+--------------------+--------------------+--------------------+--------------------+
-|  test |      BaselineModel      | 0.6207867494824016 |        0.0         |        0.0         |        0.0         |
-|  test |      CatboostModel      | 0.9511387163561077 | 0.9104315184749968 | 0.9691391941391941 | 0.9384861581706083 |
-|  test | LogisticRegressionModel | 0.9397101449275362 | 0.933393665158371  | 0.9075507825507826 | 0.9199745840762346 |
-| train |      BaselineModel      | 0.6206957015033134 |        0.0         |        0.0         |        0.0         |
-| train |      CatboostModel      | 0.9554524122637374 | 0.9146362983330821 | 0.9733022077361699 | 0.943046811020005  |
-| train | LogisticRegressionModel | 0.9985637296614321 |        1.0         | 0.9963463463463462 | 0.9981647900662949 |
-+-------+-------------------------+--------------------+--------------------+--------------------+--------------------+
++-------+-------------------------+--------------------+--------------------+---------------------+---------------------+
+|  type |          model          |   accuracy_score   |  precision_score   |     recall_score    |       f1_score      |
++-------+-------------------------+--------------------+--------------------+---------------------+---------------------+
+|  test |      BaselineModel      | 0.3108676381945183 |        nan         |         nan         |         nan         |
+|  test |      CatboostModel      | 0.5872070347126191 | 0.4951270896655292 | 0.46237336324586914 | 0.46464355952102065 |
+|  test | LogisticRegressionModel | 0.589720951671808  | 0.5327704420109587 |  0.5269455763652723 |  0.5112316357956189 |
+| train |      BaselineModel      | 0.3108677278021186 |        nan         |         nan         |         nan         |
+| train |      CatboostModel      | 0.950924740724308  | 0.9812756401373569 |  0.9715191442076707 |  0.976037692440072  |
+| train | LogisticRegressionModel | 0.6090981088126005 | 0.6342163184646747 |  0.5733567756193716 |  0.5929103107760894 |
++-------+-------------------------+--------------------+--------------------+---------------------+---------------------+
 
 
 Post model analysis - analyzing results of the chosen model: 
 confusion matrix on the test set
-[[ 1  2]
- [ 3 25]]
-
-** model pre analysis report:
-Top 100 Feature importance (in %, 100 = the most important one):
-{'index_physician-fee-freeze': 100, 'index_adoption-of-the-budget-resolution': 11, 'index_synfuels-corporation-cutback': 10, 'index_el-salvador-aid': 9, 'index_anti-satellite-test-ban': 3, 'index_education-spending': 2, 'index_water-project-cost-sharing': 2, 'index_mx-missile': 2, 'index_export-administration-act-south-africa': 2, 'index_superfund-right-to-sue': 2, 'index_aid-to-nicaraguan-contras': 1, 'index_duty-free-exports': 1, 'index_religious-groups-in-schools': 1, 'index_crime': 0, 'index_handicapped-infants': 0, 'index_immigration': 0}
-
-Feature stats:
-            col # unique # missing                       Distribution  \
-0  target_label        4         0  negative: 92%, compensated_hyp...   
-
-                              Sample Top 5 values coverage  
-0  secondary_hypothyroid, compens...                  100%  
-
-values counts for categorical target to predict:
-negative                   3481
-compensated_hypothyroid     194
-primary_hypothyroid          95
-secondary_hypothyroid         2
-Name: target, dtype: int64
-
-confusion matrix on the test set
-[[50  1]
- [ 2 34]]
-
-Learning curve by training examples
-+-------------+--------------------+----------------------+--------------------+---------------------+
-| train_sizes | train_scores_mean  |   train_scores_std   |  test_scores_mean  |   test_scores_std   |
-+-------------+--------------------+----------------------+--------------------+---------------------+
-|      9      |        1.0         |         0.0          |       0.751        | 0.12395160345876934 |
-|      32     |        1.0         |         0.0          | 0.8233333333333335 |  0.1085254706406647 |
-|      54     | 0.9851851851851852 | 0.018144368465060606 | 0.7910000000000001 | 0.06755738301621812 |
-|      76     | 0.9789473684210526 | 0.013418472404191532 | 0.7913333333333334 | 0.09842312284778973 |
-|      99     | 0.983838383838384  | 0.017611712903194646 |       0.791        | 0.07644605941446554 |
-+-------------+--------------------+----------------------+--------------------+---------------------+
-
-
-Boostrap metrics, sample 20 results:
-+----------------+--------------------+--------------------+--------------------+
-| accuracy_score |  precision_score   |    recall_score    |      f1_score      |
-+----------------+--------------------+--------------------+--------------------+
-|     0.855      | 0.9111111111111111 | 0.9265536723163842 | 0.9187675070028011 |
-|     0.875      | 0.9491525423728814 | 0.9130434782608695 | 0.9307479224376731 |
-|     0.865      | 0.9532163742690059 | 0.8956043956043956 | 0.9235127478753542 |
-|      0.83      | 0.9252873563218391 | 0.8846153846153846 | 0.9044943820224719 |
-|     0.845      | 0.9352941176470588 | 0.888268156424581  | 0.9111747851002865 |
-|     0.805      | 0.9075144508670521 | 0.8722222222222222 | 0.8895184135977338 |
-|      0.83      | 0.9252873563218391 | 0.8846153846153846 | 0.9044943820224719 |
-|      0.9       | 0.9542857142857143 | 0.9329608938547486 | 0.943502824858757  |
-|      0.82      | 0.888268156424581  | 0.9085714285714286 | 0.8983050847457626 |
-|      0.85      | 0.9234972677595629 | 0.9135135135135135 | 0.9184782608695653 |
-|     0.815      | 0.9272727272727272 | 0.8595505617977528 | 0.892128279883382  |
-|     0.825      | 0.9017341040462428 | 0.896551724137931  | 0.899135446685879  |
-|     0.875      | 0.9597701149425287 | 0.9027027027027027 | 0.9303621169916434 |
-|      0.85      | 0.9195402298850575 | 0.9090909090909091 | 0.9142857142857144 |
-|      0.81      | 0.9137931034482759 | 0.8736263736263736 | 0.8932584269662922 |
-|      0.82      | 0.9137931034482759 | 0.8833333333333333 | 0.8983050847457628 |
-|      0.84      | 0.930635838150289  | 0.8895027624309392 | 0.9096045197740112 |
-|     0.825      | 0.9520958083832335 | 0.8548387096774194 | 0.9008498583569404 |
-|      0.87      | 0.9597701149425287 | 0.8978494623655914 | 0.9277777777777778 |
-|     0.855      | 0.9162011173184358 | 0.9213483146067416 | 0.9187675070028011 |
-+----------------+--------------------+--------------------+--------------------+
-
-Trying to find weaknesses in the model by training models on the error:
-Most important features by catboost:
-+-----------------------+------------+
-|        Feature        | Importance |
-+-----------------------+------------+
-|      num_ALBUMIN      |    31.0    |
-|    index_LIVER_BIG    |    15.0    |
-|     index_STEROID     |    9.0     |
-|     index_MALAISE     |    9.0     |
-|    index_LIVER_FIRM   |    7.0     |
-|     num_BILIRUBIN     |    6.0     |
-|     index_VARICES     |    6.0     |
-|     index_ANOREXIA    |    3.0     |
-|     index_SPIDERS     |    3.0     |
-|        num_AGE        |    2.0     |
-|     index_PROTIME     |    2.0     |
-|        num_SGOT       |    2.0     |
-|   num_ALK_PHOSPHATE   |    2.0     |
-| index_SPLEEN_PALPABLE |    1.0     |
-|     index_FATIGUE     |    1.0     |
-|    index_HISTOLOGY    |    1.0     |
-|     index_ASCITES     |    0.0     |
-|       index_SEX       |    0.0     |
-|    index_ANTIVIRALS   |    0.0     |
-+-----------------------+------------+
-
-Print of tree to look for potential segments with high error (use with caution)
-|--- index_ANTIVIRALS_1 <= 0.50
-|   |--- value: [0.45]
-|--- index_ANTIVIRALS_1 >  0.50
-|   |--- value: [0.00]
-
-
-top 50 with lowest partial pvalue for categorical feat based on chi square:
-[('TSH_measured', 1.8045989284348652e-07), ('query_hypothyroid', 2.762677152071162e-07), ('on_thyroxine', 1.309561157263055e-06), ('TT4_measured', 0.010895593541200675), ('sex', 0.014951014231503076), ('referral_source', 0.015340301869871195), ('T3_measured', 0.04592343997720127), ('sick', 0.13493875417449608), ('psych', 0.14166741470304262), ('T4U_measured', 0.18398333913709555), ('FTI_measured', 0.18694524741422663), ('pregnant', 0.21284712498549138), ('thyroid_surgery', 0.35894992401511305), ('goitre', 0.41240542615514175), ('on_antithyroid_medication', 0.5877381501130177), ('query_hyperthyroid', 0.622444274113259), ('query_on_thyroxine', 0.7075189375638059), ('lithium', 0.9232146968499925), ('tumor', 0.9473648573127396), ('I131_treatment', 0.9748685583549124), ('hypopituitary', 0.9937279937363492), ('TBG_measured', 1.0)]
+[[63  0  0  0  1  0  9 19  1  1]
+ [ 0  1  0  0  1  0  0  0  0  0]
+ [ 0  0  6  0  1  0  1  0  0  0]
+ [ 0  0  2  9  0  0  1  0  0  0]
+ [ 2  0  2  2  6  1  2  0  0  0]
+ [ 1  0  0  0  0 30  2  1  0  0]
+ [10  0  0  2  1  1 28  2  0  0]
+ [41  0  1  0  0  5  8 26  0  0]
+ [ 0  0  0  0  0  0  1  0  2  0]
+ [ 1  0  0  0  0  1  2  0  0  0]]
 
 Learning curve by training examples
 +-------------+--------------------+----------------------+--------------------+----------------------+
 | train_sizes | train_scores_mean  |   train_scores_std   |  test_scores_mean  |   test_scores_std    |
 +-------------+--------------------+----------------------+--------------------+----------------------+
-|      27     | 0.9925925925925926 | 0.014814814814814836 | 0.8880745341614906 | 0.04615103278632361  |
-|      90     | 0.9711111111111113 | 0.01507184440694503  | 0.9511387163561077 | 0.023347208375627464 |
-|     152     | 0.9592105263157894 | 0.010526315789473708 | 0.9539958592132505 | 0.02118464703414464  |
-|     215     | 0.9627906976744185 | 0.005095093558187576 | 0.9539958592132505 | 0.02118464703414464  |
-|     278     | 0.9597122302158272 | 0.004772122000511367 | 0.9511387163561077 | 0.023347208375627464 |
+|      94     | 0.6702127659574468 |         0.0          | 0.5443144346346134 | 0.05530938866354224  |
+|     308     | 0.6214285714285713 | 0.012078620284245651 | 0.5796156437258448 | 0.022784332282273945 |
+|     521     | 0.6026871401151631 | 0.006867003385795891 | 0.5813211360493564 | 0.018201445518609197 |
+|     735     | 0.6027210884353742 | 0.004867630971428121 | 0.5914264439953196 | 0.010864968452658075 |
+|     949     | 0.6073761854583772 | 0.004086558362416314 | 0.5956245789455022 | 0.008131334196690522 |
 +-------------+--------------------+----------------------+--------------------+----------------------+
+
+
+Boostrap metrics, sample 20 results:
++----------------+---------------------+---------------------+---------------------+
+| accuracy_score |   precision_score   |     recall_score    |       f1_score      |
++----------------+---------------------+---------------------+---------------------+
+|      0.58      |  0.5744848056033927 |  0.5038645345096958 |  0.5091622541161231 |
+|      0.51      |  0.4396175096832991 | 0.45647583319571805 | 0.43346371733645883 |
+|      0.53      |  0.5375178253119429 |  0.5622766060876792 |  0.5345134260031588 |
+|     0.625      |  0.6121413785417149 |  0.6271151077907012 |  0.6080037402166254 |
+|      0.56      |  0.5523822852738516 |  0.5819139194139193 |  0.5457999809350637 |
+|     0.555      |  0.5726389590577233 | 0.49833333333333335 |  0.5116650313115356 |
+|      0.56      |  0.5299477181830122 | 0.48674251294114307 | 0.49948731988342426 |
+|      0.6       |  0.6040058706725373 |  0.606696328362995  |  0.5995110641804102 |
+|     0.585      |  0.529028749028749  |  0.5396391996391997 |  0.5086630946849617 |
+|      0.57      |  0.5590457883992367 |  0.6446078431372549 |  0.5779561804996768 |
+|      0.6       |  0.5411522117729014 |  0.5333862433862434 |  0.5269451426139324 |
+|      0.6       |  0.4746272246272246 |  0.5447121875570151 | 0.49674767261723785 |
+|      0.6       |  0.5979278893436122 |  0.5237591287119588 |  0.5188032149507092 |
+|     0.565      |  0.5667696179921243 |  0.6043023067150358 |  0.5703834690676797 |
+|      0.62      |  0.6113972075655789 |  0.5747446883657077 |  0.578209696661956  |
+|      0.6       |  0.5811141921779553 |  0.5672677037271932 |  0.5515961192934097 |
+|     0.635      |  0.6133368485426327 |  0.5984948384948384 |  0.5808900002107296 |
+|     0.555      |  0.480940170940171  | 0.49461364227757665 | 0.47728970890273426 |
+|     0.545      |  0.4937542087542088 |  0.4895316742081448 |  0.4688025869224678 |
+|     0.605      | 0.48635129490392653 | 0.49511748443861336 |  0.4866233899764738 |
++----------------+---------------------+---------------------+---------------------+
+
+Trying to find weaknesses in the model by training models on the error:
+Most important features by catboost:
++---------+------------+
+| Feature | Importance |
++---------+------------+
+| num_alm |    34.0    |
+| num_mit |    16.0    |
+| num_gvh |    14.0    |
+| num_nuc |    13.0    |
+| num_mcg |    12.0    |
+| num_vac |    10.0    |
+| num_erl |    0.0     |
+| num_pox |    0.0     |
++---------+------------+
+
+Print of tree to look for potential segments with high error (use with caution)
+|--- num_alm <= 0.56
+|   |--- num_mit <= 0.31
+|   |   |--- value: [0.32]
+|   |--- num_mit >  0.31
+|   |   |--- value: [0.50]
+|--- num_alm >  0.56
+|   |--- value: [0.60]
+
+
+Training models and choosing the best one
+Training models and choosing the best one
+Model results compared - showing the best out of each type after CV & HP tuning: 
++-------+-------------------------+--------------------+--------------------+--------------------+--------------------+
+|  type |          model          |   accuracy_score   |  precision_score   |    recall_score    |      f1_score      |
++-------+-------------------------+--------------------+--------------------+--------------------+--------------------+
+|  test |      BaselineModel      |      0.76375       |        0.0         |        0.0         |        0.0         |
+|  test |      CatboostModel      | 0.8547499999999999 | 0.7635815815499863 | 0.5577352956860235 | 0.6440971595754739 |
+|  test | LogisticRegressionModel |       0.851        | 0.7232875566333916 | 0.5951296681419862 | 0.6527278838202045 |
+| train |      BaselineModel      |      0.76375       |        0.0         |        0.0         |        0.0         |
+| train |      CatboostModel      |     0.8640625      | 0.7817943260518397 | 0.5893969087127955 | 0.6718124465601404 |
+| train | LogisticRegressionModel | 0.8619999999999999 | 0.7515274321943349 | 0.621300239059711  | 0.6801619198154804 |
++-------+-------------------------+--------------------+--------------------+--------------------+--------------------+
+
+
+Post model analysis - analyzing results of the chosen model: 
+Top 100 Feature importance (in %, 100 = the most important one):
+{'index_marital-status': 100, 'index_occupation': 59, 'index_age': 59, 'index_relationship': 57, 'index_capitalgain': 55, 'index_education': 47, 'index_hoursperweek': 35, 'num_education-num': 26, 'index_workclass': 12, 'index_sex': 9, 'index_capitalloss': 9, 'num_fnlwgt': 8, 'index_race': 7, 'index_native-country': 4}
+
+confusion matrix on the test set
+[[747  53]
+ [ 73 127]]
+
+top 50 with lowest partial pvalue for categorical feat based on chi square:
+[('Position', 0.11539468864718325)]
+
+Training models and choosing the best one
+top 50 with lowest partial pvalue for categorical feat based on chi square:
+[('Sex', 8.004519071050525e-240)]
+
+Training models and choosing the best one
+Learning curve by training examples
++-------------+--------------------+-----------------------+--------------------+----------------------+
+| train_sizes | train_scores_mean  |    train_scores_std   |  test_scores_mean  |   test_scores_std    |
++-------------+--------------------+-----------------------+--------------------+----------------------+
+|     320     |      0.903125      |         0.0125        |       0.8285       | 0.018564078215736968 |
+|     1040    | 0.8853846153846152 | 0.0009421114395319882 |       0.8435       | 0.014819750335278947 |
+|     1760    | 0.8700000000000001 |  0.002394466762011963 | 0.8480000000000001 | 0.008895223437328596 |
+|     2480    | 0.8662903225806453 | 0.0034081526788896023 | 0.8480000000000001 | 0.01050595069472536  |
+|     3200    | 0.8645625000000001 | 0.0016606662819483057 |      0.85275       | 0.00713267130884355  |
++-------------+--------------------+-----------------------+--------------------+----------------------+
 
 
 Boostrap metrics, sample 20 results:
 +----------------+--------------------+--------------------+--------------------+
 | accuracy_score |  precision_score   |    recall_score    |      f1_score      |
 +----------------+--------------------+--------------------+--------------------+
-|     0.955      |        1.0         | 0.8977272727272727 | 0.9461077844311377 |
-|      0.96      | 0.9574468085106383 | 0.9574468085106383 | 0.9574468085106385 |
-|     0.985      |        1.0         | 0.967391304347826  | 0.9834254143646408 |
-|     0.975      | 0.9782608695652174 | 0.967741935483871  | 0.972972972972973  |
-|     0.965      | 0.9873417721518988 | 0.9285714285714286 | 0.9570552147239264 |
-|      0.96      | 0.9473684210526315 | 0.9473684210526315 | 0.9473684210526315 |
-|     0.935      | 0.918918918918919  | 0.9066666666666666 | 0.912751677852349  |
-|      0.97      | 0.9770114942528736 | 0.9550561797752809 | 0.9659090909090908 |
-|      0.96      | 0.9591836734693877 | 0.9591836734693877 | 0.9591836734693877 |
-|      0.97      | 0.9615384615384616 | 0.9615384615384616 | 0.9615384615384616 |
-|     0.965      | 0.9871794871794872 | 0.927710843373494  | 0.9565217391304347 |
-|      0.96      | 0.9726027397260274 | 0.922077922077922  | 0.9466666666666667 |
-|     0.955      | 0.9666666666666667 | 0.9354838709677419 | 0.9508196721311476 |
-|     0.955      | 0.9868421052631579 | 0.9036144578313253 | 0.9433962264150944 |
-|     0.965      | 0.9264705882352942 | 0.9692307692307692 | 0.9473684210526316 |
-|      0.98      |        1.0         | 0.9452054794520548 | 0.971830985915493  |
-|      0.98      | 0.9871794871794872 |       0.9625       | 0.9746835443037976 |
-|      0.99      | 0.978021978021978  |        1.0         | 0.9888888888888888 |
-|      0.96      | 0.9361702127659575 | 0.9777777777777777 | 0.9565217391304347 |
-|     0.985      |       0.9875       | 0.9753086419753086 | 0.9813664596273292 |
+|     0.855      | 0.6511627906976745 | 0.6666666666666666 | 0.6588235294117646 |
+|     0.905      | 0.7045454545454546 | 0.8378378378378378 | 0.7654320987654323 |
+|     0.865      | 0.7352941176470589 | 0.5813953488372093 | 0.6493506493506493 |
+|     0.845      | 0.7631578947368421 | 0.5686274509803921 | 0.651685393258427  |
+|     0.915      | 0.7586206896551724 |       0.6875       | 0.7213114754098361 |
+|     0.895      |        0.7         | 0.7567567567567568 | 0.7272727272727273 |
+|      0.88      | 0.8285714285714286 | 0.6170212765957447 | 0.7073170731707318 |
+|     0.855      | 0.5666666666666667 | 0.5151515151515151 | 0.5396825396825397 |
+|     0.855      |       0.725        | 0.6170212765957447 | 0.6666666666666666 |
+|     0.865      | 0.6176470588235294 |        0.6         | 0.608695652173913  |
+|     0.905      | 0.7241379310344828 |      0.65625       | 0.6885245901639345 |
+|     0.905      |        0.75        | 0.7297297297297297 | 0.7397260273972601 |
+|     0.845      | 0.6956521739130435 | 0.6530612244897959 | 0.6736842105263158 |
+|     0.895      | 0.7560975609756098 | 0.7380952380952381 | 0.746987951807229  |
+|     0.845      | 0.7027027027027027 | 0.5652173913043478 | 0.6265060240963856 |
+|      0.84      | 0.5777777777777777 | 0.6666666666666666 | 0.619047619047619  |
+|     0.845      | 0.7317073170731707 |        0.6         | 0.6593406593406594 |
+|      0.91      | 0.7692307692307693 |       0.625        | 0.6896551724137931 |
+|      0.87      | 0.7692307692307693 | 0.6382978723404256 | 0.6976744186046512 |
+|      0.86      | 0.5769230769230769 |      0.46875       | 0.5172413793103449 |
 +----------------+--------------------+--------------------+--------------------+
 
 Trying to find weaknesses in the model by training models on the error:
 Most important features by catboost:
-+----------------------------------------------+------------+
-|                   Feature                    | Importance |
-+----------------------------------------------+------------+
-|         index_superfund-right-to-sue         |    40.0    |
-|               index_mx-missile               |    16.0    |
-|           index_education-spending           |    9.0     |
-|   index_adoption-of-the-budget-resolution    |    6.0     |
-|              index_immigration               |    6.0     |
-|          index_handicapped-infants           |    5.0     |
-|                 index_crime                  |    5.0     |
-|       index_water-project-cost-sharing       |    3.0     |
-|      index_synfuels-corporation-cutback      |    3.0     |
-|          index_physician-fee-freeze          |    2.0     |
-|      index_religious-groups-in-schools       |    2.0     |
-|       index_aid-to-nicaraguan-contras        |    1.0     |
-|           index_duty-free-exports            |    1.0     |
-| index_export-administration-act-south-africa |    1.0     |
-|            index_el-salvador-aid             |    0.0     |
-|        index_anti-satellite-test-ban         |    0.0     |
-+----------------------------------------------+------------+
++----------------------+------------+
+|       Feature        | Importance |
++----------------------+------------+
+|  index_relationship  |    27.0    |
+|  num_education-num   |    12.0    |
+| index_marital-status |    11.0    |
+|      num_fnlwgt      |    9.0     |
+|   index_occupation   |    7.0     |
+|  index_hoursperweek  |    7.0     |
+|   index_workclass    |    6.0     |
+|  index_capitalgain   |    6.0     |
+|      index_age       |    5.0     |
+|   index_education    |    3.0     |
+|  index_capitalloss   |    2.0     |
+|      index_race      |    1.0     |
+|      index_sex       |    1.0     |
+| index_native-country |    1.0     |
++----------------------+------------+
 
 Print of tree to look for potential segments with high error (use with caution)
-|--- index_duty-free-exports_0 <= 0.50
-|   |--- index_religious-groups-in-schools_0 <= 0.50
-|   |   |--- value: [0.17]
-|   |--- index_religious-groups-in-schools_0 >  0.50
-|   |   |--- value: [0.00]
-|--- index_duty-free-exports_0 >  0.50
-|   |--- value: [0.00]
+|--- index_education_15 <= 0.50
+|   |--- num_fnlwgt <= 0.50
+|   |   |--- value: [0.05]
+|   |--- num_fnlwgt >  0.50
+|   |   |--- value: [0.01]
+|--- index_education_15 >  0.50
+|   |--- index_native-country_38 <= 174538.50
+|   |   |--- value: [0.28]
+|   |--- index_native-country_38 >  174538.50
+|   |   |--- value: [0.21]
 
 
-Training models and choosing the best one
 Model results compared - showing the best out of each type after CV & HP tuning: 
 +-------+-------------------------+--------------------+--------------------+--------------------+--------------------+
 |  type |          model          |   accuracy_score   |  precision_score   |    recall_score    |      f1_score      |
 +-------+-------------------------+--------------------+--------------------+--------------------+--------------------+
-|  test |      BaselineModel      | 0.922772451209735  |        nan         |        nan         |        nan         |
-|  test |      CatboostModel      | 0.9963543211096834 | 0.876925148680488  | 0.8872238622281289 | 0.8815191235935561 |
-|  test | LogisticRegressionModel | 0.9542596070420524 | 0.7827145870567291 | 0.6279126597381696 | 0.6706670654651317 |
-| train |      BaselineModel      | 0.922771057489963  |        nan         |        nan         |        nan         |
-| train |      CatboostModel      |        1.0         |        1.0         |        1.0         |        1.0         |
-| train | LogisticRegressionModel | 0.9600600654216613 | 0.8845283628877787 | 0.6818898250545464 | 0.7449851372270838 |
+|  test |      BaselineModel      | 0.902977613562269  |        nan         |        nan         |        nan         |
+|  test |      CatboostModel      |  0.93564007824386  | 0.7782009309950413 | 0.6723841756451073 | 0.7067122764054679 |
+|  test | LogisticRegressionModel | 0.9309845685720497 | 0.7427900812716526 | 0.6292788970798957 |  0.65284823290269  |
+| train |      BaselineModel      | 0.9029846077687385 |        nan         |        nan         |        nan         |
+| train |      CatboostModel      | 0.9813432774926356 | 0.9853294235893596 | 0.8808353923522387 | 0.9245196008286916 |
+| train | LogisticRegressionModel | 0.9477624281591609 | 0.8202601104640642 | 0.718545695762335  | 0.7559537808861013 |
 +-------+-------------------------+--------------------+--------------------+--------------------+--------------------+
 
 
 Post model analysis - analyzing results of the chosen model: 
+Model results compared - showing the best out of each type after CV & HP tuning: 
++-------+-------------------------+----------------------+---------------------+---------------------+---------------------+
+|  type |          model          |    accuracy_score    |   precision_score   |     recall_score    |       f1_score      |
++-------+-------------------------+----------------------+---------------------+---------------------+---------------------+
+|  test |      BaselineModel      | 0.23265993265993265  |         nan         |         nan         |         nan         |
+|  test |      CatboostModel      | 0.42464646464646466  | 0.23419548614994534 | 0.27572432306255834 | 0.23428428646406863 |
+|  test | LogisticRegressionModel | 0.055353535353535356 | 0.04928571428571428 | 0.06645833333333333 | 0.04880749339795961 |
+| train |      BaselineModel      |  0.232484212322922   |         nan         |         nan         |         nan         |
+| train |      CatboostModel      |  0.5673451100870455  | 0.43501405942088256 | 0.36793797912104453 | 0.35878343817421593 |
+| train | LogisticRegressionModel | 0.06642771804062127  |  0.0493081050234385 |  0.0702279842050185 | 0.04906042234237938 |
++-------+-------------------------+----------------------+---------------------+---------------------+---------------------+
+
+
+Post model analysis - analyzing results of the chosen model: 
 Top 100 Feature importance (in %, 100 = the most important one):
-{'num_TSH': 100, 'num_TT4': 60, 'num_T3': 35, 'num_T4U': 23, 'num_FTI': 17, 'index_on_thyroxine': 9, 'index_referral_source': 7, 'index_thyroid_surgery': 3, 'num_age': 3, 'index_sex': 3, 'index_TT4_measured': 2, 'index_FTI_measured': 1, 'index_tumor': 0, 'index_psych': 0, 'index_I131_treatment': 0, 'index_sick': 0, 'index_query_hyperthyroid': 0, 'index_on_antithyroid_medication': 0, 'index_query_hypothyroid': 0, 'index_TSH_measured': 0, 'index_lithium': 0, 'index_T4U_measured': 0, 'index_pregnant': 0, 'index_goitre': 0, 'index_TBG_measured': 0, 'index_query_on_thyroxine': 0, 'index_hypopituitary': 0, 'index_T3_measured': 0}
+{'num_On_base_pct': 100, 'num_Slugging_pct': 99, 'index_Position': 98, 'num_Walks': 92, 'num_Batting_average': 87, 'num_Number_seasons': 77, 'num_RBIs': 76, 'num_Strikeouts': 70, 'num_Games_played': 68, 'num_Runs': 68, 'num_Hits': 67, 'num_Triples': 66, 'num_At_bats': 65, 'num_Doubles': 59, 'num_Home_runs': 59, 'num_Fielding_ave': 36}
 
 confusion matrix on the test set
-[[ 36   1   1]
- [  0 696   1]
- [  1   0  19]]
+[[244   1   2]
+ [  1   4   4]
+ [  7   1   4]]
+
+Top 100 Feature importance (in %, 100 = the most important one):
+{'index_histologic-type': 100, 'index_sex': 89, 'index_degree-of-diffe': 75, 'index_age': 70, 'index_axillar': 46, 'index_mediastinum': 21, 'index_peritoneum': 21, 'index_bone': 20, 'index_skin': 19, 'index_liver': 19, 'index_abdominal': 14, 'index_neck': 13, 'index_lung': 12, 'index_pleura': 6, 'index_supraclavicular': 3, 'index_brain': 2, 'index_bone-marrow': 0}
+
+confusion matrix on the test set
+[[ 0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0]
+ [ 0  5  0  0  0  0  0  0  0  3  0  0  0  0  0  0]
+ [ 0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0]
+ [ 0  0  1  0  0  0  0  0  0  1  0  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0  2  0  1  0  0  0  0  0  0]
+ [ 0  0  1  0  0  0  0  0  3  1  0  0  0  1  1  0]
+ [ 0  0  0  0  0  0  0  2  0 19  0  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0  0  0  0  2  0  0  0  0  0]
+ [ 0  0  2  0  0  0  1  0  0  1  0  1  0  0  0  0]
+ [ 0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0]
+ [ 0  0  0  0  0  0  0  0  1  0  0  1  0  0  0  0]
+ [ 0  0  1  0  0  0  1  0  1  1  2  1  0  0  1  0]
+ [ 0  0  0  0  0  0  0  0  3  2  0  0  0  0  0  0]]
 

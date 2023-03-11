@@ -12,12 +12,13 @@ from chester.run.user_classes import Data, ModelRun, TimeSeriesHandler, TextFeat
 import yfinance as yf
 import ml_datasets
 
-matplotlib.use('TkAgg')
+# matplotlib.use('TkAgg')
 target_column = 'target'
 import matplotlib.pyplot as plt
 
+
 # Disable interactive mode
-plt.ioff()
+# plt.ioff()
 
 
 ################################################################################################
@@ -381,9 +382,42 @@ def load_dataset(name):
 # df = load_dataset('vehicle')
 # df = load_dataset('hepatitis')
 # df = load_dataset('vote')
-df = load_dataset('hypothyroid')
+# df = load_dataset('hypothyroid')
 
 
+# df = load_dataset('ionosphere')
+# df = load_dataset('waveform-5000')
+# df = load_dataset('iris')
+# df = load_dataset('zoo')
+# df = load_dataset('BNG(anneal,nominal,1000000)')
+# df = load_dataset('BNG(anneal.ORIG,nominal,1000000)')
+# df = load_dataset('BNG(kr-vs-kp)')
+# df = load_dataset('BNG(colic,nominal,1000000)')
+# df = load_dataset('BNG(optdigits)')
+# df = load_dataset('BNG(credit-a,nominal,1000000)')
+# df = load_dataset('BNG(page-blocks,nominal,295245)')
+# df = load_dataset('BNG(credit-g,nominal,1000000)')
+# df = load_dataset('BNG(cylinder-bands,nominal,1000000)')
+# df = load_dataset('BNG(segment)')
+# df = load_dataset('BNG(glass,nominal,137781)')
+# df = load_dataset('BNG(soybean)')
+# df = load_dataset('CovPokElec')
+# df = load_dataset('covertype')
+# df = load_dataset('electricity')
+
+# df = load_dataset('pokerhand')
+# df = load_dataset('SEA(50)')
+# df = load_dataset('lung-cancer')
+# df = load_dataset('molecular-biology_promoters')
+# df = load_dataset('primary-tumor')
+# df = load_dataset('shuttle-landing-control')
+# df = load_dataset('adult')
+# df = load_dataset('covertype')
+# df = load_dataset('yeast')
+# df = load_dataset('satimage')
+# df = load_dataset('abalone')
+# df = load_dataset('kropt')
+df = load_dataset('baseball')
 
 madcat_collector = run_madcat(Data(df=df, target_column='target'), model_run=ModelRun(n_models=2))
 # madcat_collector = run_madcat(Data(df=df, target_column='target'),
