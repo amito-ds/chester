@@ -417,7 +417,8 @@ def load_dataset(name):
 # df = load_dataset('satimage')
 # df = load_dataset('abalone')
 # df = load_dataset('kropt')
-df = load_dataset('baseball')
+# df = load_dataset('yokohoma2')
+df = load_dataset('cpu_small')
 
 madcat_collector = run_madcat(Data(df=df, target_column='target'), model_run=ModelRun(n_models=2))
 # madcat_collector = run_madcat(Data(df=df, target_column='target'),

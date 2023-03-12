@@ -2,12 +2,12 @@ Full report to analyze my data:
 
 Data information:
 Data Information Report
-Problem Type: Multiclass classification
+Problem Type: Regression
 Target Variable: target
-Feature Types: {'numeric': ['lym_nodes_dimin', 'lym_nodes_enlar', 'no_of_nodes_in'], 'boolean': [], 'text': [], 'categorical': ['lymphatics', 'block_of_affere', 'bl_of_lymph_c', 'bl_of_lymph_s', 'by_pass', 'extravasates', 'regeneration_of', 'early_uptake_in', 'changes_in_lym', 'defect_in_node', 'changes_in_node', 'changes_in_stru', 'special_forms', 'dislocation_of', 'exclusion_of_no'], 'time': [], 'id': []}
-Loss Function: Cross entropy
-Evaluation Metrics: ['Accuracy', 'Precision', 'Recall', 'F1']
-Optional Models: {'catboost', 'logistic', 'baseline-mode'}
+Feature Types: {'numeric': ['lread', 'lwrite', 'scall', 'sread', 'swrite', 'fork', 'exec', 'rchar', 'wchar', 'runqsz', 'freemem', 'freeswap'], 'boolean': [], 'text': [], 'categorical': [], 'time': [], 'id': []}
+Loss Function: R squared
+Evaluation Metrics: ['R2', 'MSE', 'MAE', 'MAPE']
+Optional Models: {'baseline-average', 'catboost', 'linear', 'baseline-median'}
 
 
 features engineering process for the data:
@@ -16,68 +16,11 @@ features statistics for the data. Analyzed by groups (text, numeric, categorical
 Numerical Feature statistics:
 
 Categorical Feature statistics:
-Feature stats:
-                col # unique # missing                       Distribution  \
-10  regeneration_of        2         0                   no: 93%, yes: 7%   
-2   block_of_affere        2         0                  yes: 55%, no: 45%   
-4    changes_in_lym        3         0  oval: 52%, round: 44%, bean: 4...   
-0   changes_in_node        4         0  lac_margin: 51%, lacunar: 28%,...   
-14  early_uptake_in        2         0                  yes: 70%, no: 30%   
-13     extravasates        2         0                  yes: 51%, no: 49%   
-7           by_pass        2         0                  no: 76%, yes: 24%   
-11   dislocation_of        2         0                  yes: 66%, no: 34%   
-6    defect_in_node        4         0  lac_central: 34%, lacunar: 33%...   
-1     bl_of_lymph_s        2         0                   no: 95%, yes: 5%   
-
-                     Sample Top 5 values coverage  
-10                  yes, no                  100%  
-2                   yes, no                  100%  
-4         round, bean, oval                  100%  
-0   no, lac_margin, lacunar                  100%  
-14                  yes, no                  100%  
-13                  yes, no                  100%  
-7                   yes, no                  100%  
-11                  no, yes                  100%  
-6   no, lacunar, lac_margin                  100%  
-1                   yes, no                  100%  
-
 ** model pre analysis report:
 Feature stats:
-            col # unique # missing                       Distribution  \
-0  target_label        4         0  metastases: 55%, malign_lymph:...   
+            col # unique # missing   max  min    avg   std            CI  \
+0  target_label       56         0  99.0  0.0  83.97  18.4  (83.6, 84.3)   
 
-                              Sample Top 5 values coverage  
-0  normal, metastases, malign_lym...                  100%  
-
-values counts for categorical target to predict:
-metastases      81
-malign_lymph    61
-fibrosis         4
-normal           2
-Name: target, dtype: int64
-
-top 50 with lowest partial pvalue for categorical feat based on chi square:
-[('lymphatics', 1.5107094430969193e-29), ('changes_in_node', 2.987921496927272e-20), ('defect_in_node', 2.427749682478937e-19), ('changes_in_lym', 4.472109702198352e-13), ('regeneration_of', 7.642997887719277e-13), ('block_of_affere', 2.2506424669517005e-07), ('special_forms', 1.4313092124087244e-06), ('changes_in_stru', 5.751755689439823e-06), ('early_uptake_in', 1.6190321594722196e-05), ('bl_of_lymph_s', 0.00024676665491348606), ('by_pass', 0.0014183468506184487), ('exclusion_of_no', 0.002872271410146594), ('dislocation_of', 0.006574013431958962), ('bl_of_lymph_c', 0.06996442272413549), ('extravasates', 0.21862297621289886)]
-
-Training models and choosing the best one
-Model results compared - showing the best out of each type after CV & HP tuning: 
-+-------+-------------------------+--------------------+--------------------+--------------------+--------------------+
-|  type |          model          |   accuracy_score   |  precision_score   |    recall_score    |      f1_score      |
-+-------+-------------------------+--------------------+--------------------+--------------------+--------------------+
-|  test |      BaselineModel      | 0.5159420289855072 |        nan         |        nan         |        nan         |
-|  test |      CatboostModel      | 0.8297101449275364 | 0.7022792022792024 | 0.7018686868686869 | 0.6853725532198184 |
-|  test | LogisticRegressionModel | 0.805072463768116  | 0.7577625152625153 | 0.7445202020202021 | 0.7310827722902026 |
-| train |      BaselineModel      | 0.5168868980963046 |        nan         |        nan         |        nan         |
-| train |      CatboostModel      | 0.9681970884658455 | 0.8829742162491566 | 0.861674173484278  | 0.8680549596179734 |
-| train | LogisticRegressionModel |        1.0         |        1.0         |        1.0         |        1.0         |
-+-------+-------------------------+--------------------+--------------------+--------------------+--------------------+
-
-
-Post model analysis - analyzing results of the chosen model: 
-Top 100 Feature importance (in %, 100 = the most important one):
-{'index_changes_in_node': 100, 'index_special_forms': 66, 'index_block_of_affere': 50, 'index_changes_in_stru': 31, 'num_no_of_nodes_in': 29, 'index_changes_in_lym': 25, 'index_defect_in_node': 19, 'num_lym_nodes_dimin': 15, 'num_lym_nodes_enlar': 15, 'index_lymphatics': 13, 'index_early_uptake_in': 11, 'index_exclusion_of_no': 8, 'index_extravasates': 7, 'index_dislocation_of': 4, 'index_by_pass': 1, 'index_regeneration_of': 1, 'index_bl_of_lymph_s': 0, 'index_bl_of_lymph_c': 0}
-
-confusion matrix on the test set
-[[ 7  3]
- [ 2 18]]
+  median        top_vals  bottom_vals  
+0   89.0  99.0,98.0,97.0  0.0,1.0,2.0  
 

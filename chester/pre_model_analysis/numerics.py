@@ -128,37 +128,41 @@ class NumericPreModelAnalysis:
         return True if len(self.cols) > 0 else False
 
     def sort_by_pvalue(self):
-        import warnings
-        warnings.simplefilter("ignore")
+        try:
+            import warnings
+            warnings.simplefilter("ignore")
 
-        problem_type = self.data_info.problem_type_val
+            problem_type = self.data_info.problem_type_val
 
-        if problem_type in ["Regression"]:
-            num_groups = min(floor(self.data_info.rows / 20), 10)
-            kmeans = KMeans(n_clusters=num_groups, n_init=10)
-            kmeans.fit(self.target_df)
-            target_labels = kmeans.labels_
+            if problem_type in ["Regression"]:
+                num_groups = max(2, min(floor(self.data_info.rows / 20), 10))
+                kmeans = KMeans(n_clusters=num_groups, n_init=10)
+                print("wow this is num_groups", num_groups)
+                kmeans.fit(self.target_df)
+                target_labels = kmeans.labels_
 
-        feature_pvalue_list = []
-        for col in self.cols:
-            data_col = self.data[[col]]
-            num_groups = min(floor(self.data_info.rows / 20), 10)
-            kmeans = KMeans(n_clusters=num_groups, n_init=10)
-            if self.data[col].isna().any():
-                data_col = self.median_imputation(data_col)
-            kmeans.fit(data_col)
-            labels = kmeans.labels_
-            if problem_type == "Regression":
-                contingency_table = pd.crosstab(index=labels, columns=target_labels)
-                chi2, pvalue, _, _ = chi2_contingency(contingency_table)
-            else:
-                contingency_table = pd.crosstab(index=labels, columns=self.target)
-                chi2, pvalue, _, _ = chi2_contingency(contingency_table)
-            feature_pvalue_list.append((col, pvalue))
+            feature_pvalue_list = []
+            for col in self.cols:
+                data_col = self.data[[col]]
+                num_groups = min(floor(self.data_info.rows / 20), 10)
+                kmeans = KMeans(n_clusters=num_groups, n_init=10)
+                if self.data[col].isna().any():
+                    data_col = self.median_imputation(data_col)
+                kmeans.fit(data_col)
+                labels = kmeans.labels_
+                if problem_type == "Regression":
+                    contingency_table = pd.crosstab(index=labels, columns=target_labels)
+                    chi2, pvalue, _, _ = chi2_contingency(contingency_table)
+                else:
+                    contingency_table = pd.crosstab(index=labels, columns=self.target)
+                    chi2, pvalue, _, _ = chi2_contingency(contingency_table)
+                feature_pvalue_list.append((col, pvalue))
 
-        sorted_list = sorted(feature_pvalue_list, key=lambda x: x[1], reverse=False)
-        self.cols_sorted_with_pvalue = sorted_list
-        return [x[0] for x in sorted_list]
+            sorted_list = sorted(feature_pvalue_list, key=lambda x: x[1], reverse=False)
+            self.cols_sorted_with_pvalue = sorted_list
+            return [x[0] for x in sorted_list]
+        except:
+            return self.cols
 
     def analyze_pvalue(self, is_plot=True, top_features=10):
         from chester.util import ReportCollector, REPORT_PATH
