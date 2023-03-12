@@ -5,7 +5,7 @@
 <script>
 $(document).ready(function() {
     $('#my-table').DataTable({
-        ajax: '/Users/amitosi/PycharmProjects/chester/projects/project_example.csv',
+        ajax: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS02TfroKkbnydEBUjwO8gEYWgBfuAjWXCpSp_YVMvNV_YSDq-elWdyPdsLV8-6b-u9LJMgchhfnsQ-/pub?gid=0&single=true&output=csv',
         columns: [
             {data: '#'},
             {data: 'ID'},
