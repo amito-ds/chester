@@ -54,11 +54,7 @@ class ImageDescription:
 
 
 def get_image_captioning_models():
-    models_dir = "./models"
-
     # Check if models directory exists
-    if not os.path.exists(models_dir):
-        os.makedirs(models_dir)
     print("=> Loading Image Caption Models...")
 
     model = VisionEncoderDecoderModel.from_pretrained("nlpconnect/vit-gpt2-image-captioning")

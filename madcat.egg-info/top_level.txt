@@ -1,4 +1,5 @@
 chester
 diamond
+example_notebooks
 tamtam
 vis

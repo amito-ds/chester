@@ -126,6 +126,8 @@ diamond/model_training/model_results.py
 diamond/model_training/train_single.py
 diamond/post_model_analysis/__init__.py
 diamond/post_model_analysis/post_model.py
+example_notebooks/__init__.py
+example_notebooks/main.py
 madcat.egg-info/PKG-INFO
 madcat.egg-info/SOURCES.txt
 madcat.egg-info/dependency_links.txt
