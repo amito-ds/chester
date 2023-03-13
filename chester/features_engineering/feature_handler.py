@@ -52,13 +52,12 @@ class FeatureHandler:
         return size
 
     def handle_text(self):
-        embedding_size = self.decide_embedding_size()
-        print(f"Feature: {self.col_name} calculating {embedding_size} dim embedding")
-        embedding_size_method = int(embedding_size / 3)
         data = pd.DataFrame({self.col_name: self.column})
-
         if self.text_feature_extraction is not None:
             feat_ext = self.text_feature_extraction
+            print(
+                f"Feature: {self.col_name} calculating"
+                f" {feat_ext.corex_dim + feat_ext.bow_dim + feat_ext.tfidf_dim} dim embedding")
             embedding, _ = get_embeddings(
                 training_data=data,
                 test_data=None,
@@ -72,6 +71,9 @@ class FeatureHandler:
             )
 
         else:
+            embedding_size = self.decide_embedding_size()
+            print(f"Feature: {self.col_name} calculating {embedding_size} dim embedding")
+            embedding_size_method = int(embedding_size / 3)
             embedding, _ = get_embeddings(training_data=data, split_data=False, text_column=self.col_name,
                                           corex_dim=embedding_size_method, bow_dim=embedding_size_method,
                                           tfidf_dim=embedding_size_method)

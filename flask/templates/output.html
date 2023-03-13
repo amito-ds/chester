@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Output</title>
+</head>
+<body>
+    <h1>Output</h1>
+
+    <table>
+        {% for index, row in output.iterrows() %}
+            {% if loop.first %}
+                <tr>
+                    {% for column in row.index %}
+                        <th>{{ column }}</th>
+                    {% endfor %}
+                </tr>
+            {% endif %}
+            <tr>
+                {% for column in row %}
+                    <td>{{ column }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+
+</body>
+</html>

@@ -8,6 +8,7 @@ from torchvision import models
 from tqdm import tqdm
 
 from diamond.user_classes import ImagesData, ImageModel
+import os
 
 
 class ImageModelTraining:
@@ -29,29 +30,16 @@ class ImageModelTraining:
         self.is_colored = self.images_data.is_colored
 
     def get_model(self):
+        MODEL_DIR = "/Users/amitosi/PycharmProjects/chester/diamond/model_training/saved_models"
         supported_models = ["EfficientNetB0", "EfficientNetB4", "EfficientNetB7", "ResNet50", "ResNet101",
                             "DenseNet121", "DenseNet161", "DenseNet201"]
-        if self.image_model.network_name == "EfficientNetB0":
-            model = hub.load('rwightman/pytorch-image-models', 'efficientnet_b0', pretrained=True)
-        elif self.image_model.network_name == "EfficientNetB4":
-            model = hub.load('rwightman/pytorch-image-models', 'efficientnet_b4', pretrained=True)
-        elif self.image_model.network_name == "EfficientNetB7":
-            model = hub.load('rwightman/pytorch-image-models', 'efficientnet_b7', pretrained=True)
-        elif self.image_model.network_name == "ResNet50":
-            model = models.resnet50(pretrained=True)
-        elif self.image_model.network_name == "ResNet101":
-            model = models.resnet101(pretrained=True)
-        elif self.image_model.network_name == "DenseNet121":
-            model = models.densenet121(pretrained=True)
-        elif self.image_model.network_name == "DenseNet161":
-            model = models.densenet161(pretrained=True)
-        elif self.image_model.network_name == "DenseNet169":
-            model = models.densenet169(pretrained=True)
-        elif self.image_model.network_name == "DenseNet201":
-            model = models.densenet201(pretrained=True)
-        else:
+        if self.image_model.network_name not in supported_models:
             raise ValueError(
                 f"Unsupported network name: {self.image_model.network_name}, please choose one of: {supported_models}")
+        model_path = os.path.join(MODEL_DIR, f"{self.image_model.network_name}.pt")
+        if not os.path.exists(model_path):
+            raise ValueError(f"No saved model found for {self.image_model.network_name}, please save the model first")
+        model = torch.load(model_path, map_location=self.device)
         return model
 
     def load_model(self):

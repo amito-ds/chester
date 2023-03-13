@@ -52,12 +52,12 @@ diamond_collector = run(images=X[0:100],
                         image_shape=image_shape,
                         labels=y[0:100],
                         get_image_description=False,
-                        is_augment_data=True,
+                        is_augment_data=False,
                         detect_faces=False,
                         image_augmentation_info=ImagesAugmentationInfo(aug_prop=0.2),
                         is_train_model=True, image_models=image_models,
                         is_post_model_analysis=True,
-                        plot=True)
+                        plot=False)
 
 # labels handling
 # image convert to np nd array
