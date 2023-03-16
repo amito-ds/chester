@@ -2,110 +2,137 @@ Full report to analyze my data:
 
 Data information:
 Data Information Report
-Problem Type: Regression
-Target Variable: target
-Feature Types: {'numeric': ['lread', 'lwrite', 'scall', 'sread', 'swrite', 'fork', 'exec', 'rchar', 'wchar', 'runqsz', 'freemem', 'freeswap'], 'boolean': [], 'text': [], 'categorical': [], 'time': [], 'id': []}
-Loss Function: R squared
-Evaluation Metrics: ['R2', 'MSE', 'MAE', 'MAPE']
-Optional Models: {'baseline-average', 'catboost', 'linear', 'baseline-median'}
+Problem Type: No target variable
+Feature Types: {'numeric': [], 'boolean': [], 'text': ['text'], 'categorical': ['target'], 'time': [], 'id': []}
+Evaluation Metrics: None
+Optional Models: None
 
 
+Cleaning and preprocessing text column
+The following cleaning steps will be applied to clean column 'text': Removing punctuation, Removing numbers, Removing whitespaces, Removing empty lines, Lowercasing text, Removing stopwords, Removing accented characters, Removing special characters, Removing html tags.
+text column preprocessing
+The following preprocessing steps will be applied to the column 'text': Stemming text, Tokenizing text.
 features engineering process for the data:
+Extracting embedding
+First, Extracting Corex topic model embeddings with dimension 30
+Next, Extracting TF-IDF embeddings with dimension 30
+Then, Extracting bag-of-words embeddings with dimension 30
+Lastly, All embeddings have been concatenated
 features statistics for the data. Analyzed by groups (text, numeric, categorical) if exists:
 
 Numerical Feature statistics:
+Feature stats:
+                      col # unique # missing   max  min   avg   std  \
+69         text_bow_enjoy       12         0   1.0  0.0  0.03  0.11   
+60        text_bow_arthur        9         0   1.0  0.0  0.02  0.09   
+43        text_tfidf_seek       69         0  0.73  0.0  0.06  0.15   
+14    text_corex_topic_15      644         0  0.95  0.0  0.03  0.16   
+39       text_tfidf_enjoy       23         0   1.0  0.0  0.03  0.12   
+26    text_corex_topic_27      644         0  0.95  0.0  0.06   0.2   
+67  text_bow_jack sparrow       13         0  0.75  0.0  0.02   0.1   
+34        text_tfidf_look        6         0   1.0  0.0  0.04  0.19   
+76          text_bow_male       14         0   1.0  0.0  0.02  0.11   
+16    text_corex_topic_17      644         0  0.95  0.0  0.02  0.08   
+
+              CI median        top_vals    bottom_vals  
+69  (0.02, 0.03)    0.0   1.0,0.71,0.58  0.0,0.25,0.29  
+60  (0.02, 0.03)    0.0    1.0,0.5,0.45  0.0,0.25,0.29  
+43  (0.05, 0.07)    0.0  0.73,0.67,0.63   0.0,0.2,0.21  
+14  (0.02, 0.04)    0.0  0.95,0.95,0.95    0.0,0.0,0.0  
+39  (0.02, 0.03)    0.0   1.0,0.73,0.67  0.0,0.25,0.31  
+26  (0.05, 0.07)    0.0  0.95,0.95,0.95    0.0,0.0,0.0  
+67  (0.02, 0.03)    0.0  0.75,0.71,0.58  0.0,0.24,0.29  
+34  (0.03, 0.05)    0.0   1.0,0.77,0.71  0.0,0.52,0.53  
+76  (0.02, 0.03)    0.0   1.0,0.82,0.71  0.0,0.28,0.29  
+16  (0.02, 0.03)    0.0  0.95,0.93,0.92    0.0,0.0,0.0  
+
 
 Categorical Feature statistics:
-** model pre analysis report:
 Feature stats:
-            col # unique # missing   max  min    avg   std            CI  \
-0  target_label       56         0  99.0  0.0  83.97  18.4  (83.6, 84.3)   
+      col # unique # missing                       Distribution  \
+0  target        3         0  chat: 33%, pirate: 33%, arthur...   
 
-  median        top_vals  bottom_vals  
-0   89.0  99.0,98.0,97.0  0.0,1.0,2.0  
+                 Sample Top 5 values coverage  
+0  pirate, arthur, chat                  100%  
 
-Training models and choosing the best one
-Model results compared - showing the best out of each type after CV & HP tuning: 
-+-------+-----------------------+--------------------+---------------------+--------------------------------+
-|  type |         model         | mean_squared_error | mean_absolute_error | mean_absolute_percentage_error |
-+-------+-----------------------+--------------------+---------------------+--------------------------------+
-|  test |     BaselineModel     | 339.9238355859375  |    10.67028078125   |     1.2971340478402726e+16     |
-|  test |     CatboostModel     |  7.66567846219459  |  1.9633138916435797 |       453909037608871.4        |
-|  test | LinearRegressionModel | 97.42872002030671  |  6.175968317158075  |       5775710516294991.0       |
-| train |     BaselineModel     | 339.7268709765625  |  10.662678632812499 |     1.2969575718259682e+16     |
-| train |     CatboostModel     | 1.7249303157595601 |  0.9862492117112721 |       96154714033338.14        |
-| train | LinearRegressionModel | 95.58034603239503  |  6.141589844367294  |       5719052283450677.0       |
-+-------+-----------------------+--------------------+---------------------+--------------------------------+
+Text Statistics:
+Extracting Embedding
+** Analyzing text Column
+Data quality stats:
+Number of rows with missing data: 0.0
+Number of unique words: 1841
+Average type-token ratio: 0.96
+Median type-token ratio: 1.00
+Average number of words per text: 9.12
+Median number of words per text: 7.00
+Average number of sentences per text: 1.00
+Median number of sentences per text: 1.00
+Average length of text: 57.56
+Median length of text: 42.00
+
+Count word frequency for basic text analysis.
+Report shows most common words, giving insight into text topic and content:
+[('lady', 146), ('seeks', 131), ('yo', 91), ('male', 78), ('jack', 76), ('rship', 69), ('arthur', 68), ('looking', 61), ('build', 56), ('attractive', 56), ('fun', 54), ('good', 52), ('slim', 50), ('fship', 45), ('like', 45), ('relationship', 44), ('married', 42), ('movies', 42), ('ns', 40), ('sparrow', 38), ('likes', 38), ('single', 38), ('seeking', 37), ('age', 36), ('elizabeth', 34), ('would', 34), ('sd', 34), ('open', 33), ('music', 32), ('honest', 32), ('turner', 31), ('gsoh', 31), ('guy', 31), ('ft', 31), ('im', 31), ('oh', 30), ('non', 30), ('meet', 30), ('genuine', 30), ('well', 30), ('man', 30), ('witch', 30), ('scene', 29), ('times', 29), ('poss', 29), ('woman', 29), ('smoker', 28), ('wltm', 28), ('tall', 28), ('friendship', 28), ('fit', 27), ('ni', 27), ('must', 27), ('female', 27), ('life', 27), ('sir', 26), ('dining', 26), ('going', 26), ('away', 26), ('enjoy', 25), ('right', 25), ('social', 25), ('walks', 25), ('drinker', 24), ('quiet', 23), ('beach', 22), ('squeak', 22), ('gibbs', 21), ('knight', 21), ('gent', 21), ('interests', 21), ('please', 21), ('dont', 20), ('children', 20), ('love', 19), ('travel', 19), ('galahad', 19), ('casual', 19), ('sense', 19), ('ss', 19), ('back', 19), ('swann', 19), ('living', 19), ('pintel', 19), ('ok', 18), ('caring', 18), ('saw', 18), ('nonsmoker', 17), ('long', 17), ('launcelot', 17), ('black', 17), ('humour', 17), ('soh', 17), ('dtoe', 17), ('ship', 17), ('us', 17), ('employed', 17), ('could', 17), ('view', 17), ('jones', 17)]
+Sentiment Statistics
++--------------------------------+
+|      Sentiment Statistics      |
++-----------+-------+------------+
+| Sentiment | Count | Percentage |
++-----------+-------+------------+
+|  Positive |  337  |   37.4%    |
+|  Negative |  111  |   12.3%    |
+|  Neutral  |  452  |   50.2%    |
++-----------+-------+------------+
 
 
-Post model analysis - analyzing results of the chosen model: 
-Top 100 Feature importance (in %, 100 = the most important one):
-{'num_runqsz': 100, 'num_freeswap': 88, 'num_freemem': 27, 'num_exec': 18, 'num_sread': 8, 'num_fork': 7, 'num_scall': 7, 'num_swrite': 4, 'num_rchar': 4, 'num_lread': 2, 'num_wchar': 2, 'num_lwrite': 1}
+Corex topic analysis:
+	Topic 1: gsoh, abbreviations, travel employed, slimmedium build ft, nat fun, happy nat, music movies, walks beach, guy late, late taurus
+	Topic 2: lady late, near, fitness, dinner, parties, camping walks, adventurous yo sensitive, seeks genuine female, genuine female friendship, tall fair
+	Topic 3: jack picks, arthur, sea, vegetarian beaches, food vegetarian, wltm genu, ing, movies long, dining movies, good looking
+	Topic 4: holy, walks quiet, genu ine, ine person, reading fish ing, vegetarian beaches reading, towers, interests seeks, seeks genuine, genuine female
+	Topic 5: seeks female friendship, dad, affectionateloyal seeks, lady rship, parties seeks female, likes meet lady, smoker outdoor, outdoor life, life camping walks, camping walks music
+	Topic 6: nd non, non drinker, employed, female, herbert, guy, sound, share, im good, caring
+	Topic 7: im, nationality, suited, cuddly, make, deck, gardening, friendly dte seeks, going, lady ns
+	Topic 8: head, likes pamper cmusic, nationality age open, month charters, nature walks, lots friends, attract, yo, shut, animals
+	Topic 9: fun loving, outgoing, outgoing guy, rship hope sight, harley rider seeks, movies dinner, vegetarian slim travelled, slim travelled beach, religious loves, australian
+	Topic 10: humour soh sense, lady size unimportant, seeks lady size, drives, car, davy jones, yo single dad, tell, sought, charters
+	Topic 11: plus, suburbs, sought aussie, soh sense humour, hat, friendship view relationship, attract yo, fitness cafes, guy seeking greek, sports
+	Topic 12: non smoker vegetarian, yo sensitive non, sd seeking fship, year, subs, yo male seeks, seek ing casual, table, cooking gsoh, goes
+	Topic 13: ship, clop, fish ing friendship, dont forget free, bellamy, dtoe earth dont, ss social smoker, lady fship relationship, cafes movies, old woman
+	Topic 14: attractive easy going, seeks, similar wont disappointed, travel employed honest, quality, ala lots, slim, person feel, harley, easy going intelligent
+	Topic 15: norrington, cm, gentleman, ine person dtoe, handyman seeks lady, friendly, fish, seek, religious loves horses, hi swm
+	Topic 16: music, life hurry, enjoys outdoors, long drives, scene, lost, kids, supporting happy nat, friendshiprelationship, humour understanding
+	Topic 17: sir, movies long drives, galahad, romantic, nrl movies, cutler beckett, male enjoys life, enjoys life dining, meet dtoe, humour nd non
+	Topic 18: sd likes, likes nrl, advertise, perfect, social drinker, taurus, guard oh, sd social, ss social, reading fish
+	Topic 19: night, ft slim build, greek lady, character, quiet nights home, fem, fship, greek, yo single, rship suited nationality
+	Topic 20: life camping, bedevere, single male, poss rship genuine, ala lots friends, lots friends lonely, good morals, villager, guy seeking, horses
+	Topic 21: ala letters, easy going, fship possible rship, letters answered, easygoing, soh sense, lady wltm genu, dancing, handyman, festival weekend
+	Topic 22: trumpets, explore new, cafes, standing, honest, dining, man yo, disappointed, encounters, yo looking
+	Topic 23: travelled beach loving, slimmed build gsoh, earth yo slim, new beginnings, beginnings im, european, build gsoh high, beach loving seeks, wltm genu ine, knight
+	Topic 24: squeak, leaves, room, old woman like, head knight, photo, friends lonely, slim shy ss, articulate, asian
+	Topic 25: lady slim med, slim med build, match, weekends away poss, like meet dtoe, interests, meet dtoe earth, build outings weekends, outings weekends away
+	Topic 26: casual meetings, lady fship, loving likes cooking, towers especially country, robin, adventurous, soh seeks, key, affair married lady, yo male
+	Topic 27: years old, lady sought, asian lady, enjoy, beach, pamper cmusic, discreet, attractive yo, years old woman, fair
+	Topic 28: food vegetarian beaches, dead, land, life dining, unimportant fun good, gent affectionateloyal seeks, seeking
+	Topic 29: future, fem age, age open, married handyman seeks, sexy, poss perm rship, needs looking, slim med, free, nat
+	Topic 30: sgl, adventurous yo, outdoor life camping, seeks children, children ok, loving seeks, looking, chest, quiet
+	Topic 31: late taurus fitness, sensitive, ladies, month, dining movies long, dont forget, classy lady, asian lady sought, racing gardening, new
+	Topic 32: things life, married asian, hope sight, arthur say, camping, lady slim, weekend month charters, black knight
+	Topic 33: away poss perm, exercise, happy, wyvern, weekends away, build gsoh, cut, social, ss sd, hurry
+	Topic 34: brave, minstrel singing, oh, taller, casual fun age, mid, like meet lady
+	Topic 35: fit seeks, man, pintel ragetti, like meet, fit seeks lady, shy ss sd, want, humour nd
+	Topic 36: yes, male integrity good, integrity good morals, whats, prof, classy lady slim, likes pamper
+	Topic 37: im slimmed build, letters, build outings, social drinker children, prince, life, slimmed
+	Topic 38: gardening travel, port royal eitc, weekend, theatre, yeah, pamper, aussie, time dtoe soh, greek guy seeking, single mum
+	Topic 39: likes quiet, door, beginnings
+	Topic 40: women, prefer, living, meet, age, supporting, sight maybe, mature
+	Topic 41: dark, self, ill
+	Topic 42: dont, outings weekends, picks, smoker ns, times, thats, perm rship suited, sense humour soh
+	Topic 43: things, interests seeks genuine
+	Topic 44: hand, captain
+	Topic 45: ns non, attractive classy lady, similar interests
+	Key sentences out of based on LSA algorithm: ['male fit runninggym seeks slim lady ns fship ltr.', 'herpes male seeks fem rship enjoys outdoors movies dinners.', 'norrington vomits side spits.', 'minstrel singing brave sir robin ran away.', 'dead person feel fine.'] 
 
-Learning curve by training examples
-+-------------+--------------------+------------------------+--------------------+-----------------------+
-| train_sizes | train_scores_mean  |    train_scores_std    |  test_scores_mean  |    test_scores_std    |
-+-------------+--------------------+------------------------+--------------------+-----------------------+
-|     320     | 0.9999873096806592 | 7.499701710678154e-06  | 0.933903459062922  |  0.029527176785413604 |
-|     1040    | 0.9989209489923665 | 9.329328820421618e-05  | 0.9644796478404409 |  0.004611909425826915 |
-|     1760    | 0.997302766897539  | 0.00016936753798904808 | 0.9730086215022867 | 0.0029584780203475206 |
-|     2480    | 0.9958992952107911 | 0.0001266095944687796  | 0.9756211077638705 | 0.0015837401800027566 |
-|     3200    | 0.9949232579763475 | 0.00018942614026826033 | 0.9773805385338017 | 0.0015806510615040458 |
-+-------------+--------------------+------------------------+--------------------+-----------------------+
-
-
-Boostrap metrics, sample 20 results:
-+--------------------+---------------------+--------------------------------+
-| mean_squared_error | mean_absolute_error | mean_absolute_percentage_error |
-+--------------------+---------------------+--------------------------------+
-| 10.745748499750125 |  2.2368465620272286 |       839976954878861.2        |
-| 6.933899544088442  |  1.8654423716038397 |       200198357156945.9        |
-| 9.048536319750953  |  2.1538918277604835 |       504000142150695.7        |
-| 6.955626235004286  |  1.9788058739940022 |       414765149762541.75       |
-| 11.159312313990418 |  2.1880819687041067 |       574590396604503.5        |
-| 6.999803746997491  |  1.926537083968324  |       317152151283026.25       |
-| 7.916411244858644  |  1.9190043918312734 |       658467895874511.5        |
-| 7.3047553845212345 |  2.0224456803406885 |       340609388196275.8        |
-| 11.912266041351105 |  2.1850354564336616 |       1217709666673981.8       |
-| 8.048334477225302  |  2.0537141245115453 |       303529423561056.94       |
-| 6.555348544578742  |  1.7401664191882924 |       140565862897615.7        |
-| 9.654931017014167  |  2.1784787186456995 |       365769854685840.3        |
-| 7.110131199739357  |  1.9680422299741165 |       430762257877226.9        |
-| 9.111342653986318  |  2.2497039542001223 |       287495488617976.94       |
-| 7.717995058456554  |  2.082226748473293  |       503979723790546.56       |
-| 7.1750256540273245 |  1.8661467503061153 |       509212684808357.1        |
-| 6.865595923010858  |  1.910043806402852  |       320891608512630.4        |
-| 9.839414493760588  |  2.2340405636814515 |       157581711097668.8        |
-| 8.293915548563206  |  2.024181321371066  |       240709963814992.0        |
-| 11.103906318075921 |   2.17294766151806  |       1233030722782861.5       |
-+--------------------+---------------------+--------------------------------+
-
-Trying to find weaknesses in the model by training models on the error:
-Most important features by catboost:
-+--------------+------------+
-|   Feature    | Importance |
-+--------------+------------+
-| num_freeswap |    64.0    |
-|  num_runqsz  |    33.0    |
-| num_freemem  |    2.0     |
-|  num_lread   |    0.0     |
-|  num_lwrite  |    0.0     |
-|  num_scall   |    0.0     |
-|  num_sread   |    0.0     |
-|  num_swrite  |    0.0     |
-|   num_fork   |    0.0     |
-|   num_exec   |    0.0     |
-|  num_rchar   |    0.0     |
-|  num_wchar   |    0.0     |
-+--------------+------------+
-
-Print of tree to look for potential segments with high error (use with caution)
-|--- num_freeswap <= 1020222.00
-|   |--- value: [0.37]
-|--- num_freeswap >  1020222.00
-|   |--- num_rchar <= 132096.00
-|   |   |--- value: [0.02]
-|   |--- num_rchar >  132096.00
-|   |   |--- value: [0.03]
-
+popular terms extraction:
+[('active years ft slim build nonsmoker social', 54.0), ('clunk bang rewr squeak rrrr drilllll sawwwww', 54.0), ('early outgoing intelligent independant fitness outdoor activites', 46.0), ('supporting happy nat fun loving likes cooking', 44.0), ('preserved prof sgle prince charming living cityinner', 42.0), ('male late aust single tall prof interests', 40.0), ('dennis listen strange women lying ponds distributing', 40.0), ('lady wltm genu ine person dtoe possibly', 38.0), ('early honest caring likes fishing animals golf', 38.0), ('ties secure ft slim build enjoy outdoors', 38.0)]
 

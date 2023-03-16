@@ -2,25 +2,42 @@ Full report to analyze my data:
 
 Data information:
 Data Information Report
-Problem Type: Regression
-Target Variable: target
-Feature Types: {'numeric': ['lread', 'lwrite', 'scall', 'sread', 'swrite', 'fork', 'exec', 'rchar', 'wchar', 'runqsz', 'freemem', 'freeswap'], 'boolean': [], 'text': [], 'categorical': [], 'time': [], 'id': []}
-Loss Function: R squared
-Evaluation Metrics: ['R2', 'MSE', 'MAE', 'MAPE']
-Optional Models: {'baseline-average', 'catboost', 'linear', 'baseline-median'}
+Problem Type: No target variable
+Feature Types: {'numeric': ['target'], 'boolean': [], 'text': ['text'], 'categorical': [], 'time': [], 'id': []}
+Evaluation Metrics: None
+Optional Models: None
 
 
+Cleaning and preprocessing text column
+The following cleaning steps will be applied to clean column 'text': Removing punctuation, Removing numbers, Removing whitespaces, Removing empty lines, Lowercasing text, Removing stopwords, Removing accented characters, Removing special characters, Removing html tags.
+text column preprocessing
+The following preprocessing steps will be applied to the column 'text': Stemming text, Tokenizing text.
 features engineering process for the data:
+Extracting embedding
+First, Extracting Corex topic model embeddings with dimension 30
+Next, Extracting TF-IDF embeddings with dimension 30
+Then, Extracting bag-of-words embeddings with dimension 30
+Lastly, All embeddings have been concatenated
 features statistics for the data. Analyzed by groups (text, numeric, categorical) if exists:
 
 Numerical Feature statistics:
 
 Categorical Feature statistics:
-** model pre analysis report:
-Feature stats:
-            col # unique # missing   max  min    avg   std            CI  \
-0  target_label       56         0  99.0  0.0  83.97  18.4  (83.6, 84.3)   
+Text Statistics:
+Extracting Embedding
+** Analyzing text Column
+Data quality stats:
+Number of rows with missing data: 0.0
+Number of unique words: 1914
+Average type-token ratio: 0.96
+Median type-token ratio: 1.00
+Average number of words per text: 9.22
+Median number of words per text: 7.00
+Average number of sentences per text: 1.00
+Median number of sentences per text: 1.00
+Average length of text: 57.94
+Median length of text: 42.00
 
-  median        top_vals  bottom_vals  
-0   89.0  99.0,98.0,97.0  0.0,1.0,2.0  
-
+Count word frequency for basic text analysis.
+Report shows most common words, giving insight into text topic and content:
+[('lady', 174), ('seeks', 137), ('yo', 101), ('jack', 90), ('male', 77), ('fun', 60), ('arthur', 59), ('good', 57), ('ns', 56), ('build', 52), ('like', 51), ('attractive', 50), ('looking', 50), ('rship', 48), ('slim', 47), ('guy', 46), ('man', 44), ('seeking', 44), ('caring', 44), ('sparrow', 43), ('married', 43), ('honest', 41), ('fship', 41), ('likes', 41), ('life', 39), ('oh', 38), ('ft', 38), ('relationship', 38), ('gsoh', 38), ('single', 38), ('would', 37), ('well', 37), ('age', 37), ('movies', 36), ('open', 36), ('elizabeth', 35), ('music', 35), ('sd', 33), ('meet', 31), ('away', 31), ('dining', 31), ('im', 31), ('fit', 30), ('father', 30), ('mumble', 30), ('genuine', 29), ('non', 28), ('woman', 28), ('female', 27), ('social', 27), ('galahad', 27), ('enjoy', 27), ('tall', 27), ('gibbs', 26), ('times', 25), ('drinker', 25), ('swann', 24), ('come', 24), ('interests', 24), ('friendship', 24), ('late', 24), ('smoker', 23), ('launcelot', 23), ('employed', 23), ('knights', 22), ('witch', 22), ('dte', 22), ('black', 22), ('wltm', 22), ('must', 21), ('long', 21), ('head', 21), ('sexy', 21), ('turner', 20), ('beach', 20), ('run', 20), ('medium', 20), ('enjoys', 20), ('prof', 20), ('ha', 20), ('ni', 19), ('gent', 19), ('discreet', 19), ('poss', 19), ('nights', 19), ('thats', 18), ('country', 18), ('easygoing', 18), ('look', 18), ('fishing', 18), ('sought', 17), ('similar', 17), ('view', 17), ('shh', 17), ('knight', 17), ('going', 17), ('quiet', 17), ('home', 17), ('stop', 17), ('share', 16)]

@@ -1,5 +1,6 @@
 from itertools import chain
 
+from chester.feature_stats.numeric_stats import NumericStats
 from matplotlib import pyplot as plt
 
 from chester.cleaning.cleaner_handler import CleanerHandler
@@ -19,7 +20,8 @@ from chester.pre_model_analysis.time_series import TimeSeriesPreModelAnalysis
 from chester.preprocessing.preprocessor_handler import PreprocessHandler
 from chester.run.chapter_titles import chapter_title
 from chester.run.user_classes import Data, TextHandler, FeatureStats, ModelRun, TextFeatureExtraction, FeatureTypes, \
-    TimeSeriesHandler
+    TimeSeriesHandler, TextSummary, break_text_into_rows
+from chester.text_stats_analysis.text_summary import get_summary
 from chester.util import REPORT_PATH, ReportCollector
 from chester.zero_break.problem_specification import DataInfo
 
@@ -36,9 +38,10 @@ def run_madcat(
         data_spec: Data,
         feature_types: dict = None,
         text_handler: TextHandler = None, is_text_handler=True,
+        text_summary: TextSummary = None,
         time_series_handler: TimeSeriesHandler = None, is_time_series_handler=True,
         feature_stats: FeatureStats = None, is_feature_stats=True,
-        text_feature_extraction: TextFeatureExtraction = None,
+        text_feature_extraction: TextFeatureExtraction = None, is_feature_extract=True,
         is_pre_model=True,
         is_model_training=True, model_run: ModelRun = None,
         is_post_model=True,
@@ -85,7 +88,7 @@ def run_madcat(
     rc = ReportCollector(REPORT_PATH)
     with open(REPORT_PATH, 'w') as f:
         pass
-    run_metadata_collector = {}
+    chester_collector = {}
 
     # meta learn
     df = data_spec.df.sample(frac=1).reset_index(drop=True)
@@ -99,12 +102,21 @@ def run_madcat(
 
     print(chapter_title("meta learn"))
     print(data_info)
-    run_metadata_collector["data info"] = data_info
+    chester_collector["data info"] = data_info
 
     rc.save_text(text="Full report to analyze my data:\n")
     rc.save_object(obj=data_info, text="Data information:")
     ####################################################
     # Text handling
+    # Summary, if asked
+    text_cols = data_info.feature_types_val["text"]
+    if text_summary is None:
+        text_summary = TextSummary(is_summary=True)
+    if len(text_cols) > 0 and text_summary is not None:
+        if text_summary.is_summary:
+            chester_collector["raw text summary"] = get_summary(df=df, text_columns=text_cols,
+                                                                text_summary=text_summary)
+
     # cleaning
     if is_text_handler:
         text_cleaner = None
@@ -134,7 +146,7 @@ def run_madcat(
         # data_info_text_cleaning for later text analysis
         if len(text_cols) > 0:
             clean_text_df = pd.concat([df, clean_text_df], axis=1)
-        run_metadata_collector["data info"] = data_info
+        chester_collector["data info"] = data_info
     ####################################################
 
     ####################################################
@@ -142,35 +154,36 @@ def run_madcat(
     # is_time_series_handler
     ####################################################
     # Feat extract
-    print(chapter_title('feature engineering'))
-    rc.save_text(text="features engineering process for the data:")
-    # Handle TS
-    orig_di = data_info
-    if is_time_series_handler:
-        if time_series_handler is None:
-            time_series_handler = TimeSeriesHandler()
-        time_cols = data_info.feature_types_val["time"]
-        if len(time_cols) > 0:
-            ts_fe = TimeSeriesFeaturesExtraction(data_info=data_info, time_series_handler=time_series_handler)
-            ts_fe.run()
-            ts_fe.data_info.data = ts_fe.data_info.data. \
-                                       loc[:, ~ts_fe.data_info.data.columns.duplicated()]  # drop col dups
-            data_info = ts_fe.data_info
-            time_series_handler = ts_fe.time_series_handler
-            # orig_di = data_info
+    if is_feature_extract:
+        print(chapter_title('feature engineering'))
+        rc.save_text(text="features engineering process for the data:")
+        # Handle TS
+        orig_di = data_info
+        if is_time_series_handler:
+            if time_series_handler is None:
+                time_series_handler = TimeSeriesHandler()
+            time_cols = data_info.feature_types_val["time"]
+            if len(time_cols) > 0:
+                ts_fe = TimeSeriesFeaturesExtraction(data_info=data_info, time_series_handler=time_series_handler)
+                ts_fe.run()
+                ts_fe.data_info.data = ts_fe.data_info.data. \
+                                           loc[:, ~ts_fe.data_info.data.columns.duplicated()]  # drop col dups
+                data_info = ts_fe.data_info
+                time_series_handler = ts_fe.time_series_handler
+                # orig_di = data_info
 
-    # Continue the rest
-    feat_hand = FeaturesHandler(data_info=data_info)
-    if text_feature_extraction is not None:
-        feat_hand.text_feature_extraction = text_feature_extraction
-    feature_types, final_df = feat_hand.transform()
-    if target_column is not None:
-        final_df[target_column] = data_info.data[data_info.target]
-    final_df = final_df.loc[:, ~final_df.columns.duplicated()]
-    data_info.data = data_info.data.loc[:, ~data_info.data.columns.duplicated()]
+        # Continue the rest
+        feat_hand = FeaturesHandler(data_info=data_info)
+        if text_feature_extraction is not None:
+            feat_hand.text_feature_extraction = text_feature_extraction
+        feature_types, final_df = feat_hand.transform()
+        if target_column is not None:
+            final_df[target_column] = data_info.data[data_info.target]
+        final_df = final_df.loc[:, ~final_df.columns.duplicated()]
+        data_info.data = data_info.data.loc[:, ~data_info.data.columns.duplicated()]
 
-    run_metadata_collector["data info"] = data_info
-    run_metadata_collector["features data"] = final_df
+        chester_collector["data info"] = data_info
+        chester_collector["features data"] = final_df
     ####################################################
     # Feat Stats
     data_info_num_stats = None
@@ -206,7 +219,7 @@ def run_madcat(
             title = "\nNumerical Feature statistics:"
             print(title)
             rc.save_text(title)
-            # NumericStats(data_info_num_stats, max_print=max_stats_col_width).run(plot=plot_stats)
+            NumericStats(data_info_num_stats, max_print=max_stats_col_width).run(plot=plot_stats)
         title = "\nCategorical Feature statistics:"
         print(title)
         rc.save_text(title)
@@ -216,8 +229,17 @@ def run_madcat(
             print("Text Feature Statistics")
             orig_df = data_info.data
             data_info.data = clean_text_df
-            TextStats(data_info, text_spec=text_feature_extraction).run()
+            if text_feature_extraction is None:
+                text_feature_extraction = TextFeatureExtraction()
+            TextStats(data_info, text_spec=text_feature_extraction, chester_collector=chester_collector).run()
             data_info.data = orig_df
+            if "raw text summary" in chester_collector is not None:
+                print(f"Text Columns Summary:")
+                try:
+                    for col in text_cols:
+                        print("\t", chester_collector["raw text summary"][col])
+                except:
+                    print("\t", chester_collector["raw text summary"])
 
         all_features = list(set(chain.from_iterable(list(data_info.feature_types_val.values()))))
         ts_cols = [feat for feat in all_features if feat.startswith("ts_")]
@@ -228,7 +250,7 @@ def run_madcat(
     ####################################################
     # No target => no model! The story ends here
     if data_info.problem_type_val == "No target variable":
-        return run_metadata_collector
+        return chester_collector
 
     # Pre model
     if is_pre_model:
@@ -253,7 +275,7 @@ def run_madcat(
     ####################################################
     # model
     if not is_model_training:
-        return run_metadata_collector
+        return chester_collector
     if is_model_training:
         print(chapter_title("model training"))
         rc.save_text("Training models and choosing the best one")
@@ -286,27 +308,27 @@ def run_madcat(
         except:
             pass
 
-        run_metadata_collector["data info"] = data_info
-        run_metadata_collector["features data"] = final_df
-        run_metadata_collector["model"] = model_results[1]
-        run_metadata_collector["parameters"] = params
-        run_metadata_collector["model_results"] = model_results[0]
+        chester_collector["data info"] = data_info
+        chester_collector["features data"] = final_df
+        chester_collector["model"] = model_results[1]
+        chester_collector["parameters"] = params
+        chester_collector["model_results"] = model_results[0]
     ####################################################
 
     # post model
     is_baseline = type(model_results[1]).__name__ == "BaselineModel"
     if is_baseline:
         print("Best model is a simple baseline")
-        return run_metadata_collector
+        return chester_collector
     if is_post_model and is_model_training:
         rc.save_text("\nPost model analysis - analyzing results of the chosen model: ")
         print(chapter_title('post model analysis'))
         post_model_analysis = PostModelAnalysis(cv_data, data_info, model=model_results[1])
-        run_metadata_collector["post_model_analysis"] = post_model_analysis
+        chester_collector["post_model_analysis"] = post_model_analysis
         post_model_analysis.analyze()
 
         model_bootstrap = ModelBootstrap(cv_data, data_info, model=model_results[1])
-        run_metadata_collector["model_bootstrap"] = model_bootstrap
+        chester_collector["model_bootstrap"] = model_bootstrap
         model_bootstrap.plot()
     ####################################################
 
@@ -315,8 +337,8 @@ def run_madcat(
         rc.save_text("Trying to find weaknesses in the model by training models on the error:")
         print(chapter_title('model weaknesses'))
         model_weaknesses = ModelWeaknesses(cv_data, data_info, model=model_results[1])
-        run_metadata_collector["model_weaknesses"] = model_weaknesses
+        chester_collector["model_weaknesses"] = model_weaknesses
         model_weaknesses.run()
     ####################################################
 
-    return run_metadata_collector
+    return chester_collector

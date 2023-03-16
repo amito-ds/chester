@@ -95,6 +95,7 @@ chester/text_stats_analysis/key_sentences.py
 chester/text_stats_analysis/keywords_extraction.py
 chester/text_stats_analysis/sentiment.py
 chester/text_stats_analysis/smart_text_analyzer.py
+chester/text_stats_analysis/text_summary.py
 chester/text_stats_analysis/word_cloud.py
 chester/utils/__init__.py
 chester/zero_break/__init__.py
