@@ -1,15 +1,10 @@
 import torch
 from PIL import Image
-from matplotlib import pyplot as plt
-
-from diamond.image_caption.utils import load_images_from_numpy
-from diamond.user_classes import ImagesData, ImageDescriptionSpec
-import numpy as np
-import os
-from transformers import VisionEncoderDecoderModel, ViTImageProcessor, AutoTokenizer
-from transformers import pipeline
-import timm
 from PIL import ImageDraw
+from matplotlib import pyplot as plt
+from transformers import pipeline
+
+from diamond.user_classes import ImagesData
 
 
 class ImageObjectDetection:

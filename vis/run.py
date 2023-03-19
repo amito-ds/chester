@@ -1,16 +1,7 @@
-from diamond.data_augmentation.augmentation import ImageAugmentation
-from diamond.image_caption.image_caption_class import ImageDescription
-from diamond.image_object_detection.image_object_class import ImageObjectDetection
-from diamond.model_training.best_model import ImageModelsTraining
-from diamond.post_model_analysis.post_model import ImagePostModelAnalysis
-from diamond.user_classes import ImagesData, ImagesAugmentationInfo, ImageModels, ImagePostModelSpec, \
-    ImageDescriptionSpec
-
-from diamond.utils import index_labels
+from diamond import run as diamond_run
 from vis.grayscale.grayscale import VideoToGrayScale
 from vis.reversed_order.video_revereser import VideoReverser
 from vis.user_classes import VideoData
-from diamond import run as diamond_run
 from vis.video_zoom.zoom_class import VideoZoomer
 
 
