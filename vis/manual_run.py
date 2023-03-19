@@ -21,7 +21,7 @@ cap = cv2.VideoCapture(data_dir)
 image_shape = (3, 4096*2, 4096*2)
 
 vis_collector = run(video=cap,
-                    # frame_per_second=1,
+                    frame_per_second=1,
                     image_shape=image_shape, plot_sample=16,
                     get_grayscale=False, get_reveresed_video=False,
                     detect_video_objects=True,

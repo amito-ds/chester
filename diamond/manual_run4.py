@@ -21,16 +21,31 @@ img_size = (1024, 1024)
 # define empty arrays to store images and labels
 images = []
 labels = []
-
 # Loop through each file in the pizza folder and add it to the images list with label 0 (pizza)
 for filename in os.listdir(data_dir):
     image = Image.open(os.path.join(data_dir, filename))
-    images.append(image)
 
-images = random.sample(images, 7)
+    # Define the area of the image to zoom in on
+    left = 50
+    right = 4000
+    top = left
+    bottom = right
+
+    # Crop the image to the defined area
+    cropped_img = image.crop((left, top, right, bottom))
+
+    # Resize the cropped image to make it appear zoomed in
+    zoomed_img = cropped_img.resize((600, 600))
+
+    # Show the zoomed image
+    # zoomed_img.show()
+
+    images.append(zoomed_img)
+
+# images = random.sample(images, 7)
 
 new_images = []
-img_size = (1024, 1024)
+
 # for image in images:
 #     img = image.resize(img_size)
 #     img_array = np.array(img)
@@ -61,9 +76,9 @@ image_models = ImageModels(image_model_list=image_model_list)
 diamond_collector = run(images=images,
                         image_shape=image_shape,
                         # labels=labels,
-                        get_image_description=True,
+                        # get_image_description=True,
                         get_object_detection=True,
-                        detect_faces=True,
+                        # detect_faces=True,
                         is_augment_data=False,
                         image_augmentation_info=ImagesAugmentationInfo(aug_prop=0.7),
                         is_train_model=False, image_models=image_models,

@@ -1,14 +1,13 @@
-import random
 import math
+import random
+
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import torch
 from PIL import Image
 from torch.utils.data import TensorDataset, DataLoader
 from tqdm import tqdm
-import pandas as pd
-
-from diamond.image_caption.utils import load_images_from_numpy
 
 
 class ImagesData:
@@ -162,6 +161,31 @@ class ImagesData:
     def get_problem_type():
         return "classification"
 
+    # def plot_images(self, plot_sample):
+    #     print("Total Images:", len(self.images))
+    #     if self.images_to_show is None:
+    #         self.images_to_show = self.images
+    #     images = self.images_to_show
+    #     num_images = len(images)
+    #     plot_sample = min(plot_sample, num_images)
+    #     if num_images > 100:
+    #         image_indices = range(num_images - plot_sample + 1, num_images)
+    #     else:
+    #         image_indices = random.sample(range(num_images), plot_sample)
+    #
+    #     num_cols = int(math.floor(math.sqrt(len(image_indices))))
+    #     num_rows = int(math.ceil(len(image_indices) / num_cols))
+    #
+    #     fig, ax = plt.subplots(num_rows, num_cols, figsize=(12, 12))
+    #     for i, index in enumerate(image_indices):
+    #         row = i // num_cols
+    #         col = i % num_cols
+    #         ax[row, col].imshow(images[index])
+    #         ax[row, col].axis('off')
+    #         if self.labels is not None:
+    #             ax[row, col].set_title(str(self.labels[index]))
+    #     plt.show()
+
     def plot_images(self, plot_sample):
         print("Total Images:", len(self.images))
         if self.images_to_show is None:
@@ -174,17 +198,23 @@ class ImagesData:
         else:
             image_indices = random.sample(range(num_images), plot_sample)
 
-        num_cols = int(math.floor(math.sqrt(len(image_indices))))
-        num_rows = int(math.ceil(len(image_indices) / num_cols))
-
-        fig, ax = plt.subplots(num_rows, num_cols, figsize=(12, 12))
-        for i, index in enumerate(image_indices):
-            row = i // num_cols
-            col = i % num_cols
-            ax[row, col].imshow(images[index])
-            ax[row, col].axis('off')
+        if len(image_indices) == 1:
+            fig, ax = plt.subplots(figsize=(12, 12))
+            ax.imshow(images[image_indices[0]])
+            ax.axis('off')
             if self.labels is not None:
-                ax[row, col].set_title(str(self.labels[index]))
+                ax.set_title(str(self.labels[image_indices[0]]))
+        else:
+            num_cols = int(math.floor(math.sqrt(len(image_indices))))
+            num_rows = int(math.ceil(len(image_indices) / num_cols))
+            fig, ax = plt.subplots(num_rows, num_cols, figsize=(12, 12))
+            for i, index in enumerate(image_indices):
+                row = i // num_cols
+                col = i % num_cols
+                ax[row, col].imshow(images[index])
+                ax[row, col].axis('off')
+                if self.labels is not None:
+                    ax[row, col].set_title(str(self.labels[index]))
         plt.show()
 
 

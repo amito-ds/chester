@@ -18,6 +18,7 @@ class ImageObjectDetection:
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.label_dict = self.images_data.label_dict
         self.model = None
+        # TODO: later add support for labels (labels VS description?)
         self.diamond_collector = {} if diamond_collector is None else diamond_collector
         self.images = self.images_data.raw_images
         self.load_model()
@@ -28,8 +29,12 @@ class ImageObjectDetection:
     def detect_objects(self):
         bounding_boxes = []
         for image in self.images:
-            bounding_box = self.model(image)
-            bounding_boxes.append(bounding_box)
+            # Run object detection on image
+            detections = self.model(image)
+
+            # Append detections to list
+            bounding_boxes.append(detections)
+
         return bounding_boxes
 
     def plot_detected_objets(self):
