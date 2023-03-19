@@ -160,4 +160,12 @@ vis/manual_run.py
 vis/run.py
 vis/user_classes.py
 vis/utils.py
+vis/frames_to_video/__init__.py
+vis/frames_to_video/video_creator_class.py
+vis/grayscale/__init__.py
+vis/grayscale/grayscale.py
+vis/reversed_order/__init__.py
+vis/reversed_order/video_revereser.py
 vis/video_data_info/__init__.py
+vis/video_zoom/__init__.py
+vis/video_zoom/zoom_class.py
