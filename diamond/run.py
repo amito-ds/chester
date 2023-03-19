@@ -38,7 +38,6 @@ def run(images,
         is_train_model = False
         labels = pd.Series([1] * len(images))
     # Image data
-    # TODO: convert in case you got a list of images!
     if type(images).__name__ == "DataFrame":
         images = images.values
 

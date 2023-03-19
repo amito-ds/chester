@@ -18,7 +18,6 @@ class ImageObjectDetection:
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.label_dict = self.images_data.label_dict
         self.model = None
-        # TODO: later add support for labels (labels VS description?)
         self.diamond_collector = {} if diamond_collector is None else diamond_collector
         self.images = self.images_data.raw_images
         self.load_model()

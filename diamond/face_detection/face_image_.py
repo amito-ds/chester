@@ -1,13 +1,9 @@
-import urllib.request
-import numpy as np
-import cv2
 import torch
 from PIL import Image
 from PIL import ImageDraw
 from matplotlib import pyplot as plt
 
 from diamond.user_classes import ImagesData
-import torch
 
 
 class ImageFaceDetection:
@@ -43,17 +39,6 @@ class ImageFaceDetection:
             faces = results.xyxy[0][results.xyxy[0][:, -1] == 0][:, :4].tolist()
             bounding_boxes.append(faces)
         return bounding_boxes
-
-    # def detect_faces(self):
-    #     bounding_boxes = []
-    #     for image in self.images_data.images:
-    #         gray_image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2GRAY)
-    #         faces = self.model.detectMultiScale(gray_image, scaleFactor=1.1, minNeighbors=5)
-    #         bounding_boxes.append(faces)
-    #     return bounding_boxes
-
-    import matplotlib.pyplot as plt
-    from PIL import Image, ImageDraw
 
     def plot_detected_objects(self):
         if not self.plot:

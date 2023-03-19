@@ -91,11 +91,6 @@ class ImagesData:
         self.images = np.array(np_images)
         self.raw_image = image_list[0]
         self.raw_images = image_list
-        # print("XXXX ***** ===> Formatted report:")
-        # print("raw images type:")
-        # print(type(self.raw_images))
-        # print(type(self.raw_images[0]))
-        # TODO: validate format
 
     def validate(self):
         if self.labels is None:

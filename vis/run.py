@@ -1,5 +1,6 @@
 from diamond import run as diamond_run
 from vis.grayscale.grayscale import VideoToGrayScale
+from vis.object_video_tracker.object_tracker import ObjectVideoTracker
 from vis.reversed_order.video_revereser import VideoReverser
 from vis.user_classes import VideoData
 from vis.video_zoom.zoom_class import VideoZoomer
@@ -11,6 +12,7 @@ def run(video,
         plot=True,
         get_frames_description=False,
         detect_frame_objects=False,
+        detect_video_objects=False,
         detect_faces=False,
         get_grayscale=False,
         get_reveresed_video=False,
@@ -18,6 +20,10 @@ def run(video,
         plot_sample=16
         ):
     vis_collector = {}
+
+    ## pre
+    if detect_video_objects:
+        detect_frame_objects = True
 
     video_data = VideoData(cap=video, image_shape=image_shape, frame_per_second=frame_per_second)
     vis_collector["video_data"] = video_data
@@ -47,5 +53,12 @@ def run(video,
                                         plot=plot)
 
     vis_collector.update(diamond_collector)
+
+    if detect_video_objects:
+        images = video_data.images
+        object_bounding_box = vis_collector["object detection"]
+        video_object_detector = ObjectVideoTracker(images=images, object_bounding_box=object_bounding_box,
+                                                   fps=video_data.frame_per_second)
+        video_object_detector.play()
 
     return vis_collector
