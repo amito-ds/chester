@@ -1,0 +1,88 @@
+Full report to analyze my data:
+
+Data information:
+Data Information Report
+Problem Type: Multiclass classification
+Target Variable: target
+Feature Types: {'numeric': {'feature_27', 'feature_34', 'feature_18', 'feature_33', 'feature_0', 'feature_39', 'feature_29', 'feature_16', 'feature_36', 'feature_14', 'feature_7', 'feature_3', 'feature_4', 'feature_22', 'feature_23', 'feature_8', 'feature_19', 'feature_13', 'feature_30', 'feature_37', 'feature_17', 'feature_20', 'feature_26', 'feature_2', 'feature_35', 'feature_21', 'feature_32', 'feature_15', 'feature_1', 'feature_10', 'feature_38', 'feature_25', 'feature_9', 'feature_28', 'feature_11', 'feature_24', 'feature_31', 'feature_12', 'feature_5', 'feature_6'}, 'boolean': set(), 'text': set(), 'categorical': set(), 'time': set(), 'other': set()}
+Loss Function: Cross entropy
+Evaluation Metrics: ['Accuracy', 'Precision', 'Recall', 'F1']
+Optional Models: {'baseline-mode', 'logistic', 'catboost'}
+
+
+features engineering process for the data:
+features statistics for the data. Analyzed by groups (text, numeric, categorical) if exists:
+
+Categorical Feature statistics:
+** model pre analysis report:
+Feature stats:
+            col # unique # missing                       Distribution  \
+0  target_label        3         0  classic: 46%, disco: 31%, pop:...   
+
+                Sample Top 5 values coverage  
+0  classic, disco, pop                  100%  
+
+values counts for categorical target to predict:
+classic    22
+disco      15
+pop        11
+Name: target, dtype: int64
+
+Training models and choosing the best one
+Model results compared - showing the best out of each type after CV & HP tuning: 
++-------+-------------------------+---------------------+--------------------+--------------------+--------------------+
+|  type |          model          |    accuracy_score   |  precision_score   |    recall_score    |      f1_score      |
++-------+-------------------------+---------------------+--------------------+--------------------+--------------------+
+|  test |      BaselineModel      |        0.425        |        nan         |        nan         |        nan         |
+|  test |      CatboostModel      |  0.9714285714285713 | 0.9777777777777779 | 0.9777777777777779 | 0.9733333333333334 |
+|  test | LogisticRegressionModel |  0.9714285714285713 | 0.9777777777777779 | 0.9777777777777779 | 0.9733333333333334 |
+| train |      BaselineModel      | 0.42129032258064514 |        nan         |        nan         |        nan         |
+| train |      CatboostModel      |         1.0         |        1.0         |        1.0         |        1.0         |
+| train | LogisticRegressionModel |         1.0         |        1.0         |        1.0         |        1.0         |
++-------+-------------------------+---------------------+--------------------+--------------------+--------------------+
+
+
+Post model analysis - analyzing results of the chosen model: 
+confusion matrix on the test set
+[[6 0 0]
+ [0 2 0]
+ [0 0 2]]
+
+Learning curve by training examples
++-------------+-------------------+------------------+--------------------+----------------------+
+| train_sizes | train_scores_mean | train_scores_std |  test_scores_mean  |   test_scores_std    |
++-------------+-------------------+------------------+--------------------+----------------------+
+|      3      |        nan        |       nan        |        nan         |         nan          |
+|      9      |        1.0        |       0.0        | 0.8964285714285716 | 0.09476070829586856  |
+|      16     |        1.0        |       0.0        |       0.925        | 0.09999999999999999  |
+|      23     |        1.0        |       0.0        |       0.975        | 0.049999999999999996 |
+|      30     |        1.0        |       0.0        |       0.975        | 0.049999999999999996 |
++-------------+-------------------+------------------+--------------------+----------------------+
+
+
+Boostrap metrics, sample 20 results:
++----------------+-----------------+--------------+----------+
+| accuracy_score | precision_score | recall_score | f1_score |
++----------------+-----------------+--------------+----------+
+|      1.0       |       1.0       |     1.0      |   1.0    |
+|      1.0       |       1.0       |     1.0      |   1.0    |
+|      1.0       |       1.0       |     1.0      |   1.0    |
+|      1.0       |       1.0       |     1.0      |   1.0    |
+|      1.0       |       1.0       |     1.0      |   1.0    |
+|      1.0       |       1.0       |     1.0      |   1.0    |
+|      1.0       |       1.0       |     1.0      |   1.0    |
+|      1.0       |       1.0       |     1.0      |   1.0    |
+|      1.0       |       1.0       |     1.0      |   1.0    |
+|      1.0       |       1.0       |     1.0      |   1.0    |
+|      1.0       |       1.0       |     1.0      |   1.0    |
+|      1.0       |       1.0       |     1.0      |   1.0    |
+|      1.0       |       1.0       |     1.0      |   1.0    |
+|      1.0       |       1.0       |     1.0      |   1.0    |
+|      1.0       |       1.0       |     1.0      |   1.0    |
+|      1.0       |       1.0       |     1.0      |   1.0    |
+|      1.0       |       1.0       |     1.0      |   1.0    |
+|      1.0       |       1.0       |     1.0      |   1.0    |
+|      1.0       |       1.0       |     1.0      |   1.0    |
+|      1.0       |       1.0       |     1.0      |   1.0    |
++----------------+-----------------+--------------+----------+
+

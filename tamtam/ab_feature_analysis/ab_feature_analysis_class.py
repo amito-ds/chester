@@ -13,7 +13,6 @@ class ABFeatureAnalysis:
         self.test_info = test_info
         self.df = self.ab_info.df
         self.feature_cols = self.test_info.feature_cols or []
-        # df[metrics] = df[metrics].multiply(df[side_col].map({'A': -1, 'B': 1}), axis=0)
 
     def plot_tree(self, metric):
         ab_tree = ABTreePlot(ab_info=self.ab_info, test_info=self.test_info, metric=metric)
@@ -39,9 +38,6 @@ class ABFeatureAnalysis:
                    is_feature_stats=False, is_pre_model=True, is_model_weaknesses=False)
 
     def run_single(self, metric):
-        # self.plot_tree(metric=metric)
-        # self.plot_catboost(metric=metric)
-        # self.partial_plot(metric=metric)
         self.chester_run(metric=metric)
 
     def run(self):

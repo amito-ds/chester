@@ -2,16 +2,87 @@ Full report to analyze my data:
 
 Data information:
 Data Information Report
-Problem Type: No target variable
-Feature Types: {'numeric': [], 'boolean': [], 'text': ['text'], 'categorical': ['target'], 'time': [], 'id': []}
-Evaluation Metrics: None
-Optional Models: None
+Problem Type: Multiclass classification
+Target Variable: target
+Feature Types: {'numeric': {'feature_18', 'feature_2', 'feature_31', 'feature_22', 'feature_19', 'feature_24', 'feature_11', 'feature_37', 'feature_27', 'feature_23', 'feature_8', 'feature_36', 'feature_35', 'feature_33', 'feature_17', 'feature_15', 'feature_13', 'feature_34', 'feature_16', 'feature_9', 'feature_7', 'feature_28', 'feature_32', 'feature_1', 'feature_29', 'feature_10', 'feature_30', 'feature_6', 'feature_0', 'feature_12', 'feature_25', 'feature_3', 'feature_26', 'feature_38', 'feature_21', 'feature_39', 'feature_4', 'feature_14', 'feature_20', 'feature_5'}, 'boolean': set(), 'text': set(), 'categorical': set(), 'time': set(), 'other': set()}
+Loss Function: Cross entropy
+Evaluation Metrics: ['Accuracy', 'Precision', 'Recall', 'F1']
+Optional Models: {'logistic', 'catboost', 'baseline-mode'}
 
 
-Cleaning and preprocessing text column
-The following cleaning steps will be applied to clean column 'text': Removing punctuation, Removing numbers, Removing whitespaces, Removing empty lines, Lowercasing text, Removing stopwords, Removing accented characters, Removing special characters, Removing html tags.
-text column preprocessing
-The following preprocessing steps will be applied to the column 'text': Stemming text, Tokenizing text.
 features engineering process for the data:
-Extracting embedding
-First, Extracting Corex topic model embeddings with dimension 30
+features statistics for the data. Analyzed by groups (text, numeric, categorical) if exists:
+
+Categorical Feature statistics:
+** model pre analysis report:
+Feature stats:
+            col # unique # missing                       Distribution  \
+0  target_label        3         0  classic: 46%, disco: 31%, pop:...   
+
+                Sample Top 5 values coverage  
+0  classic, pop, disco                  100%  
+
+values counts for categorical target to predict:
+classic    22
+disco      15
+pop        11
+Name: target, dtype: int64
+
+Training models and choosing the best one
+Model results compared - showing the best out of each type after CV & HP tuning: 
++-------+-------------------------+--------------------+--------------------+--------------------+--------------------+
+|  type |          model          |   accuracy_score   |  precision_score   |    recall_score    |      f1_score      |
++-------+-------------------------+--------------------+--------------------+--------------------+--------------------+
+|  test |      BaselineModel      |        0.5         |        nan         |        nan         |        nan         |
+|  test |      CatboostModel      | 0.9464285714285714 | 0.9644444444444444 | 0.9533333333333334 | 0.9496296296296297 |
+|  test | LogisticRegressionModel |        1.0         |        1.0         |        1.0         |        1.0         |
+| train |      BaselineModel      |        0.5         |        nan         |        nan         |        nan         |
+| train |      CatboostModel      |        1.0         |        1.0         |        1.0         |        1.0         |
+| train | LogisticRegressionModel |        1.0         |        1.0         |        1.0         |        1.0         |
++-------+-------------------------+--------------------+--------------------+--------------------+--------------------+
+
+
+Post model analysis - analyzing results of the chosen model: 
+confusion matrix on the test set
+[[3 0 0]
+ [0 4 0]
+ [1 0 2]]
+
+Learning curve by training examples
++-------------+-------------------+------------------+--------------------+----------------------+
+| train_sizes | train_scores_mean | train_scores_std |  test_scores_mean  |   test_scores_std    |
++-------------+-------------------+------------------+--------------------+----------------------+
+|      3      |        nan        |       nan        |        nan         |         nan          |
+|      9      |        1.0        |       0.0        | 0.8392857142857142 | 0.10101525445522108  |
+|      16     |        1.0        |       0.0        | 0.9464285714285715 |  0.0658538889806635  |
+|      23     |        1.0        |       0.0        |       0.975        | 0.049999999999999996 |
+|      30     |        1.0        |       0.0        |        1.0         |         0.0          |
++-------------+-------------------+------------------+--------------------+----------------------+
+
+
+Boostrap metrics, sample 20 results:
++----------------+--------------------+--------------------+--------------------+
+| accuracy_score |  precision_score   |    recall_score    |      f1_score      |
++----------------+--------------------+--------------------+--------------------+
+|      0.91      | 0.9166666666666666 | 0.9016393442622951 | 0.8946886446886447 |
+|      0.88      | 0.9191919191919192 | 0.8260869565217391 | 0.8363759296822177 |
+|     0.905      | 0.919831223628692  | 0.8994708994708995 | 0.8952464196866806 |
+|     0.885      | 0.9004329004329005 | 0.8949771689497718 | 0.8791452036657771 |
+|     0.875      | 0.8931623931623932 | 0.8633879781420765 | 0.8504761155268751 |
+|      0.88      |        0.9         | 0.8823529411764706 | 0.8697478991596639 |
+|      0.91      | 0.927710843373494  | 0.8947368421052632 | 0.8969594594594595 |
+|     0.895      | 0.9054054054054054 | 0.8939393939393939 | 0.8818188267007164 |
+|     0.895      | 0.9078947368421053 | 0.8955223880597014 | 0.8846179828413159 |
+|      0.9       | 0.9233716475095785 | 0.8850574712643677 | 0.8872655122655123 |
+|      0.88      | 0.8961038961038961 | 0.8709677419354839 | 0.8584615384615386 |
+|     0.895      | 0.9054054054054054 | 0.8923076923076924 | 0.8806617062775409 |
+|     0.915      | 0.9254385964912281 | 0.8950617283950617 | 0.8957536290869625 |
+|      0.91      | 0.923076923076923  | 0.8947368421052632 | 0.8940217391304349 |
+|      0.92      | 0.9316239316239315 | 0.9080459770114943 | 0.9085714285714287 |
+|      0.89      | 0.9094650205761318 | 0.8777777777777778 | 0.8727891156462585 |
+|     0.915      | 0.9264069264069263 | 0.907103825136612  | 0.9046692156181207 |
+|     0.905      | 0.9082125603864735 | 0.8961748633879781 | 0.8852900383454353 |
+|     0.915      | 0.9212962962962963 | 0.8910256410256411 | 0.8902464778109632 |
+|     0.885      | 0.9184397163120567 | 0.8802083333333334 | 0.8805194805194806 |
++----------------+--------------------+--------------------+--------------------+
+

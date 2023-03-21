@@ -11,7 +11,8 @@ from diamond.user_classes import ImagesAugmentationInfo, ImageModel, ImageModels
 
 # # define directory path
 # data_dir = '/Users/amitosi/PycharmProjects/chester/chester/data/pics_ex'
-data_dir = '/Users/amitosi/PycharmProjects/chester/chester/data/pics_ex2'
+# data_dir = '/Users/amitosi/PycharmProjects/chester/chester/data/pics_ex2'
+data_dir = '/Users/amitosi/PycharmProjects/chester/chester/data/pic_ex3'
 
 # # define image size
 img_size = (1024, 1024)
@@ -25,22 +26,23 @@ labels = []
 for filename in os.listdir(data_dir):
     image = Image.open(os.path.join(data_dir, filename))
 
-    # Define the area of the image to zoom in on
-    left = 50
-    right = 4000
-    top = left
-    bottom = right
+    # # Define the area of the image to zoom in on
+    # left = 50
+    # right = 4000
+    # top = left
+    # bottom = right
+    #
+    # # Crop the image to the defined area
+    # cropped_img = image.crop((left, top, right, bottom))
+    #
+    # # Resize the cropped image to make it appear zoomed in
+    # zoomed_img = cropped_img.resize((600, 600))
+    #
+    # # Show the zoomed image
+    # # zoomed_img.show()
 
-    # Crop the image to the defined area
-    cropped_img = image.crop((left, top, right, bottom))
-
-    # Resize the cropped image to make it appear zoomed in
-    zoomed_img = cropped_img.resize((600, 600))
-
-    # Show the zoomed image
-    # zoomed_img.show()
-
-    images.append(zoomed_img)
+    # images.append(zoomed_img)
+    images.append(image)
 
 # images = random.sample(images, 7)
 
