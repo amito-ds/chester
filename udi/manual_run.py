@@ -3,7 +3,7 @@ import pandas as pd
 import librosa
 import numpy as np
 
-from chester.run.full_run import run_madcat
+from chester.run.full_run import run
 from chester.run.user_classes import Data, ModelRun
 
 data_dir = "/Users/amitosi/PycharmProjects/chester/udi/data"
@@ -31,8 +31,8 @@ df['target'] = labels
 
 print(df.head())  # prints first 5 rows of the dataframe
 
-collector = run_madcat(data_spec=Data(df=df, target_column='target'), model_run=ModelRun(n_models=10),
-                       feature_types=
+collector = run(data_spec=Data(df=df, target_column='target'), model_run=ModelRun(n_models=10),
+                feature_types=
                        {'numeric': list(df.columns)[:-1], 'boolean': [], 'text': [], 'categorical': [], 'time': [],
                         'id': []},
-                       is_feature_stats=True, is_pre_model=True, is_model_weaknesses=False)
+                is_feature_stats=True, is_pre_model=True, is_model_weaknesses=False)

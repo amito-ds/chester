@@ -7,7 +7,7 @@ from chester.data_loader.webtext_data import load_data_pirates, load_data_king_a
 from flatbuffers.builder import np
 from sklearn.datasets import fetch_20newsgroups, fetch_openml
 
-from chester.run.full_run import run_madcat
+from chester.run.full_run import run
 from chester.run.user_classes import Data, ModelRun, TimeSeriesHandler, TextFeatureExtraction, TextSummary
 import yfinance as yf
 import ml_datasets
@@ -432,15 +432,15 @@ def load_dataset(name):
 # filtered_df = df[df['ProductId'].isin(top_10)]
 
 
-chester_collector = run_madcat(Data(df=df),
-                               is_feature_stats=True,
-                               is_pre_model=True,
-                               text_summary=TextSummary(summary_num_sentences=3, max_terms=5),
-                               # feature_types={'numeric': [], 'boolean': [], 'text': ['Text', 'Summary'],
-                               #                'categorical': [], 'time': [], 'id': ['ProductId']}
-                               # text_summary=TextSummary(summary_num_sentences=3, max_terms=20),
-                               # model_run=ModelRun(n_models=1),
-                               )
+chester_collector = run(Data(df=df),
+                        is_feature_stats=True,
+                        is_pre_model=True,
+                        text_summary=TextSummary(summary_num_sentences=3, max_terms=5),
+                        # feature_types={'numeric': [], 'boolean': [], 'text': ['Text', 'Summary'],
+                        #                'categorical': [], 'time': [], 'id': ['ProductId']}
+                        # text_summary=TextSummary(summary_num_sentences=3, max_terms=20),
+                        # model_run=ModelRun(n_models=1),
+                        )
 # madcat_collector = run_madcat(Data(df=df, target_column='target'),
 #                               is_feature_stats=True,
 #                               # text_feature_extraction=TextFeatureExtraction(corex_dim=2, anchor_words=anchors),

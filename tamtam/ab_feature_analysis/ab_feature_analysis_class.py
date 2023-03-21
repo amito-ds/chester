@@ -1,4 +1,4 @@
-from chester.run.full_run import run_madcat
+from chester.run.full_run import run
 from chester.run.user_classes import Data, ModelRun
 from tamtam.ab_feature_analysis.ab_catboost import ABCatboostPlotter
 from tamtam.ab_feature_analysis.ab_partial_plot import ABPartialPlot
@@ -34,8 +34,8 @@ class ABFeatureAnalysis:
         df = df[[metric] + self.feature_cols]
         df.rename(columns={metric: 'target'}, inplace=True)
         # run chester
-        run_madcat(data_spec=Data(df=df, target_column='target'), model_run=ModelRun(n_models=3),
-                   is_feature_stats=False, is_pre_model=True, is_model_weaknesses=False)
+        run(data_spec=Data(df=df, target_column='target'), model_run=ModelRun(n_models=3),
+            is_feature_stats=False, is_pre_model=True, is_model_weaknesses=False)
 
     def run_single(self, metric):
         self.chester_run(metric=metric)

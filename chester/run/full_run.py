@@ -34,7 +34,7 @@ import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 
 
-def run_madcat(
+def run(
         data_spec: Data,
         feature_types: dict = None,
         text_handler: TextHandler = None, is_text_handler=True,

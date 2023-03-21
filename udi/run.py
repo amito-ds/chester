@@ -1,79 +1,51 @@
-import random
-
 import librosa
 import numpy as np
-
-from chester.run.user_classes import FeatureStats, TextFeatureExtraction, ModelRun
-from diamond.data_augmentation.augmentation import ImageAugmentation
-from diamond.face_detection.face_image_ import ImageFaceDetection
-from diamond.image_caption.image_caption_class import ImageDescription
-from diamond.image_data_info.image_info import ImageInfo
-from diamond.image_object_detection.image_object_class import ImageObjectDetection
-from diamond.model_training.best_model import ImageModelsTraining
-from diamond.post_model_analysis.post_model import ImagePostModelAnalysis
-from diamond.user_classes import ImagesData, ImagesAugmentationInfo, ImageModels, ImagePostModelSpec, \
-    ImageDescriptionSpec
 import pandas as pd
 
-from diamond.utils import index_labels
+from chester.run.full_run import run as chester_run
+from chester.run.user_classes import FeatureStats, ModelRun, Data
 
 
-def run(audio_files, sample_rates, labels=None,
-        feature_stats: FeatureStats = None,
-        is_feature_stats=True, is_pre_model=True,
-        is_model_training=True, model_run: ModelRun = None):
+def run(audio_data, sample_rates, n_mfcc=40, labels=None,
+        is_pre_model=True,
+        is_train_model=True, model_run: ModelRun = None,
+        is_post_model=True,
+        is_model_weaknesses=True,
+        plot=True
+        ):
     udi_collector = {}
+    features = []
 
     if labels is None:
         is_train_model = False
-        labels = pd.Series([1] * len(audio_files))
+        labels = pd.Series([1] * len(audio_data))
 
-    # create the wanted pandas df using the audio files and labels
-    df = pd.DataFrame({
-        'label': labels
-    })
-
-    for i, file in enumerate(audio_files):
+    for audio, sr in zip(audio_data, sample_rates):
         try:
-            # load the audio file
-            audio_data, sample_rate = librosa.load(file, sr=sample_rates[i])
-
-            # extract the features using MFCC
-            mfccs = librosa.feature.mfcc(y=audio_data, sr=sample_rate, n_mfcc=40)
+            mfccs = librosa.feature.mfcc(y=audio, sr=sr, n_mfcc=n_mfcc)
             mfccs_mean = np.mean(mfccs.T, axis=0)  # calculate mean of MFCCs
-
-            # add the features to the dataframe
-            feature_cols = ['feat_' + str(j) for j in range(40)]
-            features_dict = dict(zip(feature_cols, mfccs_mean))
-            features_dict['label'] = labels[i]
-            df = df.append(features_dict, ignore_index=True)
-
-            print(f"MFCC shape for {file}: {mfccs_mean.shape}")
+            features.append(mfccs_mean)
         except Exception as e:
-            print(f"Error encountered while parsing {file}: {e}")
+            print(f"Error encountered while parsing audio: {e}")
 
-    # apply feature scaling if necessary
-    # if is_feature_stats and feature_stats is not None:
-    #     df = scale_features(df, feature_stats)
+    # create pandas DataFrame
+    columns = [f"feat_{i}" for i in range(40)]
+    df = pd.DataFrame(features, columns=columns)
+    df["target"] = labels
 
-    # train and run the model if necessary
-    # if is_model_training and model_run is not None:
-    #     model = train_model(df, model_run)
-    #     udi_collector = model.predict(df.drop('label', axis=1))
+    # TODO apply feature scaling if necessary
+    chester_collector = chester_run(data_spec=Data(df=df, target_column='target'),
+                                    feature_types={'numeric': list(df.columns)[:-1], 'boolean': [], 'text': [],
+                                                   'categorical': [],
+                                                   'time': [], 'id': []},
+                                    is_feature_stats=False,
+                                    is_pre_model=is_pre_model,
+                                    model_run=model_run, is_model_training=is_train_model,
+                                    is_model_weaknesses=is_model_weaknesses,
+                                    is_post_model=is_post_model,
+                                    plot=plot)
 
-    return udi_collector
+    udi_collector["df"] = df
+    udi_collector.update(chester_collector)
 
-
-
-    # create the wanted pandas df
-
-    # load
-
-    # pp
-
-    # Extract features
-
-    # Madcat
-
-    # more?
     return udi_collector
