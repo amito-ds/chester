@@ -26,4 +26,4 @@ for subdir, dirs, files in os.walk(data_dir):
             print(f"Error encountered while parsing {file}: {e}")
             labels.pop()
 
-udi_collector = run(audio_data=audio_data, sample_rates=sample_rates, labels=labels, n_mfcc=100)
+# udi_collector = run(audio_data=audio_data, sample_rates=sample_rates, labels=labels, n_mfcc=100)

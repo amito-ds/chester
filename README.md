@@ -13,7 +13,9 @@ pip install MadCat
 ```
 
 # Usage
-
+More than 50 examples how to use the pacakge for solving different data science tasks: 
+https://github.com/amito-ds/chester/blob/main/projects/projects.md
+d
 To use MadCat, you'll need a dataframe containing your features and a target column.
 Here's an example using the Iris dataset:
 

@@ -1,8 +1,6 @@
-import os
+import IPython
 import torch
 import torchaudio
-import IPython
-from transformers import Wav2Vec2ForCTC, Wav2Vec2Processor
 from torchaudio.utils import download_asset
 
 from udi.run import run  # Replace 'your_module' with the module name where the 'run' function is defined

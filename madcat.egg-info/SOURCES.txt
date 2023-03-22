@@ -157,9 +157,14 @@ tamtam/utils/__init__.py
 tamtam/utils/column_utils.py
 tamtam/utils/utils.py
 udi/__init__.py
+udi/manual_run.py
 udi/manual_run2.py
+udi/manual_run3.py
+udi/manual_run4.py
 udi/run.py
 udi/speech_recognition.py
+udi/speech_to_text/__init__.py
+udi/speech_to_text/speech_to_text_class.py
 vis/__init__.py
 vis/manual_run.py
 vis/run.py
