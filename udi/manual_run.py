@@ -1,38 +1,46 @@
 import os
-import pandas as pd
 import librosa
+import torch
 import numpy as np
 
-from chester.run.full_run import run
-from chester.run.user_classes import Data, ModelRun
+# Load the SERNet model
+model = torch.hub.load('pyannote/pyannote-audio', 'SER_0')
 
-data_dir = "/Users/amitosi/PycharmProjects/chester/udi/data"
-labels = []
-features = []
+# Define a list of emotion labels
+emotions = ['neutral', 'calm', 'happy', 'sad', 'angry', 'fearful', 'disgust', 'surprised']
 
-for subdir, dirs, files in os.walk(data_dir):
-    for file in files:
-        try:
-            filepath = os.path.join(subdir, file)
-            label = os.path.basename(subdir)
-            labels.append(label)
-            audio_data, sample_rate = librosa.load(filepath)
-            mfccs = librosa.feature.mfcc(y=audio_data, sr=sample_rate, n_mfcc=40)
-            mfccs_mean = np.mean(mfccs.T, axis=0)  # calculate mean of MFCCs
-            features.append(mfccs_mean)
-            print(f"MFCC shape for {file}: {mfccs_mean.shape}")
-        except Exception as e:
-            print(f"Error encountered while parsing {file}: {e}")
-            labels.pop()
+# Define the path to the directory containing the audio files
+data_dir = "/Users/amitosi/PycharmProjects/chester/udi/emotion"
 
-# Create a pandas dataframe from the features and labels lists
-df = pd.DataFrame(features, columns=['feature_' + str(i) for i in range(40)])
-df['target'] = labels
+# Define empty lists to store the emotion labels and probabilities
+emotion_labels = []
+emotion_probs = []
 
-print(df.head())  # prints first 5 rows of the dataframe
+# Set the model to evaluation mode
+model.eval()
 
-collector = run(data_spec=Data(df=df, target_column='target'), model_run=ModelRun(n_models=10),
-                feature_types=
-                       {'numeric': list(df.columns)[:-1], 'boolean': [], 'text': [], 'categorical': [], 'time': [],
-                        'id': []},
-                is_feature_stats=True, is_pre_model=True, is_model_weaknesses=False)
+# Disable gradient calculation to speed up inference
+torch.set_grad_enabled(False)
+
+# Iterate through the audio files in the directory
+for file in os.listdir(data_dir):
+    try:
+        # Load the audio data and resample it to 16 kHz (the same sample rate used during training)
+        filepath = os.path.join(data_dir, file)
+        audio_dat, sample_rate = librosa.load(filepath, sr=16000)
+        audio_dat = librosa.resample(audio_dat, sample_rate, 16000)
+
+        # Extract the features from the audio data using the SERNet model
+        features = model({'audio': audio_dat})
+
+        # Compute the probability distribution over the emotion classes
+        probs = torch.nn.functional.softmax(features['log_likelihood']).numpy()[0]
+
+        # Choose the emotion with the highest probability as the predicted emotion
+        pred_emotion = emotions[np.argmax(probs)]
+
+        # Append the predicted emotion label and probability to the respective lists
+        emotion_labels.append(pred_emotion)
+        emotion_probs.append(probs)
+    except Exception as e:
+        print(f"Error encountered while parsing {file}: {e}")
