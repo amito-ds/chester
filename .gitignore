@@ -6,3 +6,5 @@
 ./chester/data/*
 *.mp4
 *.avi
+/databots/
+/databots/code_to_file/
