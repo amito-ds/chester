@@ -1,4 +1,5 @@
 chester
+databots
 diamond
 example_notebooks
 tamtam
