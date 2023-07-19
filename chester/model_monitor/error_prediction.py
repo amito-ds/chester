@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 import seaborn as sns
-from catboost import CatBoostRegressor
 from matplotlib import pyplot as plt
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
@@ -106,27 +105,9 @@ class ModelWeaknesses:
                             text="Print of tree to look for potential segments with high error (use with caution)")
         plt.suptitle("Decision Tree Trained on Model Error")
 
-    def plot_catboost_error_regressor(self, iterations=100, depth=3, learning_rate=0.1):
-        model = CatBoostRegressor(iterations=iterations, depth=depth, learning_rate=learning_rate)
-        model.fit(self.X_test, self.error, verbose=False)
-        plt.figure(figsize=(15, 15))
-        feature_importances = np.round(model.feature_importances_, decimals=0)
-        feature_imp = pd.DataFrame({'Feature': self.X_test.columns, 'Importance': feature_importances})
-        feature_imp = feature_imp.sort_values(by='Importance', ascending=False)
-        self.rc.save_object(create_pretty_table(feature_imp[0:50]), text="Most important features by catboost:")
-        feature_imp = feature_imp[0:30]
-        sns.barplot(x=feature_imp['Importance'], y=feature_imp['Feature'])
-        plt.title('CatBoost Feature Importance to Detect Segments with High Error')
-        plt.show()
-        plt.close()
-
     def run(self):
         print("Training model to predict the error")
         if np.unique(self.error).size == 1:
             print("🎉 No weaknesses found! All errors on the test set are 0.")
             return None
-        self.plot_catboost_error_regressor()
         self.plot_decision_tree_error_regressor()
-
-
-

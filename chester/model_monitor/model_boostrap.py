@@ -5,7 +5,6 @@ from matplotlib import pyplot as plt
 from chester.feature_stats.utils import create_pretty_table
 from chester.model_monitor import calculate_scores_utils
 from chester.model_training.data_preparation import CVData
-from chester.model_training.models.chester_models.catboost.catboost_utils import calculate_catboost_metrics_scores
 from chester.zero_break.problem_specification import DataInfo
 
 boostrap_message = "The following plots display the bootstrap distribution of the metrics, " \
@@ -76,18 +75,11 @@ class ModelBootstrap:
             y_sample = self.y_test.iloc[sample_indexes]
             y_pred = self.model.predict(X_sample)
 
-            try:
-                bootstrap_metrics.append(
-                    calculate_catboost_metrics_scores(
-                        y_sample, prediction=y_pred, metrics_list=self.metrics,
-                        problem_type=self.data_info.problem_type_val)
-                )
-            except:
-                bootstrap_metrics.append(
-                    calculate_scores_utils.calculate_metrics_scores(
-                        y=y_sample, prediction=y_pred, metrics_list=self.metrics,
-                        problem_type=self.data_info.problem_type_val)
-                )
+            bootstrap_metrics.append(
+                calculate_scores_utils.calculate_metrics_scores(
+                    y=y_sample, prediction=y_pred, metrics_list=self.metrics,
+                    problem_type=self.data_info.problem_type_val)
+            )
         return bootstrap_metrics
 
     def plot(self):

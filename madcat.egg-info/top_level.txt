@@ -1,7 +1,0 @@
-chester
-databots
-diamond
-example_notebooks
-tamtam
-udi
-vis

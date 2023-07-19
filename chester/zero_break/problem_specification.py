@@ -196,13 +196,13 @@ class DataInfo:
         if problem_type == "No target variable":
             return None
         elif problem_type == "Binary regression":
-            return {"linear", "logistic", "catboost", "baseline-median", "baseline-average"}
+            return {"linear", "logistic", "baseline-median", "baseline-average"}
         elif problem_type == "Regression":
-            return {"linear", "catboost", "baseline-median", "baseline-average"}
+            return {"linear", "baseline-median", "baseline-average"}
         elif problem_type == "Binary classification":
-            return {"logistic", "catboost", "baseline-mode"}
+            return {"logistic", "baseline-mode"}
         elif problem_type == "Multiclass classification":
-            return {"logistic", "catboost", "baseline-mode"}
+            return {"logistic", "baseline-mode"}
 
     def label_transformation(self):
         if self.problem_type() == "No target variable":
