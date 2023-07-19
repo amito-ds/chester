@@ -1,0 +1,16 @@
+corextopic>=1.1
+lightgbm>=3.2.1
+matplotlib>=3.6.3
+nltk>=3.8.1
+pandas>=1.5.2
+plotly>=5.9.0
+python_Levenshtein>=0.20.9
+scikit_learn>=1.2.1
+scikit_optimize>=0.9.0
+scipy>=1.10.0
+seaborn>=0.12.2
+textblob>=0.17.1
+tweedie>=0.0.9
+wordcloud>=1.8.2.2
+fuzzywuzzy>=0.18.0
+timm>=0.6.12
