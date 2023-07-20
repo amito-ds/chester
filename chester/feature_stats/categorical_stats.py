@@ -34,53 +34,50 @@ class CategoricalStats:
         top_features = self.cols_sorted[:3 * n]
         return top_features
 
-    def plot_value_counts(self, n=25, plot=True):
+    def plot_data(self, ax, count_data, col):
+        ax1 = ax
+        ax1.bar(count_data.iloc[:, 0], count_data['count'].to_list(), color='gray')
+        ax2 = ax1.twinx()
+        ax2.plot(count_data.iloc[:, 0], count_data['percentage'].to_list(), marker='o', color='red')
+        ax1.set_ylabel('Counts', color='gray')
+        ax2.set_ylabel('Percentages', color='red')
+        ax1.set_xlabel(None)
+        ax1.set_title(f"{col}")
+
+    def plot_value_counts(self, plot, n=25):
         if not self.any_categorical():
             return None
         if not plot:
             return None
         top_n = self.cols_sorted[:min(len(self.cols_sorted), n)]
-        num_plots = len(top_n)
-        if num_plots == 1:
-            col = top_n[0]
-            fig, ax1 = plt.subplots(1, 1, figsize=(10, 5))
-            cat_col = self.data[col].apply(lambda x: "cat " + str(x))
-            count_data = cat_col.value_counts()
-            percent_data = count_data / count_data.sum() * 100
-            ax1.bar(count_data.index[:5], count_data.values[:5], color='gray')
-            ax2 = ax1.twinx()
-            ax2.plot(percent_data.index[:5], percent_data.values[:5], color='red', marker='o')
-            ax1.set_ylabel('Counts', color='gray')
-            ax2.set_ylabel('Percentages', color='red')
-            ax1.set_xlabel(None)
-            ax1.set_title(f"{col}")
-            return None
-        else:
-            dim = max(math.floor(math.sqrt(len(top_n))), 2)
-            fig, ax = plt.subplots(dim, dim, figsize=(18, 3 + 3 * dim))
-            fig.tight_layout()
-            fig.suptitle("Top 5 Value Counts and Percentages for Each Feature")
-            for i, col in enumerate(top_n):
-                if i >= dim * dim:
-                    break
-                count_data = pd.DataFrame(self.data[col].value_counts().head(5)).reset_index(drop=False)
-                total_count = self.data[col].count()
-                percent_data = count_data.copy()
-                percent_data[col] = percent_data[col] / total_count * 100
-                percent_data.rename(columns={col: 'percentage', 'index': col}, inplace=True)
 
-                plot_title = f"{col}"
-                ax_i = ax[i // dim, i % dim]
-                ax1_i = ax_i
-                ax1_i.bar(count_data.iloc[:, 0], count_data.iloc[:, 1].to_list(), color='gray')
-                ax2_i = ax1_i.twinx()
-                ax2_i.plot(percent_data.iloc[:, 0], percent_data.iloc[:, 1].to_list(), marker='o', color='red')
-                ax1_i.set_ylabel('Counts', color='gray')
-                ax2_i.set_ylabel('Percentages', color='red')
-                ax1_i.set_xlabel(None)
-                ax1_i.set_title(plot_title)
-            plt.show()
-            plt.close()
+        # Compute grid size
+        dim = max(math.floor(math.sqrt(len(top_n))), 2)
+
+        # Always make subplots, even when there is only one
+        fig, ax = plt.subplots(dim, dim, figsize=(18, 3 + 3 * dim))
+        fig.tight_layout()
+
+        # Iterate over the categorical columns and create plots
+        for i, col in enumerate(top_n):
+            if i >= dim * dim:
+                break
+
+            count_data = self.data[col].value_counts().reset_index()
+            count_data.columns = [col, 'count']
+            count_data['percentage'] = (count_data['count'] / count_data['count'].sum()) * 100
+
+            # Flatten axes array, if there is only one plot, ax does not need to be indexed
+            ax_i = ax.flatten()[i]
+
+            self.plot_data(ax_i, count_data, col)
+
+        # Add super title for all subplots, if there are more than one
+        if len(top_n) > 1:
+            fig.suptitle("Top 5 Value Counts and Percentages for Each Feature")
+
+        plt.show()
+        plt.close()
 
     def calculate_stats(self, is_print=True):
         from chester.util import ReportCollector, REPORT_PATH
@@ -92,12 +89,31 @@ class CategoricalStats:
             data = self.data[col]
             unique_values = data.nunique()
             missing_values = data.isnull().sum()
-            value_counts = data.value_counts().rename("count").reset_index()
+
+            value_counts = data.value_counts().reset_index()
+            value_counts.columns = ["index", "count"]
             value_counts["percentage"] = 100 * value_counts["count"] / value_counts["count"].sum()
             value_counts = value_counts.sort_values("count", ascending=False)
+
             dist_str = ', '.join([f"{row['index']}: {row['percentage']:.0f}%" for _, row in value_counts.iterrows()])
-            result_dicts.append(
-                {'col': col, '# unique': unique_values, '# missing': missing_values, 'Distribution': dist_str})
+
+            # Find sample values
+            data_unique_values = data.dropna().drop_duplicates()
+            sample_values = ', '.join(
+                str(value) for value in data_unique_values.sample(min(3, len(data_unique_values))))
+
+            # Calculate top 5 values coverage
+            top_5_coverage = 100 * value_counts.head(5)["count"].sum() / value_counts["count"].sum()
+
+            result_dicts.append({
+                'col': col,
+                '# unique': unique_values,
+                '# missing': missing_values,
+                'Distribution': dist_str,
+                'Sample': sample_values,
+                'Top 5 values coverage': f"{top_5_coverage:.0f}%"
+            })
+
             data_unique_values = data.dropna().drop_duplicates()
             col_len = len(data_unique_values)
             values_to_sample = 3

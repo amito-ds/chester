@@ -1,0 +1,29 @@
+Full report to analyze my data:
+
+Data information:
+Data Information Report
+Problem Type: No target variable
+Feature Types: {'numeric': ['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)'], 'boolean': [], 'text': [], 'categorical': ['target'], 'time': [], 'id': []}
+Evaluation Metrics: None
+Optional Models: None
+
+
+features engineering process for the data:
+features statistics for the data. Analyzed by groups (text, numeric, categorical) if exists:
+
+Numerical Feature statistics:
+Feature stats:
+                     col # unique # missing  max  min   avg   std  \
+0  num_sepal length (cm)       35         0  7.9  4.3  5.84  0.83   
+2  num_petal length (cm)       43         0  6.9  1.0  3.76  1.77   
+1   num_sepal width (cm)       23         0  4.4  2.0  3.06  0.44   
+3   num_petal width (cm)       22         0  2.5  0.1   1.2  0.76   
+
+             CI median     top_vals  bottom_vals  
+0  (5.73, 5.95)    5.8  7.9,7.7,7.6  4.3,4.4,4.5  
+2   (3.52, 4.0)   4.35  6.9,6.7,6.6  1.0,1.1,1.2  
+1   (3.0, 3.12)    3.0  4.4,4.2,4.1  2.0,2.2,2.3  
+3    (1.1, 1.3)    1.3  2.5,2.4,2.3  0.1,0.2,0.3  
+
+
+Categorical Feature statistics:

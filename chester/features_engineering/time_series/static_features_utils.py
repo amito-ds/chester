@@ -2,84 +2,60 @@ import pandas as pd
 
 from chester.run.user_classes import TimeSeriesHandler
 from chester.zero_break.problem_specification import DataInfo
+from chester.run.user_classes import TimeSeriesHandler
+from chester.zero_break.problem_specification import DataInfo
 
 
 class TSStaticFeatures:
-    def __init__(self, column,
-                 col_name,
-                 time_series_handler: TimeSeriesHandler = None,
-                 data_info: DataInfo = None):
+    def __init__(self, column, col_name, time_series_handler: TimeSeriesHandler = None, data_info: DataInfo = None):
         self.col_name = col_name
         self.column = column
         self.time_series_handler = time_series_handler
         self.data_info = data_info
         self.df = self.data_info.data
-        self.df[self.col_name] = pd.to_datetime(self.df[self.col_name])  # conver to datetime
+        try:
+            self.df[self.col_name] = pd.to_datetime(self.df[self.col_name])  # convert to datetime
+            self.is_datetime = True
+        except Exception:
+            self.is_datetime = False
+        print("wow! col!", self.col_name)
+
+    def safe_extract(self, method, col_name):
+        try:
+            return method(self.df[self.col_name]), f"ts_{col_name}_{self.col_name}"
+        except:
+            return pd.Series(0, index=self.df.index), f"ts_{col_name}_{self.col_name}"
 
     def extract_minute(self):
-        """
-        Extract the minute in the day from a datetime column.
-        :param df: pandas DataFrame
-        :param datetime_col: string, the name of the datetime column
-        :return: pandas series
-        """
-        return self.df[self.col_name].dt.hour * 60 + self.df[self.col_name].dt.minute, "ts_minutes_" + self.col_name
+        return self.safe_extract(lambda col: col.dt.hour * 60 + col.dt.minute, 'minutes')
 
     def extract_hour(self):
-        """
-        Extract the hour from the datetime column.
-        :return: pandas series
-        """
-        return self.df[self.col_name].dt.hour, "ts_hours_" + self.col_name
+        return self.safe_extract(lambda col: col.dt.hour, 'hours')
 
     def extract_day_in_month(self):
-        """
-        Extract the day of the month from the datetime column.
-        :return: pandas series
-        """
-        return self.df[self.col_name].dt.day, "ts_dayinmonth_" + self.col_name
+        return self.safe_extract(lambda col: col.dt.day, 'dayinmonth')
 
     def extract_day_in_week(self):
-        """
-        Extract the day of the week from the datetime column.
-        :return: pandas series
-        """
-        return self.df[self.col_name].dt.strftime("%A"), "ts_dayinweek_" + self.col_name
+        return self.safe_extract(lambda col: col.dt.strftime("%A"), 'dayinweek')
 
     def extract_month_in_year(self):
-        """
-        Extract the month of the year from the datetime column.
-        :return: pandas series
-        """
-        return self.df[self.col_name].dt.month, "ts_month_" + self.col_name
+        return self.safe_extract(lambda col: col.dt.month, 'month')
 
     def extract_quarter(self):
-        """
-        Extract the quarter of the year from the datetime column.
-        :return: pandas series
-        """
-        return self.df[self.col_name].dt.quarter, "ts_quarter_" + self.col_name
+        return self.safe_extract(lambda col: col.dt.quarter, 'quarter')
 
     def extract_year(self):
-        """
-        Extract the year from the datetime column.
-        :return: pandas series
-        """
-        return self.df[self.col_name].dt.year, "ts_year_" + self.col_name
+        return self.safe_extract(lambda col: col.dt.year, 'year')
 
     def run(self):
         # call all feature extraction methods and concatenate the resulting Pandas series
-        minute, minute_name = self.extract_minute()
-        hour, hour_name = self.extract_hour()
-        day, day_name = self.extract_day_in_month()
-        weekday, weekday_name = self.extract_day_in_week()
-        month, month_name = self.extract_month_in_year()
-        quarter, quarter_name = self.extract_quarter()
-        year, year_name = self.extract_year()
-        ts_feat_names = [minute_name, hour_name, day_name, weekday_name, month_name, quarter_name, year_name]
-        ts_features = pd.concat([minute, hour, day, weekday, month, quarter, year], axis=1)
-        ts_features.columns = ts_feat_names
-        return ts_features, ts_feat_names
+        methods = [self.extract_minute, self.extract_hour, self.extract_day_in_month,
+                   self.extract_day_in_week, self.extract_month_in_year, self.extract_quarter, self.extract_year]
+
+        ts_features = pd.concat([method()[0] for method in methods], axis=1)
+        ts_features.columns = [method()[1] for method in methods]
+        return ts_features, ts_features.columns
+
 #
 # create a sample DataFrame with a datetime column
 # data = pd.DataFrame({
