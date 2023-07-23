@@ -16,7 +16,10 @@ class FrequenciesFeatures:
         # self.date_column = column
         self.time_series_handler = time_series_handler or TimeSeriesHandler()
         self.data_info = data_info
-        self.df = self.data_info.data.sort_values(self.date_col_name)
+        try:
+            self.df = self.data_info.data.sort_values(self.date_col_name)
+        except:
+            self.df = self.data_info.data
         self.id_cols = self.time_series_handler.id_cols or []
         self.lag_values = time_series_handler.lag_values
         self.df[self.date_col_name] = pd.to_datetime(self.df[self.date_col_name])  # convert to datetime

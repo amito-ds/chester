@@ -13,4 +13,3 @@ textblob>=0.17.1
 tweedie>=0.0.9
 wordcloud>=1.8.2.2
 fuzzywuzzy >= 0.18.0
-timm>=0.6.12

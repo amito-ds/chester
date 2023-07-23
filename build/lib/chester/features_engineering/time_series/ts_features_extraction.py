@@ -14,12 +14,15 @@ class TimeSeriesFeaturesExtraction:
 
     def run(self):
         for col in self.cols:
-            ts_fe = TimeSeriesFeatureExtraction(
-                data_info=self.data_info,
-                time_series_handler=self.time_series_handler,
-                col_name=col,
-                column=self.data_info.data[col]
-            )
-            ts_fe.run()
-            self.data_info = ts_fe.data_info
+            try:
+                ts_fe = TimeSeriesFeatureExtraction(
+                    data_info=self.data_info,
+                    time_series_handler=self.time_series_handler,
+                    col_name=col,
+                    column=self.data_info.data[col]
+                )
+                ts_fe.run()
+                self.data_info = ts_fe.data_info
+            except:
+                pass
             # print("updated data info after ts", self.data_info)

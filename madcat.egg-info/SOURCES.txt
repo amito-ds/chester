@@ -83,9 +83,8 @@ chester/run/feature_attention_utils.py
 chester/run/full_run.py
 chester/run/user_classes.py
 chester/run_manual_chester/__init__.py
-chester/run_manual_chester/bad_data.py
-chester/run_manual_chester/bad_data2.py
 chester/run_manual_chester/manual_run.py
+chester/run_manual_chester/pg.py
 chester/text_stats_analysis/__init__.py
 chester/text_stats_analysis/common_words.py
 chester/text_stats_analysis/corex_topics.py

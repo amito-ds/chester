@@ -1,33 +1,30 @@
-import random
 from collections import Counter
 
-import matplotlib
 import pandas as pd
-from chester.data_loader.webtext_data import load_data_pirates, load_data_king_arthur, load_data_chat_logs
-from flatbuffers.builder import np
-from sklearn.datasets import fetch_20newsgroups, fetch_openml
+from sklearn.datasets import fetch_20newsgroups
+from matplotlib import pyplot as plt
 
+from chester.data_loader.webtext_data import load_data_pirates, load_data_king_arthur, load_data_chat_logs
 from chester.run.full_run import run
-from chester.run.user_classes import Data, ModelRun, TimeSeriesHandler, TextFeatureExtraction, TextSummary
-import yfinance as yf
-import ml_datasets
+from chester.run.user_classes import Data, TextSummary, ModelRun
 
 # matplotlib.use('TkAgg')
 target_column = 'target'
-import matplotlib.pyplot as plt
-
+import numpy as np
 # Disable interactive mode
 # plt.ioff()
 
 
 ################################################################################################
-df1 = load_data_pirates().assign(target='pirate').sample(300, replace=True)
-df2 = load_data_king_arthur().assign(target='arthur').sample(300, replace=True)
-df3 = load_data_chat_logs().assign(target='chat').sample(300, replace=True)
-df = pd.concat([
-    df1, df2,
-    df3
-])
+# df1 = load_data_pirates().assign(target='pirate').sample(300, replace=True)
+# df2 = load_data_king_arthur().assign(target='arthur').sample(300, replace=True)
+# df3 = load_data_chat_logs().assign(target='chat').sample(300, replace=True)
+# df = pd.concat([
+#     df1, df2,
+#     df3
+# ])
+
+
 #
 # df['target'] = df['target'].apply(lambda x: 0 if "pirate" in x else 1)  # can do with or without
 ################################################################################################
@@ -388,7 +385,7 @@ def load_dataset(name):
 # df = load_dataset('trains')
 # df = load_dataset('heart-statlog')
 # df = load_dataset('vehicle')
-# df = load_dataset('hepatitis')
+df = load_dataset('hepatitis')
 # df = load_dataset('vote')
 # df = load_dataset('hypothyroid')
 
@@ -432,14 +429,17 @@ def load_dataset(name):
 # filtered_df = df[df['ProductId'].isin(top_10)]
 
 
-chester_collector = run(Data(df=df),
-                        is_feature_stats=True,
-                        is_pre_model=True,
-                        text_summary=TextSummary(summary_num_sentences=3, max_terms=5),
+# df = pd.read_csv("/Users/amitosi/PycharmProjects/databot_aws/example_app/static/iris_data.csv")
+# df['target'] = df.apply(lambda x: str(x['target']) + "class", axis=1)
+
+chester_collector = run(Data(df=df, target_column='target'),
+                        # is_feature_stats=True,
+                        # is_pre_model=True,
+                        # text_summary=TextSummary(summary_num_sentences=3, max_terms=5),
                         # feature_types={'numeric': [], 'boolean': [], 'text': ['Text', 'Summary'],
                         #                'categorical': [], 'time': [], 'id': ['ProductId']}
                         # text_summary=TextSummary(summary_num_sentences=3, max_terms=20),
-                        # model_run=ModelRun(n_models=1),
+                        model_run=ModelRun(n_models=2),
                         )
 # madcat_collector = run_madcat(Data(df=df, target_column='target'),
 #                               is_feature_stats=True,
