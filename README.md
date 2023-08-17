@@ -41,16 +41,21 @@ MadCat's primary goal is to uncomplicate complex data science challenges. To see
 
 ```python
 import pandas as pd
-from MadCat import full_run, user_classes
+from chester.run.full_run import run
 
+# Load the Iris dataset
 url = "https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data"
 names = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
 dataset = pd.read_csv(url, names=names)
+
+# Rename target column and shuffle dataset
 dataset.rename(columns={'class': 'target'}, inplace=True)
 df = dataset.sample(frac=1).reset_index(drop=True)
 
-run_metadata_collector = full_run.run(
-    user_classes.Data(df=df, target_column='target'),
+# Run MadCat on the dataset
+run_metadata_collector = run(
+    data=df, 
+    target_column='target'
 )
 ```
 
