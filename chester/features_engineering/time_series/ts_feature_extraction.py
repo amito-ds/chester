@@ -62,12 +62,15 @@ class TimeSeriesFeatureExtraction:
                                  col_name=self.col_name,
                                  time_series_handler=self.time_series_handler,
                                  data_info=self.data_info)
-        df_ff, names = ff.run()
-        df_ff = FeatureEliminationUtils(df=df_ff[names]).run()  # Elimination for the relevant features only
-        self.data_info.data = pd.concat([self.data_info.data, df_ff], axis=1)  # update data
-        self.data_info.feature_types_val["numeric"] = list(
-            self.data_info.feature_types_val["numeric"])  # convert set to list
-        self.data_info.feature_types_val["numeric"].extend(df_ff.columns)  # update features
+        try:
+            df_ff, names = ff.run()
+            df_ff = FeatureEliminationUtils(df=df_ff[names]).run()  # Elimination for the relevant features only
+            self.data_info.data = pd.concat([self.data_info.data, df_ff], axis=1)  # update data
+            self.data_info.feature_types_val["numeric"] = list(
+                self.data_info.feature_types_val["numeric"])  # convert set to list
+            self.data_info.feature_types_val["numeric"].extend(df_ff.columns)  # update features
+        except:
+            pass
 
     def cyclic_features(self):
         cf = CyclicFeatures(column=self.column,

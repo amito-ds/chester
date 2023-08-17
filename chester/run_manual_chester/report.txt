@@ -31,29 +31,29 @@ features statistics for the data. Analyzed by groups (text, numeric, categorical
 
 Numerical Feature statistics:
 Feature stats:
-                                  col # unique # missing   max  min   avg  \
-41  Link_tfidf_httpswwwbbccomnewsb...        2         0   1.0  0.0   0.1   
-47  Link_tfidf_httpswwwbbccomnewse...        2         0   1.0  0.0   0.1   
-56  Link_bow_httpswwwbbccomtravela...        2         0   1.0  0.0   0.1   
-30                 Link_corex_topic_1       22         0  0.31  0.0  0.04   
-37                 Link_corex_topic_8       22         0  0.39  0.1  0.14   
-12                  Heading_tfidf_day        3         0  0.73  0.0  0.04   
-11               Heading_tfidf_profit        3         0   1.0  0.0  0.05   
-23                Heading_bow_protest        2         0  0.71  0.0  0.05   
-22                    Heading_bow_day        3         0  0.71  0.0  0.04   
-29                     Heading_bow_us        2         0   1.0  0.0  0.08   
+                             col # unique # missing   max  min   avg   std  \
+41  Link_tfidf_httpswwwbbccom...        2         0   1.0  0.0   0.1  0.31   
+47  Link_tfidf_httpswwwbbccom...        2         0   1.0  0.0   0.1  0.31   
+56  Link_bow_httpswwwbbccomne...        2         0   1.0  0.0   0.1  0.31   
+30            Link_corex_topic_1       22         0   0.3  0.0  0.03  0.09   
+37            Link_corex_topic_8       22         0  0.36  0.0  0.13  0.07   
+12              Heading_tfidf_us        3         0  0.73  0.0  0.04  0.16   
+11            Heading_tfidf_time        3         0   1.0  0.0  0.05  0.19   
+23             Heading_bow_world        2         0  0.71  0.0  0.05  0.19   
+22                Heading_bow_us        3         0  0.71  0.0  0.04  0.16   
+29             Heading_bow_sudan        2         0   1.0  0.0  0.08  0.27   
 
-     std            CI median        top_vals    bottom_vals  
-41  0.31  (0.02, 0.18)    0.0         1.0,0.0        0.0,1.0  
-47  0.31  (0.02, 0.18)    0.0         1.0,0.0        0.0,1.0  
-56  0.31  (0.02, 0.18)    0.0         1.0,0.0        0.0,1.0  
-30  0.11  (0.01, 0.07)    0.0    0.31,0.0,0.0    0.0,0.0,0.0  
-37  0.07  (0.12, 0.15)   0.11  0.39,0.39,0.21  0.1,0.11,0.11  
-12  0.16   (0.0, 0.09)    0.0    0.73,0.5,0.0   0.0,0.5,0.73  
-11  0.19    (0.0, 0.1)    0.0     1.0,0.5,0.0    0.0,0.5,1.0  
-23  0.19    (0.0, 0.1)    0.0        0.71,0.0       0.0,0.71  
-22  0.16   (0.0, 0.08)    0.0    0.71,0.5,0.0   0.0,0.5,0.71  
-29  0.27  (0.01, 0.15)    0.0         1.0,0.0        0.0,1.0  
+              CI median        top_vals    bottom_vals  
+41  (0.02, 0.18)    0.0         1.0,0.0        0.0,1.0  
+47  (0.02, 0.18)    0.0         1.0,0.0        0.0,1.0  
+56  (0.02, 0.18)    0.0         1.0,0.0        0.0,1.0  
+30  (0.01, 0.05)    0.0     0.3,0.0,0.0    0.0,0.0,0.0  
+37  (0.11, 0.15)   0.11  0.36,0.36,0.36  0.0,0.11,0.11  
+12  (-0.0, 0.08)    0.0    0.73,0.5,0.0   0.0,0.5,0.73  
+11   (-0.0, 0.1)    0.0     1.0,0.5,0.0    0.0,0.5,1.0  
+23   (-0.0, 0.1)    0.0        0.71,0.0       0.0,0.71  
+22  (-0.0, 0.08)    0.0    0.71,0.5,0.0   0.0,0.5,0.71  
+29  (0.01, 0.15)    0.0         1.0,0.0        0.0,1.0  
 
 
 Categorical Feature statistics:
@@ -74,7 +74,7 @@ Median length of text: 37.00
 
 Count word frequency for basic text analysis.
 Report shows most common words, giving insight into text topic and content:
-[('sudan', 4), ('bn', 3), ('day', 3), ('leave', 3), ('us', 3), ('hsbc', 2), ('makes', 2), ('profit', 2), ('boosted', 2), ('svb', 2), ('france', 2), ('may', 2), ('protests', 2), ('dozens', 2), ('police', 2), ('injured', 2), ('time', 2), ('sex', 2), ('japan', 2), ('bbc', 2), ('world', 2), ('tv', 2), ('ban', 2), ('burden', 1), ('cricket', 1), ('legend', 1), ('tendulkars', 1), ('son', 1), ('darfur', 1), ('saw', 1), ('pickup', 1), ('trucks', 1), ('full', 1), ('dead', 1), ('people', 1), ('baby', 1), ('meets', 1), ('father', 1), ('first', 1), ('escape', 1), ('serious', 1), ('money', 1), ('kitchen', 1), ('fumes', 1), ('indian', 1), ('wrestlers', 1), ('continue', 1), ('protest', 1), ('abuse', 1), ('street', 1), ('piano', 1), ('confiscated', 1), ('public', 1), ('break', 1), ('rules', 1), ('chaos', 1), ('port', 1), ('thousands', 1), ('rush', 1), ('cold', 1), ('war', 1), ('capsule', 1), ('open', 1), ('news', 1), ('new', 1), ('record', 1), ('indians', 1), ('take', 1), ('flights', 1), ('russia', 1), ('troop', 1), ('deaths', 1), ('hit', 1), ('five', 1), ('months', 1), ('puzzle', 1), ('neanderthal', 1), ('culture', 1), ('mums', 1), ('working', 1), ('without', 1), ('childcare', 1), ('top', 1), ('football', 1), ('coach', 1), ('forced', 1), ('flee', 1), ('photo', 1), ('princess', 1), ('charlotte', 1), ('shared', 1), ('turns', 1), ('upskirting', 1), ('stronger', 1), ('crime', 1), ('laws', 1), ('bumper', 1), ('bp', 1), ('profits', 1), ('spark', 1)]
+[('sudan', 4), ('day', 3), ('us', 3), ('leave', 3), ('bn', 3), ('japan', 2), ('ban', 2), ('sex', 2), ('bbc', 2), ('world', 2), ('france', 2), ('may', 2), ('protests', 2), ('dozens', 2), ('police', 2), ('injured', 2), ('hsbc', 2), ('makes', 2), ('profit', 2), ('boosted', 2), ('svb', 2), ('tv', 2), ('time', 2), ('mums', 1), ('working', 1), ('without', 1), ('childcare', 1), ('darfur', 1), ('saw', 1), ('pickup', 1), ('trucks', 1), ('full', 1), ('dead', 1), ('people', 1), ('gen', 1), ('z', 1), ('rejecting', 1), ('prestige', 1), ('jobs', 1), ('new', 1), ('record', 1), ('indians', 1), ('take', 1), ('flights', 1), ('i', 1), ('didnt', 1), ('think', 1), ('makeup', 1), ('made', 1), ('black', 1), ('girls', 1), ('shooting', 1), ('suspect', 1), ('deported', 1), ('four', 1), ('times', 1), ('media', 1), ('yellen', 1), ('warns', 1), ('could', 1), ('run', 1), ('cash', 1), ('month', 1), ('upskirting', 1), ('stronger', 1), ('crime', 1), ('laws', 1), ('burden', 1), ('cricket', 1), ('legend', 1), ('tendulkars', 1), ('son', 1), ('photo', 1), ('princess', 1), ('charlotte', 1), ('shared', 1), ('turns', 1), ('stranded', 1), ('passports', 1), ('locked', 1), ('western', 1), ('embassies', 1), ('youtube', 1), ('mad', 1), ('canada', 1), ('service', 1), ('radio', 1), ('palestinian', 1), ('hunger', 1), ('striker', 1), ('dies', 1), ('israel', 1), ('prison', 1), ('stuck', 1), ('border', 1), ('drivers', 1), ('demand', 1), ('cross', 1), ('chaos', 1), ('port', 1)]
 Sentiment Statistics
 +--------------------------------+
 |      Sentiment Statistics      |
@@ -88,32 +88,28 @@ Sentiment Statistics
 
 
 Corex topic analysis:
-	Topic 1: profit boosted svb, deported, suspect, shooting, photo princess charlotte, shared turns, charlotte shared, russia, indians flights day, record indians flights
-	Topic 2: son, yellen, warns, yellen warns, hollywood, screenwriters, strike, screenwriters strike pay, drivers, demand
-	Topic 3: legend tendulkars, guide, afternoon, tea, london, passports, locked, western, surviving turntable, history art colours
-	Topic 4: cricket, shared, run, cash, month, rita ora sings, ora sings loves, charlotte, australia, vaping
-	Topic 5: football coach, forced flee, sex abuse, indian wrestlers continue, street piano confiscated, piano confiscated public, capsule open, cold war time, afternoon tea, kenya
-	Topic 6: wife children, hsbc, announces pregnancy, starvation cult, kenya starvation, joined kenya, children joined, hunger striker dies, spark criticism, upskirting stronger
-	Topic 7: protest sex, stranded, deported times media, suspect deported times, guide afternoon, troop deaths hit, coach forced, time capsule, japan street piano, russia troop deaths
-	Topic 8: burden, black, bbc world service, sings, ora, man, times media, deported times, suspect deported, hollywood screenwriters strike
-	Topic 9: dozens, think makeup, youtube mad canada, mad canada, youtube mad, announces pregnancy met, williams announces pregnancy, serena williams announces, serena, world service radio
-	Topic 10: hsbc makes, makes bn, indian, wrestlers, culture, puzzle neanderthal, flee, worm, rita, dies
-	Topic 11: turns, upskirting, stronger, crime, bumper bp profits, bp profits bn, profits bn spark, ferry, board worlds, worlds surviving
-	Topic 12: burden cricket legend, didnt think makeup, williams announces, children joined kenya, wife children joined, jobs, prestige, rejecting, worm rita, man worm
-	Topic 13: protest sex abuse, joined kenya starvation, art colours, history art, colours, turntable, surviving, worlds, hollywood screenwriters, kenya starvation cult
-	Topic 14: protests leave, leave dozens, dozens police, protest, piano, confiscated, confiscated public break, public break rules, chaos, palestinian hunger
-	Topic 15: bn profit, profit boosted, tv hosts exasperation, boosted svb, hsbc makes bn, profits bn, bn spark, locked western, sudan border drivers, border drivers demand
-	Topic 16: pickup, trucks, dead, money kitchen, kitchen fumes, money kitchen fumes, football coach forced, coach forced flee, forced flee sudan, sings loves
-	Topic 17: rush, chaos port, indians flights, flights day, new record indians, shooting suspect deported, drivers demand, demand cross, stuck sudan border, announces
-	Topic 18: escape, baby meets, meets father, chaos port thousands, port thousands rush, cold, war, capsule, open, cold war
-	Topic 19: abuse, profits, spark, embassies, stranded passports, passports locked
-	Topic 20: meets, sex crime laws, bumper, bp, exasperation protester, seriously tv hosts
-	Topic 21: war time capsule, coach, forced, crime laws, japan ban upskirting, ban upskirting stronger
-	Topic 22: neanderthal, profit
-	Key sentences out of based on LSA algorithm: ['chaos port thousands rush leave sudan.', 'hsbc makes bn profit boosted svb.', 'australia ban recreational vaping.', 'stranded passports locked western embassies.', 'japan ban upskirting stronger sex crime laws.'] 
+	Topic 1: makes bn, profit boosted, starvation cult, hit, deaths, bn profit, israel, youtube mad, kenya starvation, canada
+	Topic 2: prestige jobs, gen rejecting prestige, day, new record, leave dozens, dozens police, police injured, stuck sudan, sudan border, border drivers
+	Topic 3: upskirting stronger, recreational vaping, australia ban recreational, ban recreational vaping, bumper bp profits, bp profits bn, profits bn spark, culture, puzzle neanderthal, capsule
+	Topic 4: seriously tv hosts, darfur saw, locked western, western embassies, stranded passports locked, passports locked western, locked western embassies, youtube, port, thousands
+	Topic 5: record, afternoon, tea, london, williams, announces, football coach forced, neanderthal culture, coach forced flee, sings loves
+	Topic 6: hunger striker, board worlds surviving, protester, capsule open, time capsule, war time, street piano confiscated, japan street piano, bumper, joined kenya starvation
+	Topic 7: didnt think makeup, man worm, flee sudan, serena williams announces, met gala, confiscated public break, piano confiscated public, ban recreational, australia ban, vaping
+	Topic 8: trucks, ora sings loves, loves, war time capsule, cold war time, time, war, piano, street, bn spark criticism
+	Topic 9: working, continue, serena, afternoon tea london, break, public, confiscated, russia troop deaths, hit months, deaths hit
+	Topic 10: public break, mums, baby meets, sings, ora, exasperation, break rules, wife children, cult, starvation
+	Topic 11: continue protest, trucks dead people, gen, saw, screenwriters, strike, kenya starvation cult, history, art, colours
+	Topic 12: cricket legend tendulkars, legend tendulkars son, photo, france day protests, day protests leave, protests leave dozens, prison, palestinian hunger, money kitchen, kitchen fumes
+	Topic 13: rejecting prestige jobs, new, new record indians, record indians flights, indians flights day, makeup, black, girls, crime, children
+	Topic 14: jobs, gen rejecting, legend tendulkars, tendulkars son, burden cricket legend, radio, drivers demand, demand cross, stuck sudan border, pregnancy
+	Topic 15: deported times, football, pregnancy met gala, tea london, afternoon tea, guide afternoon, neanderthal, puzzle, public break rules, hollywood
+	Topic 16: photo princess charlotte, princess charlotte shared, france day, day protests, protests leave, children joined, rules, japan street, street piano, man
+	Topic 17: black girls, meets father time, history art colours, art colours, history art, screenwriters strike, hollywood screenwriters, father time sudan, pay, demand
+	Topic 18: rejecting, strike pay, hollywood screenwriters strike, protest sex, sex abuse
+	Key sentences out of based on LSA algorithm: ['man worm rita ora sings loves.', 'indian wrestlers continue protest sex abuse.', 'darfur saw pickup trucks full dead people.', 'stuck sudan border drivers demand cross.', 'serena williams announces pregnancy met gala.'] 
 
 popular terms extraction:
-[('japan street piano confiscated public break rules', 14.0), ('japan ban upskirting stronger sex crime laws', 14.0), ('hsbc makes bn profit boosted svb', 12.0), ('day protests leave dozens police injured', 12.0), ('indian wrestlers continue protest sex abuse', 12.0), ('chaos port thousands rush leave sudan', 12.0), ('top football coach forced flee sudan', 12.0), ('bumper bp profits bn spark criticism', 12.0), ('stuck sudan border drivers demand cross', 12.0), ('photo princess charlotte shared turns', 10.0)]
+[('japan ban upskirting stronger sex crime laws', 14.0), ('japan street piano confiscated public break rules', 14.0), ('day protests leave dozens police injured', 12.0), ('hsbc makes bn profit boosted svb', 12.0), ('stuck sudan border drivers demand cross', 12.0), ('chaos port thousands rush leave sudan', 12.0), ('bumper bp profits bn spark criticism', 12.0), ('top football coach forced flee sudan', 12.0), ('indian wrestlers continue protest sex abuse', 12.0), ('photo princess charlotte shared turns', 10.0)]
 
 ** Analyzing Link Column
 Data quality stats:
@@ -130,7 +126,7 @@ Median length of text: 31.00
 
 Count word frequency for basic text analysis.
 Report shows most common words, giving insight into text topic and content:
-[('httpswwwbbccomnewsworldafrica', 5), ('httpswwwbbccomnewsbusiness', 4), ('httpswwwbbccomnewsworldeurope', 4), ('httpswwwbbccomnewsworlduscanada', 4), ('httpswwwbbccomnewsworldasiaindia', 3), ('httpswwwbbccomnewsworld', 2), ('httpswwwbbccomnewsentertainmentarts', 2), ('httpswwwbbccomnewsworldasia', 1), ('httpswwwbbccomtravelarticlereganvestinsidedenmarkssecretnuclearbunker', 1), ('httpswwwbbccomnewsworldradioandtv', 1), ('httpswwwbbccomfuturearticlethepuzzleofneanderthalcultureandaesthetics', 1), ('httpswwwbbccomworklifearticlethemothersworkingfromhomewithoutchildcare', 1), ('httpswwwbbccomnewsuk', 1), ('httpswwwbbccomnewsworldasiapacific', 1), ('httpswwwbbccomtravelarticlewheretohaveafternoonteainlondon', 1), ('httpswwwbbccomnewsukscotland', 1), ('httpswwwbbccomculturearticleahistoryofartincolours', 1), ('httpswwwbbccomnewsworldaustralia', 1), ('httpswwwbbccomnewsworldmiddleeast', 1), ('httpswwwbbccomworklifearticlegenzvaluesentrepreneurshipflexibilityjobs', 1), ('httpswwwbbccomsoundsplaylivebbcworldservice', 1), ('httpswwwbbccoukbbcthreearticleccacacecacfeff', 1)]
+[('httpswwwbbccomnewsworldafrica', 5), ('httpswwwbbccomnewsworlduscanada', 4), ('httpswwwbbccomnewsworldeurope', 4), ('httpswwwbbccomnewsbusiness', 4), ('httpswwwbbccomnewsworldasiaindia', 3), ('httpswwwbbccomnewsworld', 2), ('httpswwwbbccomnewsentertainmentarts', 2), ('httpswwwbbccomworklifearticlethemothersworkingfromhomewithoutchildcare', 1), ('httpswwwbbccomworklifearticlegenzvaluesentrepreneurshipflexibilityjobs', 1), ('httpswwwbbccoukbbcthreearticleccacacecacfeff', 1), ('httpswwwbbccomnewsworldasiapacific', 1), ('httpswwwbbccomnewsuk', 1), ('httpswwwbbccomsoundsplaylivebbcworldservice', 1), ('httpswwwbbccomnewsworldmiddleeast', 1), ('httpswwwbbccomnewsukscotland', 1), ('httpswwwbbccomnewsworldradioandtv', 1), ('httpswwwbbccomculturearticleahistoryofartincolours', 1), ('httpswwwbbccomnewsworldaustralia', 1), ('httpswwwbbccomnewsworldasia', 1), ('httpswwwbbccomfuturearticlethepuzzleofneanderthalcultureandaesthetics', 1), ('httpswwwbbccomtravelarticlereganvestinsidedenmarkssecretnuclearbunker', 1), ('httpswwwbbccomtravelarticlewheretohaveafternoonteainlondon', 1)]
 Sentiment Statistics
 +--------------------------------+
 |      Sentiment Statistics      |
@@ -144,27 +140,24 @@ Sentiment Statistics
 
 
 Corex topic analysis:
-	Topic 1: httpswwwbbccomnewsworlduscanada
-	Topic 2: httpswwwbbccomnewsworldeurope
-	Topic 3: httpswwwbbccomnewsukscotland
-	Topic 4: httpswwwbbccomworklifearticlethemothersworkingfromhomewithoutchildcare
-	Topic 5: httpswwwbbccomtravelarticlereganvestinsidedenmarkssecretnuclearbunker
-	Topic 6: httpswwwbbccomnewsworldafrica
-	Topic 7: httpswwwbbccomnewsworldradioandtv
-	Topic 8: httpswwwbbccomnewsworld, httpswwwbbccomnewsworldasiapacific
-	Topic 9: httpswwwbbccomnewsentertainmentarts
-	Topic 10: httpswwwbbccomtravelarticlewheretohaveafternoonteainlondon, httpswwwbbccomsoundsplaylivebbcworldservice
-	Topic 11: httpswwwbbccoukbbcthreearticleccacacecacfeff, httpswwwbbccomfuturearticlethepuzzleofneanderthalcultureandaesthetics
-	Topic 12: httpswwwbbccomculturearticleahistoryofartincolours
-	Topic 13: httpswwwbbccomnewsworldasiaindia
-	Topic 14: httpswwwbbccomnewsuk
-	Topic 15: httpswwwbbccomnewsbusiness
-	Topic 16: httpswwwbbccomworklifearticlegenzvaluesentrepreneurshipflexibilityjobs
-	Topic 17: httpswwwbbccomnewsworldaustralia
-	Topic 18: httpswwwbbccomnewsworldasia
-	Topic 19: httpswwwbbccomnewsworldmiddleeast
-	Key sentences out of based on LSA algorithm: ['httpswwwbbccomnewsworldasia.', 'httpswwwbbccomculturearticleahistoryofartincolours.', 'httpswwwbbccomnewsworldmiddleeast.', 'httpswwwbbccomnewsworlduscanada.', 'httpswwwbbccomnewsuk.'] 
+	Topic 1: httpswwwbbccomnewsuk
+	Topic 2: httpswwwbbccomnewsworldradioandtv
+	Topic 3: httpswwwbbccomnewsbusiness
+	Topic 4: httpswwwbbccomworklifearticlegenzvaluesentrepreneurshipflexibilityjobs
+	Topic 5: httpswwwbbccomsoundsplaylivebbcworldservice
+	Topic 6: httpswwwbbccomnewsworldasiapacific, httpswwwbbccomnewsworldaustralia
+	Topic 7: httpswwwbbccomnewsworldasiaindia, httpswwwbbccomfuturearticlethepuzzleofneanderthalcultureandaesthetics
+	Topic 8: httpswwwbbccomnewsukscotland, httpswwwbbccomnewsworldeurope, httpswwwbbccomnewsworldasia
+	Topic 9: httpswwwbbccomtravelarticlereganvestinsidedenmarkssecretnuclearbunker
+	Topic 10: httpswwwbbccomnewsworld
+	Topic 11: httpswwwbbccomnewsworlduscanada, httpswwwbbccomnewsworldafrica
+	Topic 12: httpswwwbbccomnewsworldmiddleeast
+	Topic 13: httpswwwbbccomworklifearticlethemothersworkingfromhomewithoutchildcare
+	Topic 14: httpswwwbbccomnewsentertainmentarts
+	Topic 15: httpswwwbbccomculturearticleahistoryofartincolours
+	Topic 16: httpswwwbbccoukbbcthreearticleccacacecacfeff
+	Key sentences out of based on LSA algorithm: ['httpswwwbbccomtravelarticlewheretohaveafternoonteainlondon.', 'httpswwwbbccomnewsworldasiaindia.', 'httpswwwbbccomnewsworld', 'httpswwwbbccomnewsbusiness.', 'httpswwwbbccomnewsworldafrica.'] 
 
 popular terms extraction:
-[('httpswwwbbccomnewsworldasiaindia', 2.0), ('httpswwwbbccomnewsbusiness', 2.0), ('httpswwwbbccomnewsworldeurope', 2.0), ('httpswwwbbccomnewsworldafrica', 2.0), ('httpswwwbbccomnewsworld', 2.0), ('httpswwwbbccomnewsworldasia', 2.0), ('httpswwwbbccomtravelarticlereganvestinsidedenmarkssecretnuclearbunker', 2.0), ('httpswwwbbccomnewsworldradioandtv', 2.0), ('httpswwwbbccomfuturearticlethepuzzleofneanderthalcultureandaesthetics', 2.0), ('httpswwwbbccomworklifearticlethemothersworkingfromhomewithoutchildcare', 2.0)]
+[('httpswwwbbccomworklifearticlethemothersworkingfromhomewithoutchildcare', 2.0), ('httpswwwbbccomnewsworldafrica', 2.0), ('httpswwwbbccomworklifearticlegenzvaluesentrepreneurshipflexibilityjobs', 2.0), ('httpswwwbbccomnewsworldasiaindia', 2.0), ('httpswwwbbccoukbbcthreearticleccacacecacfeff', 2.0), ('httpswwwbbccomnewsworlduscanada', 2.0), ('httpswwwbbccomnewsworldasiapacific', 2.0), ('httpswwwbbccomnewsuk', 2.0), ('httpswwwbbccomnewsworld', 2.0), ('httpswwwbbccomsoundsplaylivebbcworldservice', 2.0)]
 

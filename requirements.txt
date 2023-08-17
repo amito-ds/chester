@@ -17,3 +17,5 @@ catboost>=1.1.1
 huggingface_hub>=0.12.1
 transformers>=4.26.1
 timm>=0.6.12
+prettytable
+TextBlob

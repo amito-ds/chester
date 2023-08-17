@@ -86,26 +86,27 @@ class DataInfo:
 
     def _determine_time_cols(self):
         time_cols = []
+
         for col in self.data.columns:
-            if self.data[col].dtype in ['int64', 'float64']:
-                pass
+            if self.data[col].dtype in ['int64', 'float64', 'object']:
+                continue
             elif col == self.target:
-                pass
+                continue
             elif pd.api.types.is_datetime64_dtype(self.data[col]):
                 time_cols.append(col)
             else:
                 non_missing_values = self.data[col][self.data[col].notna()].astype(str)
+
                 if non_missing_values.shape[0] == 0:
-                    pass
-                count = 0
-                for value in non_missing_values:
-                    if is_date(value):
-                        count += 1
+                    continue
+
                 try:
-                    if count / non_missing_values.shape[0] >= 0.9:
-                        time_cols.append(col)
-                except:
+                    # Try converting the entire column to datetime64
+                    pd.to_datetime(self.data[col])
+                    time_cols.append(col)
+                except (ValueError, TypeError):
                     pass
+
         return time_cols
 
     def _determine_numerical_cols(self):

@@ -3,7 +3,6 @@ import pandas as pd
 import seaborn as sns
 from matplotlib import pyplot as plt
 
-from chester.feature_stats.utils import round_value
 from chester.zero_break.problem_specification import DataInfo
 
 
@@ -60,49 +59,38 @@ class NumericStats:
         from chester.util import ReportCollector, REPORT_PATH
         rc = ReportCollector(REPORT_PATH)
 
-        if not self.any_numeric():
+        if self.data.select_dtypes(include=[np.number]).empty:
             return None
+
         result_dicts = []
         for col in self.cols:
-            data = self.data[col]
-            data_drop_dups = data.drop_duplicates()
-            unique_values = data.nunique()
-            missing_values = data.isnull().sum()
-            max_vals = data_drop_dups.max()
-            min_vals = data_drop_dups.min()
-            avg_vals = data.mean()
-            std_vals = data.std()
-            n = len(data)
-            ci_vals = [avg_vals - 1.645 * (std_vals / np.sqrt(n)), avg_vals + 1.645 * (std_vals / np.sqrt(n))]
-            median_vals = data.median()
-            top_vals = data_drop_dups.nlargest(3).apply(round_value)
-            bottom_vals = data_drop_dups.nsmallest(3).apply(round_value)
-            max_vals = max_vals.round(2)
-            min_vals = min_vals.round(2)
-            avg_vals = avg_vals.round(2)
-            std_vals = std_vals.round(2)
-            ci_vals = round_value(ci_vals[0]), round_value(ci_vals[1])
-            median_vals = median_vals.round(2)
-            top_vals = ",".join(map(str, top_vals.tolist()))
-            bottom_vals = ",".join(map(str, bottom_vals.tolist()))
-            result_dicts.append({'col': col, '# unique': unique_values, '# missing': missing_values,
-                                 'max': max_vals,
-                                 'min': min_vals, 'avg': avg_vals, 'std': std_vals, 'CI': ci_vals,
-                                 'median': median_vals,
-                                 'top_vals': top_vals, 'bottom_vals': bottom_vals})
+            col_data = self.data[col]
+            stats = compute_statistics(col_data)
+            result_dicts.append({
+                'col': col,
+                '# unique': stats['unique'],
+                '# missing': stats['missing'],
+                'max': stats['max'],
+                'min': stats['min'],
+                'avg': stats['avg'],
+                'std': stats['std'],
+                'CI': stats['CI'],
+                'median': stats['median'],
+                'top_vals': stats['top_vals'],
+                'bottom_vals': stats['bottom_vals']
+            })
+
         results_df = pd.DataFrame(result_dicts)
+
         if is_print:
+            formatted_df = results_df
             if self.max_print is not None:
-                formatted_df = format_df(df=results_df,
-                                         max_value_width=self.max_print,
-                                         ci_max_value_width=self.max_print,
-                                         col_max_value_width=self.max_print)
-                print(formatted_df)
-            else:
-                formatted_df = format_df(results_df)
-                print(formatted_df)
+                # Assuming the function 'format_df' exists and is used to format the dataframe
+                formatted_df = format_df(df=results_df, max_value_width=self.max_print)
+            print(formatted_df)
             len_df = len(formatted_df)
             rc.save_object(obj=formatted_df.sample(min(len_df, 10)), text="Feature stats:")
+
         return results_df
 
     def run(self, plot=True):
@@ -139,3 +127,57 @@ def format_df(df, max_value_width=25,
     df[col_col] = df[col_col].apply(trim_col_value)
 
     return df
+
+
+def round_value(value):
+    """Custom rounding function to handle integer and non-integer values."""
+    if isinstance(value, (int, np.integer)):
+        return value
+    else:
+        return round(value, 2)
+
+
+def compute_statistics(data):
+    """Compute statistics for a given data series."""
+    data_drop_dups = data.drop_duplicates()
+    unique_values = data.nunique()
+    missing_values = data.isnull().sum()
+    n = len(data)
+
+    # If all values are missing, return None statistics
+    if missing_values == n:
+        return {
+            'unique': None,
+            'missing': missing_values,
+            'max': None,
+            'min': None,
+            'avg': None,
+            'std': None,
+            'CI': (None, None),
+            'median': None,
+            'top_vals': None,
+            'bottom_vals': None
+        }
+
+    max_vals = round_value(data_drop_dups.max())
+    min_vals = round_value(data_drop_dups.min())
+    avg_vals = round_value(data.mean())
+    std_vals = round_value(data.std())
+    ci_vals = (round_value(avg_vals - 1.645 * (std_vals / np.sqrt(n))),
+               round_value(avg_vals + 1.645 * (std_vals / np.sqrt(n))))
+    median_vals = round_value(data.median())
+    top_vals = ",".join(map(str, data_drop_dups.nlargest(3).apply(round_value).tolist()))
+    bottom_vals = ",".join(map(str, data_drop_dups.nsmallest(3).apply(round_value).tolist()))
+
+    return {
+        'unique': unique_values,
+        'missing': missing_values,
+        'max': max_vals,
+        'min': min_vals,
+        'avg': avg_vals,
+        'std': std_vals,
+        'CI': ci_vals,
+        'median': median_vals,
+        'top_vals': top_vals,
+        'bottom_vals': bottom_vals
+    }

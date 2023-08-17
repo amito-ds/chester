@@ -171,3 +171,9 @@ class TimeSeriesFeatureStatistics:
             self.run_single(time_col, plot)
             self.plot_date_parts(time_col, plot)
             self.plot_time_between_events(time_col, plot)
+            # try:
+            #     self.run_single(time_col, plot)
+            #     self.plot_date_parts(time_col, plot)
+            #     self.plot_time_between_events(time_col, plot)
+            # except Exception as e:
+            #     print(f"couldnt do it for {time_col}, because {e}")

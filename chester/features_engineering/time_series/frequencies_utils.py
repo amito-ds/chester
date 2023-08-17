@@ -1,4 +1,3 @@
-import numpy as np
 import pandas as pd
 
 from chester.features_engineering.time_series.ts_utils import min_fix, max_fix, mean_fix, median_fix
@@ -16,13 +15,15 @@ class FrequenciesFeatures:
         # self.date_column = column
         self.time_series_handler = time_series_handler or TimeSeriesHandler()
         self.data_info = data_info
-        self.df = self.data_info.data.sort_values(self.date_col_name)
+        try:
+            self.df = self.data_info.data.sort_values(self.date_col_name)
+        except:
+            self.df = self.data_info.data
         self.id_cols = self.time_series_handler.id_cols or []
         self.lag_values = time_series_handler.lag_values
         self.df[self.date_col_name] = pd.to_datetime(self.df[self.date_col_name])  # convert to datetime
         self.time_between_events = None
         self.calculate_time_between_events()
-        # self.target = self.df[self.data_info.target]
 
     def calculate_time_between_events(self):
         # Get the date column and id columns from self.df
@@ -102,15 +103,3 @@ class FrequenciesFeatures:
         self.collect_last_values()
         names = self.calculate_ts_metrics()
         return self.df, names
-
-# df = pd.read_csv("/Users/amitosi/PycharmProjects/chester/chester/data/day.csv")
-# df.rename(columns={'cnt': 'target'}, inplace=True)
-# dat_info = DataInfo(data=df, target='target')
-# dat_info.calculate()
-# # print(dat_info)
-#
-# # ts_handler = TimeSeriesHandler()
-# ts_handler = TimeSeriesHandler(id_cols=['workingday'])
-# ma = FrequenciesFeatures(column=df['dteday'], col_name='dteday', data_info=dat_info, time_series_handler=ts_handler)
-# ma.run()
-# print(ma.df.columns)

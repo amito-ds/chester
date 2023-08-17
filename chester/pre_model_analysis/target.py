@@ -103,7 +103,11 @@ class TargetPreModelAnalysis:
 
         # Convert the time column to a pandas datetime column and format it to the requested time frequency
         df = self.target_data_info.data.copy()
-        df[time_col] = pd.to_datetime(df[time_col], format=freq_str)
+        try:
+            df[time_col] = pd.to_datetime(df[time_col], format=freq_str)
+        except:
+            df[time_col] = pd.to_datetime(df[time_col], format=freq_str, utc=True)
+
         df = df.sort_values(time_col)
 
         # Count the number of occurrences of each date and sort the dates in ascending order
@@ -205,12 +209,11 @@ class TargetPreModelAnalysis:
                 if len(date_cols) > 0:
                     time_frequency = self.time_series_handler.time_frequency
                     for date_col in date_cols:
-                        print("analyzing date_col", date_col)
                         self.plot_dates(time_col=date_col, time_freq=time_frequency, plot=plot)
                         self.plot_date_parts(time_col=date_col, plot=plot)
 
         elif self.target_type == "categorical":
             print("Categorical statistics for target column")
-            CategoricalStats(self.target_data_info).run(plot=False)
+            CategoricalStats(self.target_data_info).run(plot=plot)
             if plot:
                 self.plot_barplot()

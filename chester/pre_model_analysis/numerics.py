@@ -103,12 +103,15 @@ class NumericPreModelAnalysis:
             return []
 
         n = len(l)
-        min_sample_size = max(5, int(0.2 * n))
-        max_sample_size = min(15, n)
 
-        sample_size = random.randint(min_sample_size, max_sample_size)
+        if n < 5:
+            return l
+        elif n < 15:
+            sample_size = random.randint(5, n)
+        else:
+            sample_size = random.randint(5, 15)
+
         sample = random.sample(l, sample_size)
-
         return sample
 
     @staticmethod
