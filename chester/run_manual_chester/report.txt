@@ -3,161 +3,139 @@ Full report to analyze my data:
 Data information:
 Data Information Report
 Problem Type: No target variable
-Feature Types: {'numeric': [], 'boolean': [], 'text': ['Heading', 'Link'], 'categorical': [], 'time': [], 'id': []}
+Feature Types: {'numeric': [], 'boolean': [], 'text': ['text'], 'categorical': ['target'], 'time': [], 'id': []}
 Evaluation Metrics: None
 Optional Models: None
 
 
-Cleaning and preprocessing Heading column
-The following cleaning steps will be applied to clean column 'Heading': Removing punctuation, Removing numbers, Removing whitespaces, Removing empty lines, Lowercasing text, Removing stopwords, Removing accented characters, Removing special characters, Removing html tags.
-Cleaning and preprocessing Link column
-The following cleaning steps will be applied to clean column 'Link': Removing punctuation, Removing numbers, Removing whitespaces, Removing empty lines, Lowercasing text, Removing stopwords, Removing accented characters, Removing special characters, Removing html tags.
-Heading column preprocessing
-The following preprocessing steps will be applied to the column 'Heading': Stemming text, Tokenizing text.
-Link column preprocessing
-The following preprocessing steps will be applied to the column 'Link': Stemming text, Tokenizing text.
+Cleaning and preprocessing text column
+The following cleaning steps will be applied to clean column 'text': Removing punctuation, Removing numbers, Removing whitespaces, Removing empty lines, Lowercasing text, Removing stopwords, Removing accented characters, Removing special characters, Removing html tags.
+text column preprocessing
+The following preprocessing steps will be applied to the column 'text': Stemming text, Tokenizing text.
 features engineering process for the data:
 Extracting embedding
-First, Extracting Corex topic model embeddings with dimension 10
-Next, Extracting TF-IDF embeddings with dimension 10
-Then, Extracting bag-of-words embeddings with dimension 10
-Lastly, All embeddings have been concatenated
-Extracting embedding
-First, Extracting Corex topic model embeddings with dimension 10
-Next, Extracting TF-IDF embeddings with dimension 10
-Then, Extracting bag-of-words embeddings with dimension 10
+First, Extracting Corex topic model embeddings with dimension 30
+Next, Extracting TF-IDF embeddings with dimension 30
+Then, Extracting bag-of-words embeddings with dimension 30
 Lastly, All embeddings have been concatenated
 features statistics for the data. Analyzed by groups (text, numeric, categorical) if exists:
 
 Numerical Feature statistics:
 Feature stats:
-                             col # unique # missing   max  min   avg   std  \
-41  Link_tfidf_httpswwwbbccom...        2         0   1.0  0.0   0.1  0.31   
-47  Link_tfidf_httpswwwbbccom...        2         0   1.0  0.0   0.1  0.31   
-56  Link_bow_httpswwwbbccomne...        2         0   1.0  0.0   0.1  0.31   
-30            Link_corex_topic_1       22         0   0.3  0.0  0.03  0.09   
-37            Link_corex_topic_8       22         0  0.36  0.0  0.13  0.07   
-12              Heading_tfidf_us        3         0  0.73  0.0  0.04  0.16   
-11            Heading_tfidf_time        3         0   1.0  0.0  0.05  0.19   
-23             Heading_bow_world        2         0  0.71  0.0  0.05  0.19   
-22                Heading_bow_us        3         0  0.71  0.0  0.04  0.16   
-29             Heading_bow_sudan        2         0   1.0  0.0  0.08  0.27   
+                        col # unique # missing   max  min   avg   std  \
+54        text_tfidf_arthur       28         0   0.7  0.0  0.03  0.12   
+69         text_bow_attract       15         0   1.0  0.0  0.02   0.1   
+43  text_tfidf_jack sparrow       69         0   1.0  0.0  0.06  0.15   
+22      text_corex_topic_23      644         0  0.97  0.0  0.02   0.1   
+42       text_tfidf_sparrow        6         0  0.61  0.0  0.03  0.13   
+52          text_tfidf_movi       19         0  0.78  0.0  0.02  0.11   
+30          text_tfidf_slim       25         0   1.0  0.0  0.02  0.11   
+63             text_bow_age       14         0   1.0  0.0  0.02  0.11   
+6        text_corex_topic_7      644         0  0.97  0.0  0.02  0.11   
+88           text_bow_rship       12         0   1.0  0.0  0.03  0.13   
 
               CI median        top_vals    bottom_vals  
-41  (0.02, 0.18)    0.0         1.0,0.0        0.0,1.0  
-47  (0.02, 0.18)    0.0         1.0,0.0        0.0,1.0  
-56  (0.02, 0.18)    0.0         1.0,0.0        0.0,1.0  
-30  (0.01, 0.05)    0.0     0.3,0.0,0.0    0.0,0.0,0.0  
-37  (0.11, 0.15)   0.11  0.36,0.36,0.36  0.0,0.11,0.11  
-12  (-0.0, 0.08)    0.0    0.73,0.5,0.0   0.0,0.5,0.73  
-11   (-0.0, 0.1)    0.0     1.0,0.5,0.0    0.0,0.5,1.0  
-23   (-0.0, 0.1)    0.0        0.71,0.0       0.0,0.71  
-22  (-0.0, 0.08)    0.0    0.71,0.5,0.0   0.0,0.5,0.71  
-29  (0.01, 0.15)    0.0         1.0,0.0        0.0,1.0  
+54  (0.02, 0.04)    0.0   0.7,0.67,0.65  0.0,0.23,0.27  
+69  (0.01, 0.03)    0.0   1.0,0.77,0.71  0.0,0.24,0.24  
+43  (0.05, 0.07)    0.0   1.0,0.73,0.62  0.0,0.18,0.19  
+22  (0.01, 0.03)    0.0  0.97,0.97,0.96    0.0,0.0,0.0  
+42  (0.02, 0.04)    0.0  0.61,0.54,0.52  0.0,0.46,0.46  
+52  (0.01, 0.03)    0.0  0.78,0.77,0.75  0.0,0.31,0.34  
+30  (0.01, 0.03)    0.0   1.0,0.59,0.57  0.0,0.26,0.26  
+63  (0.01, 0.03)    0.0    1.0,0.82,0.6  0.0,0.24,0.24  
+6   (0.01, 0.03)    0.0  0.97,0.97,0.97    0.0,0.0,0.0  
+88  (0.02, 0.04)    0.0   1.0,0.71,0.58  0.0,0.24,0.25  
 
 
 Categorical Feature statistics:
+Feature stats:
+      col # unique # missing                       Distribution  \
+0  target        3         0  pirate: 33%, arthur: 33%, chat...   
+
+                 Sample Top 5 values coverage  
+0  pirate, arthur, chat                  100%  
+
 Text Statistics:
 Extracting Embedding
-** Analyzing Heading Column
+** Analyzing text Column
 Data quality stats:
-Number of rows with missing data: 0
-Number of unique words: 190
-Average type-token ratio: 1.00
+Number of rows with missing data: 0.0
+Number of unique words: 1908
+Average type-token ratio: 0.96
 Median type-token ratio: 1.00
-Average number of words per text: 5.62
-Median number of words per text: 6.00
+Average number of words per text: 9.54
+Median number of words per text: 7.00
 Average number of sentences per text: 1.00
 Median number of sentences per text: 1.00
-Average length of text: 35.85
-Median length of text: 37.00
+Average length of text: 60.23
+Median length of text: 43.00
 
 Count word frequency for basic text analysis.
 Report shows most common words, giving insight into text topic and content:
-[('sudan', 4), ('day', 3), ('us', 3), ('leave', 3), ('bn', 3), ('japan', 2), ('ban', 2), ('sex', 2), ('bbc', 2), ('world', 2), ('france', 2), ('may', 2), ('protests', 2), ('dozens', 2), ('police', 2), ('injured', 2), ('hsbc', 2), ('makes', 2), ('profit', 2), ('boosted', 2), ('svb', 2), ('tv', 2), ('time', 2), ('mums', 1), ('working', 1), ('without', 1), ('childcare', 1), ('darfur', 1), ('saw', 1), ('pickup', 1), ('trucks', 1), ('full', 1), ('dead', 1), ('people', 1), ('gen', 1), ('z', 1), ('rejecting', 1), ('prestige', 1), ('jobs', 1), ('new', 1), ('record', 1), ('indians', 1), ('take', 1), ('flights', 1), ('i', 1), ('didnt', 1), ('think', 1), ('makeup', 1), ('made', 1), ('black', 1), ('girls', 1), ('shooting', 1), ('suspect', 1), ('deported', 1), ('four', 1), ('times', 1), ('media', 1), ('yellen', 1), ('warns', 1), ('could', 1), ('run', 1), ('cash', 1), ('month', 1), ('upskirting', 1), ('stronger', 1), ('crime', 1), ('laws', 1), ('burden', 1), ('cricket', 1), ('legend', 1), ('tendulkars', 1), ('son', 1), ('photo', 1), ('princess', 1), ('charlotte', 1), ('shared', 1), ('turns', 1), ('stranded', 1), ('passports', 1), ('locked', 1), ('western', 1), ('embassies', 1), ('youtube', 1), ('mad', 1), ('canada', 1), ('service', 1), ('radio', 1), ('palestinian', 1), ('hunger', 1), ('striker', 1), ('dies', 1), ('israel', 1), ('prison', 1), ('stuck', 1), ('border', 1), ('drivers', 1), ('demand', 1), ('cross', 1), ('chaos', 1), ('port', 1)]
+[('lady', 156), ('seeks', 136), ('yo', 100), ('jack', 92), ('male', 80), ('arthur', 72), ('rship', 61), ('build', 58), ('good', 58), ('looking', 55), ('attractive', 54), ('fun', 54), ('movies', 53), ('slim', 51), ('sparrow', 47), ('relationship', 47), ('elizabeth', 45), ('music', 44), ('fship', 43), ('ns', 42), ('non', 41), ('dining', 41), ('seeking', 41), ('married', 40), ('honest', 40), ('like', 40), ('well', 40), ('friendship', 40), ('guy', 37), ('man', 37), ('oh', 37), ('age', 36), ('beach', 36), ('smoker', 36), ('likes', 35), ('sd', 34), ('squeak', 34), ('life', 33), ('interests', 32), ('meet', 32), ('ft', 32), ('single', 32), ('saw', 32), ('enjoy', 31), ('female', 31), ('must', 31), ('open', 30), ('drinker', 29), ('swann', 29), ('times', 29), ('social', 28), ('genuine', 28), ('walks', 28), ('employed', 27), ('turner', 27), ('fit', 26), ('medium', 26), ('would', 26), ('caring', 26), ('gent', 26), ('gsoh', 26), ('get', 24), ('quiet', 24), ('right', 23), ('sexy', 23), ('tall', 23), ('head', 23), ('back', 22), ('father', 22), ('children', 22), ('poss', 22), ('wltm', 22), ('long', 22), ('away', 21), ('gentleman', 21), ('launcelot', 21), ('going', 21), ('ss', 21), ('come', 20), ('black', 20), ('gibbs', 20), ('home', 20), ('sir', 20), ('knights', 20), ('love', 20), ('soh', 20), ('knight', 19), ('want', 19), ('woman', 19), ('view', 19), ('easygoing', 19), ('thats', 19), ('late', 19), ('galahad', 19), ('jones', 19), ('share', 19), ('guard', 18), ('ragetti', 18), ('gardening', 18), ('im', 18)]
 Sentiment Statistics
 +--------------------------------+
 |      Sentiment Statistics      |
 +-----------+-------+------------+
 | Sentiment | Count | Percentage |
 +-----------+-------+------------+
-|  Positive |   4   |   10.3%    |
-|  Negative |   5   |   12.8%    |
-|  Neutral  |   30  |   76.9%    |
+|  Positive |  353  |   39.2%    |
+|  Negative |  117  |   13.0%    |
+|  Neutral  |  430  |   47.8%    |
 +-----------+-------+------------+
 
 
 Corex topic analysis:
-	Topic 1: makes bn, profit boosted, starvation cult, hit, deaths, bn profit, israel, youtube mad, kenya starvation, canada
-	Topic 2: prestige jobs, gen rejecting prestige, day, new record, leave dozens, dozens police, police injured, stuck sudan, sudan border, border drivers
-	Topic 3: upskirting stronger, recreational vaping, australia ban recreational, ban recreational vaping, bumper bp profits, bp profits bn, profits bn spark, culture, puzzle neanderthal, capsule
-	Topic 4: seriously tv hosts, darfur saw, locked western, western embassies, stranded passports locked, passports locked western, locked western embassies, youtube, port, thousands
-	Topic 5: record, afternoon, tea, london, williams, announces, football coach forced, neanderthal culture, coach forced flee, sings loves
-	Topic 6: hunger striker, board worlds surviving, protester, capsule open, time capsule, war time, street piano confiscated, japan street piano, bumper, joined kenya starvation
-	Topic 7: didnt think makeup, man worm, flee sudan, serena williams announces, met gala, confiscated public break, piano confiscated public, ban recreational, australia ban, vaping
-	Topic 8: trucks, ora sings loves, loves, war time capsule, cold war time, time, war, piano, street, bn spark criticism
-	Topic 9: working, continue, serena, afternoon tea london, break, public, confiscated, russia troop deaths, hit months, deaths hit
-	Topic 10: public break, mums, baby meets, sings, ora, exasperation, break rules, wife children, cult, starvation
-	Topic 11: continue protest, trucks dead people, gen, saw, screenwriters, strike, kenya starvation cult, history, art, colours
-	Topic 12: cricket legend tendulkars, legend tendulkars son, photo, france day protests, day protests leave, protests leave dozens, prison, palestinian hunger, money kitchen, kitchen fumes
-	Topic 13: rejecting prestige jobs, new, new record indians, record indians flights, indians flights day, makeup, black, girls, crime, children
-	Topic 14: jobs, gen rejecting, legend tendulkars, tendulkars son, burden cricket legend, radio, drivers demand, demand cross, stuck sudan border, pregnancy
-	Topic 15: deported times, football, pregnancy met gala, tea london, afternoon tea, guide afternoon, neanderthal, puzzle, public break rules, hollywood
-	Topic 16: photo princess charlotte, princess charlotte shared, france day, day protests, protests leave, children joined, rules, japan street, street piano, man
-	Topic 17: black girls, meets father time, history art colours, art colours, history art, screenwriters strike, hollywood screenwriters, father time sudan, pay, demand
-	Topic 18: rejecting, strike pay, hollywood screenwriters strike, protest sex, sex abuse
-	Key sentences out of based on LSA algorithm: ['man worm rita ora sings loves.', 'indian wrestlers continue protest sex abuse.', 'darfur saw pickup trucks full dead people.', 'stuck sudan border drivers demand cross.', 'serena williams announces pregnancy met gala.'] 
+	Topic 1: pole, children, ready, fship rship, greek, european lady, plus prefer living, gent plus prefer, dancing looking gent, yrs
+	Topic 2: lady wltm, build, seeks attrac older, male seeks attrac, leave, yo children, seeks attrac, way, sought, beach sports
+	Topic 3: male enjoys, wltm male, tall, away, share life, loves, ns seeks, ground, year old, interests dining
+	Topic 4: female wd weekends, lover hi, seeks female wd, female similar interests, ft medium, racing gardening travel, beach music, sport beach, camping, walks
+	Topic 5: build financially, work, ft non smoker, non smoker social, theres, honest, make, wyvern, quality, female friendship
+	Topic 6: kids ok, asian lady sought, lady slim, good, fship, drinker harley rider, aussie, theatre, burned, secure
+	Topic 7: ft medium build, honest loving, bluegreen eyed gentleman, lady sought, kill, financially, country, doesnt, parties, hair
+	Topic 8: guy nth, fun times, french guard, outdoor activites, eyed gentleman, interests include beach, forward, fship possible, good times family, outings poss rship
+	Topic 9: single dad, music theatre, seeks sexy, slim presented fem, vibrant personality, cutler, aust, oh, friendship good, zoot
+	Topic 10: key, home seeking, normal, outdoor, dead, easygoing honest caring, build financially secure, coconut, plus, intelligent
+	Topic 11: seeks similar, travel employed honest, intelligent independant, yes, rider semi, nights, room, lady slim medium, gen enquiries, swf yo sd
+	Topic 12: female similar, articulate conversation music, conversation music little, nights home seeking, dining movies long, city, long drives car, guests singing, singing hes, jack
+	Topic 13: smoker slim, racing easygoing honest, kids, looking, man, slim medium, deck, relation ship, westernsouthern suburbs friendship, drinker enjoy
+	Topic 14: early outgoing intelligent, ns sd, outgoing intelligent independant, attractive fit, danc, ing, life, general, slim presented, build likes
+	Topic 15: peninsula, boy good, good sense humour, looks, seeks lady
+	Topic 16: build yrs non, honest looking, looking friendship, slim lady, times family, medium, living adelaide, used, youre, retired
+	Topic 17: ala, presented fem, fitness, nice attractive, affectionate loyal female, fitness outdoor, soh nonsmokersocial, hes going, discreet encounters, male seeking
+	Topic 18: turner, horses, car racing gardening, dining movies, easy, fine, sexy male, ss sgl, kg, mercer
+	Topic 19: sports music view, harley, caring non, nth, subs, guards, women, help, black knight, possible rship
+	Topic 20: lady easygoing, yo medium build, black, good looking, view permanent, walks articulate, come come, knight, european lady rship, married european
+	Topic 21: encounters, early vibrant personality, guy slim, age open, gen honest caring, honest caring non, loyal female seeks, chest, fem early, quick
+	Topic 22: hes going tell, boy good soh, singing hes going, fem, good soh share
+	Topic 23: casual, swf, rship, male blond, racing easygoing, loyal female, fship ss, music theatre movies, pintel, fun age
+	Topic 24: swm, sim int share, med build, meet gen honest, pistol, discreet, drinker, fit seeks, petite, tim
+	Topic 25: guard, dining sedate outdoor, drives car racing, yo ft slimmed, music little, happy, tia dalma, vibrant personality good, sense, looking gent plus
+	Topic 26: seeks female, sgl, single male seeks, ft, smoker, walking, maybe, nonsmokersocial, include, sought aussie
+	Topic 27: friendly, danc ing life, villager, yo enjoy danc, prefer, future, early, roll, ing life general, motor racing easygoing
+	Topic 28: conversation, quiet nights home, nights home motor, photo pls gen, comfortable photo pls, female seeks tall, life general comfortable, lady late, loving
+	Topic 29: wltm swm company, swm company fship, drops, professional, company fship ss, sport beach music, easy going, quality times, shall, fship ss sd
+	Topic 30: stop, nonsmoker social, wltm, cars friendship good, looking gent, young, hold, european, single, smoker social drinker
+	Topic 31: ss, slimmed, mid, officer, ft non, lover, soh share life, classy lady, sgl mum looking, jack sparrow
+	Topic 32: chops, nonsmoker, new, social, middle head, lady ns, sgl mum, year, tall male genuine, music movies
+	Topic 33: dte, life fun times, gardening music, independant, fun times possible, social drinker enjoy, lady rship, pls, married male, european male seeks
+	Topic 34: lonely, boy, retired secure looking, genuine replies, left head, bedevere, sword, asian lady, home walks beach
+	Topic 35: lady yo, life fun, quiet, man like, dressed, pearl, eyed
+	Topic 36: nat, independant fitness, minstrel, cooking, married male seeks, sign, nights home walks, guy, lady yo ft, gibbs
+	Topic 37: person seeking, bring, wine, independant fitness outdoor, genuine, soh share, fair
+	Topic 38: build ns, male blond outgoing, slim, possible relationship, children seeks, medium build likes, movies
+	Topic 39: family, early vibrant, swf yo, bluegreen, missing, dining, beach gardening seeks, enjoy gardening, share life fun, gentleman honest looking
+	Topic 40: dining quiet nights, soh, smoker slim medium, melb subs, movies walking, love, seeks married european, grabs, male genuine, head oh
+	Topic 41: dancing looking, ss sd, seeks gentleman, seen, seeks tall, walks beach gardening, medium build yrs, cars, slimmedium build, male genuine relationshipmarriage
+	Topic 42: attractive, lady non smoker, seeks honest, hi aust lady, time, guy late
+	Topic 43: ss sgl mum, oooh
+	Topic 44: semi, earth
+	Topic 45: gardening seeks gentleman, middle, like meet
+	Topic 46: island, business, company fship
+	Topic 47: eyes
+	Topic 48: semi retired secure, married european lady
+	Key sentences out of based on LSA algorithm: ['central victorian single dad teen daughters yo looking special lady.', 'robin perhaps could.', 'jack sparrow carry heave.', 'concorde quickly sir.', 'music sound stop momentarily.'] 
 
 popular terms extraction:
-[('japan ban upskirting stronger sex crime laws', 14.0), ('japan street piano confiscated public break rules', 14.0), ('day protests leave dozens police injured', 12.0), ('hsbc makes bn profit boosted svb', 12.0), ('stuck sudan border drivers demand cross', 12.0), ('chaos port thousands rush leave sudan', 12.0), ('bumper bp profits bn spark criticism', 12.0), ('top football coach forced flee sudan', 12.0), ('indian wrestlers continue protest sex abuse', 12.0), ('photo princess charlotte shared turns', 10.0)]
-
-** Analyzing Link Column
-Data quality stats:
-Number of rows with missing data: 0
-Number of unique words: 22
-Average type-token ratio: 1.00
-Median type-token ratio: 1.00
-Average number of words per text: 1.00
-Median number of words per text: 1.00
-Average number of sentences per text: 1.00
-Median number of sentences per text: 1.00
-Average length of text: 35.41
-Median length of text: 31.00
-
-Count word frequency for basic text analysis.
-Report shows most common words, giving insight into text topic and content:
-[('httpswwwbbccomnewsworldafrica', 5), ('httpswwwbbccomnewsworlduscanada', 4), ('httpswwwbbccomnewsworldeurope', 4), ('httpswwwbbccomnewsbusiness', 4), ('httpswwwbbccomnewsworldasiaindia', 3), ('httpswwwbbccomnewsworld', 2), ('httpswwwbbccomnewsentertainmentarts', 2), ('httpswwwbbccomworklifearticlethemothersworkingfromhomewithoutchildcare', 1), ('httpswwwbbccomworklifearticlegenzvaluesentrepreneurshipflexibilityjobs', 1), ('httpswwwbbccoukbbcthreearticleccacacecacfeff', 1), ('httpswwwbbccomnewsworldasiapacific', 1), ('httpswwwbbccomnewsuk', 1), ('httpswwwbbccomsoundsplaylivebbcworldservice', 1), ('httpswwwbbccomnewsworldmiddleeast', 1), ('httpswwwbbccomnewsukscotland', 1), ('httpswwwbbccomnewsworldradioandtv', 1), ('httpswwwbbccomculturearticleahistoryofartincolours', 1), ('httpswwwbbccomnewsworldaustralia', 1), ('httpswwwbbccomnewsworldasia', 1), ('httpswwwbbccomfuturearticlethepuzzleofneanderthalcultureandaesthetics', 1), ('httpswwwbbccomtravelarticlereganvestinsidedenmarkssecretnuclearbunker', 1), ('httpswwwbbccomtravelarticlewheretohaveafternoonteainlondon', 1)]
-Sentiment Statistics
-+--------------------------------+
-|      Sentiment Statistics      |
-+-----------+-------+------------+
-| Sentiment | Count | Percentage |
-+-----------+-------+------------+
-|  Positive |   0   |    0.0%    |
-|  Negative |   0   |    0.0%    |
-|  Neutral  |   39  |   100.0%   |
-+-----------+-------+------------+
-
-
-Corex topic analysis:
-	Topic 1: httpswwwbbccomnewsuk
-	Topic 2: httpswwwbbccomnewsworldradioandtv
-	Topic 3: httpswwwbbccomnewsbusiness
-	Topic 4: httpswwwbbccomworklifearticlegenzvaluesentrepreneurshipflexibilityjobs
-	Topic 5: httpswwwbbccomsoundsplaylivebbcworldservice
-	Topic 6: httpswwwbbccomnewsworldasiapacific, httpswwwbbccomnewsworldaustralia
-	Topic 7: httpswwwbbccomnewsworldasiaindia, httpswwwbbccomfuturearticlethepuzzleofneanderthalcultureandaesthetics
-	Topic 8: httpswwwbbccomnewsukscotland, httpswwwbbccomnewsworldeurope, httpswwwbbccomnewsworldasia
-	Topic 9: httpswwwbbccomtravelarticlereganvestinsidedenmarkssecretnuclearbunker
-	Topic 10: httpswwwbbccomnewsworld
-	Topic 11: httpswwwbbccomnewsworlduscanada, httpswwwbbccomnewsworldafrica
-	Topic 12: httpswwwbbccomnewsworldmiddleeast
-	Topic 13: httpswwwbbccomworklifearticlethemothersworkingfromhomewithoutchildcare
-	Topic 14: httpswwwbbccomnewsentertainmentarts
-	Topic 15: httpswwwbbccomculturearticleahistoryofartincolours
-	Topic 16: httpswwwbbccoukbbcthreearticleccacacecacfeff
-	Key sentences out of based on LSA algorithm: ['httpswwwbbccomtravelarticlewheretohaveafternoonteainlondon.', 'httpswwwbbccomnewsworldasiaindia.', 'httpswwwbbccomnewsworld', 'httpswwwbbccomnewsbusiness.', 'httpswwwbbccomnewsworldafrica.'] 
-
-popular terms extraction:
-[('httpswwwbbccomworklifearticlethemothersworkingfromhomewithoutchildcare', 2.0), ('httpswwwbbccomnewsworldafrica', 2.0), ('httpswwwbbccomworklifearticlegenzvaluesentrepreneurshipflexibilityjobs', 2.0), ('httpswwwbbccomnewsworldasiaindia', 2.0), ('httpswwwbbccoukbbcthreearticleccacacecacfeff', 2.0), ('httpswwwbbccomnewsworlduscanada', 2.0), ('httpswwwbbccomnewsworldasiapacific', 2.0), ('httpswwwbbccomnewsuk', 2.0), ('httpswwwbbccomnewsworld', 2.0), ('httpswwwbbccomsoundsplaylivebbcworldservice', 2.0)]
+[('clunk bang rewr squeak rrrr drilllll sawwwww', 54.0), ('active years ft slim build nonsmoker social', 54.0), ('early outgoing intelligent independant fitness outdoor activites', 46.0), ('supporting happy nat fun loving likes cooking', 44.0), ('greekaust male early slim build nonsmoker enjoys', 44.0), ('single male seeks fe fship possible rship', 44.0), ('preserved prof sgle prince charming living cityinner', 42.0), ('male late aust single tall prof interests', 40.0), ('dennis listen strange women lying ponds distributing', 40.0), ('lady wltm genu ine person dtoe possibly', 38.0)]
 

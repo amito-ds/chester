@@ -4,9 +4,8 @@ from collections import Counter
 import matplotlib
 import pandas as pd
 from chester.data_loader.webtext_data import load_data_pirates, load_data_king_arthur, load_data_chat_logs
-from flatbuffers.builder import np
 from sklearn.datasets import fetch_20newsgroups, fetch_openml
-
+import numpy as np
 from chester.run.full_run import run
 from chester.run.user_classes import Data, ModelRun, TimeSeriesHandler, TextFeatureExtraction, TextSummary
 import yfinance as yf
