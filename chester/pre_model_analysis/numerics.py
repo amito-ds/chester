@@ -160,6 +160,7 @@ class NumericPreModelAnalysis:
             self.cols_sorted_with_pvalue = sorted_list
             return [x[0] for x in sorted_list]
         except:
+            self.cols_sorted_with_pvalue = self.cols
             return self.cols
 
     def analyze_pvalue(self, is_plot=True, top_features=10):

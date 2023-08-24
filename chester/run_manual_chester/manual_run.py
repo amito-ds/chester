@@ -20,14 +20,14 @@ import matplotlib.pyplot as plt
 
 
 ################################################################################################
-df1 = load_data_pirates().assign(target='pirate').sample(300, replace=True)
-df2 = load_data_king_arthur().assign(target='arthur').sample(300, replace=True)
-df3 = load_data_chat_logs().assign(target='chat').sample(300, replace=True)
-df = pd.concat([
-    df1, df2,
-    df3
-])
-#
+# df1 = load_data_pirates().assign(target='pirate').sample(300, replace=True)
+# df2 = load_data_king_arthur().assign(target='arthur').sample(300, replace=True)
+# df3 = load_data_chat_logs().assign(target='chat').sample(300, replace=True)
+# df = pd.concat([
+#     df1, df2,
+#     df3
+# ])
+# #
 # df['target'] = df['target'].apply(lambda x: 0 if "pirate" in x else 1)  # can do with or without
 ################################################################################################
 
@@ -430,16 +430,14 @@ def load_dataset(name):
 # top_10 = df['ProductId'].value_counts().nlargest(10).index
 # filtered_df = df[df['ProductId'].isin(top_10)]
 
-
-chester_collector = run(Data(df=df),
-                        is_feature_stats=True,
-                        is_pre_model=True,
-                        text_summary=TextSummary(summary_num_sentences=3, max_terms=5),
-                        # feature_types={'numeric': [], 'boolean': [], 'text': ['Text', 'Summary'],
-                        #                'categorical': [], 'time': [], 'id': ['ProductId']}
-                        # text_summary=TextSummary(summary_num_sentences=3, max_terms=20),
-                        # model_run=ModelRun(n_models=1),
-                        )
+df = pd.read_csv("data.csv")
+print(df)
+chester_collector = run(Data(df=df, target_column='target'))
+#                         # feature_types={'numeric': [], 'boolean': [], 'text': ['Text', 'Summary'],
+#                         #                'categorical': [], 'time': [], 'id': ['ProductId']}
+#                         # text_summary=TextSummary(summary_num_sentences=3, max_terms=20),
+#                         # model_run=ModelRun(n_models=1),
+#                         )
 # madcat_collector = run_madcat(Data(df=df, target_column='target'),
 #                               is_feature_stats=True,
 #                               # text_feature_extraction=TextFeatureExtraction(corex_dim=2, anchor_words=anchors),

@@ -2,140 +2,65 @@ Full report to analyze my data:
 
 Data information:
 Data Information Report
-Problem Type: No target variable
-Feature Types: {'numeric': [], 'boolean': [], 'text': ['text'], 'categorical': ['target'], 'time': [], 'id': []}
-Evaluation Metrics: None
-Optional Models: None
+Problem Type: Regression
+Target Variable: target
+Feature Types: {'numeric': ['t-5', 't-4', 't-3', 't-2', 't-1', 'age', 'gender', 'hos_admit_time', 'avg_last_5', 'avg_last_3', 'pct_change_2', 'pct_change_3', 'slope', 'age_squared', 'age_gender_interaction'], 'boolean': [], 'text': [], 'categorical': [], 'time': [], 'id': ['ID']}
+Loss Function: R squared
+Evaluation Metrics: ['R2', 'MSE', 'MAE', 'MAPE']
+Optional Models: {'baseline-median', 'catboost', 'linear', 'baseline-average'}
 
 
-Cleaning and preprocessing text column
-The following cleaning steps will be applied to clean column 'text': Removing punctuation, Removing numbers, Removing whitespaces, Removing empty lines, Lowercasing text, Removing stopwords, Removing accented characters, Removing special characters, Removing html tags.
-text column preprocessing
-The following preprocessing steps will be applied to the column 'text': Stemming text, Tokenizing text.
 features engineering process for the data:
-Extracting embedding
-First, Extracting Corex topic model embeddings with dimension 30
-Next, Extracting TF-IDF embeddings with dimension 30
-Then, Extracting bag-of-words embeddings with dimension 30
-Lastly, All embeddings have been concatenated
 features statistics for the data. Analyzed by groups (text, numeric, categorical) if exists:
 
 Numerical Feature statistics:
 Feature stats:
-                        col # unique # missing   max  min   avg   std  \
-54        text_tfidf_arthur       28         0   0.7  0.0  0.03  0.12   
-69         text_bow_attract       15         0   1.0  0.0  0.02   0.1   
-43  text_tfidf_jack sparrow       69         0   1.0  0.0  0.06  0.15   
-22      text_corex_topic_23      644         0  0.97  0.0  0.02   0.1   
-42       text_tfidf_sparrow        6         0  0.61  0.0  0.03  0.13   
-52          text_tfidf_movi       19         0  0.78  0.0  0.02  0.11   
-30          text_tfidf_slim       25         0   1.0  0.0  0.02  0.11   
-63             text_bow_age       14         0   1.0  0.0  0.02  0.11   
-6        text_corex_topic_7      644         0  0.97  0.0  0.02  0.11   
-88           text_bow_rship       12         0   1.0  0.0  0.03  0.13   
+                             col # unique # missing      max       min    avg  \
+9                 num_avg_last_3      998         0     2.05     -2.26  -0.04   
+1                        num_t-4      998         0     4.01     -3.34  -0.02   
+3                        num_t-2     1000         0     3.05     -2.85  -0.02   
+14  num_age_gender_interactio...      499         0    88.51       0.0  36.32   
+12                     num_slope      994         0     1.04     -1.25  -0.01   
+5                        num_age      830         0    88.94     18.85  62.47   
+11              num_pct_change_3      971         0  52000.0  -20625.0  43.59   
+0                        num_t-5      999         0     4.56     -3.22   0.02   
+8                 num_avg_last_5      999         0     1.72     -1.96  -0.03   
+10              num_pct_change_2      964         0  65800.0      -inf   -inf   
 
-              CI median        top_vals    bottom_vals  
-54  (0.02, 0.04)    0.0   0.7,0.67,0.65  0.0,0.23,0.27  
-69  (0.01, 0.03)    0.0   1.0,0.77,0.71  0.0,0.24,0.24  
-43  (0.05, 0.07)    0.0   1.0,0.73,0.62  0.0,0.18,0.19  
-22  (0.01, 0.03)    0.0  0.97,0.97,0.96    0.0,0.0,0.0  
-42  (0.02, 0.04)    0.0  0.61,0.54,0.52  0.0,0.46,0.46  
-52  (0.01, 0.03)    0.0  0.78,0.77,0.75  0.0,0.31,0.34  
-30  (0.01, 0.03)    0.0   1.0,0.59,0.57  0.0,0.26,0.26  
-63  (0.01, 0.03)    0.0    1.0,0.82,0.6  0.0,0.24,0.24  
-6   (0.01, 0.03)    0.0  0.97,0.97,0.97    0.0,0.0,0.0  
-88  (0.02, 0.04)    0.0   1.0,0.71,0.58  0.0,0.24,0.25  
+        std               CI  median                 top_vals  \
+9      0.75    (-0.08, -0.0)   -0.09           2.05,1.95,1.89   
+1      1.01    (-0.07, 0.03)    0.01           4.01,3.04,2.92   
+3      0.96    (-0.07, 0.03)   -0.08            3.05,2.9,2.52   
+14    33.19   (34.59, 38.05)   44.06         88.51,88.47,88.3   
+12     0.31    (-0.03, 0.01)   -0.01           1.04,0.99,0.95   
+5      16.6   (61.61, 63.33)   64.97         88.94,88.9,88.51   
+11  2571.84  (-90.2, 177.38)  -54.54  52000.0,46400.0,16000.0   
+0      0.99    (-0.03, 0.07)   -0.01           4.56,3.02,2.77   
+8      0.67     (-0.06, 0.0)   -0.04           1.72,1.67,1.66   
+10      nan       (nan, nan)  -34.56  65800.0,60800.0,11700.0   
+
+                   bottom_vals  
+9             -2.26,-2.07,-1.8  
+1            -3.34,-2.86,-2.83  
+3             -2.85,-2.7,-2.59  
+14             0.0,18.85,19.22  
+12           -1.25,-1.19,-0.99  
+5            18.85,19.22,19.37  
+11  -20625.0,-15600.0,-8142.86  
+0            -3.22,-2.64,-2.56  
+8            -1.96,-1.77,-1.67  
+10     -inf,-25800.0,-13533.33  
 
 
 Categorical Feature statistics:
+** model pre analysis report:
 Feature stats:
-      col # unique # missing                       Distribution  \
-0  target        3         0  pirate: 33%, arthur: 33%, chat...   
+            col  # unique  # missing   max   min  avg   std             CI  \
+0  target_label       997          0  4.22 -3.55 -0.0  0.98  (-0.05, 0.05)   
 
-                 Sample Top 5 values coverage  
-0  pirate, arthur, chat                  100%  
+   median        top_vals        bottom_vals  
+0   -0.06  4.22,3.44,2.73  -3.55,-2.48,-2.45  
 
-Text Statistics:
-Extracting Embedding
-** Analyzing text Column
-Data quality stats:
-Number of rows with missing data: 0.0
-Number of unique words: 1908
-Average type-token ratio: 0.96
-Median type-token ratio: 1.00
-Average number of words per text: 9.54
-Median number of words per text: 7.00
-Average number of sentences per text: 1.00
-Median number of sentences per text: 1.00
-Average length of text: 60.23
-Median length of text: 43.00
-
-Count word frequency for basic text analysis.
-Report shows most common words, giving insight into text topic and content:
-[('lady', 156), ('seeks', 136), ('yo', 100), ('jack', 92), ('male', 80), ('arthur', 72), ('rship', 61), ('build', 58), ('good', 58), ('looking', 55), ('attractive', 54), ('fun', 54), ('movies', 53), ('slim', 51), ('sparrow', 47), ('relationship', 47), ('elizabeth', 45), ('music', 44), ('fship', 43), ('ns', 42), ('non', 41), ('dining', 41), ('seeking', 41), ('married', 40), ('honest', 40), ('like', 40), ('well', 40), ('friendship', 40), ('guy', 37), ('man', 37), ('oh', 37), ('age', 36), ('beach', 36), ('smoker', 36), ('likes', 35), ('sd', 34), ('squeak', 34), ('life', 33), ('interests', 32), ('meet', 32), ('ft', 32), ('single', 32), ('saw', 32), ('enjoy', 31), ('female', 31), ('must', 31), ('open', 30), ('drinker', 29), ('swann', 29), ('times', 29), ('social', 28), ('genuine', 28), ('walks', 28), ('employed', 27), ('turner', 27), ('fit', 26), ('medium', 26), ('would', 26), ('caring', 26), ('gent', 26), ('gsoh', 26), ('get', 24), ('quiet', 24), ('right', 23), ('sexy', 23), ('tall', 23), ('head', 23), ('back', 22), ('father', 22), ('children', 22), ('poss', 22), ('wltm', 22), ('long', 22), ('away', 21), ('gentleman', 21), ('launcelot', 21), ('going', 21), ('ss', 21), ('come', 20), ('black', 20), ('gibbs', 20), ('home', 20), ('sir', 20), ('knights', 20), ('love', 20), ('soh', 20), ('knight', 19), ('want', 19), ('woman', 19), ('view', 19), ('easygoing', 19), ('thats', 19), ('late', 19), ('galahad', 19), ('jones', 19), ('share', 19), ('guard', 18), ('ragetti', 18), ('gardening', 18), ('im', 18)]
-Sentiment Statistics
-+--------------------------------+
-|      Sentiment Statistics      |
-+-----------+-------+------------+
-| Sentiment | Count | Percentage |
-+-----------+-------+------------+
-|  Positive |  353  |   39.2%    |
-|  Negative |  117  |   13.0%    |
-|  Neutral  |  430  |   47.8%    |
-+-----------+-------+------------+
-
-
-Corex topic analysis:
-	Topic 1: pole, children, ready, fship rship, greek, european lady, plus prefer living, gent plus prefer, dancing looking gent, yrs
-	Topic 2: lady wltm, build, seeks attrac older, male seeks attrac, leave, yo children, seeks attrac, way, sought, beach sports
-	Topic 3: male enjoys, wltm male, tall, away, share life, loves, ns seeks, ground, year old, interests dining
-	Topic 4: female wd weekends, lover hi, seeks female wd, female similar interests, ft medium, racing gardening travel, beach music, sport beach, camping, walks
-	Topic 5: build financially, work, ft non smoker, non smoker social, theres, honest, make, wyvern, quality, female friendship
-	Topic 6: kids ok, asian lady sought, lady slim, good, fship, drinker harley rider, aussie, theatre, burned, secure
-	Topic 7: ft medium build, honest loving, bluegreen eyed gentleman, lady sought, kill, financially, country, doesnt, parties, hair
-	Topic 8: guy nth, fun times, french guard, outdoor activites, eyed gentleman, interests include beach, forward, fship possible, good times family, outings poss rship
-	Topic 9: single dad, music theatre, seeks sexy, slim presented fem, vibrant personality, cutler, aust, oh, friendship good, zoot
-	Topic 10: key, home seeking, normal, outdoor, dead, easygoing honest caring, build financially secure, coconut, plus, intelligent
-	Topic 11: seeks similar, travel employed honest, intelligent independant, yes, rider semi, nights, room, lady slim medium, gen enquiries, swf yo sd
-	Topic 12: female similar, articulate conversation music, conversation music little, nights home seeking, dining movies long, city, long drives car, guests singing, singing hes, jack
-	Topic 13: smoker slim, racing easygoing honest, kids, looking, man, slim medium, deck, relation ship, westernsouthern suburbs friendship, drinker enjoy
-	Topic 14: early outgoing intelligent, ns sd, outgoing intelligent independant, attractive fit, danc, ing, life, general, slim presented, build likes
-	Topic 15: peninsula, boy good, good sense humour, looks, seeks lady
-	Topic 16: build yrs non, honest looking, looking friendship, slim lady, times family, medium, living adelaide, used, youre, retired
-	Topic 17: ala, presented fem, fitness, nice attractive, affectionate loyal female, fitness outdoor, soh nonsmokersocial, hes going, discreet encounters, male seeking
-	Topic 18: turner, horses, car racing gardening, dining movies, easy, fine, sexy male, ss sgl, kg, mercer
-	Topic 19: sports music view, harley, caring non, nth, subs, guards, women, help, black knight, possible rship
-	Topic 20: lady easygoing, yo medium build, black, good looking, view permanent, walks articulate, come come, knight, european lady rship, married european
-	Topic 21: encounters, early vibrant personality, guy slim, age open, gen honest caring, honest caring non, loyal female seeks, chest, fem early, quick
-	Topic 22: hes going tell, boy good soh, singing hes going, fem, good soh share
-	Topic 23: casual, swf, rship, male blond, racing easygoing, loyal female, fship ss, music theatre movies, pintel, fun age
-	Topic 24: swm, sim int share, med build, meet gen honest, pistol, discreet, drinker, fit seeks, petite, tim
-	Topic 25: guard, dining sedate outdoor, drives car racing, yo ft slimmed, music little, happy, tia dalma, vibrant personality good, sense, looking gent plus
-	Topic 26: seeks female, sgl, single male seeks, ft, smoker, walking, maybe, nonsmokersocial, include, sought aussie
-	Topic 27: friendly, danc ing life, villager, yo enjoy danc, prefer, future, early, roll, ing life general, motor racing easygoing
-	Topic 28: conversation, quiet nights home, nights home motor, photo pls gen, comfortable photo pls, female seeks tall, life general comfortable, lady late, loving
-	Topic 29: wltm swm company, swm company fship, drops, professional, company fship ss, sport beach music, easy going, quality times, shall, fship ss sd
-	Topic 30: stop, nonsmoker social, wltm, cars friendship good, looking gent, young, hold, european, single, smoker social drinker
-	Topic 31: ss, slimmed, mid, officer, ft non, lover, soh share life, classy lady, sgl mum looking, jack sparrow
-	Topic 32: chops, nonsmoker, new, social, middle head, lady ns, sgl mum, year, tall male genuine, music movies
-	Topic 33: dte, life fun times, gardening music, independant, fun times possible, social drinker enjoy, lady rship, pls, married male, european male seeks
-	Topic 34: lonely, boy, retired secure looking, genuine replies, left head, bedevere, sword, asian lady, home walks beach
-	Topic 35: lady yo, life fun, quiet, man like, dressed, pearl, eyed
-	Topic 36: nat, independant fitness, minstrel, cooking, married male seeks, sign, nights home walks, guy, lady yo ft, gibbs
-	Topic 37: person seeking, bring, wine, independant fitness outdoor, genuine, soh share, fair
-	Topic 38: build ns, male blond outgoing, slim, possible relationship, children seeks, medium build likes, movies
-	Topic 39: family, early vibrant, swf yo, bluegreen, missing, dining, beach gardening seeks, enjoy gardening, share life fun, gentleman honest looking
-	Topic 40: dining quiet nights, soh, smoker slim medium, melb subs, movies walking, love, seeks married european, grabs, male genuine, head oh
-	Topic 41: dancing looking, ss sd, seeks gentleman, seen, seeks tall, walks beach gardening, medium build yrs, cars, slimmedium build, male genuine relationshipmarriage
-	Topic 42: attractive, lady non smoker, seeks honest, hi aust lady, time, guy late
-	Topic 43: ss sgl mum, oooh
-	Topic 44: semi, earth
-	Topic 45: gardening seeks gentleman, middle, like meet
-	Topic 46: island, business, company fship
-	Topic 47: eyes
-	Topic 48: semi retired secure, married european lady
-	Key sentences out of based on LSA algorithm: ['central victorian single dad teen daughters yo looking special lady.', 'robin perhaps could.', 'jack sparrow carry heave.', 'concorde quickly sir.', 'music sound stop momentarily.'] 
-
-popular terms extraction:
-[('clunk bang rewr squeak rrrr drilllll sawwwww', 54.0), ('active years ft slim build nonsmoker social', 54.0), ('early outgoing intelligent independant fitness outdoor activites', 46.0), ('supporting happy nat fun loving likes cooking', 44.0), ('greekaust male early slim build nonsmoker enjoys', 44.0), ('single male seeks fe fship possible rship', 44.0), ('preserved prof sgle prince charming living cityinner', 42.0), ('male late aust single tall prof interests', 40.0), ('dennis listen strange women lying ponds distributing', 40.0), ('lady wltm genu ine person dtoe possibly', 38.0)]
+top 50 with lowest partial pvalue for numerical feat, based on chi square:
+['num_pct_change_2', 'num_hos_admit_time', 'num_pct_change_3', 'num_t-1', 'num_avg_last_3', 'num_gender', 'num_t-3', 'num_t-4', 'num_t-2', 'num_t-5', 'num_slope', 'num_age_squared', 'num_age', 'num_age_gender_interaction', 'num_avg_last_5']
 
